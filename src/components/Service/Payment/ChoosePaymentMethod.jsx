@@ -24,14 +24,20 @@ const ChoosePaymentMethod = ({ setSelect }) => {
       <div className="p-5 md:p-10 text-center text-2xl md:text-4xl font-light">
         Choose Payment Method
       </div>
-      <div className="md:px-28 space-y-5">
+      <div className="md:px-28 pb-10 space-y-5">
         {rentSpace.map((item) => (
           <button
             onClick={() => setSelect(4)}
             className="w-full p-4 rounded border flex space-x-5 items-center justify-between"
           >
             <div className="flex space-x-5 items-center">
-              <img src={item.img} alt={item.img} className="h-10 w-12" />
+              <img
+                src={item.img}
+                alt={item.img}
+                className={` ${
+                  item.img === rentSpace[2].img ? "h-5 w-12" : "h-10 w-12"
+                }`}
+              />
 
               <div className="text-left font-medium">
                 <div className="font-medium">{item.name}</div>
@@ -46,7 +52,7 @@ const ChoosePaymentMethod = ({ setSelect }) => {
       </div>
       <button
         onClick={() => setSelect(2)}
-        className="text-white mt-5 bg-red-700 px-5 py-3 rounded"
+        className="text-white mt-10 bg-red-700 px-5 py-3 rounded"
       >
         Previous
       </button>
