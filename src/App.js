@@ -23,6 +23,7 @@ import ProductSearch from "./pages/ProductSearch";
 import SingleAgent from "./pages/SingleAgent";
 import InvestDetails from "./pages/InvestDetails";
 import Message from "./pages/Message";
+import HomeLoneOnline from "./pages/HomeLoneOnline";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/requirementForm" element={<RequirementForm />} />
             <Route path="/singleProduct" element={<SingleProduct />} />
             <Route path="/homeLone" element={<HomeLone />} />
+            <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />
             <Route path="/payRentOnline" element={<PayRentOnline />} />
             <Route path="/LegalHelp" element={<LegalHelp />} />
             <Route path="/emiCalculator" element={<EmiCalculatorPage />} />

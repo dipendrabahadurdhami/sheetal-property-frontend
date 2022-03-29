@@ -80,7 +80,7 @@ const LinkBanks = () => {
               <span className="font-bold text-black">{bank.year} years</span>
             </span>
             <div className="flex justify-center">
-              <Link to="/payRentOnline">
+              <Link to="/homeLone/applyOnline">
                 <button className="p-2 px-3 rounded text-white bg-red-700">
                   Apply now
                 </button>

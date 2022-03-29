@@ -3,6 +3,7 @@ import React from "react";
 const RentOnline = ({ setSelect }) => {
   return (
     <div>
+      <div className="p-10 text-center text-4xl font-light">Apply Online</div>
       <form className="md:px-28 pb-16 w-full space-y-5">
         <label className="flex flex-col space-y-1">
           <span>Name</span>
@@ -28,7 +29,7 @@ const RentOnline = ({ setSelect }) => {
             className="w-full text-gray-500 border border-gray-300 rounded p-3 focus:outline-none"
           />
         </label>
-        <label className="flex flex-col space-y-1">
+        {/* <label className="flex flex-col space-y-1">
           <span>Location</span>
           <input
             type="text"
@@ -60,7 +61,8 @@ const RentOnline = ({ setSelect }) => {
             <option value="esewa">Esewa</option>
             <option value="khalti">Khalti</option>
           </select>
-        </label>
+        </label> */}
+
         <button
           onClick={() => {
             // status = "complete";
