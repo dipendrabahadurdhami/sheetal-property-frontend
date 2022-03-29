@@ -44,6 +44,12 @@ const ChoosePaymentMethod = ({ setSelect }) => {
           </button>
         ))}
       </div>
+      <button
+        onClick={() => setSelect(2)}
+        className="text-white mt-5 bg-red-700 px-5 py-3 rounded"
+      >
+        Previous
+      </button>
     </div>
   );
 };

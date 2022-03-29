@@ -7,17 +7,17 @@ const ChooseRentSpace = ({ setSelect }) => {
   const rentSpace = [
     {
       name: "Home",
-      icon: <HomeIcon className="w-16 h-16 sm:w-24 sm:h-24 text-red-500" />,
+      icon: <HomeIcon className="w-16 h-16 sm:w-20 sm:h-20 text-red-500" />,
       paid: true,
     },
     {
       name: "Office",
-      icon: <ImOffice className="w-16 h-16 sm:w-24 sm:h-24 text-red-500" />,
+      icon: <ImOffice className="w-16 h-16 sm:w-20 sm:h-20 text-red-500" />,
       paid: false,
     },
     {
       name: "Shop",
-      icon: <BsShop className="w-16 h-16 sm:w-24 sm:h-24 text-red-500" />,
+      icon: <BsShop className="w-16 h-16 sm:w-20 sm:h-20 text-red-500" />,
       paid: true,
     },
   ];
@@ -68,6 +68,12 @@ const ChooseRentSpace = ({ setSelect }) => {
           </div>
         </button>
       ))}
+      <button
+        onClick={() => setSelect(1)}
+        className="text-white bg-red-700 px-5 py-3 rounded"
+      >
+        Previous
+      </button>
     </div>
   );
 };

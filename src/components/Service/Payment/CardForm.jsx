@@ -69,8 +69,8 @@ const CardForm = ({ setSelect }) => {
           </button>
         </form>
         <button
-          onClick={() => setSelect(1)}
-          className="text-white bg-red-700 text-xl px-5 py-3 rounded"
+          onClick={() => setSelect(3)}
+          className="text-white bg-red-700 px-5 py-3 rounded"
         >
           Previous
         </button>
