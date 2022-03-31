@@ -9,7 +9,7 @@ const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
-      <div className="py-4 border-t border-white shadow-xl px-5 lg:px-10 flex justify-between items-center bg-red-700 text-white">
+      {/* <div className="py-4 border-t border-white shadow-xl px-5 lg:px-10 flex justify-between items-center bg-red-700 text-white">
         <div className="inline">
           <h1 className="font-light text-xl">Hy,Ram!</h1>
         </div>
@@ -37,7 +37,7 @@ const Header = () => {
             <MenuIcon className="w-7 h-7 mr-2" />
           </button>
         </div>
-      </div>
+      </div> */}
       <MobSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
     </>
   );
