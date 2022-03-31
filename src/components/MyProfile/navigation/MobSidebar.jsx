@@ -18,7 +18,7 @@ const navigation = [
     icon: UsersIcon,
     current: false,
   },
-  { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
+  // { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
   { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
   { name: "Logout", href: "logout", icon: InboxIcon, current: false },
 ];
@@ -115,7 +115,7 @@ export const MobSidebar = ({ setSidebarOpen, sidebarOpen }) => {
                 </nav>
               </div>
               <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-                <a href="#" className="flex-shrink-0 group block">
+                <a href="/" className="flex-shrink-0 group block">
                   <div className="flex items-center">
                     <div>
                       <img

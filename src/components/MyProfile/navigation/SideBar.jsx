@@ -23,7 +23,7 @@ const navigation = [
     icon: UsersIcon,
     current: false,
   },
-  { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
+  // { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
   { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
   { name: "Logout", href: "logout", icon: InboxIcon, current: false },
 ];
@@ -39,7 +39,7 @@ const SideBar = ({ menubutton }) => {
     profile: <DashBoard />,
     favourites: <Properties />,
     messages: <Messages />,
-    saved: <NoData />,
+    // saved: <NoData />,
     logout: <LogOut />,
   };
 

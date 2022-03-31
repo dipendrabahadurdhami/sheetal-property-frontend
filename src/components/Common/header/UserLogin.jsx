@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { IoLogOut } from "react-icons/io5";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaUserCircle } from "react-icons/fa";
 
 const UserLogin = () => {
   return (
@@ -10,11 +10,12 @@ const UserLogin = () => {
       <Menu as="div" className=" relative inline-block">
         <div>
           <Menu.Button className="focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-            <img
+            {/* <img
               src="noUser.png"
               alt="noUser.png"
               className="w-12 h-12 rounded-full"
-            />
+            /> */}
+            <FaUserCircle className="w-9 h-9 mt-1 rounded-full text-red-700" />
           </Menu.Button>
         </div>
         <Transition
