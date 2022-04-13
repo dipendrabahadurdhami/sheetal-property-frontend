@@ -1,6 +1,20 @@
 import React from "react";
+import ListBox from "../components/Common/ListBox";
 
 const RequirementForm = () => {
+  const TenantOption = [{ name: "Rent" }, { name: "Buy" }, { name: "Invest" }];
+  const Vehicle = [
+    { name: "Two Wheeler" },
+    { name: "There Wheeler" },
+    { name: "Four Wheeler" },
+  ];
+  const Requirements = [
+    { name: "Room" },
+    { name: "Flat" },
+    { name: "House" },
+    { name: "Apartment" },
+  ];
+  const Facilities = [{ name: "Rent" }, { name: "Buy" }, { name: "Invest" }];
   return (
     <div className="flex justify-center px-5 py-10 sm:p-5 lg:p-10 xl:p-24">
       <div className="w-full">
@@ -69,27 +83,29 @@ const RequirementForm = () => {
               placeholder="Enter your maximum budget"
             />
           </label>
+
           <label className="flex flex-col space-y-2">
             <span>Tenant option</span>
-            <select
-              className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
-              placeholder="Enter your maximum budget"
-            >
-              <option value="rent">Rent</option>
-              <option value="buy">Buy</option>
-              <option value="invest">Invest</option>
-            </select>
+            <ListBox list={TenantOption} />
           </label>
           <label className="flex flex-col space-y-2">
-            <span>Tenant option</span>
+            <span>Requirements</span>
+            <ListBox list={Requirements} />
+          </label>
+          <label className="flex flex-col space-y-2">
+            <span>Vehicle</span>
+            <ListBox list={Vehicle} />
+          </label>
+          <label className="flex flex-col space-y-2">
+            <span>Facilities</span>
             <select
+              multiple
               className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
-              size={1}
             >
-              <option value="">Enter tenant option</option>
-              <option value="rent">Rent</option>
-              <option value="buy">Buy</option>
-              <option value="invest">Invest</option>
+              <option>jsdn</option>
+              <option>jsdn</option>
+              <option>jsdn</option>
+              <option>jsdn</option>
             </select>
           </label>
 

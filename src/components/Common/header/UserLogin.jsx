@@ -6,7 +6,7 @@ import { FaUser, FaUserCircle } from "react-icons/fa";
 
 const UserLogin = () => {
   return (
-    <div className="z-50">
+    <div className="z-40">
       <Menu as="div" className=" relative inline-block">
         <div>
           <Menu.Button className="focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
