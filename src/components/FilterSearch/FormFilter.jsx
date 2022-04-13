@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 const FormFilter = ({ setFilterModal }) => {
-  const [value, setValue] = useState([10, 100]);
+  const [value, setValue] = useState([500, 500000]);
   const ImageThumb = (props) => {
     return (
       <span {...props}>
@@ -65,11 +65,11 @@ const FormFilter = ({ setFilterModal }) => {
         </div>
       </div>
       <div className="space-y-6">
-        <div className="flex space-x-6 items-center">
+        <div className="space-x-2 items-center">
           <span className="font-bold text-lg">Price Range</span>
           <span className="text-gray-500">(Rs.500 - Rs.500,000)</span>
         </div>
-        <div className="grid grid-cols-2 gap-5 items-center">
+        <div className="grid sm:grid-cols-2 gap-5 items-center">
           <div>
             <Slider
               value={value}
@@ -90,8 +90,8 @@ const FormFilter = ({ setFilterModal }) => {
                 height: 3,
                 padding: "13px 0",
               }}
-              min={10}
-              max={100}
+              min={500}
+              max={500000}
             />
           </div>
           <input
@@ -115,7 +115,7 @@ const FormFilter = ({ setFilterModal }) => {
         <div className="">
           <span className="font-bold text-lg">Features</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-5 gap-x-2 items-center text-sm">
+        <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-5 gap-x-2 items-center text-sm">
           <div className="flex space-x-4 items-center">
             <input
               type="checkbox"

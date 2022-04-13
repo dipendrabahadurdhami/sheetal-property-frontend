@@ -12,7 +12,7 @@ const Model = ({ setFilterModal, filterModal }) => {
         className="fixed bg-white z-50 inset-0 overflow-y-scroll animate__fadeInUp animate__animated"
         onClose={setFilterModal}
       >
-        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex items-end justify-center min-h-screen pt-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -51,11 +51,11 @@ const Model = ({ setFilterModal, filterModal }) => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block align-bottom bg-white px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:align-middle md:max-w-4xl w-full md:p-6">
-              <div className="py-10">
+            <div className="relative inline-block align-bottom bg-white pt-5 pb-4 text-left overflow-hidden transform transition-all sm:align-middle md:max-w-4xl w-full md:p-6">
+              <div className="py-10 bg-gray-500 md:bg-white px-4">
                 <Search />
               </div>
-              <div className="md:flex justify-center">
+              <div className="md:flex justify-center px-4">
                 <div className="md:max-w-3xl">
                   <FormFilter setFilterModal={setFilterModal} />
                 </div>
