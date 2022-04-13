@@ -9,7 +9,7 @@ const Search = ({ setFilterModal }) => {
   let navigate = useNavigate();
 
   return (
-    <div className="w-full ">
+    <div className="">
       <div className="flex xl:w-4/5  sm:text-lg items-center justify-start font-bold overflow-x-auto">
         {navigation[0].subTitle.map((item, index) => (
           <button

@@ -20,20 +20,20 @@ const FormFilter = ({ setFilterModal }) => {
     <div className="space-y-8 py-8">
       <div className="space-y-6">
         <h1 className="font-bold text-lg">Property Status</h1>
-        <div className="flex space-x-4 items-center text-sm">
-          <button className="border rounded border-gray-400 p-3">
+        <div className="text-sm">
+          <button className="border rounded border-gray-400 p-3 mr-4 mb-4">
             All Status
           </button>
-          <button className="border rounded border-gray-400 p-3">
+          <button className="border rounded border-gray-400 p-3 mr-4 mb-4">
             For Rent
           </button>
-          <button className="border rounded border-gray-400 p-3">
+          <button className="border rounded border-gray-400 p-3 mr-4 mb-4">
             For Sale
           </button>
-          <button className="border rounded border-gray-400 p-3">
+          <button className="border rounded border-gray-400 p-3 mr-4 mb-4">
             Investment
           </button>
-          <button className="border rounded border-gray-400 p-3">
+          <button className="border rounded border-gray-400 p-3 mr-4 mb-4">
             Top Projects
           </button>
         </div>
@@ -64,7 +64,7 @@ const FormFilter = ({ setFilterModal }) => {
           </button>
         </div>
       </div>
-      <div>
+      <div className="space-y-6">
         <div className="flex space-x-6 items-center">
           <span className="font-bold text-lg">Price Range</span>
           <span className="text-gray-500">(Rs.500 - Rs.500,000)</span>
@@ -73,6 +73,9 @@ const FormFilter = ({ setFilterModal }) => {
           <div>
             <Slider
               value={value}
+              getAriaLabel={(index) =>
+                index === 0 ? "Minimum price" : "Maximum price"
+              }
               thumb={{
                 height: 40,
                 backgroundImage: `url("https://picsum.photos/40/40")`,
@@ -81,7 +84,6 @@ const FormFilter = ({ setFilterModal }) => {
                 marginTop: -20,
                 marginLeft: -20,
               }}
-              aria-label="Default"
               onChange={(e, data) => setValue(data)}
               style={{
                 color: "#B91C1B",
@@ -113,7 +115,7 @@ const FormFilter = ({ setFilterModal }) => {
         <div className="">
           <span className="font-bold text-lg">Features</span>
         </div>
-        <div className="grid grid-cols-4 gap-y-5 gap-x-2 items-center text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-5 gap-x-2 items-center text-sm">
           <div className="flex space-x-4 items-center">
             <input
               type="checkbox"
@@ -246,11 +248,11 @@ const FormFilter = ({ setFilterModal }) => {
       </div>
       <div className="flex items-center justify-center">
         <button
-          className="text-white p-3 bg-red-700 font-medium flex items-center rounded space-x-2"
+          className="text-white p-3 bg-red-700 font-medium flex items-center rounded space-x-2 px-5"
           onClick={() => setFilterModal(false)}
         >
           <span>Search</span>
-          <FaSearch className="w-5 h-5" />
+          <FaSearch className="w-4 h-4 mb-1" />
         </button>
       </div>
     </div>

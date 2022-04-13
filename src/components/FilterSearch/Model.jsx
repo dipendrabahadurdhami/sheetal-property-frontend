@@ -27,12 +27,12 @@ const Model = ({ setFilterModal, filterModal }) => {
 
           {/* This element is to trick the browser into centering the modal contents. */}
           <span
-            className="hidden sm:inline-block sm:align-middle"
+            className="hidden md:inline-block md:align-middle"
             aria-hidden="true"
           >
             &#8203;
           </span>
-          <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+          <div className="hidden md:block absolute top-0 right-0 pt-4 pr-4">
             <button
               type="button"
               className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
@@ -51,11 +51,11 @@ const Model = ({ setFilterModal, filterModal }) => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block align-bottom bg-white px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:align-middle md:max-w-4xl sm:w-full sm:p-6">
+            <div className="relative inline-block align-bottom bg-white px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:align-middle md:max-w-4xl w-full md:p-6">
               <div className="py-10">
                 <Search />
               </div>
-              <div className="flex justify-center">
+              <div className="md:flex justify-center">
                 <div className="md:max-w-3xl">
                   <FormFilter setFilterModal={setFilterModal} />
                 </div>
