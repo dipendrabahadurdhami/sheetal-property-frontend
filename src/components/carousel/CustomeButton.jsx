@@ -1,6 +1,5 @@
 import React from "react";
 import { BsArrowLeftCircle, BsArrowRightCircle } from "react-icons/bs";
-import { FaArrowCircleRight } from "react-icons/fa";
 
 export const CustomRightArrow = ({ onClick }) => {
   return (

@@ -7,7 +7,7 @@ import { productObject } from "../Object/productObject";
 
 const Property = () => {
   return (
-    <div className="px-5 lg:px-10 pt-16">
+    <div className="pt-16 px-5 md:px-10">
       <div className="">
         <h1 className="pb-3 text-3xl font-light">Other Services</h1>
         <p className="bg-red-700 h-1 w-16"></p>

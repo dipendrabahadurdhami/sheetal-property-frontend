@@ -1,103 +1,172 @@
 import React from "react";
-import { BsHeart } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import ProductMap from "./Details/ProductMap";
+import RoadDetails from "./Details/RoadDetails";
+import { IoWaterOutline } from "react-icons/io5";
+import { GiElectric } from "react-icons/gi";
+import {
+  RiParkingBoxLine,
+  RiEarthquakeLine,
+  RiDeleteBin6Line,
+} from "react-icons/ri";
+import { BsFlower3, BsPeace } from "react-icons/bs";
 
-const product = {
-  title: "4 BHK House",
-  address: "Golfutar, Kathmandu",
-  discription:
-    "Close to Ringroad, Central location, Surrounded by friendly neighbourhood",
-  Facilitie: "Water Storage, Private Terrace, Parking, Garden",
-  bedroom: "4",
-  bathroom: "4",
-  balcony: "2",
-  price: "Rs. 10 Cr.",
-  superArea: "2025 sq.ft",
-  carpetArea: "2000 sq.ft",
-  status: "Ready to move",
-  floor: "2 floors",
-  parking: "Available",
-  landmarks: "Golfutar Basketball Court",
-  facing: "Marble",
-  waterAvailability: "24/7 Available",
-  electricity: "No/Rare Power cut",
-  lift: "No",
-  construction: "5-10 years",
-  Furnishing: "Finished",
-  ownership: "Freeholder",
-  report: "Sold Outs",
-};
-
-const Details = ({ setOpen }) => {
+const Details = () => {
   return (
-    <>
-      <div className="md:grid grid-cols-12 items-center gap-10 pt-24 py-10 px-5 lg:pl-10">
-        <img
-          src="unsplash.png"
-          alt="unsplash"
-          className="h-full w-full rounded-lg col-span-6 xl:col-span-7"
-        />
-        <div className="col-span-6 xl:col-span-5 py-5">
-          <h1 className="font-bold text-2xl">{product.title}</h1>
-          <p className="text-gray-600 mt-2">for sale in {product.address}</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 items-center gap-5 my-7">
-            <div className="flex flex-col space-y-1">
-              <span className="text-gray-600 text-sm">Bedroom</span>
-              <span className="font-semibold text-lg">{product.bedroom}</span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600 text-sm">Bathroom</span>
-              <span className="font-semibold text-lg">{product.bathroom}</span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600 text-sm">Balcony</span>
-              <span className="font-semibold text-lg">{product.balcony}</span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600 text-sm">Price</span>
-              <span className="font-semibold text-lg">{product.price}</span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600 text-sm">Super Area</span>
-              <span className="font-semibold text-lg">{product.superArea}</span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600 text-sm">Carpet Area</span>
-              <span className="font-semibold text-lg">
-                {product.carpetArea}
-              </span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600 text-sm">Status</span>
-              <span className="font-semibold text-lg">{product.status}</span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600">Floor</span>
-              <span className="font-semibold text-lg">{product.floor}</span>
-            </div>
-            <div className="flex flex-col  space-y-1">
-              <span className="text-gray-600">Parking</span>
-              <span className="font-semibold text-lg">{product.parking}</span>
-            </div>
+    <div>
+      <div className="grid md:grid-cols-2 gap-5 md:gap-10 lg:gap-16 py-5">
+        <RoadDetails />
+        <div>
+          <ProductMap />
+        </div>
+      </div>
+      <div>
+        <div className="space-y-4 py-5">
+          <div className="space-y-4">
+            <div className="text-red-700 font-medium">Facility</div>
+            <ul className="font-light text-sm space-y-2 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <li className="flex space-x-1 items-center">
+                <IoWaterOutline className="w-4 h-4" />
+                <span>Drinking Water</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <GiElectric className="w-4 h-4" />
+                <span>Electricity</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <RiParkingBoxLine className="w-4 h-4" />
+                <span>Parking</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <RiEarthquakeLine className="w-4 h-4" />
+                <span>Earthquake Resistance</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <RiDeleteBin6Line className="w-4 h-4" />
+                <span>Garbage Dumping</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <BsPeace className="w-4 h-4" />
+                <span>Peaceful environment</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <BsFlower3 className="w-4 h-4" />
+                <span>Garden</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <IoWaterOutline className="w-4 h-4" />
+                <span>Balcony</span>
+              </li>
+            </ul>
           </div>
-          <div className="grid grid-cols-2 sm:flex  sm:flex-row space-y-5 sm:space-x-5  sm:space-y-0 items-center">
-            <button
-              onClick={() => setOpen(true)}
-              className="col-span-2 px-5 py-3 text-white font-bold bg-red-700 rounded-lg"
-            >
-              Contact Owner
-            </button>
-
-            <Link to="/payRentOnline">
-              <button className="px-5 py-3 text-red-700 border border-red-700 rounded-lg">
-                Get contact number
-              </button>
-            </Link>
-            <BsHeart className="w-8 h-8 text-red-700" />
+        </div>
+        <div className="space-y-4 py-5">
+          <div className="space-y-4">
+            <div className="text-red-700 font-medium">Exterior Facilities</div>
+            <ul className="font-light text-sm space-y-2 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <li className="flex space-x-1 items-center">
+                <IoWaterOutline className="w-4 h-4" />
+                <span>Drinking Water</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <GiElectric className="w-4 h-4" />
+                <span>Electricity</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <RiParkingBoxLine className="w-4 h-4" />
+                <span>Parking</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <RiEarthquakeLine className="w-4 h-4" />
+                <span>Earthquake Resistance</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <RiDeleteBin6Line className="w-4 h-4" />
+                <span>Garbage Dumping</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <BsPeace className="w-4 h-4" />
+                <span>Peaceful environment</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <BsFlower3 className="w-4 h-4" />
+                <span>Garden</span>
+              </li>
+              <li className="flex space-x-1 items-center">
+                <IoWaterOutline className="w-4 h-4" />
+                <span>Balcony</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="space-y-4 py-5">
+          <div className="space-y-4">
+            <div className="text-red-700 font-medium">Exterior Facilities</div>
+            <ul className="font-light text-sm space-y-2 grid sm:grid-cols-2 gap-y-2 gap-x-20">
+              <li className="flex justify-between items-center">
+                <span>No. of Kitchens</span>
+                <span>2</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>Parking</span>
+                <span>Available</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>No. of Bedrooms</span>
+                <span>2</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>Garrage</span>
+                <span>Available</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>No. of Bedrooms</span>
+                <span>2</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>Pillars</span>
+                <span>NA</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>No. of Floors</span>
+                <span>NA</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>Water Tank</span>
+                <span>Available</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>No. of Shatters</span>
+                <span>1000 ltr</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <span>Parking</span>
+                <span>Available</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="py-5 grid sm:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            <div className="text-red-700 font-medium">Environment</div>
+            <ul className="font-light text-sm space-y-2">
+              <li className="flex items-center">
+                <span>Friendly</span>
+              </li>
+            </ul>
+          </div>
+          <div className="space-y-4">
+            <div className="text-red-700 font-medium">Broker</div>
+            <ul className="font-light text-sm space-y-2">
+              <li className="flex items-center">
+                <span>
+                  I am Interested in getting response from brokers too.
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

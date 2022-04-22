@@ -1,13 +1,36 @@
 import React from "react";
-import { product } from "../Object/product";
+// import { product } from "../Object/product";
 
 const Description = () => {
   return (
-    <div className="border-b-2 border-gray-300">
-      <div className="border-y-2 border-gray-200 px-5 lg:px-10 py-3 font-bold text-2xl">
+    <div className="">
+      <div className="border-b-2 border-gray-200 py-3 font-bold text-xl sm:text-2xl">
         Description
       </div>
-      <div className="py-10 px-5 lg:px-10 text-xs md:text-base">
+      <div className="text-xs md:text-sm space-y-2 md:space-y-5 py-5">
+        <p>
+          Astonishing house closed to ringroad. It is surrounded by friendly
+          neighbourhood. It holds symbolic value and brings good luck to its
+          residence. Flat on rent at Battisputali / Purano Baneshwor, Kathmandu
+          Mahanagarpalika-09. This flat is located in 1.5 minute walking
+          distance from Golden Gate International College and 5 minute walking
+          distance from Gaushala to Purano Baneshwor Highway. This flat is only
+          suitable for residential purpose.
+        </p>
+        <p>
+          The structure of this flat is: 1 living room, 1 kitchen cum dining of
+          14 by 10 feet , 1 bedroom and 1 bathroom.
+        </p>
+        <p>
+          Parking space for 2 bike is available . Monthly rental rate of this
+          flat is 30000 Per month.
+        </p>
+        <p>
+          Interested tenant can contact to the owner of this house on phone :
+          9851076804 / 9813197176
+        </p>
+      </div>
+      {/* <div className="py-10 px-5 lg:px-10 text-xs md:text-base">
         <p className="text-gray-700">{product.discription}</p>
         <div className="py-10">
           <ul className="text-gray-700  grid grid-cols-2 w-full md:w-1/2 gap-5">
@@ -58,7 +81,7 @@ const Description = () => {
             </ul>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
