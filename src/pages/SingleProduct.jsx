@@ -30,9 +30,9 @@ const SingleProduct = () => {
         <Details />
         <ReviewComponent />
         <ScheduleTour />
-        <Featured />
-        <Property />
       </div>
+      <Featured />
+      <Property />
       <ContactModel open={open} setOpen={setOpen} />
     </>
   );
