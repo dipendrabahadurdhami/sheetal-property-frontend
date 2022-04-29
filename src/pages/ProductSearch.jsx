@@ -27,7 +27,6 @@ const ProductSearch = () => {
     }
   }, [query]);
 
-  // console.log("allproduct", products);
   return (
     <div className="p-5 lg:p-10 space-y-10">
       <div className="flex justify-between items-center">

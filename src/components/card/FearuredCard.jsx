@@ -6,11 +6,11 @@ const FearuredCard = ({ product }) => {
   let navigate = useNavigate();
 
   return (
-    <button
+    <div
       onClick={() => {
         navigate({
           pathname: "/property",
-          search: `?tab=${product.name}`,
+          search: `?id=${product.id}`,
         });
       }}
     >
@@ -37,7 +37,7 @@ const FearuredCard = ({ product }) => {
           </div>
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 

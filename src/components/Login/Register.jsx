@@ -53,7 +53,7 @@ const Register = ({ setR }) => {
                 user_name: values.name,
                 email: values.email,
                 password: values.password,
-                password_confirmation: values.password_confirmation,
+                password_confirmation: values.conformPassword,
               }
             );
             if (res.data.errors) {

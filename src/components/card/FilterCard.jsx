@@ -1,11 +1,20 @@
 import React from "react";
 import { FiHeart } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { product } from "../Object/product";
 
 const FilterCard = ({ property }) => {
+  let navigate = useNavigate();
+
   return (
-    <Link to="/singleProduct">
+    <div
+      onClick={() => {
+        navigate({
+          pathname: "/property",
+          search: `?id=${property.id}`,
+        });
+      }}
+    >
       <div className="grid sm:grid-cols-3 lg:grid-cols-4 w-full relative bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200">
         <div>
           <div className="rounded-b px-3 py-0.5 font-semibold absolute top-0 bg-red-700 text-sm text-white uppercase">
@@ -67,7 +76,7 @@ const FilterCard = ({ property }) => {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
