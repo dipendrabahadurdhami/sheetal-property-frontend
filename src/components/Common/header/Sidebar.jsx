@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Fragment, useState } from "react";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import LoginModel from "../../Login/LoginModel";
 import { navigation } from "./navigation";
+import { LoggedUserContext } from "../../Context/LoginContext";
 
 const Sidebar = () => {
+  const { token, setToken } = useContext(LoggedUserContext);
   const [r, setR] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -150,15 +152,28 @@ const Sidebar = () => {
                 <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                   <div className="flex-shrink-0 group block">
                     <div className="flex items-center justify-center space-x-3 text-sm">
-                      <button
-                        onClick={() => {
-                          setR(true);
-                          setSidebarOpen(false);
-                        }}
-                        className="border-2 rounded-lg border-red-500 p-2 "
-                      >
-                        Login / Register
-                      </button>
+                      {token ? (
+                        <button
+                          onClick={() => {
+                            setR(true);
+                            setSidebarOpen(false);
+                          }}
+                          className="border-2 rounded-lg border-red-500 p-2 "
+                        >
+                          Login / Register
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            localStorage.removeItem("token");
+                            setToken(null);
+                            setSidebarOpen(false);
+                          }}
+                          className="border-2 rounded-lg border-red-500 p-2 "
+                        >
+                          SignOut
+                        </button>
+                      )}
                       <div className="border-2 rounded-lg border-red-500 p-2 text-white bg-red-500">
                         Post Property
                       </div>

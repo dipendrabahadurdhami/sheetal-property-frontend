@@ -20,7 +20,7 @@ const ReviewCard = () => {
         <div className="flex items-center space-x-2">
           <div>
             <img
-              src="noUser.png"
+              src="/noUser.png"
               alt="noUser"
               className="rounded-full w-12 h-12"
             />

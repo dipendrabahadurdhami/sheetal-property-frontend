@@ -1,26 +1,26 @@
 import React from "react";
 
-const ImageGallery = () => {
+const ImageGallery = ({ property }) => {
   return (
     <div className="grid lg:grid-cols-12 items-center gap-2 md:gap-5 py-5 sm:py-10">
       <img
-        src="unsplash.png"
+        src={property.feature_image}
         alt="unsplash"
         className="lg:h-[24rem] w-full rounded-lg col-span-6 lg:col-span-7"
       />
       <div className="lg:h-[24rem] col-span-6 lg:col-span-5 grid grid-cols-4 lg:grid-cols-2 gap-2 md:gap-5">
         <img
-          src="unsplash.png"
+          src={property.feature_image}
           alt="unsplash"
           className="h-full w-full rounded-lg"
         />
         <img
-          src="unsplash.png"
+          src={property.feature_image}
           alt="unsplash"
           className="h-full w-full rounded-lg"
         />
         <img
-          src="unsplash.png"
+          src={property.feature_image}
           alt="unsplash"
           className="h-full w-full rounded-lg"
         />
@@ -32,7 +32,7 @@ const ImageGallery = () => {
             + 99 more
           </div>
           <img
-            src="unsplash.png"
+            src={property.feature_image}
             alt="unsplash"
             className="h-full w-full rounded-lg"
           />

@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { IoLogOut } from "react-icons/io5";
 import { FaUser, FaUserCircle } from "react-icons/fa";
+import { LoggedUserContext } from "../../Context/LoginContext";
 
 const UserLogin = () => {
+  const { setToken } = useContext(LoggedUserContext);
+  const SignOut = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+  };
   return (
     <div className="z-40">
       <Menu as="div" className=" relative inline-block">
@@ -43,7 +49,10 @@ const UserLogin = () => {
               <Menu.Item>
                 <div className="flex justify-start items-center">
                   <IoLogOut className="w-5 h-5 text-red-700" />
-                  <button className="flex rounded-md items-center w-full px-2 py-2 text-sm">
+                  <button
+                    onClick={SignOut}
+                    className="flex rounded-md items-center w-full px-2 py-2 text-sm"
+                  >
                     Sign Out
                   </button>
                 </div>

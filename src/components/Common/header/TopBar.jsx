@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { RiArrowDownSLine } from "react-icons/ri";
+import { LoggedUserContext } from "../../Context/LoginContext";
 import LoginModel from "../../Login/LoginModel";
 import UserLogin from "./UserLogin";
 
 const TopBar = () => {
+  const { token } = useContext(LoggedUserContext);
+
   const [r, setR] = useState(false);
-  const [logged, setLogged] = useState(true);
+  // const [logged, setLogged] = useState(true);
 
   return (
     <>
@@ -19,7 +22,7 @@ const TopBar = () => {
           />
         </a>
         <div className="flex space-x-7 items-center">
-          {logged ? (
+          {token ? (
             <></>
           ) : (
             <button
@@ -38,7 +41,7 @@ const TopBar = () => {
           >
             post property{" "}
           </a>
-          {logged && (
+          {token && (
             <div className="flex items-center justify-center space-x-7">
               <FaBell className="w-8 h-8 rounded-full text-red-700" />
               <UserLogin />

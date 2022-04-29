@@ -4,14 +4,15 @@ const ProductMap = () => {
   return (
     <div>
       <iframe
+        title="map"
         width="100%"
         height={"300px"}
-        id="gmap_canvas"
+        id="gamp_canvas"
         src="https://maps.google.com/maps?q=2880%20Broadway,%20New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed"
-        frameborder="0"
+        frameBorder="1"
         scrolling="no"
-        marginheight="0"
-        marginwidth="0"
+        marginHeight="0"
+        marginWidth="0"
         className="relative"
       ></iframe>
       <div className="space-y-4 py-5">

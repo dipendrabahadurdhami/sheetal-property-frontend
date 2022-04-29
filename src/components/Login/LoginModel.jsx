@@ -5,11 +5,21 @@ import { XIcon } from "@heroicons/react/outline";
 import Register from "./Register";
 import Login from "./Login";
 
+const tabs = [
+  {
+    login: <Login />,
+  },
+  {
+    Register: <Register />,
+  },
+];
+
 const LoginModel = ({ r, setR }) => {
   let [categories] = useState({
-    Login: [<Login />],
-    Register: [<Register />],
+    Login: [<Login key={0} setR={setR} />],
+    Register: [<Register key={1} setR={setR} />],
   });
+
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
@@ -48,9 +58,9 @@ const LoginModel = ({ r, setR }) => {
             <div className="inline-block align-bottom bg-white rounded text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full h-screen sm:h-auto">
               <Tab.Group>
                 <Tab.List className="flex p-1 space-x-1 bg-red-700 text-white ">
-                  {Object.keys(categories).map((category) => (
+                  {Object.keys(categories).map((category, index) => (
                     <Tab
-                      key={category}
+                      key={index}
                       className={({ selected }) =>
                         classNames(
                           "w-full py-4 mx-3 leading-5 font-medium text-white",
@@ -74,12 +84,12 @@ const LoginModel = ({ r, setR }) => {
                   </div>
                 </Tab.List>
                 <Tab.Panels className="mt-2">
-                  {Object.values(categories).map((posts, idx) => (
+                  {Object.values(categories).map((posts, index) => (
                     <Tab.Panel
-                      key={idx}
+                      key={index}
                       className={classNames(
                         "bg-white rounded-xl p-3",
-                        "focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60"
+                        "focus:outline-none"
                       )}
                     >
                       {posts}

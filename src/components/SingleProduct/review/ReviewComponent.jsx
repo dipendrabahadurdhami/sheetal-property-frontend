@@ -8,7 +8,7 @@ const ReviewComponent = () => {
         <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm" id="price-currency">
             <img
-              src="noUser.png"
+              src="/noUser.png"
               alt="noUser"
               className="w-10 h-10 rounded-full"
             />
