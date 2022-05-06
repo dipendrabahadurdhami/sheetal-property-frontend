@@ -10,13 +10,13 @@ import {
 } from "react-icons/ri";
 import { BsFlower3, BsPeace } from "react-icons/bs";
 
-const Details = () => {
+const Details = ({data}) => {
   return (
     <div>
       <div className="grid md:grid-cols-2 gap-5 md:gap-10 lg:gap-16 py-5">
         <RoadDetails />
         <div>
-          <ProductMap />
+          <ProductMap latitude={data.latitude} longitude={data.longitude}/>
         </div>
       </div>
       <div>

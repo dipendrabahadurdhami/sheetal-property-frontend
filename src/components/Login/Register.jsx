@@ -54,6 +54,7 @@ const Register = ({ setR }) => {
                 email: values.email,
                 password: values.password,
                 password_confirmation: values.conformPassword,
+                user_type: selected.name
               }
             );
             if (res.data.errors) {

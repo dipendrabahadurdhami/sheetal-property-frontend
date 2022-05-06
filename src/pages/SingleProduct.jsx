@@ -10,51 +10,71 @@ import ImageGallery from "../components/SingleProduct/ImageGallery";
 import PropertyHighlight from "../components/SingleProduct/PropertyHighlight";
 import ReviewComponent from "../components/SingleProduct/review/ReviewComponent";
 import Details from "../components/SingleProduct/Details";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
+import Loader from "../components/Loader";
 
 const SingleProduct = () => {
   const [open, setOpen] = useState(false);
   window.scrollTo(0, 0);
-  const [params] = useSearchParams();
-  const query = params.get("id");
+  const {id} = useParams();
+
   const [property, setProperty] = useState({});
   const [loading, setLoading] = useState(false);
+  let isApiEnabled;
   useEffect(() => {
-    async function FetchData() {
-      setLoading(true);
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_LINK}/property-detail/${query}`
-        );
-        console.log(res.data.data);
-        setProperty(res.data.data);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-      }
-    }
     FetchData();
-  }, [query]);
+    return () => {
+      // cancel the subscription
+      isApiEnabled = false;
+  };
+  }, [id]);
+
+
+  async function FetchData() {
+    setLoading(true);
+    let isApiEnabled = true;
+    try {
+      await axios.get(
+        `${process.env.REACT_APP_API_LINK}/property-detail/${id}`
+      ).then(res=>{
+          if(res.status === 200 && isApiEnabled){
+            setProperty(res.data.data);
+            setLoading(false);
+          }
+      }).catch(err=>{
+        console.error(err)
+        setLoading(false);
+      })
+      
+
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  }
+
 
   return (
     <>
-      {loading ? (
-        <div>loading.......</div>
+      {loading  && Object.keys(property).length === 0 ? (
+        <div className="py-40 flex justify-center">
+
+          <Loader/>
+        </div>
       ) : (
         <>
-          {property && (
+          {!loading &&  Object.keys(property).length > 0 && (
             <>
               <UserHead setOpen={setOpen} property={property} />
               <div className="px-5 lg:px-10 py-10 pb-10">
                 <ProductLocation property={property} />
                 <ImageGallery property={property} />
 
-                <Description property={property} />
+                <Description data={property} />
                 {/* <ExtraValue /> */}
-                <PropertyHighlight property={property} />
-                <Details property={property} />
+                <PropertyHighlight data={property.property_highlights} />
+                <Details data={property} />
                 <ReviewComponent property={property} />
                 <ScheduleTour property={property} />
               </div>

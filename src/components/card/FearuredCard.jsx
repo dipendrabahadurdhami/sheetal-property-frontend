@@ -8,11 +8,9 @@ const FearuredCard = ({ product }) => {
   return (
     <div
       onClick={() => {
-        navigate({
-          pathname: "/property",
-          search: `?id=${product.id}`,
-        });
+        navigate(`/property/${product.id}`);
       }}
+      className="cursor-pointer"
     >
       <div className="block w-full xs:w-64 sm:w-80 relative bg-white rounded-xl shadow-lg border-2 border-gray-200">
         <div className="-mt-3 rounded px-3 py-0.5 font-semibold absolute top-0 bg-red-700 text-sm text-white uppercase">
@@ -30,7 +28,7 @@ const FearuredCard = ({ product }) => {
               <FiHeart className="w-6 h-6 text-red-700" />
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-medium">Rs. {product.total_price} Cr.</span>
+              <span className="font-medium">Rs. {product.total_price} </span>
               <span className="font-medium">2025 sq.ft</span>
             </div>
             <div className="text-gray-600">{product.property_location}</div>

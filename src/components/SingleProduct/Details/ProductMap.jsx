@@ -1,6 +1,7 @@
 import React from "react";
 
-const ProductMap = () => {
+const ProductMap = ({latitude, longitude}) => {
+  
   return (
     <div>
       <iframe
@@ -8,13 +9,14 @@ const ProductMap = () => {
         width="100%"
         height={"300px"}
         id="gamp_canvas"
-        src="https://maps.google.com/maps?q=2880%20Broadway,%20New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed"
+        src={`https://maps.google.com/maps?q=${latitude},${longitude}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
         frameBorder="1"
         scrolling="no"
         marginHeight="0"
         marginWidth="0"
         className="relative"
       ></iframe>
+
       <div className="space-y-4 py-5">
         <div className="space-y-4">
           <div className="text-red-700 font-medium">Land Area in Ropani</div>
@@ -91,7 +93,7 @@ const ProductMap = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+  }
 
 export default ProductMap;

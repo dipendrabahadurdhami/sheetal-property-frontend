@@ -34,7 +34,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/requirementForm" element={<RequirementForm />} />
-            <Route path="/property" element={<SingleProduct />} />
+            <Route path="/property/:id" element={<SingleProduct />} />
             <Route path="/homeLone" element={<HomeLone />} />
             <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />
             <Route path="/payRentOnline" element={<PayRentOnline />} />

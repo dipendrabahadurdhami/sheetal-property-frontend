@@ -17,13 +17,13 @@ const Contact = () => {
         </div>
         <div className="col-span-11 ">
           {" "}
-          <a href="tel: 9898989898">+977 989898989</a>
+          <a href="tel: 9801000434">+977 9801000434</a>
         </div>
         <div className="">
           <HiMail className="w-6 h-6" />
         </div>
         <div className="col-span-10">
-          <a href="mailto: info@shetalgmail.com">info@shetalgmail.com </a>
+          <a href="mailto: info@sheetalproperty.com">info@sheetalproperty.com </a>
         </div>
       </div>
     </div>

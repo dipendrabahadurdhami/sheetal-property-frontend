@@ -13,7 +13,7 @@ const Featured = () => {
         const res = await axios.get(
           `${process.env.REACT_APP_API_LINK}/all-properties`
         );
-        console.log(res.data.data);
+
         setAllProduct(res.data.data);
       }
       FetchData();
