@@ -9,11 +9,9 @@ const FilterCard = ({ property }) => {
   return (
     <div
       onClick={() => {
-        navigate({
-          pathname: "/property",
-          search: `?id=${property.id}`,
-        });
+        navigate("/property/"+property.id);
       }}
+      className="cursor-pointer"
     >
       <div className="grid sm:grid-cols-3 lg:grid-cols-4 w-full relative bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200">
         <div>
@@ -40,7 +38,7 @@ const FilterCard = ({ property }) => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Price</span>
-                <span className="font-medium">{property.total_price} .CR.</span>
+                <span className="font-medium">Rs. {property.total_price}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Land area</span>
