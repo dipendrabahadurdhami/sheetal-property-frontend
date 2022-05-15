@@ -111,7 +111,11 @@ console.log("ASdasd",demands);
                         {({ open }) => (
                           <ul className="list-disc">
                             <li>{person?.facilities[0].name}</li>
-                            <li>{person?.facilities[1].name}</li>
+                            { person?.facilities[1]?.name ? 
+                                 <li>{person?.facilities[1]?.name}</li>
+                                 : ""
+                            }
+                           
                             {person.facilities.slice(2).map((item, index) => (
                               <Disclosure.Panel
                                 key={index}
@@ -119,7 +123,7 @@ console.log("ASdasd",demands);
                                   open ? "block" : "hidden"
                                 } duration-500 `}
                               >
-                                <li>{item}</li>
+                                <li>{item.name}</li>
                               </Disclosure.Panel>
                             ))}
 
