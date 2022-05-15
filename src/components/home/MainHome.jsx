@@ -11,7 +11,7 @@ const MainHome = () => {
   return (
     <div className="space-y-10 pb-20">
       <div
-        className="w-full h-72 flex items-center justify-center bg-no-repeat bg-cover bg-center px-5"
+        className="w-full h-96 flex items-center justify-center bg-no-repeat bg-cover bg-center px-5"
         style={{
           backgroundImage: `url("349872.jpeg")`,
         }}
@@ -26,9 +26,10 @@ const MainHome = () => {
         </div>
       </div>
       <Featured />
-      <Property />
+      {/* <Property /> */}
       <TopProjects />
-      <AdviceTools />
+      
+      {/* <AdviceTools /> */}
       {filterModal && (
         <Model setFilterModal={setFilterModal} filterModal={filterModal} />
       )}

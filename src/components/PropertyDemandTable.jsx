@@ -2,7 +2,9 @@ import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/outline";
 import React, { useState } from "react";
 
-const PropertyDemandTable = () => {
+const PropertyDemandTable = ({demands}) => {
+
+console.log("ASdasd",demands);
   const [seeMore, setSeeMore] = useState(2);
   const [triger, settriger] = useState(false);
   const people = [
@@ -84,32 +86,32 @@ const PropertyDemandTable = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {people.map((person) => (
+                {demands.map((person,i) => (
                   <tr
-                    key={person.email}
+                    key={i}
                     className="grid grid-cols-6 justify-between items-start"
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {person.title}
+                      {person.requirement}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {person.location}
+                      {person.prefered_location}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {person.budget}
+                      {person.maximum_budget}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {person.tenantOption}
+                      {person.tenant_option}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {person.vehicle}
+                      {person.vehicles}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <Disclosure>
                         {({ open }) => (
                           <ul className="list-disc">
-                            <li>{person.facilities[0]}</li>
-                            <li>{person.facilities[1]}</li>
+                            <li>{person?.facilities[0].name}</li>
+                            <li>{person?.facilities[1].name}</li>
                             {person.facilities.slice(2).map((item, index) => (
                               <Disclosure.Panel
                                 key={index}
