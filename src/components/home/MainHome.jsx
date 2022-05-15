@@ -9,7 +9,7 @@ import { TopProjects } from "./TopProjects";
 const MainHome = () => {
   const [filterModal, setFilterModal] = useState(false);
   return (
-    <div className="space-y-10 pb-20">
+    <div className="space-y-2 pb-20">
       <div
         className="w-full h-72 flex items-center justify-center bg-no-repeat bg-cover bg-center px-5"
         style={{

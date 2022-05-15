@@ -1,6 +1,5 @@
 import React from "react";
 import Featured from "../components/home/Featured";
-import Loader from "../components/Loader";
 import About from "../components/Project/About";
 import Contact from "../components/Project/Contact";
 import Details from "../components/Project/Details";
@@ -9,8 +8,7 @@ import WhyThis from "../components/Project/WhyThis";
 const Project = () => {
   return (
     <>
-    <h2>Loader</h2>
-    <Loader/>
+
       <div className="px-5 lg:px-10">
         <div className="py-10 border-b-2 border-gray-300">
           <img
