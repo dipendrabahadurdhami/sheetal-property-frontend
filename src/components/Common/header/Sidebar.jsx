@@ -5,11 +5,13 @@ import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import LoginModel from "../../Login/LoginModel";
 import { navigation } from "./navigation";
 import { LoggedUserContext } from "../../Context/LoginContext";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const { token, setToken } = useContext(LoggedUserContext);
   const [r, setR] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  let navigate = useNavigate();
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -118,7 +120,7 @@ const Sidebar = () => {
                                       open
                                         ? "text-gray-400 rotate-90"
                                         : "text-gray-300",
-                                      "ml-3 flex-shrink-0 h-5 w-5 transform group-hover:text-gray-400 transition-colors ease-in-out duration-150"
+                                      "ml-3 flex-shrink-0 h-5 w-5 transform  group-hover:text-gray-400 transition-colors ease-in-out duration-150"
                                     )}
                                     viewBox="0 0 20 20"
                                     aria-hidden="true"
@@ -134,7 +136,13 @@ const Sidebar = () => {
                                     <Disclosure.Button
                                       key={subItem.title}
                                       as="a"
-                                      href={subItem.link}
+                                      // href={subItem.link}
+                                      onClick={() => {
+                                        navigate({
+                                          pathname: "/productSearch",
+                                          search: `?tab=${subItem.title}`,
+                                        })}}
+                                      
                                       className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
                                     >
                                       {subItem.title}

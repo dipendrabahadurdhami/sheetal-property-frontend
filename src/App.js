@@ -30,7 +30,8 @@ function App() {
     <div className="bg-gray-100">
       <Router>
         <Header />
-        <div className="mx-auto max-w-[1440px] bg-white">
+        {/* <div className="mx-auto max-w-[1440px] bg-white"> */}
+        <div className="mx-auto w-full bg-white">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/requirementForm" element={<RequirementForm />} />

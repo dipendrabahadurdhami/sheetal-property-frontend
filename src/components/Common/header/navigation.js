@@ -61,40 +61,40 @@ export const navigation = [
     title: "Find Agent",
     subTitle: [],
   },
-  {
-    link: "/",
-    title: "Other service",
-    subTitle: [
-      {
-        title: "Home Loan",
-        link: "/homeLone",
-      },
-      {
-        title: "Pay Rent Online",
-        link: "/payRentOnline",
-      },
-      {
-        title: "legal Help",
-        link: "/legalHelp",
-      },
+  // {
+  //   link: "/",
+  //   title: "Other service",
+  //   subTitle: [
+  //     {
+  //       title: "Home Loan",
+  //       link: "/homeLone",
+  //     },
+  //     {
+  //       title: "Pay Rent Online",
+  //       link: "/payRentOnline",
+  //     },
+  //     {
+  //       title: "legal Help",
+  //       link: "/legalHelp",
+  //     },
 
-      // {
-      //   title: "Buy/sell services",
-      //   link: "#",
-      // },
+  //     // {
+  //     //   title: "Buy/sell services",
+  //     //   link: "#",
+  //     // },
 
-      // {
-      //   title: "property lawyers",
-      //   link: "/",
-      // },
-      // {
-      //   title: "Home inspection",
-      //   link: "/",
-      // },
-      // {
-      //   title: "design and Decor",
-      //   link: "/",
-      // },
-    ],
-  },
+  //     // {
+  //     //   title: "property lawyers",
+  //     //   link: "/",
+  //     // },
+  //     // {
+  //     //   title: "Home inspection",
+  //     //   link: "/",
+  //     // },
+  //     // {
+  //     //   title: "design and Decor",
+  //     //   link: "/",
+  //     // },
+  //   ],
+  // },
 ];
