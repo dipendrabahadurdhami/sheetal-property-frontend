@@ -3,12 +3,12 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 
 const ListBox = (props) => {
-  const { list } = props;
+  const { list, name, value } = props;
   const [selected, setSelected] = useState(list[0]);
 
   return (
     <div className="w-full">
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox value={selected} onChange={setSelected} name={name} >
         <div className="relative mt-1">
           <Listbox.Button className="relative w-full py-3 pl-3 pr-10 text-left bg-white rounded cursor-default focus:outline-none border border-gray-300 sm:text-sm">
             <span className="block truncate">{selected.name}</span>

@@ -1,8 +1,22 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import InputBox from "../components/Common/SearchBox/InputBox";
 import PropertyDemandTable from "../components/PropertyDemandTable";
 
 const PropertyDemand = () => {
+  const [demand, setDemand] = useState([]);
+
+  const displayDemand = async () => {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_LINK}/property-demand-list`
+    );
+    setDemand(res.data.data);
+    console.log(res.data.data);
+  };
+
+  useEffect(() => {
+    displayDemand();
+  }, []);
   return (
     <div className="p-5 md:p-10 space-y-10">
       <div className="text-2xl font-bold">PropertyDemand</div>
@@ -11,7 +25,7 @@ const PropertyDemand = () => {
           <InputBox />
         </div>
       </div>
-      <PropertyDemandTable />
+      <PropertyDemandTable demands={demand} />
     </div>
   );
 };

@@ -7,14 +7,17 @@ import { responsive } from "../carousel/Responsive";
 
 const Featured = () => {
   const [allProduct, setAllProduct] = useState([]);
+
   useEffect(() => {
     try {
       async function FetchData() {
         const res = await axios.get(
           `${process.env.REACT_APP_API_LINK}/all-properties`
         );
+        
 
         setAllProduct(res.data.data);
+        console.log(res.data.data);
       }
       FetchData();
     } catch (err) {
@@ -30,10 +33,11 @@ const Featured = () => {
       </div>
 
       <div className="py-10 md:py-16">
-        <Carousel
+        <Carousel 
           responsive={responsive}
           customRightArrow={<CustomRightArrow />}
           customLeftArrow={<CustomLeftArrow />}
+         
           className="pb-16 pt-5"
         >
           {allProduct.map((product, index) => (
