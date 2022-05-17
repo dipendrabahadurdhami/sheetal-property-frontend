@@ -26,12 +26,12 @@ const Featured = () => {
   }, []);
 
   return (
-    <div className="pt-16 px-5 md:px-10">
+    <div className="pt-16 px-5 container mx-auto">
       <div className="">
         <h1 className="pb-3 text-3xl">Featured Properties</h1>
         <p className="bg-red-700 h-1 w-16"></p>
       </div>
-
+      
       <div className="py-4 md:py-4 md:pb-2 -mx-4">
         <Carousel
           responsive={responsive}

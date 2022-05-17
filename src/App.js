@@ -24,12 +24,32 @@ import SingleAgent from "./pages/SingleAgent";
 import InvestDetails from "./pages/InvestDetails";
 import Message from "./pages/Message";
 import HomeLoneOnline from "./pages/HomeLoneOnline";
+import { ToastContainer } from "react-toastify";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserInformation } from "./features/slices/userInformation";
+import Protected from "./routes/protectedRoute";
 
 function App() {
+
+  // checking for login state
+   const [loggedIn, setLoggedIn] = useState(false);
+   const auth =  useSelector((state)=>state.auth);
+   const user =  useSelector((state)=>state.user);
+   const dispatch =  useDispatch();
+   const token = localStorage.getItem('sheetal_token');
+   
+   useEffect(()=>{
+    if(token){
+      dispatch(fetchUserInformation());
+    }
+   },[])
+   
+
   return (
     <div className="bg-gray-100">
       <Router>
-        <Header />
+        <Header isLoggedIn={loggedIn}/>
         {/* <div className="mx-auto max-w-[1440px] bg-white"> */}
         <div className="mx-auto w-full bg-white">
           <Routes>
@@ -44,7 +64,7 @@ function App() {
             <Route path="/rateandtrend" element={<RateAndTrends />} />
             <Route path="/investment" element={<Investment />} />
             <Route path="/investment/export" element={<InvestmentExplore />} />
-            <Route path="/postProperty" element={<PostProperty />} />
+            <Route path="/postProperty" element={<Protected><PostProperty /></Protected>} />
             <Route path="/propertyDemand" element={<PropertyDemand />} />
             <Route path="/findAgent" element={<FindAgent />} />
             <Route path="/singleAgent" element={<SingleAgent />} />
@@ -56,10 +76,25 @@ function App() {
               path="/investment/viewallproduct"
               element={<InvestmentAllProduct />}
             />
-            <Route path="/myProfile" element={<MyProfile />} />
+    
+            <Route path="/myProfile" element={<Protected><MyProfile /></Protected>} />
+  
           </Routes>
         </div>
         <Footer />
+        <ToastContainer 
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          className="font-base text-normal"
+        />
       </Router>
     </div>
   );

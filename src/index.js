@@ -6,11 +6,21 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import LoggedUserContextProvider from "./components/Context/LoginContext";
 
+
+import 'react-toastify/dist/ReactToastify.css';
+import './scss/styles.scss'
+import { CookiesProvider } from 'react-cookie';
+import { Provider } from "react-redux";
+import {store} from './features';
 ReactDOM.render(
   <React.StrictMode>
-    <LoggedUserContextProvider>
-      <App />
-    </LoggedUserContextProvider>
+    {/* <LoggedUserContextProvider> */}
+      <Provider store={store}>
+        <CookiesProvider>
+          <App />
+        </CookiesProvider>
+      </Provider>
+    {/* </LoggedUserContextProvider> */}
   </React.StrictMode>,
   document.getElementById("root")
 );

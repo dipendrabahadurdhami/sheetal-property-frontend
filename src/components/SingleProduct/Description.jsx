@@ -11,11 +11,11 @@ const Description = ({data}) => {
         Description
       </div>
       <div className="text-xs md:text-sm space-y-2 md:space-y-5 py-5">
-        {Parser(data.property_description)}
+        {data.property_description?Parser(data.property_description):''}
       </div>
 
       <div className="text-xs md:text-sm space-y-2 md:space-y-5 py-5">
-        {Parser(data.other_description)}
+        {data.other_description?Parser(data?.other_description):''}
       </div>
       </>
       }   

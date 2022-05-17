@@ -1,11 +1,19 @@
 import React, { useContext, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { FaLock, FaUserAlt } from "react-icons/fa";
+import { FaLock, FaSpinner, FaUserAlt } from "react-icons/fa";
 import { Formik, Form, Field } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { LoggedUserContext } from "../Context/LoginContext";
+import { useDispatch, useSelector } from "react-redux";
+import {setLoading ,setLogin, setError} from '../../features/slices/auth';
+import { setUserInfo, fetchUserInformation } from "../../features/slices/userInformation";
+// import { LoggedUserContext } from "../Context/LoginContext";
+
+import {  toast } from 'react-toastify';
+
+// import { useCookies } from 'react-cookie';
+import apiClient from "../../utils/apiClient";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -13,9 +21,12 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = ({ setR }) => {
-  const { setToken } = useContext(LoggedUserContext);
+  // const { setToken } = useContext(LoggedUserContext);
   const navigate = useNavigate();
   const [passwordShown, setPasswordShown] = useState(false);
+  // const [cookies, setCookie] = useCookies(['sheetal_token']);
+  const auth =  useSelector((state)=>state.auth);
+  const dispatch =  useDispatch();
 
   return (
     <div className="p-3 text-sm">
@@ -27,21 +38,45 @@ const Login = ({ setR }) => {
         validationSchema={LoginSchema}
         onSubmit={async (values) => {
           try {
-            const res = await axios.post(
-              `${process.env.REACT_APP_API_LINK}/login`,
+          
+            dispatch(setLoading(true));
+            const res = await axios.post(`${process.env.REACT_APP_API_LINK}/login`,
               {
                 email: values.email,
                 password: values.password,
               }
             );
 
-            localStorage.setItem("token", res.data.data.token);
-            setToken(res.data.data.token);
-            console.log(res.data.data.token);
+           if(res.status === 200){
+              localStorage.setItem("sheetal_token", res.data.data.token);
+              dispatch(setLoading(false));
+              dispatch(setLogin(res.data.data))
+              dispatch(setError(''))
+  
+              // setCookie('sheetal_token', res.data.data.token, { path: '/' });
+              toast.success(`Welcome ${res.data.data.user_name}, You have successfully logged in.`);
+
+              setTimeout(()=>{
+                dispatch(fetchUserInformation())
+              }, 1000)
+
+           }else{
+             const error = "Something went wrong. Please try again later";
+            toast.error(error)
+            dispatch(setError(error));
+            dispatch(setLoading(false));
+           }
+
+            
+            // setToken(res.data.data.token);
+            // console.log(res.data.data.token);
             setR(false);
-            navigate(0);
+            // navigate(0);
           } catch (error) {
             console.error(error);
+            toast.error(error.response.data.message)
+            dispatch(setLoading(false));
+            dispatch(setError(error.response.data.message));
           }
         }}
       >
@@ -118,9 +153,9 @@ const Login = ({ setR }) => {
 
             <button
               type="submit"
-              className="text-white bg-red-700 rounded-lg w-full text-xl font-bold p-3"
+              className="inline-flex justify-center text-white bg-red-700 rounded-lg w-full text-sm font-medium p-3 text-center"
             >
-              Login
+              {auth.isLoading?<FaSpinner className="spin"/>: 'Login'}
             </button>
           </Form>
         )}

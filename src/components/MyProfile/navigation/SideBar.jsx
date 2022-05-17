@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import {
   CalendarIcon,
@@ -14,6 +14,11 @@ import { Link, useSearchParams } from "react-router-dom";
 import NoData from "../NoData";
 import LogOut from "../LogOut";
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import { FaSpinner } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { fetchUserInformation } from "../../../features/slices/userInformation";
+import apiClient from "../../../utils/apiClient";
 
 const navigation = [
   { name: "My Profile", href: "profile", icon: HomeIcon, current: true },
@@ -33,6 +38,11 @@ function classNames(...classes) {
 }
 
 const SideBar = ({ menubutton }) => {
+  const dispatch =  useDispatch();
+  const user =  useSelector(state=>state.user);
+  const [image, setImage]= useState(null);
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] =useState(false);
   const [params, setParams] = useSearchParams();
   const query = params.get("section");
   const mainComponent = {
@@ -42,6 +52,81 @@ const SideBar = ({ menubutton }) => {
     // saved: <NoData />,
     logout: <LogOut />,
   };
+  const onInputChange =async (e) => {
+    const files = e.target.files[0];
+    setFile(e.target.files[0])
+    readURL(e.target);
+
+    const formData = new FormData();
+    const newData =  {...user.data, photo: files}
+
+    Object.entries(newData).map(item=>{
+      console.log(item[0],item[1])
+      formData.append(item[0],item[1])
+    })
+    setLoading(true)
+    try{
+      await apiClient.post('update-profile',formData).then(res=>{
+        if(res.status === 200){
+          dispatch(fetchUserInformation())
+          setLoading(false);
+          toast.success(`Profile Photo  updated successfully.`);
+        }else{
+          setLoading(false);
+          toast.error(res.message);
+        } 
+      })
+    }catch(error){
+      console.error(error);
+      setLoading(false);
+      toast.error(`There's an error updating profile photo. Please contact admin`);
+    }
+  }
+  useEffect(()=>{
+    if(user.data.photo){
+      setImage(user.data.photo)
+    }
+  },[user])
+
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+         setImage(e.target.result)
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+  // const handleProfileUpload = async (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   const newData =  {...user.data, photo: file}
+
+  //   Object.entries(newData).map(item=>{
+  //     console.log(item[0],item[1])
+  //     formData.append(item[0],item[1])
+  //   })
+  //   setLoading(true)
+  //   try{
+  //     await apiClient.post('update-profile',formData).then(res=>{
+  //       if(res.status === 200){
+  //         dispatch(fetchUserInformation())
+  //         setLoading(false);
+  //         toast.success(`Profile Photo  updated successfully.`);
+  //       }else{
+  //         setLoading(false);
+  //         toast.error(res.message);
+  //       } 
+  //     })
+  //   }catch(error){
+  //     console.error(error);
+  //     setLoading(false);
+  //     toast.error(`There's an error updating profile photo. Please contact admin`);
+  //   }
+    
+  // }
 
   return (
     <>
@@ -53,25 +138,27 @@ const SideBar = ({ menubutton }) => {
                 <div className={`relative m-4`}>
                   <img
                     className="w-full h-auto"
-                    src="noUser.png"
+                    src={image?image:'noUser.png'}
                     alt="Workflow"
                   />
-                  <form>
+                  <form >
                     <div className="absolute bottom-0 left-0 right-0 w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center">
                       <input
                         type="file"
                         accept="image/*"
-                        style={{ display: "none" }}
+                        className="absolute top-0 left-0 p-0 w-0 h-0 overflow-hidden opacity-0"
                         id="contained-button-file"
+                        onChange={onInputChange}
                       />
                       <label htmlFor="contained-button-file">
                         <Button
                           variant="contained"
                           style={{ backgroundColor: "#B91C1B", color: "white" }}
                           component="span"
+                          disabled={loading}
                           className="w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center"
                         >
-                          <span>Upload</span>
+                          <span>{loading?<FaSpinner className="spin"/>:'Upload'}</span>
                           <MdOutlineDriveFolderUpload className="w-5 h-5" />
                         </Button>
                       </label>
@@ -79,7 +166,7 @@ const SideBar = ({ menubutton }) => {
                   </form>
                 </div>
                 <div className="text-red-700 text-xl font-medium">
-                  Ram Parajuli
+                  {user?.data?.first_name} {user?.data?.last_name}
                 </div>
               </div>
               <nav className="mt-10 flex-1 px-2 bg-white space-y-1">

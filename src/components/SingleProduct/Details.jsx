@@ -20,7 +20,7 @@ const Details = ({data}) => {
         </div>
       </div>
       <div>
-        <div className="space-y-4 py-5">
+        <div className="space-y-4 container mx-auto py-5">
           <div className="space-y-4">
             <div className="text-red-700 font-medium">Facility</div>
             <ul className="font-light text-sm space-y-2 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

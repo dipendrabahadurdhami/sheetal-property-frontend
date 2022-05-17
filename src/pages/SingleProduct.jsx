@@ -67,7 +67,7 @@ const SingleProduct = () => {
           {!loading &&  Object.keys(property).length > 0 && (
             <>
               <UserHead setOpen={setOpen} property={property} />
-              <div className="px-5 lg:px-10 py-10 pb-10">
+              <div className="px-5 lg:px-10 py-10 pb-10 container mx-auto">
                 <ProductLocation property={property} />
                 <ImageGallery property={property} />
 

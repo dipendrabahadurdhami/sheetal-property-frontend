@@ -1,7 +1,10 @@
 import React from "react";
+import { useCookies } from "react-cookie";
 import FormikTextInput from "./FormikTextInput";
 
 const OtherDetails = () => {
+  const [cookies] = useCookies(['sheetal_token']);
+  console.log("Token",cookies.sheetal_token);
   return (
     <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5">
       <div className="text-xl font-medium capitalize">Other Details</div>

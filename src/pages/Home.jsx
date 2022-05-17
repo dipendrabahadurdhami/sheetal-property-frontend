@@ -1,8 +1,10 @@
 import React from "react";
+
 import MainHome from "../components/home/MainHome";
 
 
 const Home = () => {
+
   return (
     <div>
       <MainHome />

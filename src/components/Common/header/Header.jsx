@@ -6,18 +6,20 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 
 const Header = () => {
-  const { token, setToken } = useContext(LoggedUserContext);
-  useEffect(() => {
-    const Token = localStorage.getItem("token");
-    setToken(Token);
-  }, [setToken]);
-  console.log(token);
+  // const { token, setToken } = useContext(LoggedUserContext);
+  // useEffect(() => {
+  //   const Token = localStorage.getItem("token");
+  //   setToken(Token);
+  // }, [setToken]);
+  // console.log(token);
+
+  
   return (
     <Fragment>
       <div className="">
         <div className="hidden lg:block">
           <div className="bg-white">
-            <div className="mx-auto max-w-[1440px] ">
+            <div className="mx-auto container px-5 ">
               <TopBar />
             </div>
           </div>

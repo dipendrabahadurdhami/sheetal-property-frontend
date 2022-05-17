@@ -10,7 +10,7 @@ const FearuredCard = ({ product }) => {
       onClick={() => {
         navigate(`/property/${product.id}`);
       }}
-      className="cursor-pointer px-5 h-full"
+      className="cursor-pointer h-full"
     >
       <div className="block w-full h-full xs:w-64 sm:w-80 lg:w-full relative bg-white rounded-xl shadow-lg border-2 border-gray-200">
         <div className="-mt-3 rounded px-3 py-0.5 font-semibold absolute top-0 bg-red-700 text-sm text-white uppercase">
