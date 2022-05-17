@@ -20,14 +20,16 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const Protected = ({  children }) => {
 const user =  useSelector(state=>state.user)
 const token = localStorage.getItem('sheetal_token');
+const navigate = useNavigate()
 // console.log(user)
  useEffect(()=>{
-  if (!user.data) {
-    return <Navigate to="/?login=1" replace />;
+  if (!user.data || user.data === null) {
+    return  navigate(`/?login=1`)
    }
  },[user])
  
