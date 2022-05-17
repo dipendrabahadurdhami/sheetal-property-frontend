@@ -83,8 +83,8 @@ const SideBar = ({ menubutton }) => {
     }
   }
   useEffect(()=>{
-    if(user.data.photo){
-      setImage(user.data.photo)
+    if(user?.data?.photo){
+      setImage(user?.data?.photo)
     }
   },[user])
 
