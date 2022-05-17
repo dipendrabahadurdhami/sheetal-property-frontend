@@ -28,7 +28,7 @@ const token = localStorage.getItem('sheetal_token');
 const navigate = useNavigate()
 // console.log(user)
  useEffect(()=>{
-  if (!user.data || user.data === null) {
+  if (!user.data && !token) {
     return  navigate(`/?login=1`)
    }
  },[user])
