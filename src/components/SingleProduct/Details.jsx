@@ -14,13 +14,13 @@ const Details = ({data}) => {
   return (
     <div>
       <div className="grid md:grid-cols-2 gap-5 md:gap-10 lg:gap-16 py-5">
-        <RoadDetails />
+        <RoadDetails data={data}/>
         <div>
-          <ProductMap latitude={data.latitude} longitude={data.longitude}/>
+          <ProductMap latitude={data.latitude} longitude={data.longitude} data={data}/>
         </div>
       </div>
       <div>
-        <div className="space-y-4 container mx-auto py-5">
+        <div className="space-y-4 container mx-auto py-5 hidden">
           <div className="space-y-4">
             <div className="text-red-700 font-medium">Facility</div>
             <ul className="font-light text-sm space-y-2 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -59,7 +59,7 @@ const Details = ({data}) => {
             </ul>
           </div>
         </div>
-        <div className="space-y-4 py-5">
+        <div className="space-y-4 py-5 hidden">
           <div className="space-y-4">
             <div className="text-red-700 font-medium">Exterior Facilities</div>
             <ul className="font-light text-sm space-y-2 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -98,7 +98,7 @@ const Details = ({data}) => {
             </ul>
           </div>
         </div>
-        <div className="space-y-4 py-5">
+        <div className="space-y-4 py-5 hidden">
           <div className="space-y-4">
             <div className="text-red-700 font-medium">Exterior Facilities</div>
             <ul className="font-light text-sm space-y-2 grid sm:grid-cols-2 gap-y-2 gap-x-20">
@@ -145,7 +145,7 @@ const Details = ({data}) => {
             </ul>
           </div>
         </div>
-        <div className="py-5 grid sm:grid-cols-2 gap-10">
+        <div className="py-5 grid sm:grid-cols-2 gap-10 hidden">
           <div className="space-y-4">
             <div className="text-red-700 font-medium">Environment</div>
             <ul className="font-light text-sm space-y-2">

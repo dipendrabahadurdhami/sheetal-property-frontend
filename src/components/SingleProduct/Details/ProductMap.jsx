@@ -1,7 +1,9 @@
 import React from "react";
 
-const ProductMap = ({latitude, longitude}) => {
-  
+const ProductMap = ({latitude, longitude, data}) => {
+  const {land_according_to_measurements, lal_purja} = data;
+  const {land_area_in_ropani_measurements,land_area_in_sqft_measurements,land_area_in_meters_measurement} =land_according_to_measurements;
+  const {land_area_in_ropani_lal_purja,land_area_in_sqft_lal_purja,land_area_in_meters_lal_purja}=lal_purja;
   return (
     <div>
       <iframe
@@ -18,25 +20,28 @@ const ProductMap = ({latitude, longitude}) => {
       ></iframe>
 
       <div className="space-y-4 py-5">
+        {land_according_to_measurements && 
         <div className="space-y-4">
-          <div className="text-red-700 font-medium">Land Area in Ropani</div>
+          <div className="text-red-700 font-medium">Land Area</div>
           <ul className="font-light text-sm space-y-2">
             <li className="flex justify-between items-center">
               <span>Land Area in Ropani</span>
-              <span>10 Ropani</span>
+              <span>{land_area_in_ropani_measurements?land_area_in_ropani_measurements:'-'}</span>
             </li>
             <li className="flex justify-between items-center">
               <span>Land Area in Sqft</span>
-              <span>200 sq.ft</span>
+              <span>{land_area_in_sqft_measurements?land_area_in_sqft_measurements:'-'}</span>
             </li>
             <li className="flex justify-between items-center">
               <span>Land Area in Sq.Mt.g</span>
-              <span>100 m²</span>
+              <span>{land_area_in_meters_measurement?land_area_in_meters_measurement:'-'}</span>
             </li>
           </ul>
         </div>
+        }
       </div>
       <div className="space-y-4 py-5">
+        {lal_purja &&
         <div className="space-y-4">
           <div className="text-red-700 font-medium">
             Land according to Laal purja
@@ -44,18 +49,19 @@ const ProductMap = ({latitude, longitude}) => {
           <ul className="font-light text-sm space-y-2">
             <li className="flex justify-between items-center">
               <span>Land Area in Ropani</span>
-              <span>10 Ropani</span>
+              <span>{land_area_in_ropani_lal_purja?land_area_in_ropani_lal_purja:"-"}</span>
             </li>
             <li className="flex justify-between items-center">
               <span>Land Area in Sqft</span>
-              <span>200 sq.ft</span>
+              <span>{land_area_in_sqft_lal_purja?land_area_in_sqft_lal_purja:"-"}</span>
             </li>
             <li className="flex justify-between items-center">
               <span>Land Area in Sq.Mt.g</span>
-              <span>100 m²</span>
+              <span>{land_area_in_meters_lal_purja?land_area_in_meters_lal_purja:'-'}</span>
             </li>
           </ul>
         </div>
+        }
       </div>
       <div className="space-y-4 py-5">
         <div className="space-y-4">
@@ -63,11 +69,11 @@ const ProductMap = ({latitude, longitude}) => {
           <ul className="font-light text-sm space-y-2">
             <li className="flex justify-between items-center">
               <span>Finance/Bank Name </span>
-              <span>Nabil Bank</span>
+              <span>{data?.finance_bank_name?data?.finance_bank_name:'-'}</span>
             </li>
             <li className="flex justify-between items-center">
               <span>Loan Amount</span>
-              <span>Rs. 0</span>
+              <span>{data?.loan_amount?data?.loan_amount:'-'}</span>
             </li>
           </ul>
         </div>
@@ -77,12 +83,13 @@ const ProductMap = ({latitude, longitude}) => {
           <div className="text-red-700 font-medium">Class Type</div>
           <ul className="font-light text-sm space-y-2">
             <li className="flex justify-between items-center">
-              <span>Full Developed Area</span>
+              <span>Class Type</span>
+              <span>{data?.class_type?data?.class_type:'-'}</span>
             </li>
           </ul>
         </div>
       </div>
-      <div className="space-y-4 py-5">
+      {/* <div className="space-y-4 py-5">
         <div className="space-y-4">
           <div className="text-red-700 font-medium">Construction date</div>
           <ul className="font-light text-sm space-y-2">
@@ -91,7 +98,7 @@ const ProductMap = ({latitude, longitude}) => {
             </li>
           </ul>
         </div>
-      </div>
+      </div> */}
     </div>
   )
   }

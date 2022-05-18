@@ -75,7 +75,7 @@ const SingleProduct = () => {
                 {/* <ExtraValue /> */}
                 <PropertyHighlight data={property.property_highlights} />
                 <Details data={property} />
-                <ReviewComponent property={property} />
+                {/* <ReviewComponent property={property} /> */}
                 <ScheduleTour property={property} />
               </div>
               <Featured />

@@ -1,7 +1,8 @@
 import React from "react";
 import FormikTextInput from "./FormikTextInput";
 
-const LandMeasurements = () => {
+const LandMeasurements = (props) => {
+  console.log("here",props)
   return (
     <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5">
       <div className="text-xl font-medium capitalize">
