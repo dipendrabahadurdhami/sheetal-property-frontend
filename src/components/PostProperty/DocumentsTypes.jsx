@@ -1,13 +1,80 @@
 import React from "react";
-import FormikSelect from "./FormikSelect";
+import PropTypes from 'prop-types';
 
-const DocumentsTypes = () => {
+const DocumentsTypes = ({propertyStatus,completionYear,url,availabilityDate, errors, onInputChange}) => {
+  const onFormInputChange = (name,value) => {
+    onInputChange(name, value)
+  }
   return (
-    <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5">
+    <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5  mb-6">
       <div className="text-xl font-medium capitalize">Documents & Types</div>
 
-      <div className="grid md:grid-cols-2 gap-5">
-        <FormikSelect
+      <div className="flex flex-wrap justify-between -mx-2 mb-6">
+        <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+          <label className="block mb-2">Property Status</label>
+          <select
+            className="border px-2  w-full rounded text-md mb-2"
+            name="property_status"
+            style={{height:'50px'}}
+            onChange={(e)=>onFormInputChange('property_status', e.target.value)}
+          >
+
+            <option value="">Choose your advertisement type</option>
+            {propertyStatus &&  propertyStatus.map((item,i)=>{
+              return <option value={item.id} key={i}>{item.name}</option>
+            })}
+          </select>
+          {errors && errors?.property_status && <p className="text-red-500 text-sm">{errors?.property_status}</p>}
+        </div>
+        {/* /.form-group */}
+
+
+        <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+          <label className="block mb-2">Completion Year</label>
+          <input
+            type="text"
+            className="border px-2  w-full rounded text-md mb-2"
+            name="completion_year"
+            style={{height:'50px'}}
+            placeholder="2022"
+            onChange={(e)=>onFormInputChange('completion_year', e.target.value)}
+          />
+          {errors && errors?.completion_year && <p className="text-red-500 text-sm">{errors?.completion_year}</p>}
+        </div>
+        {/* /.form-group */}
+
+
+        <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+          <label className="block mb-2">URL</label>
+          <input
+            type="url"
+            className="border px-2  w-full rounded text-md mb-2"
+            name="url"
+            style={{height:'50px'}}
+            onChange={(e)=>onFormInputChange('url', e.target.value)}
+          />
+          {errors && errors?.url && <p className="text-red-500 text-sm">{errors?.url}</p>}
+        </div>
+        {/* /.form-group */}
+
+
+        <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+          <label className="block mb-2">Availability From</label>
+          <input
+            type="date"
+            className="border px-2  w-full rounded text-md mb-2"
+            name="url"
+            style={{height:'50px'}}
+            onChange={(e)=>onFormInputChange('availability_form', e.target.value)}
+          />
+          {errors && errors?.url && <p className="text-red-500 text-sm">{errors?.url}</p>}
+        </div>
+        {/* /.form-group */}
+
+
+      </div>
+
+        {/* <FormikSelect
           containerClassname="space-y-2"
           className="col-span-2 border py-2 px-2"
           name="Property Status"
@@ -54,10 +121,28 @@ const DocumentsTypes = () => {
             { label: "Disabled", value: "DISABLED" },
           ]}
           isRequired={true}
-        />
-      </div>
+        /> */}
+
     </div>
   );
 };
+
+DocumentsTypes.propTypes = {
+  propertyStatus: PropTypes.array,
+  completionYear: PropTypes.string,
+  url:PropTypes.string,
+  availabilityDate:PropTypes.string,
+  errors:  PropTypes.object,
+  data: PropTypes.object
+}
+
+DocumentsTypes.defaultProps = {
+  propertyStatus:[],
+  completionYear:'',
+  url:'',
+  availabilityDate:'',
+  errors: null,
+  data: null,
+}
 
 export default DocumentsTypes;

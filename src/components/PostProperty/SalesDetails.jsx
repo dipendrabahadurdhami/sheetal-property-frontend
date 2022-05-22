@@ -1,93 +1,50 @@
 import React from "react";
-import FormikSelect from "./FormikSelect";
-import FormikTextInput from "./FormikTextInput";
+import PropTypes from 'prop-types';
 
-const SalesDetails = () => {
+const SalesDetails = ({onInputChange, errors, urgencies}) => {
+  const onFormInputChange = (name,value) => {
+    onInputChange(name, value)
+  }
   return (
     <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5">
       <div className="text-xl font-medium capitalize">Sales Details</div>
 
-      <div className="grid md:grid-cols-2 gap-5">
-        <FormikSelect
-          containerClassname="space-y-2"
-          className="col-span-2 border py-2 px-2"
-          name="Urgency type"
-          label="Urgency type"
-          placeHolder="Choose your Urgency type"
-          options={[
-            { label: "Enabled", value: "ENABLED" },
-            { label: "Disabled", value: "DISABLED" },
-          ]}
-          isRequired={true}
-        />
-        <FormikSelect
-          containerClassname="space-y-2"
-          className="col-span-2 border py-2 px-2"
-          name="Bahina / Advance"
-          label="Bahina / Advance"
-          placeHolder="Choose your Bahina / Advance *"
-          options={[
-            { label: "Enabled", value: "ENABLED" },
-            { label: "Disabled", value: "DISABLED" },
-          ]}
-          isRequired={true}
-        />
-      </div>
-      <div className="space-y-3">
-        <div className="capitalize">negotiability (Min Price)</div>
-        <div className="grid md:grid-cols-2 gap-5">
-          <FormikTextInput
-            containerClassname="space-y-2"
-            placeholder="Enter your property name"
-            className="w-full py-2 px-2"
-            name="Property Name"
-          />
-          <FormikTextInput
-            containerClassname="space-y-2"
-            placeholder="Enter your property name"
-            className="w-full py-2 px-2"
-            name="Property Name"
-          />
+      <div className="flex flex-wrap justify-between -mx-2 mb-6">
+        <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+          <label className="block mb-2">Urgency Type</label>
+          <select
+            className="border px-2  w-full rounded text-md mb-2"
+            name="urgency_type"
+            style={{height:'50px'}}
+            onChange={(e)=>onFormInputChange('urgency_type', e.target.value)}
+          >
+
+            <option value="">Choose your advertisement type</option>
+            {urgencies &&  urgencies.map((item,i)=>{
+              return <option value={item.id} key={i}>{item.name}</option>
+            })}
+          </select>
+          {errors && errors?.urgency_type && <p className="text-red-500 text-sm">{errors?.urgency_type}</p>}
         </div>
-      </div>
-      <div className="space-y-3">
-        <div className="capitalize">current Rent</div>
-        <div className="grid md:grid-cols-3 gap-5">
-          <FormikTextInput
-            containerClassname="space-y-2"
-            placeholder="Rent per month"
-            className="w-full py-2 px-2"
-            name="Property Name"
-          />
-          <FormikTextInput
-            containerClassname="space-y-2"
-            placeholder="Min lease amount"
-            className="w-full py-2 px-2"
-            name="Property Name"
-          />
-          <FormikTextInput
-            containerClassname="space-y-2"
-            placeholder="Min deposit amount"
-            className="w-full py-2 px-2"
-            name="Property Name"
-          />
-        </div>
-      </div>
-      <div className="space-y-3">
-        <div className="capitalize">Broker’s Response</div>
-        <div className="flex items-center space-x-5">
-          <label className="flex space-x-3 items-center">
-            <input type={"checkbox"} className="w-4 h-4" />
-            <span>Yes</span>
-          </label>
-          <label className="flex space-x-3 items-center">
-            <input type={"checkbox"} className="w-4 h-4" />
-            <span>No</span>
-          </label>
-        </div>
+        {/* /.form-group */}
       </div>
     </div>
   );
 };
+
+
+SalesDetails.propTypes = {
+  errors:  PropTypes.object,
+  data: PropTypes.object,
+  onInputChange: PropTypes.func,
+  urgencies: PropTypes.array
+}
+
+SalesDetails.defaultProps = {
+  errors: null,
+  data: null,
+  urgencies:[]
+}
+
 
 export default SalesDetails;

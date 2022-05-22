@@ -7,6 +7,7 @@ import { LoggedUserContext } from "../../Context/LoginContext";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { removeUserInfo } from "../../../features/slices/userInformation";
+import { removeAllFavorites } from "../../../features/slices/favourites";
 
 const UserLogin = () => {
   let navigate = useNavigate();
@@ -16,6 +17,7 @@ const UserLogin = () => {
   const SignOut = () => {
     localStorage.removeItem("sheetal_token");
     dispatch(removeUserInfo())
+    dispatch(removeAllFavorites())
     navigate("/",{replace:true})
   };
   

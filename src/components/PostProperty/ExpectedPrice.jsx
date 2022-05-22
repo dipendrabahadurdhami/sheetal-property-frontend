@@ -1,51 +1,56 @@
 import React from "react";
-import FormikSelect from "./FormikSelect";
+import PropTypes from 'prop-types';
 
-const ExpectedPrice = () => {
+const ExpectedPrice = ({errors,onInputChange}) => {
+  const onFormInputChange = (name,value) => {
+    onInputChange(name, value)
+  }
   return (
-    <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5">
+    <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5  mb-6">
       <div className="text-xl font-medium capitalize">Expected Price</div>
 
-      <div className="grid md:grid-cols-2 gap-5">
-        <FormikSelect
-          containerClassname="space-y-2"
-          className="col-span-2 border py-2 px-2"
-          name="Total Price (NRs.)"
-          label="Total Price (NRs.)"
-          placeHolder="Choose your Total Price (NRs.)"
-          options={[
-            { label: "Enabled", value: "ENABLED" },
-            { label: "Disabled", value: "DISABLED" },
-          ]}
-          isRequired={true}
-        />
-        <FormikSelect
-          containerClassname="space-y-2"
-          className="col-span-2 border py-2 px-2"
-          name="Unit price per aana"
-          label="Unit price per aana"
-          placeHolder="Choose your Unit price per aana"
-          options={[
-            { label: "Enabled", value: "ENABLED" },
-            { label: "Disabled", value: "DISABLED" },
-          ]}
-          isRequired={true}
-        />
-        <FormikSelect
-          containerClassname="space-y-2"
-          className="col-span-2 border py-2 px-2"
-          name="Building Price per sq.ft*"
-          label="Building Price per sq.ft*"
-          placeHolder="Choose your Building Price per sq.ft*"
-          options={[
-            { label: "Enabled", value: "ENABLED" },
-            { label: "Disabled", value: "DISABLED" },
-          ]}
-          isRequired={true}
-        />
+      <div className="flex flex-wrap justify-between -mx-2 mb-6">
+        <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+          <label className="block mb-2">Unit Price Per Anna</label>
+          <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="unit_price_per_anna"
+              style={{height:'50px'}}
+              placeholder="NRs. 10,000"
+              onChange={(e)=>onFormInputChange('unit_price_per_anna', e.target.value)}
+            />
+          {errors && errors?.unit_price_per_anna && <p className="text-red-500 text-sm">{errors?.unit_price_per_anna}</p>}
+        </div>
+        {/* /.form-group */}
+
+        <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+          <label className="block mb-2">Building Price Per Square Feet</label>
+          <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="building_price_per_square_feet"
+              style={{height:'50px'}}
+              placeholder="NRs. 10,000"
+              onChange={(e)=>onFormInputChange('building_price_per_square_feet', e.target.value)}
+            />
+          {errors && errors?.building_price_per_square_feet && <p className="text-red-500 text-sm">{errors?.building_price_per_square_feet}</p>}
+        </div>
+        {/* /.form-group */}
       </div>
     </div>
   );
 };
+
+ExpectedPrice.propTypes = {
+  errors:  PropTypes.object,
+  data: PropTypes.object,
+  onInputChange: PropTypes.func
+}
+
+ExpectedPrice.defaultProps = {
+  errors: null,
+  data: null,
+}
 
 export default ExpectedPrice;

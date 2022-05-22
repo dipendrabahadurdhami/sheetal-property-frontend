@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInformation } from "./features/slices/userInformation";
 import Protected from "./routes/protectedRoute";
+import { fetchFavoritesList, removeAllFavorites } from "./features/slices/favourites";
 
 function App() {
 
@@ -42,8 +43,17 @@ function App() {
    useEffect(()=>{
     if(token){
       dispatch(fetchUserInformation());
+      
     }
    },[])
+
+   useEffect(()=>{
+     if(user.data){
+        dispatch(fetchFavoritesList())
+     }else{
+       dispatch(removeAllFavorites())
+     }
+   }, [user])
    
 
   return (

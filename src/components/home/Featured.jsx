@@ -17,7 +17,7 @@ const Featured = () => {
         
 
         setAllProduct(res.data.data);
-        console.log(res.data.data);
+  
       }
       FetchData();
     } catch (err) {

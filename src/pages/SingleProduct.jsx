@@ -13,6 +13,7 @@ import Details from "../components/SingleProduct/Details";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
+import YoutubeVideo from "../components/SingleProduct/Video";
 
 const SingleProduct = () => {
   const [open, setOpen] = useState(false);
@@ -76,7 +77,9 @@ const SingleProduct = () => {
                 <PropertyHighlight data={property.property_highlights} />
                 <Details data={property} />
                 {/* <ReviewComponent property={property} /> */}
+                <YoutubeVideo id={property.youtube_url}/>
                 <ScheduleTour property={property} />
+               
               </div>
               <Featured />
               <Property />

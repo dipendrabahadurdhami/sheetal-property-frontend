@@ -1,123 +1,113 @@
 import React from "react";
-import FormikSelect from "./FormikSelect";
+import PropTypes from 'prop-types';
 
-const Address = () => {
+const Address = ({ errors, onInputChange}) => {
+  const onFormInputChange = (name,value) => {
+    onInputChange(name, value)
+  }
   return (
-    <div className="space-y-5">
+    <div className="space-y-5  mb-6">
       <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5">
         <div className="text-xl font-medium capitalize">Address</div>
-        <div className="grid md:grid-cols-2 gap-5">
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="Property Location"
-            label="Property Location"
-            placeHolder="Choose your Property Location"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="Country"
-            label="Country"
-            placeHolder="Choose your Country"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="Zone"
-            label="Zone"
-            placeHolder="Choose your Zone"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="District "
-            label="District "
-            placeHolder="Choose your District"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="Town"
-            label="Town"
-            placeHolder="Choose your Town"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="Place "
-            label="Place "
-            placeHolder="Choose your Place"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="Street"
-            label="Street"
-            placeHolder="Choose your Street"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="VDC"
-            label="VDC"
-            placeHolder="Choose your VDC"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
-          <FormikSelect
-            containerClassname="space-y-2"
-            className="col-span-2 border py-2 px-2"
-            name="Ward no"
-            label="Ward no"
-            placeHolder="Choose your Ward no"
-            options={[
-              { label: "Enabled", value: "ENABLED" },
-              { label: "Disabled", value: "DISABLED" },
-            ]}
-            isRequired={true}
-          />
+        
+        <div className="flex flex-wrap justify-between -mx-2 mb-6">
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">Zone</label>
+            <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="zone"
+              style={{height:'50px'}}
+              placeholder="Bagmati"
+              onChange={(e)=>onFormInputChange('zone', e.target.value)}
+            />
+            {errors && errors?.zone && <p className="text-red-500 text-sm">{errors?.zone}</p>}
+          </div>
+          {/* /.form-group */}
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">District</label>
+            <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="district"
+              style={{height:'50px'}}
+              placeholder="Kathmandu"
+              onChange={(e)=>onFormInputChange('district', e.target.value)}
+            />
+            {errors && errors?.district && <p className="text-red-500 text-sm">{errors?.district}</p>}
+          </div>
+          {/* /.form-group */}
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">Town</label>
+            <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="town"
+              style={{height:'50px'}}
+              placeholder="NewRoad"
+              onChange={(e)=>onFormInputChange('town', e.target.value)}
+            />
+            {errors && errors?.town && <p className="text-red-500 text-sm">{errors?.town}</p>}
+          </div>
+          {/* /.form-group */}
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">Tole</label>
+            <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="tole"
+              style={{height:'50px'}}
+              placeholder=""
+              onChange={(e)=>onFormInputChange('tole', e.target.value)}
+            />
+            {errors && errors?.tole && <p className="text-red-500 text-sm">{errors?.tole}</p>}
+          </div>
+          {/* /.form-group */}
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">Street</label>
+            <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="street"
+              style={{height:'50px'}}
+              placeholder=""
+              onChange={(e)=>onFormInputChange('street', e.target.value)}
+            />
+            {errors && errors?.street && <p className="text-red-500 text-sm">{errors?.street}</p>}
+          </div>
+          {/* /.form-group */}
+
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">VDC/NP/MNP</label>
+            <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="vdc_np_mnp"
+              style={{height:'50px'}}
+              placeholder=""
+              onChange={(e)=>onFormInputChange('vdc_np_mnp', e.target.value)}
+            />
+            {errors && errors?.tole && <p className="text-red-500 text-sm">{errors?.vdc_np_mnp}</p>}
+          </div>
+          {/* /.form-group */}
+
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">Ward Number</label>
+            <input
+              type="text"
+              className="border px-2  w-full rounded text-md mb-2"
+              name="ward_no"
+              style={{height:'50px'}}
+              placeholder=""
+              onChange={(e)=>onFormInputChange('ward_no', e.target.value)}
+            />
+            {errors && errors?.ward_no && <p className="text-red-500 text-sm">{errors?.ward_no}</p>}
+          </div>
+          {/* /.form-group */}
+          
         </div>
       </div>
-      <div className="relative ">
+      {/* <div className="relative ">
         <iframe
           width="100%"
           height="400"
@@ -140,9 +130,27 @@ const Address = () => {
             placeholder="Enter a location"
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
+
+Address.propTypes = {
+  propertyStatus: PropTypes.array,
+  completionYear: PropTypes.string,
+  url:PropTypes.string,
+  availabilityDate:PropTypes.string,
+  errors:  PropTypes.object,
+  data: PropTypes.object
+}
+
+Address.defaultProps = {
+  propertyStatus:[],
+  completionYear:'',
+  url:'',
+  availabilityDate:'',
+  errors: null,
+  data: null,
+}
 
 export default Address;
