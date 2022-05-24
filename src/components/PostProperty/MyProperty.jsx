@@ -23,13 +23,25 @@ const PropertyTypeItem = ({id, item, selected, action, onSelectAction}) => {
       </label>
   )
 }
-const MyProperty = ({propertyType, categoryType,errors,data, onInputChange}) => {
+const MyProperty = ({propertyType, categoryType,classType, errors,data, onInputChange, onFileChange}) => {
   const [selected, setSelected] = useState(null);
+  const [image, setImage] = useState(null)
   const handleSelectedItem = (item) => {
     setSelected(item.id)
   }
   const onFormInputChange = (name,value) => {
     onInputChange(name, value)
+  }
+
+  const onFeatureImageChange = (name,e)=>{
+    e.preventDefault();
+
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = function (e) {
+      setImage(reader.result)
+    }
+    onFileChange(name,e.target.files[0])
   }
   return (
     <div className="sm:p-5 sm:border rounded-lg mb-6">
@@ -48,6 +60,20 @@ const MyProperty = ({propertyType, categoryType,errors,data, onInputChange}) => 
         </div>
        {/* /.form-group */}
 
+
+        <div className="w-full mb-4">
+              <label className="block mb-2">Property Name</label>
+              <input
+      
+                placeholder="Enter your property name"
+                className="w-full  px-2 border border-gray-300 rounded text-md mb-2"
+                name="propertyName"
+                style={{height:'50px'}}
+                onChange={(e)=>onFormInputChange('name', e.target.value)}
+              />
+              {errors && errors?.name && <p className="text-red-500 text-sm">{errors?.name}</p>}
+          </div>
+
         <div className="flex flex-wrap justify-between -mx-2 mb-6">
           <div className="px-2  w-full lg:w-6/12  form-group">
             <label className="block mb-2">Category Type</label>
@@ -65,18 +91,51 @@ const MyProperty = ({propertyType, categoryType,errors,data, onInputChange}) => 
             </select>
             {errors && errors?.category_id && <p className="text-red-500 text-sm">{errors?.category_id}</p>}
           </div>
-          <div className="px-2 w-full lg:w-6/12">
-              <label className="block mb-2">Property Name</label>
-              <input
-      
-                placeholder="Enter your property name"
-                className="w-full  px-2 border border-gray-300 rounded text-md mb-2"
-                name="propertyName"
-                style={{height:'50px'}}
-                onChange={(e)=>onFormInputChange('name', e.target.value)}
-              />
-              {errors && errors?.name && <p className="text-red-500 text-sm">{errors?.name}</p>}
+
+
+          <div className="px-2  w-full lg:w-6/12  form-group mb-4">
+            <label className="block mb-2">Class Type</label>
+            <select
+              className="border px-2  w-full rounded text-md mb-2"
+              name="class_id"
+              style={{height:'50px'}}
+              onChange={(e)=>onFormInputChange('class_id', e.target.value)}
+            >
+
+              <option value="">Choose your Class type</option>
+              {classType &&  classType.map((item,i)=>{
+                return <option value={item.id} key={i}>{item.name}</option>
+              })}
+            </select>
+            {errors && errors?.class_id && <p className="text-red-500 text-sm">{errors?.class_id}</p>}
           </div>
+
+          <div className="px-2 w-full form-group c-single-image-block mb-4">
+            <label className="block mb-4">Feature Image</label>
+            <div>
+              <input type="file" accept="image/*" id="feature_image" name="feature_image" onChange={(e)=>onFeatureImageChange('feature_image', e)}/>
+              <label htmlFor="feature_image">
+                  <span className="image overflow-hidden">
+                    {image?<img src={image} alt={"image"} className="absolute top-0 left-0 h-full w-full object-cover object-center"/>:''}
+                  </span>
+                  <span className="text">Click to Upload Image</span>
+              </label>
+            </div>
+          </div>
+          <div className="px-2  w-full lg:w-6/12  form-group mb-4">
+            <label className="block mb-2">Expiry Date</label>
+            <input
+                type="date"
+                placeholder="dd/mm/yyyy"
+                className="w-full  px-2 border border-gray-300 rounded text-md mb-2"
+                name="expiryDate"
+                style={{height:'50px'}}
+                onChange={(e)=>onFormInputChange('expiryDate', e.target.value)}
+              />
+              {errors && errors?.expiryDate && <p className="text-red-500 text-sm">{errors?.expiryDate}</p>}
+          </div>
+
+          
           
         </div>
     </div>
@@ -86,6 +145,7 @@ const MyProperty = ({propertyType, categoryType,errors,data, onInputChange}) => 
 MyProperty.propTypes = {
   propertyType: PropTypes.array,
   categoryType: PropTypes.array,
+  categoryType: PropTypes.array,
   errors:  PropTypes.object,
   data: PropTypes.object
 }
@@ -93,6 +153,7 @@ MyProperty.propTypes = {
 MyProperty.defaultProps = {
   propertyType:[],
   categoryType:[],
+  classType:[],
   errors: null,
   data: null,
 }

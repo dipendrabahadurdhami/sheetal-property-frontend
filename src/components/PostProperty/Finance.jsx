@@ -1,31 +1,60 @@
 import React from "react";
 import FormikTextInput from "./FormikTextInput";
 
-const Finance = () => {
+const Finance = ({errors, onInputChange, data}) => {
+  const onFormInputChange = (name,value) => {
+    onInputChange(name, value)
+  }
   return (
-    <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5">
+    <div className="pt-5 sm:p-5 border-t sm:border sm:rounded-lg space-y-5 mb-6">
       <div className="text-xl font-medium capitalize">Finance</div>
+     
+        <div className="flex flex-wrap justify-between -mx-2 mb-6">
+          <div className="px-2  w-full lg:w-6/12  form-group mb-6">
+            <label className="block mb-2">Finance/Bank Name</label>
+            <input
+                type="number"
+                className="border px-2  w-full rounded text-md mb-2"
+                name="finance_bank_name"
+                style={{height:'50px'}}
+                placeholder="1"
+                onChange={(e)=>onFormInputChange('finance_bank_name', e.target.value)}
+              />
+            {errors && errors?.finance_bank_name && <p className="text-red-500 text-sm">{errors?.finance_bank_name}</p>}
+          </div>
+          {/* /.form-group */}
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <FormikTextInput
-          containerClassname="space-y-2"
-          className="w-full py-2 px-2"
-          name="Finance/Bank Name"
-          label="Finance/Bank Name"
-        />
-        <FormikTextInput
-          containerClassname="space-y-2"
-          className="w-full py-2 px-2"
-          name="Loan Amount"
-          label="Loan Amount"
-        />
-        <FormikTextInput
-          containerClassname="space-y-2"
-          className="w-full py-2 px-2"
-          name="SEO"
-          label="SEO"
-        />
-      </div>
+          <div className="px-2  w-full lg:w-3/12  form-group mb-6">
+            <label className="block mb-2">Loan Amount</label>
+            <input
+                type="number"
+                className="border px-2  w-full rounded text-md mb-2"
+                name="loan_amount"
+                style={{height:'50px'}}
+                placeholder="1"
+                onChange={(e)=>onFormInputChange('loan_amount', e.target.value)}
+              />
+            {errors && errors?.loan_amount && <p className="text-red-500 text-sm">{errors?.loan_amount}</p>}
+          </div>
+          {/* /.form-group */}
+
+          <div className="px-2  w-full lg:w-3/12  form-group mb-6">
+            <label className="block mb-2">SEO</label>
+            <input
+                type="number"
+                className="border px-2  w-full rounded text-md mb-2"
+                name="seo"
+                style={{height:'50px'}}
+                placeholder="1"
+                onChange={(e)=>onFormInputChange('seo', e.target.value)}
+              />
+            {errors && errors?.seo && <p className="text-red-500 text-sm">{errors?.seo}</p>}
+          </div>
+          {/* /.form-group */}
+
+        </div>
+
+      
     </div>
   );
 };

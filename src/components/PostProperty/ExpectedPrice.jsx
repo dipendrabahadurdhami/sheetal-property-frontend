@@ -15,12 +15,12 @@ const ExpectedPrice = ({errors,onInputChange}) => {
           <input
               type="text"
               className="border px-2  w-full rounded text-md mb-2"
-              name="unit_price_per_anna"
+              name="anna_price"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
-              onChange={(e)=>onFormInputChange('unit_price_per_anna', e.target.value)}
+              onChange={(e)=>onFormInputChange('anna_price', e.target.value)}
             />
-          {errors && errors?.unit_price_per_anna && <p className="text-red-500 text-sm">{errors?.unit_price_per_anna}</p>}
+          {errors && errors?.anna_price && <p className="text-red-500 text-sm">{errors?.anna_price}</p>}
         </div>
         {/* /.form-group */}
 
@@ -29,12 +29,12 @@ const ExpectedPrice = ({errors,onInputChange}) => {
           <input
               type="text"
               className="border px-2  w-full rounded text-md mb-2"
-              name="building_price_per_square_feet"
+              name="sqft_price"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
-              onChange={(e)=>onFormInputChange('building_price_per_square_feet', e.target.value)}
+              onChange={(e)=>onFormInputChange('sqft_price', e.target.value)}
             />
-          {errors && errors?.building_price_per_square_feet && <p className="text-red-500 text-sm">{errors?.building_price_per_square_feet}</p>}
+          {errors && errors?.sqft_price && <p className="text-red-500 text-sm">{errors?.sqft_price}</p>}
         </div>
         {/* /.form-group */}
       </div>
