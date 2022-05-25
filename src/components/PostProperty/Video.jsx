@@ -13,10 +13,11 @@ const Video = ({errors, onInputChange, data}) => {
           <div className="px-2  w-full lg:w-6/12  form-group mb-6">
             <label className="block mb-2">Youtube Video Url</label>
             <input
-                type="number"
+                type="url"
                 className="border px-2  w-full rounded text-md mb-2"
                 name="youtube_url"
                 style={{height:'50px'}}
+                value={data.youtube_url}
                 placeholder="https://www.youtube.com/watch?v=DfuJi3hOlhE"
                 onChange={(e)=>onFormInputChange('youtube_url', e.target.value)}
               />

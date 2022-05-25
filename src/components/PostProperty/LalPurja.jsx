@@ -18,7 +18,7 @@ const LalPurja = ({data,errors,onInputChange}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="land_area_in_dhur_lal"
                 style={{height:'50px'}}
-                
+                value={data.land_area_in_dhur_lal}
                 onChange={(e)=>onFormInputChange('land_area_in_dhur_lal', e.target.value)}
               />
             {errors && errors?.land_area_in_dhur_lal && <p className="text-red-500 text-sm">{errors?.land_area_in_dhur_lal}</p>}
@@ -32,7 +32,7 @@ const LalPurja = ({data,errors,onInputChange}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="land_area_in_anna_lal"
                 style={{height:'50px'}}
-                
+                value={data.land_area_in_anna_lal}
                 onChange={(e)=>onFormInputChange('land_area_in_anna_lal', e.target.value)}
               />
             {errors && errors?.land_area_in_anna_lal && <p className="text-red-500 text-sm">{errors?.land_area_in_anna_lal}</p>}
@@ -47,7 +47,7 @@ const LalPurja = ({data,errors,onInputChange}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="land_area_in_katha_lal"
                 style={{height:'50px'}}
-                
+                value={data.land_area_in_katha_lal}
                 onChange={(e)=>onFormInputChange('land_area_in_katha_lal', e.target.value)}
               />
             {errors && errors?.land_area_in_katha_lal && <p className="text-red-500 text-sm">{errors?.land_area_in_katha_lal}</p>}
@@ -61,7 +61,7 @@ const LalPurja = ({data,errors,onInputChange}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="land_area_in_bigha_lal"
                 style={{height:'50px'}}
-                
+                value={data.land_area_in_bigha_lal}
                 onChange={(e)=>onFormInputChange('land_area_in_bigha_lal', e.target.value)}
               />
             {errors && errors?.land_area_in_bigha_lal && <p className="text-red-500 text-sm">{errors?.land_area_in_bigha_lal}</p>}
@@ -75,7 +75,7 @@ const LalPurja = ({data,errors,onInputChange}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="land_area_in_ropani_lal"
                 style={{height:'50px'}}
-                
+                value={data.land_area_in_ropani_lal}
                 onChange={(e)=>onFormInputChange('land_area_in_ropani_lal', e.target.value)}
               />
             {errors && errors?.land_area_in_ropani_lal && <p className="text-red-500 text-sm">{errors?.land_area_in_ropani_lal}</p>}
@@ -89,7 +89,7 @@ const LalPurja = ({data,errors,onInputChange}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="land_area_in_sqft_lal"
                 style={{height:'50px'}}
-                
+                value={data.land_area_in_sqft_lal}
                 onChange={(e)=>onFormInputChange('land_area_in_sqft_lal', e.target.value)}
               />
             {errors && errors?.land_area_in_sqft_lal && <p className="text-red-500 text-sm">{errors?.land_area_in_sqft_lal}</p>}
@@ -97,13 +97,13 @@ const LalPurja = ({data,errors,onInputChange}) => {
         {/* /.form-group */}
 
         <div className="px-2  w-full lg:w-3/12  form-group mb-6">
-          <label className="block mb-2">Land Area In Barganeter</label>
+          <label className="block mb-2">Land Area In Barga meter</label>
           <input
                 type="text"
                 className="border px-2  w-full rounded text-md mb-2"
                 name="land_area_in_meters_lal"
                 style={{height:'50px'}}
-                
+                value={data.land_area_in_meters_lal}
                 onChange={(e)=>onFormInputChange('land_area_in_meters_lal', e.target.value)}
               />
             {errors && errors?.land_area_in_meters_lal && <p className="text-red-500 text-sm">{errors?.land_area_in_meters_lal}</p>}
@@ -115,12 +115,12 @@ const LalPurja = ({data,errors,onInputChange}) => {
           <input
                 type="text"
                 className="border px-2  w-full rounded text-md mb-2"
-                name="main_road_width"
+                name="geometry_of_land"
                 style={{height:'50px'}}
-                
-                onChange={(e)=>onFormInputChange('main_road_width', e.target.value)}
+                value={data.geometry_of_land}
+                onChange={(e)=>onFormInputChange('geometry_of_land', e.target.value)}
               />
-            {errors && errors?.main_road_width && <p className="text-red-500 text-sm">{errors?.main_road_width}</p>}
+            {errors && errors?.geometry_of_land && <p className="text-red-500 text-sm">{errors?.main_road_width}</p>}
         </div>
         {/* /.form-group */}
 
@@ -133,15 +133,15 @@ const LalPurja = ({data,errors,onInputChange}) => {
             onChange={(e)=>onFormInputChange('elevation', e.target.value)}
           >
 
-            <option value="">Select</option>
-            <option>East</option>
-            <option>West</option>
-            <option>North</option>
-            <option>South</option>
-            <option>South-East</option>
-            <option>South-West</option>
-            <option>North-East</option>
-            <option>North-West</option>
+            <option value="" >Select</option>
+            <option selected={data.elevation.toLowerCase() === 'east'?'selected':''}>East</option>
+            <option selected={data.elevation.toLowerCase() === 'west'?'selected':''}>West</option>
+            <option selected={data.elevation.toLowerCase() === 'north'?'selected':''}>North</option>
+            <option selected={data.elevation.toLowerCase() === 'south'?'selected':''}>South</option>
+            <option selected={data.elevation.toLowerCase() === 'south-east'?'selected':''}>South-East</option>
+            <option selected={data.elevation.toLowerCase() === 'south-west'?'selected':''}>South-West</option>
+            <option selected={data.elevation.toLowerCase() === 'north-east'?'selected':''}>North-East</option>
+            <option selected={data.elevation.toLowerCase() === 'north-west'?'selected':''}>North-West</option>
           </select>
           {errors && errors?.elevation && <p className="text-red-500 text-sm">{errors?.elevation}</p>}
         </div>

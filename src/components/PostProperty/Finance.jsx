@@ -13,11 +13,12 @@ const Finance = ({errors, onInputChange, data}) => {
           <div className="px-2  w-full lg:w-6/12  form-group mb-6">
             <label className="block mb-2">Finance/Bank Name</label>
             <input
-                type="number"
+                type="text"
                 className="border px-2  w-full rounded text-md mb-2"
                 name="finance_bank_name"
                 style={{height:'50px'}}
-                placeholder="1"
+                placeholder="ABC Bank"
+                data={data.finance_bank_name}
                 onChange={(e)=>onFormInputChange('finance_bank_name', e.target.value)}
               />
             {errors && errors?.finance_bank_name && <p className="text-red-500 text-sm">{errors?.finance_bank_name}</p>}
@@ -31,7 +32,8 @@ const Finance = ({errors, onInputChange, data}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="loan_amount"
                 style={{height:'50px'}}
-                placeholder="1"
+                placeholder="200000"
+                value={data.loan_amount}
                 onChange={(e)=>onFormInputChange('loan_amount', e.target.value)}
               />
             {errors && errors?.loan_amount && <p className="text-red-500 text-sm">{errors?.loan_amount}</p>}
@@ -41,11 +43,12 @@ const Finance = ({errors, onInputChange, data}) => {
           <div className="px-2  w-full lg:w-3/12  form-group mb-6">
             <label className="block mb-2">SEO</label>
             <input
-                type="number"
+                type="seo"
                 className="border px-2  w-full rounded text-md mb-2"
                 name="seo"
                 style={{height:'50px'}}
-                placeholder="1"
+                placeholder=""
+                value={data.seo}
                 onChange={(e)=>onFormInputChange('seo', e.target.value)}
               />
             {errors && errors?.seo && <p className="text-red-500 text-sm">{errors?.seo}</p>}

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-const Address = ({ errors, onInputChange}) => {
+const Address = ({data, errors, onInputChange}) => {
   const onFormInputChange = (name,value) => {
     onInputChange(name, value)
   }
@@ -19,6 +19,7 @@ const Address = ({ errors, onInputChange}) => {
               name="zone"
               style={{height:'50px'}}
               placeholder="Bagmati"
+              value={data.zone}
               onChange={(e)=>onFormInputChange('zone', e.target.value)}
             />
             {errors && errors?.zone && <p className="text-red-500 text-sm">{errors?.zone}</p>}
@@ -32,6 +33,7 @@ const Address = ({ errors, onInputChange}) => {
               name="district"
               style={{height:'50px'}}
               placeholder="Kathmandu"
+              value={data.district}
               onChange={(e)=>onFormInputChange('district', e.target.value)}
             />
             {errors && errors?.district && <p className="text-red-500 text-sm">{errors?.district}</p>}
@@ -45,6 +47,7 @@ const Address = ({ errors, onInputChange}) => {
               name="town"
               style={{height:'50px'}}
               placeholder="NewRoad"
+              value={data.town}
               onChange={(e)=>onFormInputChange('town', e.target.value)}
             />
             {errors && errors?.town && <p className="text-red-500 text-sm">{errors?.town}</p>}
@@ -58,7 +61,8 @@ const Address = ({ errors, onInputChange}) => {
               name="tole"
               style={{height:'50px'}}
               placeholder=""
-              onChange={(e)=>onFormInputChange('tole', e.target.value)}
+              value={data.tol}
+              onChange={(e)=>onFormInputChange('tol', e.target.value)}
             />
             {errors && errors?.tole && <p className="text-red-500 text-sm">{errors?.tole}</p>}
           </div>
@@ -71,6 +75,7 @@ const Address = ({ errors, onInputChange}) => {
               name="street"
               style={{height:'50px'}}
               placeholder=""
+              value={data.street}
               onChange={(e)=>onFormInputChange('street', e.target.value)}
             />
             {errors && errors?.street && <p className="text-red-500 text-sm">{errors?.street}</p>}
@@ -85,6 +90,7 @@ const Address = ({ errors, onInputChange}) => {
               name="vdc_np_mnp"
               style={{height:'50px'}}
               placeholder=""
+              value={data.vdc_np_mnp}
               onChange={(e)=>onFormInputChange('vdc_np_mnp', e.target.value)}
             />
             {errors && errors?.tole && <p className="text-red-500 text-sm">{errors?.vdc_np_mnp}</p>}
@@ -99,6 +105,7 @@ const Address = ({ errors, onInputChange}) => {
               name="ward_no"
               style={{height:'50px'}}
               placeholder=""
+              value={data.ward_no}
               onChange={(e)=>onFormInputChange('ward_no', e.target.value)}
             />
             {errors && errors?.ward_no && <p className="text-red-500 text-sm">{errors?.ward_no}</p>}

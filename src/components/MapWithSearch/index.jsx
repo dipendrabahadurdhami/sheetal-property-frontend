@@ -231,72 +231,78 @@ class Map extends Component {
   };
 
   onLocationUpdate = (lat, lng, address) => {
-    alert(lat,lng)
+
     this.props.mapLocation(lat, lng, address);
   }
   render() {
     const AsyncMap = withScriptjs(
       withGoogleMap(props => (
-        <GoogleMap
-          google={this.props.google}
-          defaultZoom={this.props.zoom}
-          defaultCenter={{
-            lat: this.state.mapPosition.lat,
-            lng: this.state.mapPosition.lng
-          }}
-          onClick={this.onMarkerDragEnd}
-        >
-          {/* For Auto complete Search Box */}
-          <Autocomplete
-            apiKey="AIzaSyAjQbpLmWtP5SBJQ6RWzplfIg0Sd0rpDYg"
-            style={{
-              width: "100%",
-              height: "40px",
-              paddingLeft: "16px",
-              marginTop: "2px",
-              marginBottom: "100px"
-            }}
-            onPlaceSelected={this.onPlaceSelected}
-            options={{
-                types: [],
-                componentRestrictions: { country: "np" },
-            }}
-          />
-          {/*Marker*/}
-          <Marker
+        <div className="relative mb-6">
+          <GoogleMap
             google={this.props.google}
-            name={"Dolores park"}
-            draggable={true}
-            onDragEnd={this.onMarkerDragEnd}
-           
-            
-            position={{
-              lat: this.state.markerPosition.lat,
-              lng: this.state.markerPosition.lng
+            defaultZoom={this.props.zoom}
+            defaultCenter={{
+              lat: this.state.mapPosition.lat,
+              lng: this.state.mapPosition.lng
             }}
-          />
-          {/* <Marker /> */}
-          {/* InfoWindow on top of marker */}
-          <InfoWindow
-            onClose={this.onInfoWindowClose}
-            position={{
-              lat: this.state.markerPosition.lat + 0.0018,
-              lng: this.state.markerPosition.lng
-            }}
+            onClick={this.onMarkerDragEnd}
           >
-            <div>
-              <span style={{ padding: 0, margin: 0 }}>
-                {this.state.address}
-              </span>
-            </div>
-          </InfoWindow>
-        </GoogleMap>
+            {/* For Auto complete Search Box */}
+            <Autocomplete
+              apiKey="AIzaSyAjQbpLmWtP5SBJQ6RWzplfIg0Sd0rpDYg"
+              style={{
+                width: "100%",
+                height: "45px",
+                paddingLeft: "16px",
+                marginTop: "2px",
+                marginBottom: "0",
+                borderBottomLeftRadius:'4px',
+                borderBottomRightRadius:'4px',
+                border:'1px solid #dedede'
+             
+              }}
+              onPlaceSelected={this.onPlaceSelected}
+              options={{
+                  types: [],
+                  componentRestrictions: { country: "np" },
+              }}
+            />
+            {/*Marker*/}
+            <Marker
+              google={this.props.google}
+              name={"Dolores park"}
+              draggable={true}
+              onDragEnd={this.onMarkerDragEnd}
+            
+              
+              position={{
+                lat: this.state.markerPosition.lat,
+                lng: this.state.markerPosition.lng
+              }}
+            />
+            {/* <Marker /> */}
+            {/* InfoWindow on top of marker */}
+            <InfoWindow
+              onClose={this.onInfoWindowClose}
+              position={{
+                lat: this.state.markerPosition.lat + 0.0018,
+                lng: this.state.markerPosition.lng
+              }}
+            >
+              <div>
+                <span style={{ padding: 0, margin: 0 }}>
+                  {this.state.address}
+                </span>
+              </div>
+            </InfoWindow>
+          </GoogleMap>
+        </div>
       ))
     );
     let map;
     if (this.props.center.lat !== undefined) {
       map = (
-        <div>
+        <div className="mb-6">
           {/* <div>
             <div className="form-group">
               <label htmlFor="">City</label>
@@ -346,13 +352,13 @@ class Map extends Component {
           <AsyncMap
             googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjQbpLmWtP5SBJQ6RWzplfIg0Sd0rpDYg&libraries=geometry,drawing,places&sensor=true"
             loadingElement={<div style={{ height: `100%` }} />}
-            containerElement={<div style={{ height: this.props.height }} />}
-            mapElement={<div style={{ height: `100%` }} />}
+            containerElement={<div style={{ minHeight: this.props.minHeight, height:'100%' }} />}
+            mapElement={<div style={{ height: `300px` }} />}
           />
         </div>
       );
     } else {
-      map = <div style={{ height: this.props.height }} />;
+      map = <div style={{ minHeight: this.props.minHeight }} className="mb-6" />;
     }
     return map;
   }

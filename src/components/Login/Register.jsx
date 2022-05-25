@@ -16,7 +16,7 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().required("Password is required").min(6, "Too Short!"),
-  conformPassword: Yup.string().oneOf(
+  confirmPassword: Yup.string().oneOf(
     [Yup.ref("password"), null],
     "Passwords must match"
   ),
@@ -31,7 +31,7 @@ const people = [
 const Register = ({ setR }) => {
   const navigate = useNavigate();
   const [passwordShown, setPasswordShown] = useState(false);
-  const [conformPasswordShown, setConformPasswordShown] = useState(false);
+  const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
   const [selected, setSelected] = useState(people[0]);
   const [error, setError] = useState(people[0]);
 
@@ -42,7 +42,7 @@ const Register = ({ setR }) => {
           name: "",
           email: "",
           password: "",
-          conformPassword: "",
+          confirmPassword: "",
         }}
         validationSchema={SignupSchema}
         onSubmit={async (values) => {
@@ -53,7 +53,7 @@ const Register = ({ setR }) => {
                 user_name: values.name,
                 email: values.email,
                 password: values.password,
-                password_confirmation: values.conformPassword,
+                password_confirmation: values.confirmPassword,
                 user_type: selected.name
               }
             );
@@ -150,17 +150,17 @@ const Register = ({ setR }) => {
               <label className="flex space-x-3  p-3 items-center">
                 <FaLock className="w-5 h-5 text-gray-400" />
                 <Field
-                  name="conformPassword"
-                  type={conformPasswordShown ? "text" : "password"}
+                  name="confirmPassword"
+                  type={confirmPasswordShown ? "text" : "password"}
                   className="w-full focus:outline-none"
-                  placeholder="Conform Password"
+                  placeholder="Confirm Password"
                 />
-                {conformPasswordShown ? (
+                {confirmPasswordShown ? (
                   <>
                     <button
                       onClick={(e) => {
                         e.preventDefault();
-                        setConformPasswordShown(false);
+                        setConfirmPasswordShown(false);
                       }}
                     >
                       <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
@@ -170,16 +170,16 @@ const Register = ({ setR }) => {
                   <button
                     onClick={(e) => {
                       e.preventDefault();
-                      setConformPasswordShown(true);
+                      setConfirmPasswordShown(true);
                     }}
                   >
                     <AiOutlineEye className="w-6 h-6 text-gray-500" />
                   </button>
                 )}
               </label>
-              {errors.conformPassword && touched.conformPassword ? (
+              {errors.confirmPassword && touched.confirmPassword ? (
                 <div className="text-red-700 font-base border-t-2 border-gray-400  p-1">
-                  {errors.conformPassword}
+                  {errors.confirmPassword}
                   <sup>*</sup>
                 </div>
               ) : null}

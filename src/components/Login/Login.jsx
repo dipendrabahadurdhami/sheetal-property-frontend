@@ -32,8 +32,8 @@ const Login = ({ setR }) => {
     <div className="p-3 text-sm">
       <Formik
         initialValues={{
-          email: "nnn@gmail.com",
-          password: "nikhil",
+          email: "",
+          password: "",
         }}
         validationSchema={LoginSchema}
         onSubmit={async (values) => {

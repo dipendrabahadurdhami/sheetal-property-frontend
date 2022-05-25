@@ -1,6 +1,5 @@
 
-import { object } from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import apiClient from "../../utils/apiClient";
 import AboutProperty from "./AboutProperty";
 import Address from "./Address";
@@ -19,6 +18,8 @@ import RoadAccess from "./RoadAccess";
 import SalesDetails from "./SalesDetails";
 import Uploads from "./Uploads";
 import MapWithASearchBox from "../MapWithSearch";
+import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa";
 
 const MainComponent = (props) => {
   const [propertyAttributes, setPropertyAtributes] = useState(null);
@@ -28,7 +29,7 @@ const MainComponent = (props) => {
     category_id: null,
     class_id:null,
     name:'',
-    featured_image:'',
+    feature_image:'',
     expiry_date:null,
 
 
@@ -60,18 +61,66 @@ const MainComponent = (props) => {
     rent_per_month:'',
     min_lease:'',
     min_deposit:'',
-    broker_response:'yes',
+    broker_response:'',
 
 
     property_highlights:'',
     property_description:'',
     other_description:'',
+    interior_looks:[],
+    exterior_looks:[],
 
     location:'',
     lat:'',
-    lng:''
+    lng:'',
 
-  })
+
+    kitchens:'',
+    floors:'',
+    bedrooms:'',
+    bathrooms:'',
+    shutters:'',
+    living_room:'',
+    rooms_per_floor:'',
+    parking:'',
+    garage:'',
+    size_of_pillars:'',
+    no_of_pillars:'',
+    source_of_waters:'',
+    capacity_of_water_tank:'',
+
+
+
+    main_road_width:'',
+    side_road_width:'',
+    road_wide_facing_the_land:'',
+    mohoda_facing_the_land:'',
+    status_of_road:'',
+
+
+    land_area_in_dhur_lal:'',
+    land_area_in_anna_lal:'',
+    land_area_in_katha_lal:'',
+    land_area_in_bigha_lal:'',
+    land_area_in_ropani_lal:'',
+    land_area_in_sqft_lal:'',
+    land_area_in_meters_lal:'',
+    geometry_of_land:'',
+    elevation:'',
+
+
+    finance_bank_name:'',
+    loan_amount:'',
+    
+
+    youtube_url:'',
+
+
+    gallery_images:[],
+    documents:[]
+
+  });
+  const [loading,setLoading]=useState(false);
 
 
 
@@ -124,8 +173,8 @@ const MainComponent = (props) => {
     return errors;
   }
 
-  const mapLocation = (lat, lng, address) => {
-    alert("hello")
+  const mapLocation = useCallback((lat, lng, address) => {
+
     setForm({
       ...form,
       lat:lat,
@@ -133,22 +182,24 @@ const MainComponent = (props) => {
       location: address
     });
    
-  }
+  })
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
       const _errors =validate();
-      if(object.keys(_errors).length > 0){
+      setLoading(true);
+      if(_errors && Object.keys(_errors).length > 0){
+        setLoading(false);
         return false;
       }
-
+      try{
       const formData = new FormData();
-
+      
 
       formData.append('name', form.name);
       formData.append('propertytype_id',form.propertytype_id);
       formData.append('category_id',form.category_id);
-      formData.append('feature_image',form.featured_image);
+      formData.append('feature_image',form.feature_image);
       formData.append('class_id',form.class_id);
       formData.append('expiry_date',form.expiry_date);
 
@@ -158,6 +209,7 @@ const MainComponent = (props) => {
       formData.append('purpose_id', form.purpose_id);
       formData.append('commission', form.commission);
       formData.append('owner_info', form.owner_info);
+
       formData.append('property_status', form.property_status);
       formData.append('completion_year', form.completion_year);
       formData.append('url', form.url);
@@ -189,90 +241,89 @@ const MainComponent = (props) => {
       formData.append('property_highlights',form.property_highlights);
       formData.append('property_description',form.property_description);
       formData.append('other_description',form.other_description);
+      
+      for(let i=0; i<form.exterior_looks.length; i++){
+        formData.append('exterior_look_id['+i+']',form.exterior_looks[i].id);
+      }
+      for(let i=0; i<form.interior_looks.length; i++){
+        formData.append('interior_look_id['+i+']',form.interior_looks[i].id);
+      }
 
 
-      formData.append('location','');
-      formData.append('lat','');
-      formData.append('lng','');
+      formData.append('location',form.location);
+      formData.append('lat',form.lat);
+      formData.append('lng',form.lng);
 
-      // exterior_look_id[0]
-      // exterior_look_id[1]
-      // interior_look_id[0]
-      // interior_look_id[1]
-      {/*
-      formData.append('total_price','');
-      formData.append('property_location','');
-      formData.append('purpose_id','');
-      formData.append('property_description','');
-      formData.append('advertisement_type','');
-      formData.append('commission','');
-      formData.append('owner_info','');
-      formData.append('property_status','');
-      formData.append('completion_year','');
-      formData.append('url','');
-      formData.append('availability_from','');
-      formData.append('zone','');
-      formData.append('district','');
-      formData.append('town','');
-      formData.append('tol','');
-      formData.append('street','');
-      formData.append('vdc_np_mnp','');
-      formData.append('ward_no','');
-      formData.append('property_highlights','');
-      formData.append('other_description','');
-      formData.append('kitchens','');
-      formData.append('floors','');
-      formData.append('bedrooms','');
-      formData.append('bathrooms','');
-      formData.append('shutters','');
-      formData.append('living_room','');
-      formData.append('rooms_per_floor','');
-      formData.append('parking','');
-      formData.append('garage','');
-      formData.append('size_of_pillars','');
-      formData.append('no_of_pillars','');
-      formData.append('capacity_of_water_tank','');
-      formData.append('land_area_in_dhur_lal','');
-      formData.append('land_area_in_anna_lal','');
-      formData.append('land_area_in_katha_lal','');
-      formData.append('land_area_in_bigha_lal','');
-      formData.append('land_area_in_ropani_lal','');
-      formData.append('land_area_in_sqft_lal','');
-      formData.append('land_area_in_meters_lal','');
-      formData.append('geometry_of_land','');
-      formData.append('elevation','');
-      document[0]
-      document[1]
-      formData.append('location','');
-      formData.append('lat','');
-      formData.append('lng','');
-      formData.append('anna_price','');
-      formData.append('sqft_price','');
-      formData.append('main_road_width','');
-      formData.append('side_road_width','');
-      formData.append('road_wide_facing_the_land','');
-      formData.append('mohoda_facing_the_land','');
-      formData.append('status_of_road','');
-      formData.append('finance_bank_name','');
-      formData.append('loan_amount','');
-      formData.append('youtube_url','');
-      formData.append('urgency_id','');
-      formData.append('advance','');
-      formData.append('selling_price','');
-      formData.append('rent_per_month','');
-      formData.append('min_lease','');
-      formData.append('min_deposit','');
-      formData.append('broker_response','');
-      formData.append('sources_of_waters','');
-      formData.append('seo','');
-    */}
+      formData.append('kitchens',form.kitchens);
+      formData.append('floors', form.floors);
+      formData.append('bedrooms',form.bedrooms);
+      formData.append('bathrooms',form.bathrooms);
+      formData.append('shutters',form.shutters);
+      formData.append('living_room',form.living_room);
+      formData.append('rooms_per_floor',form.rooms_per_floor);
+      formData.append('parking',form.parking);
+      formData.append('garage', form.garage);
+      formData.append('size_of_pillars',form.size_of_pillars);
+      formData.append('no_of_pillars',form.no_of_pillars);
+      formData.append('capacity_of_water_tank',form.capacity_of_water_tank);
+      formData.append('source_of_waters', form.source_of_waters);
+   
+
+      formData.append('main_road_width',form.main_road_width);
+      formData.append('side_road_width',form.side_road_width);
+      formData.append('road_wide_facing_the_land',form.road_wide_facing_the_land);
+      formData.append('mohoda_facing_the_land',form.mohoda_facing_the_land);
+      formData.append('status_of_road', form.status_of_road);
+
+
+      formData.append('land_area_in_dhur_lal',form.land_area_in_dhur_lal);
+      formData.append('land_area_in_anna_lal',form.land_area_in_anna_lal);
+      formData.append('land_area_in_katha_lal',form.land_area_in_katha_lal);
+      formData.append('land_area_in_bigha_lal',form.land_area_in_bigha_lal);
+      formData.append('land_area_in_ropani_lal',form.land_area_in_ropani_lal);
+      formData.append('land_area_in_sqft_lal',form.land_area_in_sqft_lal);
+      formData.append('land_area_in_meters_lal',form.land_area_in_meters_lal);
+      formData.append('geometry_of_land',form.geometry_of_land);
+      formData.append('elevation',form.elevation);
+
+
+      formData.append('finance_bank_name',form.finance_bank_name);
+      formData.append('loan_amount', form.loan_amount);
+      formData.append('youtube_url',form.youtube_url);
+
+      for(let i=0; i<form.gallery_images.length; i++){
+        formData.append('gallery_image['+i+']',form.gallery_images[i]);
+      }
+
+      for(let i=0; i<form.documents.length; i++){
+        formData.append('document['+i+']',form.documents[i]);
+      }
+
+
+      await apiClient.post('/post-property', formData).then(res=>{
+        if(res.status === 200){
+          setLoading(false);
+          toast.success("Property Successfully added");
+          // document.getElementById("post-property-form").reset();
+        }else{
+          setLoading(false)
+          toast.error("Property Failed to Add");
+        }
+      })
+    }
+    catch(error){
+      console.error(error);
+      setLoading(false);
+      toast.error("Something went wrong. Please contact admin");
+    }
+
   }
 
   return (
     <div>
      
         <div className="space-y-5">
-          <form onSubmit={handleFormSubmit}>
+          <form onSubmit={handleFormSubmit} id="post-property-form">
             <MyProperty 
               propertyType={propertyAttributes?.data?.property_types} 
               categoryType={propertyAttributes?.data?.categories}
@@ -319,6 +370,8 @@ const MainComponent = (props) => {
               onInputChange={handleFormInputChange}
             />
             <AboutProperty 
+             exteriorLooks={propertyAttributes?.data?.exterior_looks}
+             interiorLooks={propertyAttributes?.data?.interior_looks}
              data={form}
              errors={errors}
              onInputChange={handleFormInputChange}
@@ -328,7 +381,7 @@ const MainComponent = (props) => {
             <MapWithASearchBox  
               google={props?.google}
               center={{ lat: 27.7014202, lng: 85.3128947 }}
-              height="300px"
+              minHeight="300px"
               zoom={15}
               mapLocation={mapLocation}
               />
@@ -369,7 +422,7 @@ const MainComponent = (props) => {
               type="submit"
               className="bg-red-700 text-white px-5 py-2 font-medium rounded"
             >
-              Submit
+              {loading?<FaSpinner className="spin"/>:'Submit'}
             </button>
           </form>
         </div>

@@ -1,33 +1,17 @@
 export const navigation = [
   {
     link: "/",
-    title: "Find Property",
-    subTitle: [
-      {
-        title: "Buy",
-      },
-      {
-        title: "Rent",
-      },
-      {
-        title: "House and land",
-      },
-      {
-        title: "new house",
-      },
-      {
-        title: "Invest",
-      },
-    ],
+    title: "Home",
+    subTitle:[]
   },
   {
     link: "/",
     title: "Property Service",
     subTitle: [
-      {
-        title: "Buy",
-        link: "/productSearch",
-      },
+      // {
+      //   title: "Buy",
+      //   link: "/productSearch",
+      // },
       {
         title: "Sale",
         link: "/productSearch",
@@ -40,10 +24,10 @@ export const navigation = [
         title: "Invest",
         link: "/productSearch",
       },
-      {
-        title: "Projects",
-        link: "/productSearch/",
-      },
+      // {
+      //   title: "Projects",
+      //   link: "/productSearch/",
+      // },
     ],
   },
   {

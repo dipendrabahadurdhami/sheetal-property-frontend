@@ -128,11 +128,12 @@ const MyProperty = ({propertyType, categoryType,classType, errors,data, onInputC
                 type="date"
                 placeholder="dd/mm/yyyy"
                 className="w-full  px-2 border border-gray-300 rounded text-md mb-2"
-                name="expiryDate"
+                name="expiry_date"
                 style={{height:'50px'}}
-                onChange={(e)=>onFormInputChange('expiryDate', e.target.value)}
+                value={data.expiry_date}
+                onChange={(e)=>onFormInputChange('expiry_date', e.target.value)}
               />
-              {errors && errors?.expiryDate && <p className="text-red-500 text-sm">{errors?.expiryDate}</p>}
+              {errors && errors?.expiry_date && <p className="text-red-500 text-sm">{errors?.expiry_date}</p>}
           </div>
 
           

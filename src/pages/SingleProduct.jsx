@@ -77,7 +77,7 @@ const SingleProduct = () => {
                 <PropertyHighlight data={property.property_highlights} />
                 <Details data={property} />
                 {/* <ReviewComponent property={property} /> */}
-                <YoutubeVideo id={property.youtube_url}/>
+                <YoutubeVideo url={property.youtube_url}/>
                 <ScheduleTour property={property} />
                
               </div>

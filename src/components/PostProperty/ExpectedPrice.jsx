@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-const ExpectedPrice = ({errors,onInputChange}) => {
+const ExpectedPrice = ({data,errors,onInputChange}) => {
   const onFormInputChange = (name,value) => {
     onInputChange(name, value)
   }
@@ -18,6 +18,7 @@ const ExpectedPrice = ({errors,onInputChange}) => {
               name="anna_price"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
+              value={data.anna_price}
               onChange={(e)=>onFormInputChange('anna_price', e.target.value)}
             />
           {errors && errors?.anna_price && <p className="text-red-500 text-sm">{errors?.anna_price}</p>}
@@ -32,6 +33,7 @@ const ExpectedPrice = ({errors,onInputChange}) => {
               name="sqft_price"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
+              value={data.sqft_price}
               onChange={(e)=>onFormInputChange('sqft_price', e.target.value)}
             />
           {errors && errors?.sqft_price && <p className="text-red-500 text-sm">{errors?.sqft_price}</p>}

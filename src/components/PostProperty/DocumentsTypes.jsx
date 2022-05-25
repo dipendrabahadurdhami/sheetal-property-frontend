@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-const DocumentsTypes = ({propertyStatus,completionYear,url,availabilityDate, errors, onInputChange}) => {
+const DocumentsTypes = ({data,propertyStatus,completionYear,url,availabilityDate, errors, onInputChange}) => {
   const onFormInputChange = (name,value) => {
     onInputChange(name, value)
   }
@@ -16,12 +16,13 @@ const DocumentsTypes = ({propertyStatus,completionYear,url,availabilityDate, err
             className="border px-2  w-full rounded text-md mb-2"
             name="property_status"
             style={{height:'50px'}}
+          
             onChange={(e)=>onFormInputChange('property_status', e.target.value)}
           >
 
-            <option value="">Choose your advertisement type</option>
+            <option value="">Choose your property status</option>
             {propertyStatus &&  propertyStatus.map((item,i)=>{
-              return <option value={item.id} key={i}>{item.name}</option>
+              return <option value={item.id} key={i} selected={item.id === data.property_status?'selected':''}>{item.name}</option>
             })}
           </select>
           {errors && errors?.property_status && <p className="text-red-500 text-sm">{errors?.property_status}</p>}
@@ -37,6 +38,7 @@ const DocumentsTypes = ({propertyStatus,completionYear,url,availabilityDate, err
             name="completion_year"
             style={{height:'50px'}}
             placeholder="2022"
+            value={data.completion_year}
             onChange={(e)=>onFormInputChange('completion_year', e.target.value)}
           />
           {errors && errors?.completion_year && <p className="text-red-500 text-sm">{errors?.completion_year}</p>}
@@ -51,6 +53,7 @@ const DocumentsTypes = ({propertyStatus,completionYear,url,availabilityDate, err
             className="border px-2  w-full rounded text-md mb-2"
             name="url"
             style={{height:'50px'}}
+            value={data.url}
             onChange={(e)=>onFormInputChange('url', e.target.value)}
           />
           {errors && errors?.url && <p className="text-red-500 text-sm">{errors?.url}</p>}
@@ -65,7 +68,8 @@ const DocumentsTypes = ({propertyStatus,completionYear,url,availabilityDate, err
             className="border px-2  w-full rounded text-md mb-2"
             name="url"
             style={{height:'50px'}}
-            onChange={(e)=>onFormInputChange('availability_form', e.target.value)}
+            value={data.availability_from}
+            onChange={(e)=>onFormInputChange('availability_from', e.target.value)}
           />
           {errors && errors?.url && <p className="text-red-500 text-sm">{errors?.url}</p>}
         </div>

@@ -1,0 +1,12 @@
+.c-tags-input{
+    .tags-dropdown{
+        background-color: #fff;
+        @apply border border-gray-300 rounded-sm;
+        max-height: 200px;
+        overflow: auto;
+    }
+
+    @media print{
+        display: none;
+    }
+}

@@ -17,7 +17,8 @@ const RoadAccess = ({errors, onInputChange, data}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="main_road_width"
                 style={{height:'50px'}}
-                placeholder="1"
+
+                value={data.main_road_width}
                 onChange={(e)=>onFormInputChange('main_road_width', e.target.value)}
               />
             {errors && errors?.main_road_width && <p className="text-red-500 text-sm">{errors?.main_road_width}</p>}
@@ -31,7 +32,7 @@ const RoadAccess = ({errors, onInputChange, data}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="side_road_width"
                 style={{height:'50px'}}
-                placeholder="1"
+                value={data.side_road_width}
                 onChange={(e)=>onFormInputChange('side_road_width', e.target.value)}
               />
             {errors && errors?.side_road_width && <p className="text-red-500 text-sm">{errors?.side_road_width}</p>}
@@ -46,7 +47,7 @@ const RoadAccess = ({errors, onInputChange, data}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="road_wide_facing_the_land"
                 style={{height:'50px'}}
-                placeholder="1"
+                value={data.road_wide_facing_the_land}
                 onChange={(e)=>onFormInputChange('road_wide_facing_the_land', e.target.value)}
               />
             {errors && errors?.road_wide_facing_the_land && <p className="text-red-500 text-sm">{errors?.road_wide_facing_the_land}</p>}
@@ -61,7 +62,7 @@ const RoadAccess = ({errors, onInputChange, data}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="mohoda_facing_the_land"
                 style={{height:'50px'}}
-                placeholder="1"
+                value={data.mohoda_facing_the_land}
                 onChange={(e)=>onFormInputChange('mohoda_facing_the_land', e.target.value)}
               />
             {errors && errors?.mohoda_facing_the_land && <p className="text-red-500 text-sm">{errors?.mohoda_facing_the_land}</p>}
@@ -75,7 +76,7 @@ const RoadAccess = ({errors, onInputChange, data}) => {
                 className="border px-2  w-full rounded text-md mb-2"
                 name="status_of_road"
                 style={{height:'50px'}}
-                placeholder="1"
+                value={data.status_of_road}
                 onChange={(e)=>onFormInputChange('status_of_road', e.target.value)}
               />
             {errors && errors?.status_of_road && <p className="text-red-500 text-sm">{errors?.status_of_road}</p>}

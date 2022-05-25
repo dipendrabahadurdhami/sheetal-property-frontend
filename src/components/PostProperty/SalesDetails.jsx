@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import { data } from "autoprefixer";
 
-const SalesDetails = ({onInputChange, errors, urgencies}) => {
+const SalesDetails = ({data,onInputChange, errors, urgencies}) => {
   const onFormInputChange = (name,value) => {
     onInputChange(name, value)
   }
@@ -21,7 +22,7 @@ const SalesDetails = ({onInputChange, errors, urgencies}) => {
 
             <option value="">Choose your urgency type</option>
             {urgencies &&  urgencies.map((item,i)=>{
-              return <option value={item.id} key={i}>{item.name}</option>
+              return <option value={item.id} key={i} selected={data.urgency_id === item.id}>{item.name}</option>
             })}
           </select>
           {errors && errors?.urgency_id && <p className="text-red-500 text-sm">{errors?.urgency_id}</p>}
@@ -36,6 +37,7 @@ const SalesDetails = ({onInputChange, errors, urgencies}) => {
               name="advance"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
+              value={data.advance}
               onChange={(e)=>onFormInputChange('advance', e.target.value)}
             />
           {errors && errors?.advance && <p className="text-red-500 text-sm">{errors?.advance}</p>}
@@ -50,6 +52,7 @@ const SalesDetails = ({onInputChange, errors, urgencies}) => {
               name="selling_price"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
+              value={data.selling_price}
               onChange={(e)=>onFormInputChange('selling_price', e.target.value)}
             />
           {errors && errors?.selling_price && <p className="text-red-500 text-sm">{errors?.selling_price}</p>}
@@ -64,6 +67,7 @@ const SalesDetails = ({onInputChange, errors, urgencies}) => {
               name="rent_per_month"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
+              value={data.rent_per_month}
               onChange={(e)=>onFormInputChange('rent_per_month', e.target.value)}
             />
           {errors && errors?.rent_per_month && <p className="text-red-500 text-sm">{errors?.rent_per_month}</p>}
@@ -78,6 +82,7 @@ const SalesDetails = ({onInputChange, errors, urgencies}) => {
               name="min_deposit"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
+              value={data.min_deposit}
               onChange={(e)=>onFormInputChange('min_deposit', e.target.value)}
             />
           {errors && errors?.min_deposit && <p className="text-red-500 text-sm">{errors?.min_deposit}</p>}
@@ -92,6 +97,7 @@ const SalesDetails = ({onInputChange, errors, urgencies}) => {
               name="min_lease"
               style={{height:'50px'}}
               placeholder="NRs. 10,000"
+              value={data.min_lease}
               onChange={(e)=>onFormInputChange('min_lease', e.target.value)}
             />
           {errors && errors?.min_lease && <p className="text-red-500 text-sm">{errors?.min_lease}</p>}
@@ -108,8 +114,8 @@ const SalesDetails = ({onInputChange, errors, urgencies}) => {
           >
 
             <option value="">Choose your response</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="yes" selected={data.broker_response.toLowerCase() === 'yes'?'selected':''}>Yes</option>
+            <option value="no" selected={data.broker_response.toLowerCase() === 'no'?'selected':''}>No</option>
           </select>
           {errors && errors?.broker_response && <p className="text-red-500 text-sm">{errors?.broker_response}</p>}
         </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import { data } from "autoprefixer";
 
 const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertisementCommission, owners, onInputChange, errors}) => {
 
@@ -23,7 +24,7 @@ const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertiseme
 
               <option value="">Choose your advertisement type</option>
               {advertisementType &&  advertisementType.map((item,i)=>{
-                return <option value={item.id} key={i}>{item.name}</option>
+                return <option value={item.slug} key={i} selected={data.advertisement_type === item.slug?'selected':''}>{item.name}</option>
               })}
             </select>
             {errors && errors?.advertisement_type && <p className="text-red-500 text-sm">{errors?.advertisement_type}</p>}
@@ -40,7 +41,7 @@ const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertiseme
 
               <option value="">Choose your advertisement purpose</option>
               {advertisementPurpose &&  advertisementPurpose.map((item,i)=>{
-                return <option value={item.id} key={i}>{item.name}</option>
+                return <option value={item.id} key={i} selected={data.purpose_id === item.id?'selected':''}>{item.name}</option>
               })}
             </select>
             {errors && errors?.purpose_id && <p className="text-red-500 text-sm">{errors?.purpose_id}</p>}
@@ -57,7 +58,7 @@ const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertiseme
 
               <option value="">Choose your commission</option>
               {advertisementCommission &&  advertisementCommission.map((item,i)=>{
-                return <option value={item.id} key={i}>{item.name}</option>
+                return <option value={item.id} key={i} selected={data.commission === item.id?'selected':''}>{item.name}</option>
               })}
             </select>
             {errors && errors?.commission && <p className="text-red-500 text-sm">{errors?.commission}</p>}
@@ -75,7 +76,7 @@ const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertiseme
 
               <option value="">Choose Owner</option>
               {owners &&  owners.map((item,i)=>{
-                return <option value={item.id} key={i}>{item.name}</option>
+                return <option value={item.id} key={i} selected={data.owner_info === item.id?'selected':''}>{item.name}</option>
               })}
             </select>
             {errors && errors?.owner_info && <p className="text-red-500 text-sm">{errors?.owner_info}</p>}
