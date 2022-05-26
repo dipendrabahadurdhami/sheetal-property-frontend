@@ -130,78 +130,83 @@ const SideBar = ({ menubutton }) => {
 
   return (
     <>
-      <div className="flex">
-        <div className="hidden md:flex md:w-72 flex-col ">
-          <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
-            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-              <div className="flex flex-col items-center flex-shrink-0 px-4">
-                <div className={`relative m-4`}>
-                  <img
-                    className="w-full h-auto"
-                    src={image?image:'noUser.png'}
-                    alt="Workflow"
-                  />
-                  <form >
-                    <div className="absolute bottom-0 left-0 right-0 w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="absolute top-0 left-0 p-0 w-0 h-0 overflow-hidden opacity-0"
-                        id="contained-button-file"
-                        onChange={onInputChange}
+      <div className="container mx-auto">
+          <div className="flex justify-center">
+      
+            <div className="hidden md:flex md:w-72 flex-col ">
+              <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
+                <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+                  <div className="flex flex-col items-center flex-shrink-0 px-4">
+                    <div className={`relative m-4`}>
+                      <img
+                        className="w-full h-auto"
+                        src={image?image:'noUser.png'}
+                        alt="Workflow"
                       />
-                      <label htmlFor="contained-button-file">
-                        <Button
-                          variant="contained"
-                          style={{ backgroundColor: "#B91C1B", color: "white" }}
-                          component="span"
-                          disabled={loading}
-                          className="w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center"
-                        >
-                          <span>{loading?<FaSpinner className="spin"/>:'Upload'}</span>
-                          <MdOutlineDriveFolderUpload className="w-5 h-5" />
-                        </Button>
-                      </label>
+                      <form >
+                        <div className="absolute bottom-0 left-0 right-0 w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="absolute top-0 left-0 p-0 w-0 h-0 overflow-hidden opacity-0"
+                            id="contained-button-file"
+                            onChange={onInputChange}
+                          />
+                          <label htmlFor="contained-button-file">
+                            <Button
+                              variant="contained"
+                              style={{ backgroundColor: "#B91C1B", color: "white" }}
+                              component="span"
+                              disabled={loading}
+                              className="w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center"
+                            >
+                              <span>{loading?<FaSpinner className="spin"/>:'Upload'}</span>
+                              <MdOutlineDriveFolderUpload className="w-5 h-5" />
+                            </Button>
+                          </label>
+                        </div>
+                      </form>
                     </div>
-                  </form>
-                </div>
-                <div className="text-red-700 text-xl font-medium">
-                  {user?.data?.first_name} {user?.data?.last_name}
+                    {user?.data?.first_name && user?.data?.last_name &&
+                      <div className="text-red-700 text-xl font-medium">
+                        {user?.data?.first_name} {user?.data?.last_name}
+                      </div>
+                    }
+                  </div>
+                  <nav className="mt-10 flex-1 px-2 bg-white space-y-1">
+                    {navigation.map((item) => (
+                      <Link key={item.name} to={`/myProfile?section=${item.href}`}>
+                        <button
+                          className={classNames(
+                            item.current
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full"
+                          )}
+                        >
+                          <item.icon
+                            className={classNames(
+                              item.current
+                                ? "text-gray-500"
+                                : "text-gray-400 group-hover:text-gray-500",
+                              "mr-3 flex-shrink-0 h-6 w-6"
+                            )}
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </button>
+                      </Link>
+                    ))}
+                  </nav>
                 </div>
               </div>
-              <nav className="mt-10 flex-1 px-2 bg-white space-y-1">
-                {navigation.map((item) => (
-                  <Link key={item.name} to={`/myProfile?section=${item.href}`}>
-                    <button
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-100 text-gray-900"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                        "group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full"
-                      )}
-                    >
-                      <item.icon
-                        className={classNames(
-                          item.current
-                            ? "text-gray-500"
-                            : "text-gray-400 group-hover:text-gray-500",
-                          "mr-3 flex-shrink-0 h-6 w-6"
-                        )}
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </button>
-                  </Link>
-                ))}
-              </nav>
+            </div>
+            <div className="flex flex-col flex-1">
+              <main className="flex-1">
+                {!query ? mainComponent["profile"] : mainComponent[query]}
+              </main>
             </div>
           </div>
-        </div>
-        <div className="flex flex-col flex-1">
-          <main className="flex-1">
-            {!query ? mainComponent["profile"] : mainComponent[query]}
-          </main>
-        </div>
       </div>
     </>
   );

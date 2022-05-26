@@ -74,10 +74,10 @@ const SingleProduct = () => {
 
                 <Description data={property} />
                 {/* <ExtraValue /> */}
-                <PropertyHighlight data={property.property_highlights} />
+                <PropertyHighlight data={property?.property_highlights} />
                 <Details data={property} />
                 {/* <ReviewComponent property={property} /> */}
-                <YoutubeVideo url={property.youtube_url}/>
+                {property?.youtube_url && <YoutubeVideo url={property?.youtube_url}/>}
                 <ScheduleTour property={property} />
                
               </div>
