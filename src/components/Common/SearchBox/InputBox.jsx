@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineControl } from "react-icons/ai";
 import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const InputBox = ({ setFilterModal }) => {
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+  const onInputChange = (e) => {
+    setSearch(e.target.value)
+  }
+  const onSearchButtonClick = () => {
+      navigate(`/productSearch?keyword=${search}`)
+  }
   return (
     <>
       <div className="border-2 border-gray-600 flex items-center rounded-md bg-white hover:border-gray-900 focus:ring-2 focus:ring-red-700 overflow-hidden space-x-2 xs:space-x-5">
         <input
           type={"text"}
+          value={search}
           placeholder="Enter an address, neighbourhood, city or ZIP code"
           className="w-full h-full p-3 xs:p-5 border-none outline-none"
+          onChange={onInputChange}
         />
         <button
           onClick={() => setFilterModal(true)}
@@ -18,10 +29,10 @@ const InputBox = ({ setFilterModal }) => {
           <AiOutlineControl className="hidden sm:inline w-6 h-6" />
           <span>Filters</span>
         </button>
-        <div className="p-3 xs:p-5 h-full space-x-3 font-medium text-xl flex items-center bg-red-700 text-white">
+        <button type="button" disabled={!search} className="p-3 xs:p-5 h-full space-x-3 font-medium text-xl flex items-center bg-red-700 text-white" onClick={onSearchButtonClick}>
           <FaSearch className="w-7 h-7" />
           <span className="hidden md:inline">Search</span>
-        </div>
+        </button>
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import { product } from "../Object/product";
 
 const FilterCard = ({ property }) => {
   let navigate = useNavigate();
-
+  console.log("Propertyy", property);
   return (
     <div
       onClick={() => {
@@ -19,7 +19,7 @@ const FilterCard = ({ property }) => {
             For {property.purpose}
           </div>
           <img
-            src={property.feature_image}
+            src={property?.feature_image}
             alt="unsplash"
             className="w-full bg-center h-full bg-cover"
           />
@@ -29,41 +29,40 @@ const FilterCard = ({ property }) => {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="font-bold text-gray-600 text-xl">
-                  {property.name}
+                  {property?.name}
                 </h1>
-                <h1 className="text-sm">from {property.property_location} </h1>
+                <h1 className="text-sm">from {property?.property_location} </h1>
               </div>
               <FiHeart className="w-8 h-8 text-red-700" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Price</span>
-                <span className="font-medium">Rs. {property.total_price}</span>
+                <span className="font-medium">Rs. {property?.total_price}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Land area</span>
                 <span className="font-medium">
                   {
-                    property.land_according_to_measurements
-                      .land_area_in_sqft_measurements
+                    property?.land_according_to_measurements?.land_area_in_sqft_measurements
                   }
                 </span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Per aana</span>
-                <span className="font-medium">{product.PerAana}</span>
+                <span className="font-medium">{product?.PerAana}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Road side</span>
-                <span className="font-medium">{product.RoadSide}</span>
+                <span className="font-medium">{product?.RoadSide}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Road type</span>
-                <span className="font-medium">{product.RoadType}</span>
+                <span className="font-medium">{product?.RoadType}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Property Status</span>
-                <span className="font-medium">{property.property_status}</span>
+                <span className="font-medium">{property?.property_status}</span>
               </div>
             </div>
             <div className="flex  justify-end">
