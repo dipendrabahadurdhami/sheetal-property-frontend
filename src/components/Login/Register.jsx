@@ -2,15 +2,16 @@ import React, { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaUserAlt, FaLock, FaSpinner } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { Field, Form, Formik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 const SignupSchema = Yup.object().shape({
-  name: Yup.string()
+  user_name: Yup.string()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
@@ -34,12 +35,14 @@ const Register = ({ setR }) => {
   const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
   const [selected, setSelected] = useState(people[0]);
   const [error, setError] = useState(people[0]);
+  const [serverError, setServerError] = useState(null);
+  const [loading,setLoading]= useState(false);
 
   return (
     <div className="p-3 text-sm">
       <Formik
         initialValues={{
-          name: "",
+          user_name: "",
           email: "",
           password: "",
           confirmPassword: "",
@@ -47,10 +50,12 @@ const Register = ({ setR }) => {
         validationSchema={SignupSchema}
         onSubmit={async (values) => {
           try {
+            setServerError(null);
+            setLoading(true);
             const res = await axios.post(
               `${process.env.REACT_APP_API_LINK}/register`,
               {
-                user_name: values.name,
+                user_name: values.user_name,
                 email: values.email,
                 password: values.password,
                 password_confirmation: values.confirmPassword,
@@ -59,14 +64,22 @@ const Register = ({ setR }) => {
             );
             if (res.data.errors) {
               setError(Object.values(res.data.errors)[0]);
+              setLoading(false);
               console.log(error);
+              toast.error("User failed to register")
             } else {
               setR(false);
               console.log(res);
-              navigate(0);
+              setLoading(false);
+              navigate('/');
+              toast.success("User successfully registered. Click login to continue")
+
             }
           } catch (err) {
             console.log(err);
+            setLoading(false);
+            setServerError(err.response.data.errors);
+            toast.error("User failed to register")
           }
         }}
       >
@@ -77,16 +90,16 @@ const Register = ({ setR }) => {
                 <FaUserAlt className="w-5 h-5 text-gray-400" />
                 <Field
                   type="text"
-                  name="name"
+                  name="user_name"
                   className="w-full focus:outline-none"
                   placeholder="Username or Email"
                   required
                 />
               </label>
 
-              {errors.name && touched.name ? (
+              {errors.user_name && touched.name ? (
                 <div className="text-red-700 font-base border-b-2 border-gray-400  p-1">
-                  {errors.name}
+                  {errors.user_name }
                   <sup>*</sup>
                 </div>
               ) : null}
@@ -247,12 +260,21 @@ const Register = ({ setR }) => {
                 <span className="text-red-700">Terms & Conditions</span>
               </span>
             </label>
+            {serverError &&         
+              <ul className="text-red-500 bg-red-100 rounded-sm p-2 list-none">
+            
+                {serverError && Object.entries(serverError).map((item,i)=>{
+                return <li className={`block py-2  ${i < Object.entries(serverError).length - 1?' border-b border-red-200':''}`} key={i}>{item[1]}</li>
+                })}
+              </ul>
+            }
 
             <button
               type="submit"
-              className="text-white bg-red-700 rounded-lg w-full font-bold p-3"
+              className="text-white bg-red-700 rounded-lg w-full font-bold p-3 text-center flex items-center justify-center"
+              disabled={loading}
             >
-              Register
+              {loading?<FaSpinner className="spin"/>: 'Register'}
             </button>
           </Form>
         )}
