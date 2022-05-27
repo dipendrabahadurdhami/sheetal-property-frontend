@@ -63,26 +63,31 @@ const ProductSearch = ({props}) => {
 
   return (
     <div className="p-5 lg:p-10 space-y-10">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Property on </h1>
-        <FilterModal />
-      </div>
-      {loading ? (
-        <div>Loading .....</div>
-      ) : (
-        <>
-          {products && products.map((property, index) => (
-            <div key={index}>
-              <FilterCard property={property} />
-            </div>
-          ))}
-        </>
-      )}
+      <div className="container mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Property on </h1>
+          <FilterModal />
+        </div>
 
-      <div className="flex justify-center">
-        <button className="text-white bg-red-700 font-semibold p-2 px-5 rounded">
-          View More
-        </button>
+          {loading ? (
+            <div>Loading .....</div>
+          ) : (
+            <>
+              {products && products.map((property, index) => (
+                <div key={index} className="mb-6">
+                  
+                  <FilterCard property={property} />
+                </div>
+              ))}
+            </>
+          )}
+     
+
+        <div className="flex justify-center">
+          <button className="text-white bg-red-700 font-semibold p-2 px-5 rounded">
+            View More
+          </button>
+        </div>
       </div>
     </div>
   );

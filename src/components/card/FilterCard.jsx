@@ -8,9 +8,7 @@ const FilterCard = ({ property }) => {
   console.log("Propertyy", property);
   return (
     <div
-      onClick={() => {
-        navigate("/property/"+property.id);
-      }}
+      
       className="cursor-pointer"
     >
       <div className="grid sm:grid-cols-3 lg:grid-cols-4 w-full relative bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200">
@@ -29,44 +27,36 @@ const FilterCard = ({ property }) => {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="font-bold text-gray-600 text-xl">
-                  {property?.name}
+                  {property?.title}
                 </h1>
-                <h1 className="text-sm">from {property?.property_location} </h1>
+                <h1 className="text-sm">from {property?.property_location?property?.property_location:'N/A'} </h1>
               </div>
               <FiHeart className="w-8 h-8 text-red-700" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Price</span>
-                <span className="font-medium">Rs. {property?.total_price}</span>
+                <span className="font-medium">Rs. {property?.total_price?property?.total_price:'N/A'}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500">Land area</span>
+                <span className="text-sm text-gray-500">Property Category</span>
                 <span className="font-medium">
                   {
-                    property?.land_according_to_measurements?.land_area_in_sqft_measurements
+                    property?.property_category?property?.property_category:'N/A'
                   }
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500">Per aana</span>
-                <span className="font-medium">{product?.PerAana}</span>
+                <span className="text-sm text-gray-500">Property Type</span>
+                <span className="font-medium">{product?.property_type?product?.property_type:'N/A'}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500">Road side</span>
-                <span className="font-medium">{product?.RoadSide}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-500">Road type</span>
-                <span className="font-medium">{product?.RoadType}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-500">Property Status</span>
-                <span className="font-medium">{property?.property_status}</span>
+                <span className="text-sm text-gray-500">Purpose</span>
+                <span className="font-medium">{product?.purpose?product?.purpose:'N/A'}</span>
               </div>
             </div>
             <div className="flex  justify-end">
-              <button className="bg-red-700 rounded text-white font-medium px-5 py-2 w-full sm:w-auto">
+              <button className="bg-red-700 rounded text-white font-medium px-5 py-2 w-full sm:w-auto" onClick={() => navigate("/property/"+property.id)}>
                 Details
               </button>
             </div>
