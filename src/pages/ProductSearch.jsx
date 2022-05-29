@@ -34,8 +34,8 @@ const ProductSearch = ({props}) => {
   const fetchSearch = async () => {
      const keyword = params.get('keyword')?params.get('keyword'):'';
      const advertisementPurpose = params.get('advertisement_purpose')?params.get('advertisement_purpose'):'';
-     const min_price = params.get('min_price')?params.get('min_price'):'';
-     const max_price = params.get('max_price')?params.get('max_price'):'';
+     const min_price = params.get('min_price')?params.get('min_price'):0;
+     const max_price = params.get('max_price')?params.get('max_price'):100000000;
     setLoading(true);
     try{  
       await apiClient.get(`/search?keyword=${keyword}&advertisement_purpose=${advertisementPurpose}&min_price=${min_price}&max_price=${max_price}`).then(res=>{
@@ -53,7 +53,6 @@ const ProductSearch = ({props}) => {
       setLoading(false);
       console.error(err)
     }
-
 
   }
 

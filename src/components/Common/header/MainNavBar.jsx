@@ -69,7 +69,7 @@ const MainNavBar = () => {
                                   onClick={() => {
                                     navigate({
                                       pathname: "",
-                                      search: `?tab=${sub.title}`,
+                                      search: `?advertisement_purpose=${sub.title}`,
                                     });
                                   }}
                                   className={classNames(
@@ -88,7 +88,7 @@ const MainNavBar = () => {
                                       onClick={() => {
                                         navigate({
                                           pathname: "/productSearch",
-                                          search: `?tab=${sub.title}`,
+                                          search: `?advertisement_purpose=${sub.title}`,
                                         });
                                       }}
                                       className={classNames(
