@@ -1,11 +1,87 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FiHeart } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { removeFavoriteList, setFavoritesList } from "../../features/slices/favourites";
+import apiClient from "../../utils/apiClient";
 import { product } from "../Object/product";
 
 const FilterCard = ({ property }) => {
   let navigate = useNavigate();
-  console.log("Propertyy", property);
+  let [params, setParams] = useSearchParams();
+  console.log(property)
+  const [favorite, setFavorite] = useState(false)
+  const favorites =  useSelector(state=>state.favorites.data)
+  const dispatch = useDispatch();
+
+ const user =  useSelector(state=>state.user)
+  const token = localStorage.getItem('sheetal_token');
+
+// console.log(user)
+
+  useEffect(()=>{
+    if(favorites){
+      if(favorites.find(item=>item.property_id === product.id)){
+        setFavorite(true)
+      }
+    }
+
+  },[favorites])
+
+
+  useEffect(()=>{
+      if(!user.data){
+          setFavorite(false)
+      }
+  },[user])
+  const onFavoriteClick = (e,id) => {
+    e.preventDefault();
+    if (!user.data && !token) {
+      return  setParams(`?login=1`)
+    }
+    const isFavoriteAvailable = favorites.find(item=>item.property_id === id)
+    if(isFavoriteAvailable){
+        setFavorite(false)
+        dispatch(removeFavoriteList(id))
+        removeFromFavorite(id)
+    }else{
+      setFavorite(true)
+      dispatch(setFavoritesList(id))
+      addToFavorite(id)
+    }
+  }
+
+
+  const addToFavorite = async (id) => {
+    await apiClient.post('/add-to-favourite',{property_id:id}).then(res=>{
+      if(res.status === 200){
+          toast.success("Added to favorite list");
+      }else{
+        toast.error("Failed to add to favorite list");
+      }
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+
+  const removeFromFavorite = async (id) => {
+    await apiClient.post('/remove-from-favourite',{property_id:id}).then(res=>{
+      if(res.status === 200){
+          toast.success("Removed from favorite list");
+      }else{
+        toast.error("Failed to remove from favorite list");
+      }
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+
+
+
   return (
     <div
       
@@ -31,7 +107,10 @@ const FilterCard = ({ property }) => {
                 </h1>
                 <h1 className="text-sm">from {property?.property_location?property?.property_location:'N/A'} </h1>
               </div>
-              <FiHeart className="w-8 h-8 text-red-700" />
+              <div className="w-6 h-6 cursor-pointer relative z-10" onClick={(e)=>onFavoriteClick(e,property.id)}>
+                {!favorite && <AiOutlineHeart className="w-6 h-6 text-red-600" />}
+                {favorite && <AiFillHeart className="w-6 h-6 text-red-600" />}
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
               <div className="flex flex-col">
@@ -48,11 +127,11 @@ const FilterCard = ({ property }) => {
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Property Type</span>
-                <span className="font-medium">{product?.property_type?product?.property_type:'N/A'}</span>
+                <span className="font-medium">{property?.property_type?property?.property_type:'N/A'}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500">Purpose</span>
-                <span className="font-medium">{product?.purpose?product?.purpose:'N/A'}</span>
+                <span className="font-medium ">{property?.purpose?property?.purpose:'N/A'}</span>
               </div>
             </div>
             <div className="flex  justify-end">

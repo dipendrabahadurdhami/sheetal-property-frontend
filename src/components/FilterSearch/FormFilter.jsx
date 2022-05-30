@@ -33,9 +33,6 @@ const FormFilter = ({ setFilterModal }) => {
           <button className="border rounded border-gray-400 p-3 mr-4 mb-4">
             Investment
           </button>
-          <button className="border rounded border-gray-400 p-3 mr-4 mb-4">
-            Top Projects
-          </button>
         </div>
       </div>
       <div className="space-y-6">
@@ -96,22 +93,22 @@ const FormFilter = ({ setFilterModal }) => {
           </div>
           <input
             type="text"
-            className="w-full p-3 border border-gray-400 rounded"
+            className="w-full p-3 border border-gray-400 rounded hidden"
             placeholder="Property ID"
           />
           <input
             type="text"
-            className="w-full p-3 border border-gray-400 rounded"
+            className="w-full p-3 border border-gray-400 rounded hidden"
             placeholder="Min Area (Anna, Dhur)"
           />
           <input
             type="text"
-            className="w-full p-3 border border-gray-400 rounded"
+            className="w-full p-3 border border-gray-400 rounded hidden"
             placeholder="Max Area (Anna, Dhur)"
           />
         </div>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-6 hidden">
         <div className="">
           <span className="font-bold text-lg">Features</span>
         </div>

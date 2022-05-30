@@ -18,12 +18,15 @@ const TopBar = (props) => {
   const user = useSelector(state=>state.user)
   const favorites =  useSelector(state=>state.favorites);
   useEffect(()=>{
+    console.log("Search Params",searchParams)
     if(searchParams.has("login")){
+
       const needsToLogin = searchParams.get("login")
       if(needsToLogin){
         searchParams.delete("login")
         setSearchParams(searchParams);
         setR(true)
+
       }
   }
   },[searchParams])
