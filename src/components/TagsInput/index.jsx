@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import CloseIcon from '../../assets/images/icon-close.svg';
 
-const TagsInput = ({tags, onTagSelected}) => {
+const TagsInput = ({tags,name, onTagSelected}) => {
     const [text, setText] = useState('');
     const [selectedTags, setSelectedTags]=useState([]);
     const [filteredTags, setFilteredTags] = useState([]);
@@ -96,7 +96,7 @@ const TagsInput = ({tags, onTagSelected}) => {
                             </span>
                         </span>))
                     }
-                    <input type={'text'} name="tags" placeholder='enter text' className='inline-block px-2 mb-1' style={{maxWidth:'100px', height:'30px'}} onChange={filteredText} onFocus={()=> onFilterTextFocus()}/>
+                    <input type={'text'} name={name?name:'tags'} placeholder='enter text' className='inline-block px-2 mb-1' style={{maxWidth:'100px', height:'30px'}} onChange={filteredText} onFocus={()=> onFilterTextFocus()}/>
                 </div>
                
             </div>

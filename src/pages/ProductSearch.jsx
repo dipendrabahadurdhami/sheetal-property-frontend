@@ -62,11 +62,11 @@ const ProductSearch = ({props}) => {
 
 
   const fetchSearch = async () => {
-     const keyword = params.get('keyword')?params.get('keyword'):'';
-     const advertisementPurpose = params.get('advertisement_purpose')?params.get('advertisement_purpose'):'';
-     const min_price = params.get('min_price')?params.get('min_price'):0;
-     const max_price = params.get('max_price')?params.get('max_price'):100000000;
-     const price_order = params.get('price_order')?params.get('price_order'):'all';
+     const keyword = params.get('keyword')?params.get('keyword').trim():'';
+     const advertisementPurpose = params.get('advertisement_purpose')?params.get('advertisement_purpose').trim():'';
+     const min_price = params.get('min_price')?params.get('min_price').trim():0;
+     const max_price = params.get('max_price')?params.get('max_price').trim():100000000;
+     const price_order = params.get('price_order')?params.get('price_order').trim():'all';
      const page = params.get('page')?params.get('page'):1;
     setLoading(true);
     try{  
@@ -108,7 +108,7 @@ const ProductSearch = ({props}) => {
     <div className="p-5 lg:p-10 space-y-10">
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Property on </h1>
+          <h1 className="text-2xl font-bold">Property</h1>
           <FilterModal />
         </div>
 

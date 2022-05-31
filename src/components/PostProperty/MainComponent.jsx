@@ -31,6 +31,8 @@ const MainComponent = (props) => {
     name:'',
     feature_image:'',
     expiry_date:null,
+    property_location: '',
+
 
 
     advertisement_type:'',
@@ -199,10 +201,10 @@ const MainComponent = (props) => {
       formData.append('name', form.name);
       formData.append('propertytype_id',form.propertytype_id);
       formData.append('category_id',form.category_id);
-      formData.append('feature_image',form.feature_image);
+      formData.append('feature_image',form.feature_image?form.feature_image:form.gallery_images.length > 0?form.gallery_images[0]:'');
       formData.append('class_id',form.class_id);
       formData.append('expiry_date',form.expiry_date);
-
+      formData.append('property_location',form.property_location);
 
 
       formData.append('advertisement_type',form.advertisement_type);
@@ -304,6 +306,9 @@ const MainComponent = (props) => {
         if(res.status === 200){
           setLoading(false);
           toast.success("Property Successfully added");
+          this.setTimeout(()=>{
+            window.location.reload(true)
+          },5000);
           // document.getElementById("post-property-form").reset();
         }else{
           setLoading(false)

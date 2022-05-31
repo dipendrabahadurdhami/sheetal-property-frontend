@@ -33,16 +33,16 @@ const MyProperty = ({propertyType, categoryType,classType, errors,data, onInputC
     onInputChange(name, value)
   }
 
-  const onFeatureImageChange = (name,e)=>{
-    e.preventDefault();
+  // const onFeatureImageChange = (name,e)=>{
+  //   e.preventDefault();
 
-    var reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
-    reader.onloadend = function (e) {
-      setImage(reader.result)
-    }
-    onFileChange(name,e.target.files[0])
-  }
+  //   var reader = new FileReader();
+  //   reader.readAsDataURL(e.target.files[0]);
+  //   reader.onloadend = function (e) {
+  //     setImage(reader.result)
+  //   }
+  //   onFileChange(name,e.target.files[0])
+  // }
   return (
     <div className="sm:p-5 sm:border rounded-lg mb-6">
       <div className="text-xl font-medium mb-6">My property is : </div>
@@ -110,7 +110,7 @@ const MyProperty = ({propertyType, categoryType,classType, errors,data, onInputC
             {errors && errors?.class_id && <p className="text-red-500 text-sm">{errors?.class_id}</p>}
           </div>
 
-          <div className="px-2 w-full form-group c-single-image-block mb-4">
+          {/* <div className="px-2 w-full form-group c-single-image-block mb-4">
             <label className="block mb-4">Feature Image</label>
             <div>
               <input type="file" accept="image/*" id="feature_image" name="feature_image" onChange={(e)=>onFeatureImageChange('feature_image', e)}/>
@@ -121,7 +121,7 @@ const MyProperty = ({propertyType, categoryType,classType, errors,data, onInputC
                   <span className="text">Click to Upload Image</span>
               </label>
             </div>
-          </div>
+          </div> */}
           <div className="px-2  w-full lg:w-6/12  form-group mb-4">
             <label className="block mb-2">Expiry Date</label>
             <input
@@ -135,6 +135,20 @@ const MyProperty = ({propertyType, categoryType,classType, errors,data, onInputC
               />
               {errors && errors?.expiry_date && <p className="text-red-500 text-sm">{errors?.expiry_date}</p>}
           </div>
+          <div className="px-2  w-full lg:w-6/12  form-group mb-4">
+            <label className="block mb-2">Property Location</label>
+            <input
+                type="text"
+                placeholder="Basundhara 03, Kathmandu"
+                className="w-full  px-2 border border-gray-300 rounded text-md mb-2"
+                name="property_location"
+                style={{height:'50px'}}
+                value={data.property_location}
+                onChange={(e)=>onFormInputChange('property_location', e.target.value)}
+              />
+              {errors && errors?.property_location && <p className="text-red-500 text-sm">{errors?.property_location}</p>}
+          </div>
+
 
           
           

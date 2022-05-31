@@ -17,7 +17,7 @@ const RequirementForm = () => {
     { name: "House" },
     { name: "Apartment" },
   ];
-  const Facilities = [{ name: "Rent" }, { name: "Buy" }, { name: "Invest" }];
+  // const Facilities = [{ name: "Electricity", value:"Electricity" }, { name: "Water", value:'Water' }, { name: "Parking", value: 'parking' },{name: "Drainage", value: 'drainage'}];
 
   // const formik = useFormik({
   //   initialValues: {
@@ -202,6 +202,7 @@ const RequirementForm = () => {
                   onChange={handleChange}
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
                 >
+                  <option value="">Select</option>
                   <option value="rent">Rent</option>
                   <option value="buy">Buy</option>
                   <option value="interest">Interest</option>
@@ -221,6 +222,7 @@ const RequirementForm = () => {
                   onChange={handleChange}
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
                 >
+                  <option value="">Select</option>
                   <option value="room">Room</option>
                   <option value="flat">Flat </option>
                   <option value="house">House</option>
@@ -241,6 +243,7 @@ const RequirementForm = () => {
                   onChange={handleChange}
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
                 >
+                  <option value="">Select</option>
                   <option value="two">Two Wheelers</option>
                   <option value="three">Three Wheelers </option>
                   <option value="four">Four Wheelers</option>
@@ -255,11 +258,14 @@ const RequirementForm = () => {
                   onChange={handleChange}
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
                 >
+    
                   <option value="electricity">Electricity</option>
                   <option value="water">Water</option>
                   <option value="parking">Parking</option>
                   <option value="drainage">Drainage</option>
                 </Field>
+
+
               </label>
 
               <label className="flex flex-col space-y-2">

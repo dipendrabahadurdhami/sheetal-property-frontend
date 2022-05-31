@@ -116,15 +116,18 @@ const OtherDetails = ({data,errors,onInputChange}) => {
           {/* /.form-group */}
           <div className="px-2  w-full lg:w-3/12  form-group mb-6">
             <label className="block mb-2">Parking</label>
-            <input
-                type="text"
-                className="border px-2  w-full rounded text-md mb-2"
-                name="parking"
-                style={{height:'50px'}}
-                placeholder="Available"
-                value={data.parking}
-                onChange={(e)=>onFormInputChange('parking', e.target.value)}
-              />
+      
+            <select
+              className="border px-2  w-full rounded text-md mb-2"
+              name="parking"
+              style={{height:'50px'}}
+              onChange={(e)=>onFormInputChange('parking', e.target.value)}
+            >
+
+              <option value="">Choose </option>
+              <option value={0}>Not Available</option>
+              <option value={1}>Available</option>
+            </select>
             {errors && errors?.parking && <p className="text-red-500 text-sm">{errors?.parking}</p>}
           </div>
           {/* /.form-group */}

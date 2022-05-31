@@ -19,6 +19,7 @@ const FormFilter = ({ setFilterModal }) => {
   return (
     <div className="space-y-8 py-8">
       <div className="space-y-6">
+        <h2 className="text-xl font-bold border-b border-gray-300">Filters</h2>
         <h1 className="font-bold text-lg">Property Status</h1>
         <div className="text-sm">
           <button className="border rounded border-gray-400 p-3 mr-4 mb-4">

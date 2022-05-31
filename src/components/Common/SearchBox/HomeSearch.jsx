@@ -3,7 +3,7 @@ import InputBox from "./InputBox";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { navigation } from "../header/navigation";
 
-const Search = ({ setFilterModal }) => {
+const Search = ({ setFilterModal, showFilters=true }) => {
   const [params] = useSearchParams();
   const query = params.get("tab");
   let navigate = useNavigate();
@@ -30,7 +30,7 @@ const Search = ({ setFilterModal }) => {
           </button>
         ))}
       </div>
-      <InputBox setFilterModal={setFilterModal} />
+      <InputBox showFilters={showFilters} setFilterModal={setFilterModal} />
     </div>
   );
 };

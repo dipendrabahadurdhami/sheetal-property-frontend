@@ -72,9 +72,9 @@ const SingleProduct = () => {
                 <ProductLocation property={property} />
                 <ImageGallery property={property} />
 
-                <Description data={property} />
+                {property?.property_description && <Description data={property} />}
                 {/* <ExtraValue /> */}
-                <PropertyHighlight data={property?.property_highlights} />
+                {property?.property_highlights && <PropertyHighlight data={property?.property_highlights} />}
                 <Details data={property} />
                 {/* <ReviewComponent property={property} /> */}
                 {property?.youtube_url && <YoutubeVideo url={property?.youtube_url}/>}

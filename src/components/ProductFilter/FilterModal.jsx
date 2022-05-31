@@ -19,9 +19,10 @@ const FilterModal = (props) => {
   const onPriceInputSubmit = (e) => {
 
     e.preventDefault();
+    const parameters = {..._params, min_price:price.min, max_price:price.max}
 
-    setParams({..._params, min:price.min});
-    setParams({..._params, max:price.max});
+    setParams(parameters);
+   
   }
   // useEffect(()=>{
   //   setParams({..._params, min:price.min, max:price.max})

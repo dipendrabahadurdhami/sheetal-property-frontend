@@ -42,10 +42,11 @@
     &.small{
         @apply inline-block;
         label{
+            height:100px ;
             .image{
-                @apply p-10;
-                width:auto;
-                height:auto;
+          
+                width:100px;
+                height:100px ;
             }
             .text{
                 top:0;

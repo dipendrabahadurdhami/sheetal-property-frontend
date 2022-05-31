@@ -3,7 +3,7 @@ import { AiOutlineControl } from "react-icons/ai";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const InputBox = ({ setFilterModal }) => {
+const InputBox = ({ setFilterModal, showFilters=true }) => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const onInputChange = (e) => {
@@ -26,6 +26,7 @@ const InputBox = ({ setFilterModal }) => {
           onChange={onInputChange}
           required
         />
+        {showFilters && 
         <button
           type="button"
           onClick={() => setFilterModal(true)}
@@ -34,10 +35,12 @@ const InputBox = ({ setFilterModal }) => {
           <AiOutlineControl className="hidden sm:inline w-6 h-6" />
           <span>Filters</span>
         </button>
+        }
         <button type="submit" disabled={!search} className="p-3 xs:p-5 h-full space-x-3 font-medium text-xl flex items-center bg-red-700 text-white" >
           <FaSearch className="w-7 h-7" />
           <span className="hidden md:inline">Search</span>
         </button>
+        
       </form>
     </>
   );

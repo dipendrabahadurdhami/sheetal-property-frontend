@@ -53,7 +53,7 @@ const Model = ({ setFilterModal, filterModal }) => {
           >
             <div className="relative inline-block align-bottom bg-white pt-5 pb-4 text-left overflow-hidden transform transition-all sm:align-middle md:max-w-4xl w-full md:p-6">
               <div className="py-10 bg-gray-500 md:bg-white px-4">
-                <Search />
+                <Search  showFilters={false}/>
               </div>
               <div className="md:flex justify-center px-4">
                 <div className="md:max-w-3xl">

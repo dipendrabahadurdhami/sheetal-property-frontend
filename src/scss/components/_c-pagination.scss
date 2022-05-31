@@ -8,12 +8,18 @@
             border:1px solid #dedede;
             margin:0 2px;
         }
+        &.disabled{
+            a{
+                pointer-events: none;
+                opacity: 0.5
+            }
+        }
         &.selected{
             a{
                 @apply bg-red-500 text-white border-none;
             }
         }
-        &.previous{
+        &.previous:not(.disabled){
             a{
                 padding:8px 10px;
                 
@@ -26,7 +32,7 @@
             }
             
         }
-        &.next{
+        &.next:not(.disabled){
             a{
                 padding:8px 10px;
             }

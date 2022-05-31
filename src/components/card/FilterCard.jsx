@@ -96,6 +96,7 @@ const FilterCard = ({ property }) => {
             src={property?.feature_image}
             alt="unsplash"
             className="w-full bg-center h-full bg-cover"
+            onClick={() => navigate("/property/"+property.id)}
           />
         </div>
         <div className="rounded-md overflow-hidden sm:col-span-2 lg:col-span-3">
@@ -107,9 +108,9 @@ const FilterCard = ({ property }) => {
                 </h1>
                 <h1 className="text-sm">from {property?.property_location?property?.property_location:'N/A'} </h1>
               </div>
-              <div className="w-6 h-6 cursor-pointer relative z-10" onClick={(e)=>onFavoriteClick(e,property.id)}>
-                {!favorite && <AiOutlineHeart className="w-6 h-6 text-red-600" />}
-                {favorite && <AiFillHeart className="w-6 h-6 text-red-600" />}
+              <div className="w-8 h-8 cursor-pointer relative z-10" onClick={(e)=>onFavoriteClick(e,property.id)}>
+                {!favorite && <AiOutlineHeart className="w-8 h-8 text-red-600" />}
+                {favorite && <AiFillHeart className="w-8 h-8 text-red-600" />}
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5">
