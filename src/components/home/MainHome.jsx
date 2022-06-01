@@ -31,7 +31,7 @@ const MainHome = () => {
       </div>
       <Featured />
       {/* <Property /> */}
-      <TopProjects />
+      {/* <TopProjects /> */}
       
       {/* <AdviceTools /> */}
       {filterModal && (
