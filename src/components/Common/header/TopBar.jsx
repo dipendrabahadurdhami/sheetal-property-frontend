@@ -62,7 +62,7 @@ const TopBar = (props) => {
           </Link>
           {user.data && (
             <div className="flex items-center justify-center space-x-7">
-              <FaBell className="w-8 h-8 rounded-full text-red-700" />
+              {/* <FaBell className="w-8 h-8 rounded-full text-red-700" /> */}
               <div className="w-8 h-8 rounded-full text-red-700 cursor-pointer relative" onClick={()=> navigate('/myProfile?section=favourites')}>
                 {!user.data && <AiOutlineHeart className="w-8 h-8"/>}
                 {user.data && <AiFillHeart className="w-8 h-8"/> }
