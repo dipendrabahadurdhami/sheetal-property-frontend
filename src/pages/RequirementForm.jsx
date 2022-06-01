@@ -187,7 +187,7 @@ const RequirementForm = () => {
                 <span>Occupation *</span>
                 <Field
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
-                  placeholder="Enter your email address"
+                  placeholder="Enter your occupation"
                   name="occupation"
                   value={values.occupation}
                   onChange={handleChange}
@@ -293,7 +293,7 @@ const RequirementForm = () => {
                 <textarea
                   rows={7}
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
-                  placeholder="Enter your name"
+                  placeholder="Write your query"
                   name="description"
                   value={values.description}
                   onChange={handleChange}
