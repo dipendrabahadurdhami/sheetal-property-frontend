@@ -127,9 +127,9 @@ console.log("ASdasd",demands);
                               </Disclosure.Panel>
                             ))}
 
-                            <Disclosure.Button className="w-full text-left text-red-700">
+                            {person.facilities.length > 2 && <Disclosure.Button className="w-full text-left text-red-700">
                               <span>{open ? "See Less" : "See More"}</span>
-                            </Disclosure.Button>
+                            </Disclosure.Button>}
                           </ul>
                         )}
                       </Disclosure>
