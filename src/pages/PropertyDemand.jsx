@@ -51,13 +51,13 @@ const PropertyDemand = () => {
       <div className="text-2xl font-bold">PropertyDemand</div>
       <div className="flex justify-center px-5 md:px-10">
         <div className="w-full xl:w-9/12 bg-white rounded p-3 xs:p-7  md:p-10 lg:space-y-5">
-          <div className=" relative">
+          <form className=" relative"  onSubmit={onSearchClick}>
             <input type="text" name="search" placeholder="Search by Title, Location, Budget, Tenant, Vehicle" className="block w-full px-6 text-lg py-6 border-2 border-gray-400 rounded-md" onChange={(e)=>setSearch(e.target.value)}/>
-            <button type="submit" className="btn bg-red-600 text-white text-normal font-medium py-4 px-6 rounded-md absolute top-3 right-3 hover:bg-red-700 inline-flex items-center" onClick={onSearchClick}>
+            <button type="submit" className="btn bg-red-600 text-white text-normal font-medium py-4 px-6 rounded-md absolute top-3 right-3 hover:bg-red-700 inline-flex items-center">
               <FaSearch className="mr-2"/>
               Search
             </button>
-          </div>
+          </form>
         </div>
       </div>
       {loading && <div className="flex items-center justify-center py-4"><Loader/></div>}

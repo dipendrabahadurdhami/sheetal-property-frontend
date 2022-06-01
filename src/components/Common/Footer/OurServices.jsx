@@ -1,20 +1,20 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const OurServices = () => {
   return (
     <div className="text-white">
-      <ul className="space-y-3 capitalize">
+      <h2 className="font-bold mb-4">Our services</h2>
+      <ul className="space-y-3 capitalize text-sm">
+      
         <li>
-          <a href="/">Our services</a>
+          <Link to={'/productSearch?advertisement_purpose=Sale'}>Sale Properties</Link>
         </li>
         <li>
-          <a href="/">Buy Property</a>
+          <Link to={'/productSearch?advertisement_purpose=Rent'}>Rent Properties</Link>
         </li>
         <li>
-          <a href="/">Sell Propertyy</a>
-        </li>
-        <li>
-          <a href="/">Rent Propertyy</a>
+          <Link to={'/productSearch?advertisement_purpose=Invest'}>Invest in Properties</Link>
         </li>
       </ul>
     </div>

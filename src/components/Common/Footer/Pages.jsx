@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Pages = () => {
   return (
@@ -6,16 +7,16 @@ const Pages = () => {
       <div className="text-white">
         <ul className="space-y-3">
           <li>
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="/findAgent">Fond Agent</a>
+            <Link to="/findAgent">Find Agent</Link>
           </li>
           <li>
-            <a href="/homeLone">Services</a>
+            <Link to="/requirementForm">Requirement Form</Link>
           </li>
           <li>
-            <a href="/propertyDemand">Property Demand</a>
+            <Link to="/propertyDemand">Property Demands</Link>
           </li>
         </ul>
       </div>

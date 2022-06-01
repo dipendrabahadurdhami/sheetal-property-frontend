@@ -45,7 +45,7 @@ const SideBar = ({ menubutton }) => {
       current: false,
     },
     // { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
-    { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
+    // { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
     { name: "Logout", href: "logout", icon: InboxIcon, current: false },
   ]);
   
