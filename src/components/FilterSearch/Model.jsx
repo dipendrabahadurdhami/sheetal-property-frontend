@@ -1,10 +1,26 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import Search from "../Common/SearchBox/HomeSearch";
 import FormFilter from "./FormFilter";
+import { useNavigate } from "react-router-dom";
 
 const Model = ({ setFilterModal, filterModal }) => {
+  const navigate =  useNavigate();
+  const [search, setSearch] = useState('');
+  const handleSearchClick = (data) => {
+    let params='';
+    if(search) params += `keyword=${search}`;
+    if(data?.advertisement_purpose) params += `&advertisement_purpose=${data?.advertisement_purpose}`;
+    if(data?.property_type) params += `&property_type=${data?.property_type}`;
+    if(data?.min_price) params += `&min_price=${data?.min_price}`;
+    if(data?.max_price) params += `&max_price=${data?.max_price}`;
+
+    navigate({
+      pathname:"/productSearch",
+      search: `?${params}`,
+    })
+  }
   return (
     <Transition.Root show={filterModal} as={Fragment}>
       <Dialog
@@ -52,12 +68,12 @@ const Model = ({ setFilterModal, filterModal }) => {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div className="relative inline-block align-bottom bg-white pt-5 pb-4 text-left overflow-hidden transform transition-all sm:align-middle md:max-w-4xl w-full md:p-6">
-              <div className="py-10 bg-gray-500 md:bg-white px-4">
-                <Search  showFilters={false}/>
+              <div className="py-10 bg-gray-500 md:bg-white px-8">
+                <input type="text" name="search" placeholder="Search" value={search} className="border-4 border-gray-400 py-4 block w-full px-4 rounded-md" onChange={(e)=>setSearch(e.target.value)}/>
               </div>
               <div className="md:flex justify-center px-4">
                 <div className="md:max-w-3xl">
-                  <FormFilter setFilterModal={setFilterModal} />
+                  <FormFilter setFilterModal={setFilterModal} setAction={handleSearchClick} />
                 </div>
               </div>
             </div>

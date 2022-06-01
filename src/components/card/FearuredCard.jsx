@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { FaMapMarkerAlt } from "react-icons/fa";
+
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -95,7 +98,7 @@ const FearuredCard = ({ product }) => {
           />
           <div className="p-3 space-y-2 pb-7 text-xl font-light">
             <div className="flex justify-between items-center">
-              <h1 className="font-light text-gray-600 cursor-pointer pr-10"  onClick={() => { navigate(`/property/${product.id}`);}}>{product.name.slice(0,25)}...</h1>
+              <h1 title={product.name} className="font-medium text-md text-gray-600 cursor-pointer pr-10" style={{fontSize:'18px'}} onClick={() => { navigate(`/property/${product.id}`);}}>{product.name.length > 80?product.name.slice(0, 80)+'...':product.name}</h1>
               <div className="w-6 h-6 cursor-pointer relative z-10" onClick={(e)=>onFavoriteClick(e,product.id)}>
                 {!favorite && <AiOutlineHeart className="w-6 h-6 text-red-600" />}
                 {favorite && <AiFillHeart className="w-6 h-6 text-red-600" />}
@@ -105,7 +108,7 @@ const FearuredCard = ({ product }) => {
               <span className="font-medium">Rs. {product?.total_price?product?.total_price:'N/A'} </span>
               <span className="font-medium">{product?.land_according_to_measurements?.land_area_in_sqft_measurements?product?.land_according_to_measurements?.land_area_in_sqft_measurements:' -'} sq.ft.</span>
             </div>
-            {product?.property_location && <div className="text-gray-600">{product?.property_location.slice(0,25)}...</div>}
+            {product?.property_location && <div className="text-gray-600 text-sm flex flex-wrap"> <FaMapMarkerAlt  className="text-normal text-red-500 mr-2" style={{marginTop:'2px'}}/>   {product?.property_location}</div>}
           </div>
         </div>
       </div>

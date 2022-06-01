@@ -1,11 +1,13 @@
 import { Field, Formik, useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import ListBox from "../components/Common/ListBox";
 
 const RequirementForm = () => {
-  const TenantOption = [{ name: "Rent" }, { name: "Buy" }, { name: "Invest" }];
+  const [properties,setProperties] = useState(null);
+  const [loading, setLoading]= useState(false);
+  const [tenant, setTenant] = useState(null);
   const Vehicle = [
     { name: "Two Wheeler" },
     { name: "There Wheeler" },
@@ -17,6 +19,25 @@ const RequirementForm = () => {
     { name: "House" },
     { name: "Apartment" },
   ];
+
+  const allProperties = async () => {
+    setLoading(true);
+    await axios.get(`${process.env.REACT_APP_API_LINK}/property-attributes`).then(res=>{
+      if(res.status  === 200){
+        setLoading(false);
+        setProperties(res.data.data);
+
+        console.log(res.data.data)
+      }else{
+        setLoading(false);
+      }
+    });
+   
+
+  };
+  useEffect(()=>{
+    allProperties();
+  },[])
   // const Facilities = [{ name: "Electricity", value:"Electricity" }, { name: "Water", value:'Water' }, { name: "Parking", value: 'parking' },{name: "Drainage", value: 'drainage'}];
 
   // const formik = useFormik({
@@ -203,9 +224,9 @@ const RequirementForm = () => {
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
                 >
                   <option value="">Select</option>
-                  <option value="rent">Rent</option>
-                  <option value="buy">Buy</option>
-                  <option value="interest">Interest</option>
+                  {properties && properties?.purposes && properties?.purposes.map((purpose,i)=>{
+                    return (<option value={purpose.name} key={i}>{purpose.name}</option>)
+                  })}
                 </Field>
               </label>
               <label className="flex flex-col space-y-2">
@@ -227,6 +248,7 @@ const RequirementForm = () => {
                   <option value="flat">Flat </option>
                   <option value="house">House</option>
                   <option value="apartment">Apartment</option>
+                  <option value="land">Land</option>
                 </Field>
               </label>
               <label className="flex flex-col space-y-2">
@@ -251,19 +273,17 @@ const RequirementForm = () => {
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Facilities</span>
-                <Field
-                  multiple
-                  as="select"
-                  name="facilities"
-                  onChange={handleChange}
-                  className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
-                >
-    
-                  <option value="electricity">Electricity</option>
-                  <option value="water">Water</option>
-                  <option value="parking">Parking</option>
-                  <option value="drainage">Drainage</option>
-                </Field>
+
+                <div role="group" className="-mx-4 flex flex-wrap" aria-labelledby="checkbox-group">
+                  {properties && properties?.facilities && properties?.facilities.map((facility,i)=>{
+                    return(
+                    <label key={i} className="px-4">
+                      <Field type="checkbox" name="facilities" value={facility.name} />
+                      <span className="ml-2">{facility.name}</span>
+                    </label>
+                    )
+                  })}
+              </div>
 
 
               </label>

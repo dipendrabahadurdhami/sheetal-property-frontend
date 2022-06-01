@@ -20,22 +20,12 @@ import { toast } from "react-toastify";
 import { fetchUserInformation } from "../../../features/slices/userInformation";
 import apiClient from "../../../utils/apiClient";
 
-const navigation = [
-  { name: "My Profile", href: "profile", icon: HomeIcon, current: true },
-  {
-    name: "favourite Properties",
-    href: "favourites",
-    icon: UsersIcon,
-    current: false,
-  },
-  // { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
-  { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
-  { name: "Logout", href: "logout", icon: InboxIcon, current: false },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
+
 
 const SideBar = ({ menubutton }) => {
   const dispatch =  useDispatch();
@@ -43,8 +33,22 @@ const SideBar = ({ menubutton }) => {
   const [image, setImage]= useState(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] =useState(false);
-  const [params, setParams] = useSearchParams();
+  const [params, setParams] = useSearchParams(window.location.search);
   const query = params.get("section");
+
+  const [navigation, setNavigation] = useState([
+    { name: "My Profile", href: "profile", icon: HomeIcon, current: true },
+    {
+      name: "favourite Properties",
+      href: "favourites",
+      icon: UsersIcon,
+      current: false,
+    },
+    // { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
+    { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
+    { name: "Logout", href: "logout", icon: InboxIcon, current: false },
+  ]);
+  
   const mainComponent = {
     profile: <DashBoard />,
     favourites: <Properties />,
@@ -87,7 +91,20 @@ const SideBar = ({ menubutton }) => {
       setImage(user?.data?.photo)
     }
   },[user])
-
+  useEffect(()=>{
+    const section = params.get('section');
+    if(section){
+    const newObject = navigation.map(item=>{
+      if(item.href === section) return {...item, current:true}
+      else  return {...item, current:false}
+    })
+    setNavigation(newObject)
+    // let activeObject = allNavigation.filter(navigate => navigate.href === section)
+    //  activeObject[0].current = true;
+    // console.log(activeObject)
+    // setNavigation([...allNavigation, ...activeObject ])
+    }
+  },[params])
   function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();

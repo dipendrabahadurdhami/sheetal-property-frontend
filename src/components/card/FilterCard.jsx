@@ -103,7 +103,7 @@ const FilterCard = ({ property }) => {
           <div className="p-5 sm:p-7 xl:pr-10 space-y-5 font-light">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="font-bold text-gray-600 text-xl">
+                <h1 className="font-bold text-gray-600 text-xl" onClick={() => navigate("/property/"+property.id)} >
                   {property?.title}
                 </h1>
                 <h1 className="text-sm">from {property?.property_location?property?.property_location:'N/A'} </h1>

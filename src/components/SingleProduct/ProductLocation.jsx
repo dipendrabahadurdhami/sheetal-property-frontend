@@ -9,6 +9,7 @@ import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const ProductLocation = ({ property }) => {
+  console.log("Property", property);
   let navigate = useNavigate();
   const [favorite, setFavorite] = useState(false);
   const favorites =  useSelector(state=>state.favorites.data);
@@ -75,12 +76,12 @@ const ProductLocation = ({ property }) => {
   }
 
   return (
-    <div className="flex flex-wrap justify-between items-center">
-      <div>
+    <div className="flex flex-wrap lg:flex-nowrap justify-between ">
+      <div className="lg:pr-8">
         <div className="text-lg sm:text-2xl font-bold">{property.name}</div>
         <div className="flex space-x-2 text-xs sm:text-sm">
           <span>{property.property_location} | </span>
-          <a href="/" className="flex items-center space-x-2 text-red-700">
+          <a href={`https://www.google.com/maps/@${property.latitude},${property.longitude},15.42z`} target="_blank" className="flex items-center space-x-2 text-red-700">
             <GrLocation className="w-4 h-4 text-red-700" />
             <span className="border-b border-red-700">Show on Map</span>
           </a>

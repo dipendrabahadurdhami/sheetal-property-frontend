@@ -2,13 +2,22 @@ import React from "react";
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { removeUserInfo } from "../../features/slices/userInformation";
+import { useDispatch } from "react-redux";
+import { removeAllFavorites } from "../../features/slices/favourites";
 
 const LogOut = () => {
   const [open, setOpen] = useState(true);
-
+  let dispatch = useDispatch();
+  const navigate =  useNavigate();
   const cancelButtonRef = useRef(null);
-
+  const SignOut = () => {
+    localStorage.removeItem("sheetal_token");
+    dispatch(removeUserInfo())
+    dispatch(removeAllFavorites())
+    navigate("/",{replace:true})
+  };
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -55,7 +64,10 @@ const LogOut = () => {
                   <button
                     type="button"
                     className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 py-2 bg-red-700 text-base font-medium shadow-sm hover:bg-red-800 focus:outline-none text-white sm:mt-0 sm:ml-3 sm:w-auto px-16"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      SignOut();
+                      setOpen(false);
+                    }}
                   >
                     Yes
                   </button>
