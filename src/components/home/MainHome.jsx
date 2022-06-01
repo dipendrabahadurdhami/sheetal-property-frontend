@@ -21,7 +21,7 @@ const MainHome = () => {
         }}
       >
         <h1 className="-mt-10 md:text-5xl text-xl sm:text-3xl font-semibold capitalize text-white">
-          Search Nepal’s home of property
+          शितलता प्रदान गर्दै शितल रियल स्टेट
         </h1>
       </div>
       <div className="px-5 md:px-10 flex justify-center">

@@ -97,7 +97,7 @@ const FearuredCard = ({ product }) => {
             onClick={() => { navigate(`/property/${product.id}`);}}
           />
           <div className="p-3 space-y-2 pb-7 text-xl font-light">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between">
               <h1 title={product.name} className="font-medium text-md text-gray-600 cursor-pointer pr-10" style={{fontSize:'18px'}} onClick={() => { navigate(`/property/${product.id}`);}}>{product.name.length > 80?product.name.slice(0, 80)+'...':product.name}</h1>
               <div className="w-6 h-6 cursor-pointer relative z-10" onClick={(e)=>onFavoriteClick(e,product.id)}>
                 {!favorite && <AiOutlineHeart className="w-6 h-6 text-red-600" />}
