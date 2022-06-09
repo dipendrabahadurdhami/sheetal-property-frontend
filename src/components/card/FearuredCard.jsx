@@ -93,7 +93,7 @@ const FearuredCard = ({ product }) => {
           <img
             src={product.feature_image}
             alt="unsplash"
-            className="w-full bg-center h-44 sm:h-48 lg:h-72"
+            className="w-full bg-center h-44 sm:h-48 lg:h-72 object-center object-cover"
             onClick={() => { navigate(`/property/${product.id}`);}}
           />
           <div className="p-3 space-y-2 pb-7 text-xl font-light">

@@ -12,7 +12,7 @@ const Featured = () => {
     try {
       async function FetchData() {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_LINK}/all-properties`
+          `${process.env.REACT_APP_API_LINK}/featured-property-list`
         );
         
 
@@ -41,7 +41,7 @@ const Featured = () => {
           className="pb-16 pt-5"
         >
           {allProduct.map((product, index) => (
-            <div key={index} className="h-full px-4">
+            <div key={index} className="h-full px-4 mb-2">
               <FearuredCard product={product} />
             </div>
           ))}

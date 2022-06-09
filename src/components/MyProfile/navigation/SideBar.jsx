@@ -39,7 +39,7 @@ const SideBar = ({ menubutton }) => {
   const [navigation, setNavigation] = useState([
     { name: "My Profile", href: "profile", icon: HomeIcon, current: true },
     {
-      name: "favourite Properties",
+      name: "Favourite Properties",
       href: "favourites",
       icon: UsersIcon,
       current: false,
