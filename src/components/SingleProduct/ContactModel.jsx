@@ -1,9 +1,49 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon, XIcon } from "@heroicons/react/outline";
-import { FaUserCircle } from "react-icons/fa";
+import { FaSpinner, FaUserCircle } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const ContactModel = ({ open, setOpen }) => {
+const ContactModel = ({data, open, setOpen }) => {
+  const [loading,setLoading]=useState(false);
+  const [form,setForm]=useState({
+    name:'',
+    email:'',
+    phone:'',
+    terms:false
+  })
+
+  const onFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await axios.post(`${process.env.REACT_APP_API_LINK}/contact-owner`,{
+      name:form.name,
+      email:form.email,
+      mobile_number: '+977'+form.phone,
+      property_id:data?.id,
+      terms_agrement:form.terms?'yes':'no'
+    }).then(res=>{
+      if(res.status === 200){
+        setLoading(false);
+        toast.success("Your details has been sent to the agent.");
+        setForm({
+          name:'',
+          email:'',
+          mobile_number:'',
+          terms:false
+        });
+        setOpen(false)
+      }else{
+        setLoading(false);
+        toast.error("Something went wrong. Please try again later");
+      }
+    }).catch(err=>{
+      setLoading(false);
+      console.error(err);
+    })
+
+  }
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -58,22 +98,30 @@ const ContactModel = ({ open, setOpen }) => {
                       <FaUserCircle className="text-gray-700 w-10 h-10" />
                     </div>
                     <div className="flex flex-col">
-                      <div>Ram Timalsina</div>
-                      <div>Owner +97798XXXXXX45</div>
+                      <div>{data?.posted_by}</div>
+                      <div className="text-sm">Posted on: <strong>{data?.posted_date}</strong></div>
                     </div>
                   </div>
                 </div>
                 <div className="p-5">
-                  <form className="space-y-5">
+                  <form className="space-y-5" onSubmit={onFormSubmit}>
                     <input
                       type="text"
                       className="border-b w-full p-2 text-xl"
                       placeholder="Name"
+                      name="name"
+                      value={form.name}
+                      required={true}
+                      onChange={(e)=>setForm({...form, [e.target.name]: e.target.value})}
                     />
                     <input
                       type="email"
                       className="border-b w-full p-2 text-xl"
                       placeholder="Email"
+                      name="email"
+                      value={form.email}
+                      required={true}
+                      onChange={(e)=>setForm({...form, [e.target.name]: e.target.value})}
                     />
                     <div className="flex space-x-5">
                       <select className="border-b p-2">
@@ -84,10 +132,14 @@ const ContactModel = ({ open, setOpen }) => {
                         type="text"
                         className="border-b w-full p-2 text-xl"
                         placeholder="Mobile number"
+                        name="phone"
+                        value={form.phone}
+                        required={true}
+                        onChange={(e)=>setForm({...form, [e.target.name]: e.target.value})}
                       />
                     </div>
                     <div className="flex space-x-4 items-center">
-                      <input type="checkbox" className="w-5 h-5" />
+                      <input type="checkbox" className="w-5 h-5" value={form.terms} checked={form.terms} onChange={(e)=>setForm({...form, terms: !form.terms})} />
                       <div>
                         <div>
                           I wish to be contacted by Sheetal Property expert.{" "}
@@ -96,8 +148,8 @@ const ContactModel = ({ open, setOpen }) => {
                       </div>
                     </div>
                     <div>
-                      <button className="w-full bg-red-700 py-2 text-lg font-bold text-white rounded-lg ">
-                        Contact Owner
+                      <button type="submit" disabled={!form.terms || loading} className={`w-full bg-red-700 py-2 text-lg font-bold text-white flex items-center justify-center rounded-lg ${!form.terms ||  loading?'opacity-50':''}`}>
+                        {loading?<FaSpinner className="spin"/>:'Contact Owner'}
                       </button>
                     </div>
                   </form>

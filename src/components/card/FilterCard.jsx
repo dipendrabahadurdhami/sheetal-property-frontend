@@ -6,14 +6,15 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { removeFavoriteList, setFavoritesList } from "../../features/slices/favourites";
 import apiClient from "../../utils/apiClient";
-import { product } from "../Object/product";
+
 
 const FilterCard = ({ property }) => {
   let navigate = useNavigate();
   let [params, setParams] = useSearchParams();
-  console.log(property)
+ 
   const [favorite, setFavorite] = useState(false)
   const favorites =  useSelector(state=>state.favorites.data)
+  console.log("Favorites", favorites, property);
   const dispatch = useDispatch();
 
  const user =  useSelector(state=>state.user)
@@ -22,13 +23,14 @@ const FilterCard = ({ property }) => {
 // console.log(user)
 
   useEffect(()=>{
+   
     if(favorites){
-      if(favorites.find(item=>item.property_id === product.id)){
+      if(favorites.find(item=>item.property_id === property.id)){
         setFavorite(true)
       }
     }
 
-  },[favorites])
+  },[favorites, property])
 
 
   useEffect(()=>{

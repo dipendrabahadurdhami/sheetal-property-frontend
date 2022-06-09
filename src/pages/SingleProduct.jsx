@@ -83,7 +83,7 @@ const SingleProduct = () => {
               </div>
               <Featured />
               <Property />
-              <ContactModel open={open} setOpen={setOpen} />
+              <ContactModel data={property} open={open} setOpen={setOpen} />
             </>
           )}
         </>
