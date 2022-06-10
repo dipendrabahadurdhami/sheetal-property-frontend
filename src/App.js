@@ -76,8 +76,8 @@ function App() {
             <Route path="/investment/export" element={<InvestmentExplore />} />
             <Route path="/postProperty" element={<Protected><PostProperty /></Protected>} />
             <Route path="/propertyDemand" element={<PropertyDemand />} />
-            <Route path="/findAgent" element={<FindAgent />} />
-            <Route path="/singleAgent" element={<SingleAgent />} />
+            <Route path="/agents" element={<FindAgent />} />
+            <Route path="/agent/:id" element={<SingleAgent />} />
             <Route path="/productSearch" element={<ProductSearch />} />
             <Route path="/myProfile/messages" element={<Message />} />
             <Route path="/investDetail" element={<InvestDetails />} />

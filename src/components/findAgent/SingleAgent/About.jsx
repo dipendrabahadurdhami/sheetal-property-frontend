@@ -21,49 +21,67 @@ const arrayvals = [
   "abcd, efgh, ijkl",
 ];
 
-const About = () => {
+const About = ({data}) => {
   return (
     <div className="space-y-10">
       <div className="text-sm flex flex-col space-y-5">
         <h1 className="text-xl font-medium">About us</h1>
         <div className="space-y-3">
-          <p>Realtor-Broker (22 years experience)</p>
+          {/* <p>Realtor-Broker (22 years experience)</p>
           <p>
             Specialties: Buyer's agent, Listing agent, Relocation, Consulting,
             Property Management
-          </p>
-          <p className="text-gray-600">
+          </p> */}
+          {/* <p className="text-gray-600">
             For most families, their home is their largest financial asset, and
             deciding to sell it is a big decision that involves a lot of
             preparation and work. When you're ready to sell it's important to
             have an experienced real estate professional handle the details
             involved in the successful sale of a home for top dollar.
-          </p>
+          </p> */}
         </div>
       </div>
       <div className="lg:w-2/3 border-t xs:border border-gray-300 xs:rounded py-5 xs:p-5">
         <div className="font-medium text-xl py-5 text-center">
           Professional Information
         </div>
-        <ul className="flex xs:grid xs:grid-cols-2 gap-5 sm:gap-10 text-gray-600">
-          <div className="grid gap-2 text-sm sm:text-base">
-            <li className="">Broker Address:</li>
-            <li className="">Cell Phone:</li>
-            <li className="">Broker Address:</li>
-            <li className="">Broker Phone:</li>
-            <li className="">Website:</li>
-            <li className="">Screen Name:</li>
-            <li className="">MemberSince:</li>
-            <li className="">RealEstate Licenses:</li>
-            <li className="">Other Licenses:</li>
-          </div>
-          <div className="grid gap-2">
-            {arrayvals.map((value, index) => (
-              <li key={index} className="font-medium text-sm sm:text-base">
-                {value}
-              </li>
-            ))}
-          </div>
+        <ul className="">
+            {data.address_1 &&
+            <li className="flex flex-wrap text-gray-600 mb-2">
+              <div className="w-full md:w-6/12">Broker Address Line 1:</div>
+              <div className="w-full md:w-6/12">{data.address_1}</div>
+            </li>
+            }
+            {data.address_2 &&
+            <li className="flex flex-wrap text-gray-600 mb-2">
+              <div className="w-full md:w-6/12">Broker Address Line 2:</div>
+              <div className="w-full md:w-6/12">{data.address_2}</div>
+            </li>
+            }
+            {data.email &&
+            <li className="flex flex-wrap text-gray-600 mb-2">
+              <div className="w-full md:w-6/12">Email Address:</div>
+              <div className="w-full md:w-6/12">{data.email}</div>
+            </li>
+            }
+            {data.mobile &&
+            <li className="flex flex-wrap text-gray-600 mb-2">
+              <div className="w-full md:w-6/12">Mobile Number:</div>
+              <div className="w-full md:w-6/12">{data.mobile}</div>
+            </li>
+            }
+            {data.phone &&
+            <li className="flex flex-wrap text-gray-600 mb-2">
+              <div className="w-full md:w-6/12">Phone Number:</div>
+              <div className="w-full md:w-6/12">{data.phone}</div>
+            </li>
+            }
+            {data.created_at &&
+            <li className="flex flex-wrap text-gray-600">
+              <div className="w-full md:w-6/12">Member Since:</div>
+              <div className="w-full md:w-6/12">{data.created_at}</div>
+            </li>
+            }      
         </ul>
       </div>
     </div>

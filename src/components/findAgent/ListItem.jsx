@@ -21,7 +21,7 @@ const AgentListItem = ({data}) => {
                 <div className="space-y-1">
  
                     <Link
-                    to="/singleAgent"
+                    to={`/agent/${data.id}`}
                     className="text-sm font-medium text-red-600 truncate"
                     >
                     {data.first_name} {data.last_name}
@@ -72,7 +72,7 @@ const AgentListItem = ({data}) => {
                 </div>
             </div>
             <div>
-                <Link to="/singleAgent">
+                <Link   to={`/agent/${data.id}`}>
                 <ChevronRightIcon
                     className="h-7 w-7 text-red-700"
                     aria-hidden="true"

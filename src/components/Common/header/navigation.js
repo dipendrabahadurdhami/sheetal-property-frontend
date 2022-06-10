@@ -41,7 +41,7 @@ export const navigation = [
     subTitle: [],
   },
   {
-    link: "/findAgent",
+    link: "/agents",
     title: "Find Agent",
     subTitle: [],
   },
