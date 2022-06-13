@@ -55,7 +55,7 @@ const TopBar = (props) => {
             </button>
           )}
           <Link
-            to="/postProperty"
+            to="/my-profile?section=post-property"
             className="px-5 py-3 bg-red-700 text-lg text-white capitalize rounded-lg"
           >
             post property{" "}
@@ -63,7 +63,7 @@ const TopBar = (props) => {
           {user.data && (
             <div className="flex items-center justify-center space-x-7">
               {/* <FaBell className="w-8 h-8 rounded-full text-red-700" /> */}
-              <div className="w-8 h-8 rounded-full text-red-700 cursor-pointer relative" onClick={()=> navigate('/myProfile?section=favourites')}>
+              <div className="w-8 h-8 rounded-full text-red-700 cursor-pointer relative" onClick={()=> navigate('/my-profile?section=favourites')}>
                 {!user.data && <AiOutlineHeart className="w-8 h-8"/>}
                 {user.data && <AiFillHeart className="w-8 h-8"/> }
                 {user.data && favorites.data.length > 0 && <span className="absolute -right-2 top-0 rounded-full w-4 h-4 bg-white border border-red-700 text-red-700 text-xs flex items-center justify-center text-center font-medium">{favorites.data.length}</span>}

@@ -52,7 +52,7 @@ const UserLogin = () => {
                   <div className="flex justify-start items-center">
                     <FaUser className="w-5 h-5 text-red-700" />
                     <Link
-                      to="/myProfile"
+                      to="/my-profile"
                       className="flex rounded-md items-center w-full px-2 py-2 text-sm"
                     >
                       My Profile

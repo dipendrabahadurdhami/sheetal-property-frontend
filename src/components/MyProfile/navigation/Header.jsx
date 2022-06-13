@@ -20,7 +20,7 @@ export default Header;
         </div>
         <div className="flex items-center space-x-6">
           <div className="hidden md:flex items-center space-x-6">
-            <a href="/myProfile?section=messages">
+            <a href="/my-profile?section=messages">
               <HiMail className="w-7 h-7" />
             </a>
             <a href="/" className="relative">

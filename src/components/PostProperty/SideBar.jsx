@@ -21,7 +21,7 @@ const SideBar = () => {
         </div>
       </div>
       <div className="grid">
-        <a href="myProfile" className="px-5 py-3 hover:bg-gray-200">
+        <a href="my-profile" className="px-5 py-3 hover:bg-gray-200">
           Dashboard
         </a>
         <a href="/" className="px-5 py-3 hover:bg-gray-200">
@@ -31,7 +31,7 @@ const SideBar = () => {
           Property Demand
         </a>
         <a
-          href="postProperty"
+          href="my-profile?section=post-property"
           className="px-5 py-3 hover:bg-gray-100 bg-gray-100"
         >
           Post Property

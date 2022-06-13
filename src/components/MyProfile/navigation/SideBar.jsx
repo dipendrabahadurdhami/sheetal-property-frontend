@@ -6,6 +6,7 @@ import {
   HomeIcon,
   InboxIcon,
   UsersIcon,
+  PlusIcon
 } from "@heroicons/react/outline";
 import DashBoard from "../DashBoard";
 import Properties from "../Properties";
@@ -19,6 +20,7 @@ import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { fetchUserInformation } from "../../../features/slices/userInformation";
 import apiClient from "../../../utils/apiClient";
+import PostProperty from "../../../pages/PostProperty";
 
 
 function classNames(...classes) {
@@ -38,6 +40,7 @@ const SideBar = ({ menubutton }) => {
 
   const [navigation, setNavigation] = useState([
     { name: "My Profile", href: "profile", icon: HomeIcon, current: true },
+    { name: "Post Property", href: "post-property", icon: PlusIcon, current: false },
     {
       name: "Favourite Properties",
       href: "favourites",
@@ -54,6 +57,7 @@ const SideBar = ({ menubutton }) => {
     favourites: <Properties />,
     messages: <Messages />,
     // saved: <NoData />,
+    'post-property': <PostProperty/>,
     logout: <LogOut />,
   };
   const onInputChange =async (e) => {
@@ -192,7 +196,7 @@ const SideBar = ({ menubutton }) => {
                   </div>
                   <nav className="mt-10 flex-1 px-2 bg-white space-y-1">
                     {navigation.map((item) => (
-                      <Link key={item.name} to={`/myProfile?section=${item.href}`}>
+                      <Link key={item.name} to={`/my-profile?section=${item.href}`}>
                         <button
                           className={classNames(
                             item.current

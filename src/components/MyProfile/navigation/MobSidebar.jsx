@@ -88,7 +88,7 @@ export const MobSidebar = ({ setSidebarOpen, sidebarOpen }) => {
                   {navigation.map((item) => (
                     <Link
                       key={item.name}
-                      to={`/myProfile?section=${item.href}`}
+                      to={`/my-profile?section=${item.href}`}
                     >
                       <button
                         onClick={() => setSidebarOpen(false)}

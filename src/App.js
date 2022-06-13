@@ -74,12 +74,12 @@ function App() {
             <Route path="/rateandtrend" element={<RateAndTrends />} />
             <Route path="/investment" element={<Investment />} />
             <Route path="/investment/export" element={<InvestmentExplore />} />
-            <Route path="/postProperty" element={<Protected><PostProperty /></Protected>} />
+            <Route path="/my-profile?section=post-property" element={<Protected><PostProperty /></Protected>} />
             <Route path="/propertyDemand" element={<PropertyDemand />} />
             <Route path="/agents" element={<FindAgent />} />
             <Route path="/agent/:id" element={<SingleAgent />} />
             <Route path="/productSearch" element={<ProductSearch />} />
-            <Route path="/myProfile/messages" element={<Message />} />
+            <Route path="/my-profile/messages" element={<Message />} />
             <Route path="/investDetail" element={<InvestDetails />} />
             <Route path="/project" element={<Project />} />
             <Route
@@ -87,7 +87,7 @@ function App() {
               element={<InvestmentAllProduct />}
             />
     
-            <Route path="/myProfile" element={<Protected><MyProfile /></Protected>} />
+            <Route path="/my-profile" element={<Protected><MyProfile /></Protected>} />
   
           </Routes>
         </div>
