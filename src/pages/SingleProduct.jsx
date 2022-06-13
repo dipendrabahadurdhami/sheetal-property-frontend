@@ -15,6 +15,8 @@ import axios from "axios";
 import Loader from "../components/Loader";
 import YoutubeVideo from "../components/SingleProduct/Video";
 
+
+
 const SingleProduct = () => {
   const [open, setOpen] = useState(false);
   window.scrollTo(0, 0);

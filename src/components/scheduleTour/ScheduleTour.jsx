@@ -163,11 +163,11 @@ const ScheduleTour = () => {
             </div>
           </form>
         </div>
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <div className="w-full lg:w-96">
             <MortageCalculator />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

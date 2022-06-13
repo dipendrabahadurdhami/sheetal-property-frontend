@@ -80,14 +80,23 @@ const ProductLocation = ({ property }) => {
       <div className="lg:pr-8">
         <div className="text-lg sm:text-2xl font-bold">{property.name}</div>
         <div className="flex space-x-2 text-xs sm:text-sm">
-          <span>{property.property_location} | </span>
-          <a href={`https://www.google.com/maps/@${property.latitude},${property.longitude},15.42z`} target="_blank" className="flex items-center space-x-2 text-red-700">
-            <GrLocation className="w-4 h-4 text-red-700" />
-            <span className="border-b border-red-700">Show on Map</span>
-          </a>
+          <span>{property.property_location} | </span> 
+          <span>{property.property_type} | </span>
+          {
+            property.latitude && property.longitude &&
+          
+            <a href={`https://www.google.com/maps/@${property.latitude},${property.longitude},15.42z`} target="_blank" className="flex items-center space-x-2 text-red-700">
+              <GrLocation className="w-4 h-4 text-red-700" />
+              <span className="border-b border-red-700">Show on Map</span>
+            </a>
+          }
         </div>
       </div>
-      <div>
+      <div className="flex items-center">
+        <div>
+          <h3 className="font-normal text-sm -mb-2 text-gray-500">Price</h3>
+          <div className="font-bold text-lg">Rs. <span className="text-red-500 mr-10">{property.total_price}</span> </div>
+        </div>
           <div className="w-10 h-10 cursor-pointer relative z-10" onClick={(e)=>onFavoriteClick(e,property.id)}>
             {!favorite.isLoading  && !favorite && <AiOutlineHeart className="w-10 h-10 text-red-600" />}
             {!favorite.isLoading  && favorite && <AiFillHeart className="w-10 h-10 text-red-600" />}

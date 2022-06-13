@@ -21,7 +21,7 @@ const Video = ({errors, onInputChange, data}) => {
                 placeholder="https://www.youtube.com/watch?v=DfuJi3hOlhE"
                 onChange={(e)=>onFormInputChange('youtube_url', e.target.value)}
               />
-            {errors && errors?.youtubve && <p className="text-red-500 text-sm">{errors?.youtube_url}</p>}
+            {errors && errors?.youtube_url && <p className="text-red-500 text-sm">{errors?.youtube_url}</p>}
           </div>
           {/* /.form-group */}
 

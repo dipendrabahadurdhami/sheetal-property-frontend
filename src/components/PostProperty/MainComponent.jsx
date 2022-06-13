@@ -20,7 +20,7 @@ import Uploads from "./Uploads";
 import MapWithASearchBox from "../MapWithSearch";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
-
+import IconCheckWhite from '../../assets/images/icon-check-white.svg';
 const MainComponent = (props) => {
   const [propertyAttributes, setPropertyAtributes] = useState(null);
   const [errors,setErrors] = useState(null);
@@ -31,7 +31,14 @@ const MainComponent = (props) => {
     name:'',
     feature_image:'',
     expiry_date:null,
+    interior_looks:[],
+    exterior_looks:[],
     property_location: '',
+    total_price:'',
+    youtube_url:'',
+    gallery_images:[],
+    property_description:'',
+  
 
 
 
@@ -67,10 +74,8 @@ const MainComponent = (props) => {
 
 
     property_highlights:'',
-    property_description:'',
     other_description:'',
-    interior_looks:[],
-    exterior_looks:[],
+
 
     location:'',
     lat:'',
@@ -115,15 +120,12 @@ const MainComponent = (props) => {
     loan_amount:'',
     
 
-    youtube_url:'',
-
-
-    gallery_images:[],
+   
     documents:[]
 
   });
   const [loading,setLoading]=useState(false);
-
+  const [advanceOptionEnabled, setAdvanceOptionEnabled] = useState(false);
 
 
   useEffect(()=>{
@@ -167,10 +169,14 @@ const MainComponent = (props) => {
     if(!form.category_id) errors.category_id = "Please select one of category type";
     if(!form.class_id) errors.class_id = "Please select one of class type";
     if(!form.name) errors.name = "Please enter property name";
-    if(!form.advertisement_type) errors.advertisement_type = "Please select one of advertisement type";
+    if(!form.expiry_date) errors.expiry_date = "Please select expiry date";
     if(!form.purpose_id) errors.purpose_id = "Please select one of advertisement purpose";
+    if(!form.property_location) errors.property_location = "Please enter property location";
 
-    if(!form.property_status) errors.property_status = "Please select one  property status";
+    if(!form.total_price) errors.total_price = "Please enter total price of the property";
+    if(form.gallery_images.length === 0) errors.gallery_images = "Please add gallery images";
+    if(!form.feature_image) errors.feature_image = "Please add feature image";
+    if(!form.property_description) errors.property_description = "Please enter property description";
     setErrors(errors);
     return errors;
   }
@@ -205,10 +211,18 @@ const MainComponent = (props) => {
       formData.append('class_id',form.class_id);
       formData.append('expiry_date',form.expiry_date);
       formData.append('property_location',form.property_location);
+      formData.append('purpose_id', form.purpose_id);
+      formData.append('property_description',form.property_description);
+      formData.append('total_price',form.total_price);
+      for(let i=0; i<form.exterior_looks.length; i++){
+        formData.append('exterior_look_id['+i+']',form.exterior_looks[i].id);
+      }
+      for(let i=0; i<form.interior_looks.length; i++){
+        formData.append('interior_look_id['+i+']',form.interior_looks[i].id);
+      }
 
 
       formData.append('advertisement_type',form.advertisement_type);
-      formData.append('purpose_id', form.purpose_id);
       formData.append('commission', form.commission);
       formData.append('owner_info', form.owner_info);
 
@@ -241,15 +255,10 @@ const MainComponent = (props) => {
 
 
       formData.append('property_highlights',form.property_highlights);
-      formData.append('property_description',form.property_description);
+     
       formData.append('other_description',form.other_description);
       
-      for(let i=0; i<form.exterior_looks.length; i++){
-        formData.append('exterior_look_id['+i+']',form.exterior_looks[i].id);
-      }
-      for(let i=0; i<form.interior_looks.length; i++){
-        formData.append('interior_look_id['+i+']',form.interior_looks[i].id);
-      }
+      
 
 
       formData.append('location',form.location);
@@ -306,7 +315,7 @@ const MainComponent = (props) => {
         if(res.status === 200){
           setLoading(false);
           toast.success("Property Successfully added");
-          this.setTimeout(()=>{
+          setTimeout(()=>{
             window.location.reload(true)
           },5000);
           // document.getElementById("post-property-form").reset();
@@ -314,15 +323,19 @@ const MainComponent = (props) => {
           setLoading(false)
           toast.error("Property Failed to Add");
         }
-      })
-    }
-    catch(error){
+      }).
+    catch(error=>{
       console.error(error);
       setLoading(false);
       toast.error("Something went wrong. Please contact admin");
-    }
+    })
 
-  }
+      }catch(error){
+        console.error(error);
+        setLoading(false);
+        toast.error("Something went wrong. Please contact admin");
+      }
+    }
 
   return (
     <div>
@@ -333,100 +346,104 @@ const MainComponent = (props) => {
               propertyType={propertyAttributes?.data?.property_types} 
               categoryType={propertyAttributes?.data?.categories}
               classType={propertyAttributes?.data?.class_types}
+              exteriorLooks={propertyAttributes?.data?.exterior_looks}
+              interiorLooks={propertyAttributes?.data?.interior_looks}
+              advertisementPurpose={propertyAttributes?.data?.purposes}
               data={form}
               errors={errors}
               onInputChange={handleFormInputChange}
               onFileChange={handleFileInputChange}/>
+              <div className="flex items-center mb-16 cursor-pointer" onClick={()=> setAdvanceOptionEnabled(!advanceOptionEnabled)}>
+                  <div className={`border p-3 rounded-sm inline-flex relative ${advanceOptionEnabled?'bg-red-500 border-red-500':' border-gray-300 '}`}>
+                    <div className="absolute top-0 left-0 w-full h-full p-1 flex items-center justify-center "><img src={IconCheckWhite} alt="check" className="object-center object-contain w-full" /></div>
+                  </div> 
+                  <div className={`ml-4 ${advanceOptionEnabled?'text-gray-600':'text-gray-400'}`}>Advance Option Enable</div>
+              </div>
+              <div className={`${!advanceOptionEnabled?'hidden':'block'}`}>
+                <AdvertisementTypes 
+                  advertisementType={propertyAttributes?.data?.advertisement_types}
+                  advertisementCommission={propertyAttributes?.data?.commission_types}
+                  owners={propertyAttributes?.data?.owner_types}
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}/>
 
-            <AdvertisementTypes 
-              advertisementType={propertyAttributes?.data?.advertisement_types}
-              advertisementPurpose={propertyAttributes?.data?.purposes}
-              advertisementCommission={propertyAttributes?.data?.commission_types}
-              owners={propertyAttributes?.data?.owner_types}
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}/>
+                <DocumentsTypes 
+                  propertyStatus={propertyAttributes?.data?.property_status}
+                  completionYear={propertyAttributes?.data?.completion_year}
+                  url={propertyAttributes?.data?.url}
+                  availabilityDate={propertyAttributes?.data?.availability_from}
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}/>
+                
+                <Address 
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}
+                />
+                <ExpectedPrice 
 
-             <DocumentsTypes 
-               propertyStatus={propertyAttributes?.data?.property_status}
-               completionYear={propertyAttributes?.data?.completion_year}
-               url={propertyAttributes?.data?.url}
-               availabilityDate={propertyAttributes?.data?.availability_from}
-               data={form}
-               errors={errors}
-               onInputChange={handleFormInputChange}/>
-            
-            <Address 
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}
-            />
-            <ExpectedPrice 
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}
+                />
+                <SalesDetails 
+                  urgencies={propertyAttributes?.data?.urgency_types}
 
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}
-            />
-             <SalesDetails 
-              urgencies={propertyAttributes?.data?.urgency_types}
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}
+                />
+                <AboutProperty 
+                
+                data={form}
+                errors={errors}
+                onInputChange={handleFormInputChange}
+                />
 
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}
-            />
-            <AboutProperty 
-             exteriorLooks={propertyAttributes?.data?.exterior_looks}
-             interiorLooks={propertyAttributes?.data?.interior_looks}
-             data={form}
-             errors={errors}
-             onInputChange={handleFormInputChange}
-             />
+                  
+                <MapWithASearchBox  
+                  google={props?.google}
+                  center={{ lat: 27.7014202, lng: 85.3128947 }}
+                  minHeight="300px"
+                  zoom={15}
+                  mapLocation={mapLocation}
+                  />
 
-               
-            <MapWithASearchBox  
-              google={props?.google}
-              center={{ lat: 27.7014202, lng: 85.3128947 }}
-              minHeight="300px"
-              zoom={15}
-              mapLocation={mapLocation}
-              />
+                <OtherDetails 
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}
+                />
+                <RoadAccess 
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}
+                />
+                <LalPurja 
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}
+                />
+                {/*<LandMeasurements />*/}
+                <Finance 
+                data={form}
+                errors={errors}
+                onInputChange={handleFormInputChange}
+                />
 
-            <OtherDetails 
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}
-            />
-            <RoadAccess 
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}
-            />
-            <LalPurja 
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}
-            />
-            {/*<LandMeasurements />*/}
-            <Finance 
-             data={form}
-             errors={errors}
-             onInputChange={handleFormInputChange}
-             />
-            <Video 
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}/>
-          
-          
-            <Uploads
-              data={form}
-              errors={errors}
-              onInputChange={handleFormInputChange}
-            />
-            <button
-              type="submit"
-              className="bg-red-700 text-white px-5 py-2 font-medium rounded"
-            >
+              
+                <Uploads
+                  data={form}
+                  errors={errors}
+                  onInputChange={handleFormInputChange}
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-red-700 text-white px-5 py-2 font-medium rounded"
+              >
               {loading?<FaSpinner className="spin"/>:'Submit'}
             </button>
           </form>
@@ -436,4 +453,4 @@ const MainComponent = (props) => {
   );
 };
 
-export default MainComponent;
+export default MainComponent

@@ -11,12 +11,12 @@ const DashBoard = () => {
       <Information data={user?.data}/>
       <SocialMedia data={user?.data}/>
       <Password />
-      <div className="flex justify-between items-center font-semibold">
+      {/* <div className="flex justify-between items-center font-semibold">
         <div className="text-2xl">Delete Account</div>
         <button className="text-white font-medium bg-red-700 rounded px-5 py-2">
           Delete My Account
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

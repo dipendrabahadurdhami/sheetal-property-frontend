@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { data } from "autoprefixer";
 
-const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertisementCommission, owners, onInputChange, errors}) => {
+const AdvertisementTypes = ({advertisementType, advertisementCommission, owners, onInputChange, errors}) => {
 
   const onFormInputChange = (name,value) => {
     onInputChange(name, value)
@@ -30,23 +30,7 @@ const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertiseme
             {errors && errors?.advertisement_type && <p className="text-red-500 text-sm">{errors?.advertisement_type}</p>}
           </div>
           {/* /.form-group */}
-          <div className="px-2  w-full lg:w-6/12  form-group  mb-6">
-            <label className="block mb-2">Advertisement Purpose</label>
-            <select
-              className="border px-2  w-full rounded text-md mb-2"
-              name="purpose_id"
-              style={{height:'50px'}}
-              onChange={(e)=>onFormInputChange('purpose_id', e.target.value)}
-            >
-
-              <option value="">Choose your advertisement purpose</option>
-              {advertisementPurpose &&  advertisementPurpose.map((item,i)=>{
-                return <option value={item.id} key={i} selected={data.purpose_id === item.id?'selected':''}>{item.name}</option>
-              })}
-            </select>
-            {errors && errors?.purpose_id && <p className="text-red-500 text-sm">{errors?.purpose_id}</p>}
-          </div>
-          {/* /.form-group */}
+        
           <div className="px-2  w-full lg:w-6/12  form-group  mb-6">
             <label className="block mb-2">Commission</label>
             <select
@@ -89,7 +73,6 @@ const AdvertisementTypes = ({advertisementType,advertisementPurpose, advertiseme
 
 AdvertisementTypes.propTypes = {
   advertisementType: PropTypes.array,
-  advertisementPurpose: PropTypes.array,
   advertisementCommission: PropTypes.array,
   owners: PropTypes.array,
   errors:  PropTypes.object,
@@ -98,7 +81,6 @@ AdvertisementTypes.propTypes = {
 
 AdvertisementTypes.defaultProps = {
   advertisementType:[],
-  advertisementPurpose:[],
   advertisementCommission:[],
   owners:[],
   errors: null,
