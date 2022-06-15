@@ -4,6 +4,7 @@ import {
   CalendarIcon,
   FolderIcon,
   HomeIcon,
+  UserIcon,
   InboxIcon,
   UsersIcon,
   PlusIcon
@@ -21,6 +22,7 @@ import { toast } from "react-toastify";
 import { fetchUserInformation } from "../../../features/slices/userInformation";
 import apiClient from "../../../utils/apiClient";
 import PostProperty from "../../../pages/PostProperty";
+import MyProperties from "../MyProperties";
 
 
 function classNames(...classes) {
@@ -39,7 +41,7 @@ const SideBar = ({ menubutton }) => {
   const query = params.get("section");
 
   const [navigation, setNavigation] = useState([
-    { name: "My Profile", href: "profile", icon: HomeIcon, current: true },
+    { name: "My Profile", href: "profile", icon: UserIcon, current: true },
     { name: "Post Property", href: "post-property", icon: PlusIcon, current: false },
     {
       name: "Favourite Properties",
@@ -47,6 +49,8 @@ const SideBar = ({ menubutton }) => {
       icon: UsersIcon,
       current: false,
     },
+
+    { name: "My Properties", href: "my-properties", icon: HomeIcon, current: false },
     // { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
     // { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
     { name: "Logout", href: "logout", icon: InboxIcon, current: false },
@@ -58,6 +62,7 @@ const SideBar = ({ menubutton }) => {
     messages: <Messages />,
     // saved: <NoData />,
     'post-property': <PostProperty/>,
+    'my-properties':<MyProperties/>,
     logout: <LogOut />,
   };
   const onInputChange =async (e) => {

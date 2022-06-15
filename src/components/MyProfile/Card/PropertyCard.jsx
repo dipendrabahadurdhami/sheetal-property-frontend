@@ -1,34 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart, FaSpinner, FaUserCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { removeFavoriteList, setFavoritesList } from "../../../features/slices/favourites";
 import apiClient from "../../../utils/apiClient";
 
 const PropertyCard = ({data,action}) => {
   const [loading,setLoading] = useState(false);
   const [id, setId] = useState(null);
-  const removeFromFavorite = async (id) => {
-    setId(id);
-    setLoading(true);
-    await apiClient.post('/remove-from-favourite',{property_id:id}).then(res=>{
-      if(res.status === 200){
-       
-          action();
-          setLoading(false);
-          setId(null)
-          toast.success("Removed from favorite list");
-          
-      }else{
-        setLoading(false);
-        setId(null)
-        toast.error("Failed to remove from favorite list");
+  const [favorite, setFavorite] = useState(false)
+  const favorites =  useSelector(state=>state.favorites.data)
+  const dispatch = useDispatch();
+  const user =  useSelector(state=>state.user)
+  const token = localStorage.getItem('sheetal_token');
+  let navigate = useNavigate();
+  useEffect(()=>{
+    if(favorites){
+      if(favorites.find(item=>item.property_id === data.id)){
+        setFavorite(true)
       }
-    }).catch(err => {
-      setLoading(false);
-      setId(null)
-      console.error(err)
-    })
+    }
+
+  },[favorites])
+  useEffect(()=>{
+    if(!user.data){
+        setFavorite(false)
+    }
+},[user])
+const onFavoriteClick = (e,id) => {
+  e.preventDefault();
+  if (!user.data && !token) {
+    return  navigate(`/?login=1`)
   }
+  const isFavoriteAvailable = favorites.find(item=>item.property_id === id)
+  if(isFavoriteAvailable){
+      setFavorite(false)
+      dispatch(removeFavoriteList(id))
+      removeFromFavorite(id)
+  }else{
+    setFavorite(true)
+    dispatch(setFavoritesList(id))
+    addToFavorite(id)
+  }
+}
+
+
+const addToFavorite = async (id) => {
+  await apiClient.post('/add-to-favourite',{property_id:id}).then(res=>{
+    if(res.status === 200){
+        toast.success("Added to favorite list");
+    }else{
+      toast.error("Failed to add to favorite list");
+    }
+  }).catch(err => {
+    console.error(err)
+  })
+}
+
+
+const removeFromFavorite = async (id) => {
+  await apiClient.post('/remove-from-favourite',{property_id:id}).then(res=>{
+    if(res.status === 200){
+        toast.success("Removed from favorite list");
+    }else{
+      toast.error("Failed to remove from favorite list");
+    }
+  }).catch(err => {
+    console.error(err)
+  })
+}
+
   return (
     <div className="grid sm:grid-cols-5 items-center border border-gray-200 shadow-xl rounded overflow-hidden mb-6 relative">
       <img
@@ -49,8 +91,8 @@ const PropertyCard = ({data,action}) => {
         <div className="space-y-1">
           <div className="flex justify-between">
             <span className="font-bold text-lg relative pr-24">{data?.name}</span>
-            <div className="w-8 h-8 cursor-pointer" onClick={()=>removeFromFavorite(data?.property_id)}>
-              {true ? (
+            <div className="w-8 h-8 cursor-pointer" onClick={(e)=>onFavoriteClick(e,data.id)}>
+              {favorite ? (
                 <FaHeart className="w-8 h-8 text-red-700" />
               ) : (
                 <FaRegHeart className="w-8 h-8 text-red-700" />
