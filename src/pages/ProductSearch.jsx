@@ -64,6 +64,7 @@ const ProductSearch = ({props}) => {
   const fetchSearch = async () => {
      const keyword = params.get('keyword')?params.get('keyword').trim():'';
      const advertisementPurpose = params.get('advertisement_purpose')?params.get('advertisement_purpose').trim():'';
+     const property_type = params.get('property_type')?params.get('property_type').trim():'';
      const min_price = params.get('min_price')?params.get('min_price').trim():0;
      const max_price = params.get('max_price')?params.get('max_price').trim():100000000;
      const price_order = params.get('price_order')?params.get('price_order').trim():'all';
@@ -76,6 +77,7 @@ const ProductSearch = ({props}) => {
         min_price=${min_price}&
         max_price=${max_price}&
         price_order=${price_order}&
+        property_type=${property_type}&
         page=${page === 0? 1: page}&
         itemsPerPage=${itemsPerPage}
         `).then(res=>{
