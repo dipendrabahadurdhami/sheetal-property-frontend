@@ -3,11 +3,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import ListBox from "../components/Common/ListBox";
+import PaymentFormModal from "../components/payment/paymentForm";
+import * as Yup from 'yup';
+import { toast } from "react-toastify";
 
 const RequirementForm = () => {
   const [properties,setProperties] = useState(null);
   const [loading, setLoading]= useState(false);
   const [tenant, setTenant] = useState(null);
+  const [modal, setModal] = useState(false);
+  const [formData, setFormdata] = useState(null);
   const Vehicle = [
     { name: "Two Wheeler" },
     { name: "There Wheeler" },
@@ -38,57 +43,49 @@ const RequirementForm = () => {
   useEffect(()=>{
     allProperties();
   },[])
-  // const Facilities = [{ name: "Electricity", value:"Electricity" }, { name: "Water", value:'Water' }, { name: "Parking", value: 'parking' },{name: "Drainage", value: 'drainage'}];
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     name: "",
-  //     email: "",
-  //     permanent_address: "",
-  //     temporary_address: "",
-  //     contact_number: "",
-  //     occupation: "",
-  //     prefered_location: "",
-  //     maximun_budget: "",
-  //     tenant_option: "",
-  //     requirements: "",
-  //     vehicle: "",
-  //     facilities: [],
-  //     description: "",
-  //   },
-  //   onSubmit
+  const getFormData = values => {
+    // access values here
+    console.log(values);
+  };
 
-  // })
+  const handleFormSubmit = async() => {
+      const axiosConfig = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      await axios.post(
+        `${process.env.REACT_APP_API_LINK}/requirement-form`,
+        formData,
+        axiosConfig
+      );
+  }
 
-  // const [values,setValues] = useState({
-  //   name: "",
-  //   email: "",
-  //   permanent_address: "",
-  //   temporary_address:"",
-  //   contact_number: "",
-  //   occupation: "",
-  //   prefered_location:"",
-  //   maximun_budget: "",
-  //   tenant_option:"",
-  //   requirements:"",
-  //   vehicle:"",
-  //   facilities: [],
-  //   description:"",
+  // validation
 
-  //   formData:""
-  // })
-
-  // const handleChange =(e) => {
-  //   console.log(e);
-
-  //     return setValues((oldValue)=>{
-  //       return {...oldValue,[e.target.name]:e.target.value}
-
-  //     })
-  // }
-
-  // const {name,email,permanent_address,temporary_address,contact_number,occupation,prefered_location,maximun_budget,tenant_option,requirements,vehicle,facilities,description,formData} = values
-
+  const requirementSchema = Yup.object().shape({
+    name: Yup.string().min(3,"Name must be greater than 3 characters").required("Name is required"),
+    email: Yup.string()
+    .email("Invalid email address format")
+    .required("Email is required"),
+    contact_number: Yup.string()
+    .matches(/^[0-9]{10}$/, 'Must be number and should be only 10 digits')
+    .required("Contact number is required"),
+    permanent_address: Yup.string()
+    .min(3, "Address must be greater than 3 characters")
+    .required("Permanent Address is required"),
+    temporary_address: Yup.string()
+    .min(3, "Address must be greater than 3 characters")
+    .required("Temporary Address is required"),
+    occupation: Yup.string()
+    .min(3, "Occupation must be greater than 3 characters")
+    .required("Occupation is required"),
+    tenant_option: Yup.string()
+    .required("Tenant Option is required"),
+    facilities:Yup.array().min(1).required()
+    
+  });
   return (
     <div className="flex justify-center px-5 py-10 sm:p-5 lg:p-10 xl:p-24">
       <div className="w-full">
@@ -111,22 +108,31 @@ const RequirementForm = () => {
             facilities: [],
             description: "",
           }}
-          onSubmit={async (values, { resetForm }) => {
-            const axiosConfig = {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            };
-            await axios.post(
-              `${process.env.REACT_APP_API_LINK}/requirement-form`,
-              values,
-              axiosConfig
-            );
-            alert("Submitted Successfully")
-            resetForm({ values: "" });
+          validationSchema={requirementSchema}
+          onSubmit={ (values,{setSubmitting}) => {
+            setFormdata(values);
+            console.log("Values", values)
+            // const axiosConfig = {
+            //   headers: {
+            //     "Content-Type": "application/json",
+            //   },
+            // };
+            // await axios.post(
+            //   `${process.env.REACT_APP_API_LINK}/requirement-form`,
+            //   values,
+            //   axiosConfig
+            // );
+        
+            // resetForm({ values: "" });
+            setModal(true)
+       
           }}
+
+
         >
-          {({ values, handleSubmit, handleChange, isSubmitting }) => (
+          {({ values, handleSubmit, handleChange, setSubmitting, resetForm, isSubmitting,errors , touched}) => {
+      
+            return (
             <form onSubmit={handleSubmit} className="space-y-5">
               <label className="flex flex-col space-y-2">
                 <span>Name *</span>
@@ -137,7 +143,9 @@ const RequirementForm = () => {
                   name="name"
                   value={values.name}
                   onChange={handleChange}
+             
                 />
+                {(errors.name || touched.name) && <div className="text-red-500 text-sm">{errors.name}</div>}
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Temporary Address *</span>
@@ -148,7 +156,10 @@ const RequirementForm = () => {
                   name="temporary_address"
                   value={values.temporary_address}
                   onChange={handleChange}
+              
                 />
+
+              {(errors.temporary_address || touched.temporary_address) && <div className="text-red-500 text-sm">{errors.temporary_address}</div>}
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Permanent Address *</span>
@@ -159,7 +170,9 @@ const RequirementForm = () => {
                   name="permanent_address"
                   value={values.permanent_address}
                   onChange={handleChange}
+             
                 />
+                {(errors.permanent_address || touched.permanent_address) && <div className="text-red-500 text-sm">{errors.permanent_address}</div>}
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Contact number *</span>
@@ -170,7 +183,10 @@ const RequirementForm = () => {
                   name="contact_number"
                   value={values.contact_number}
                   onChange={handleChange}
+             
                 />
+                {(errors.contact_number || touched.contact_number) && <div className="text-red-500 text-sm">{errors.contact_number}</div>}
+ 
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Email Address *</span>
@@ -181,7 +197,9 @@ const RequirementForm = () => {
                   name="email"
                   value={values.email}
                   onChange={handleChange}
+                
                 />
+                 {(errors.email || touched.email) && <div className="text-red-500 text-sm">{errors.email}</div>}
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Occupation *</span>
@@ -191,7 +209,9 @@ const RequirementForm = () => {
                   name="occupation"
                   value={values.occupation}
                   onChange={handleChange}
+              
                 />
+                  {(errors.occupation || touched.occupation) && <div className="text-red-500 text-sm">{errors.occupation}</div>}
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Preferred location</span>
@@ -209,25 +229,27 @@ const RequirementForm = () => {
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
                   placeholder="Enter your maximum budget"
                   name="maximum_budget"
-                  value={values.maximun_budget}
+                  value={values.maximum_budget}
                   onChange={handleChange}
                 />
               </label>
 
               <label className="flex flex-col space-y-2">
-                <span>Tenant option</span>
+                <span>Tenant option*</span>
                 {/* <ListBox list={TenantOption} name="tenant_option" value ={values.tenant_option}   onChange={handleChange} /> */}
                 <Field
                   as="select"
                   name="tenant_option"
                   onChange={handleChange}
                   className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
+              
                 >
                   <option value="">Select</option>
                   {properties && properties?.purposes && properties?.purposes.map((purpose,i)=>{
                     return (<option value={purpose.name} key={i}>{purpose.name}</option>)
                   })}
                 </Field>
+                {(errors.tenant_option || touched.tenant_option) && <div className="text-red-500 text-sm">{errors.tenant_option}</div>}
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Requirements</span>
@@ -273,7 +295,7 @@ const RequirementForm = () => {
               </label>
               <label className="flex flex-col space-y-2">
                 <span>Facilities</span>
-
+                <div>
                 <div role="group" className="-mx-4 flex flex-wrap" aria-labelledby="checkbox-group">
                   {properties && properties?.facilities && properties?.facilities.map((facility,i)=>{
                     return(
@@ -283,6 +305,9 @@ const RequirementForm = () => {
                     </label>
                     )
                   })}
+                  
+              </div>
+              {(errors.facilities || touched.facilities) && <div className="text-red-500 text-sm">{errors.facilities}</div>}
               </div>
 
 
@@ -303,11 +328,41 @@ const RequirementForm = () => {
                 className="bg-red-700 px-10 md:px-24  p-3 font-bold text-white rounded-lg"
                 type="submit"
                 disabled={isSubmitting}
+                // onClick={()=>setModal(!modal)}
+                // onClick={() => validateForm().then((res) => console.log('blah',res))}
               >
                 Submit
               </button>
+         
+              
+                <PaymentFormModal open={modal} setOpen={setModal} data={values} tenants={properties?.purposes} 
+                    onPaymentFormClose={()=>setSubmitting(false)}
+                    action={()=>{
+                       setSubmitting(false)
+                       handleFormSubmit();
+                       setModal(false);
+                       resetForm({
+                         email:'',
+                         name:'',
+                         temporary_address:'',
+                         permanent_address:'', 
+                         contact_number:'',
+                         occupation:'',
+                         prefered_location:'',
+                         maximum_budget:'', 
+                         tenant_option:'', 
+                         requirements:'', 
+                         vehicle:'', 
+                         facilities:[],
+                         description:'',
+                        })
+
+                        toast.success('Requirement Form submitted successfully')
+                  
+                }}/>
+                
             </form>
-          )}
+          )}}
         </Formik>
       </div>
     </div>
