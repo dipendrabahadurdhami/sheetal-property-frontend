@@ -4,7 +4,7 @@ import React from 'react';
 
 let KhaltiConfig = {
     // replace this key with yours
-    publicKey: process.env.REACT_APP_KHALTI_TEST_KEY,
+    publicKey: "test_public_key_df3b7db67f2e4517837f0e502b9d444c",
     productIdentity: "ShetalRealState",
     productName: "Shetal Property Requirement Form ",
     productUrl: "https://sheetalproperty-nine.vercel.app/",

@@ -56,7 +56,7 @@ const TopBar = (props) => {
           )}
           <Link
             to="/my-profile?section=post-property"
-            className="px-5 py-3 bg-red-700 text-lg text-white capitalize rounded-lg"
+            className="px-5 py-3 bg-red-700 hover:bg-red-800 text-sm text-white capitalize rounded-lg"
           >
             post property{" "}
           </Link>

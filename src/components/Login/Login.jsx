@@ -16,7 +16,7 @@ import {  toast } from 'react-toastify';
 import apiClient from "../../utils/apiClient";
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
@@ -142,10 +142,10 @@ const Login = ({ setR }) => {
               ) : null}
             </div>
             <div className="flex justify-between">
-              <label className="flex items-center text-gray-500 space-x-3">
+              {/* <label className="flex items-center text-gray-500 space-x-3">
                 <Field checked={false} type="checkbox" className="w-5 h-5" />
                 <span>Remember me</span>
-              </label>
+              </label> */}
               <a href="/" className="text-red-700">
                 Forgot password?
               </a>
