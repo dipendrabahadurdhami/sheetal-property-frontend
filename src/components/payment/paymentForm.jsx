@@ -19,7 +19,7 @@ const PaymentFormModal = ({data, open, setOpen, tenants, action,onPaymentFormClo
 
   let amount;
 
-  if(data.tenant_option  === 'Rent') amount = 200;
+  if(data.tenant_option  === 'Rent') amount = 300;
   if(data.tenant_option === 'Sale') amount = 500;
   if(data.tenant_option === 'Invest') amount = 500;
   let config = {
