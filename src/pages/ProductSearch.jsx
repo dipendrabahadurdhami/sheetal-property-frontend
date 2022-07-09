@@ -119,7 +119,7 @@ const ProductSearch = ({props}) => {
           ) : (
             <>
               {products && products.map((property, index) => (
-                <div key={index} className="mb-6">
+                <div key={index} className="mb-24">
                   
                   <FilterCard property={property} />
                 </div>

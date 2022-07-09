@@ -30,10 +30,10 @@ const UserLogin = () => {
               <img
                 src={`${user.data?.photo?user.data?.photo:'noUser.png'}`}
                 alt={`${user.data?.user_name?user.data?.user_name:'user'}`}
-                className="w-10 h-10 object-cover object-center rounded-full border-4 mr-2 border-red-500"
+                className="w-10 h-10 object-cover object-center rounded-full border-4 mr-2 border-red-500 "
               /> 
               {/* <FaUserCircle className="w-9 h-9 mt-1 rounded-full text-red-700 mr-2" /> */}
-              <span className="font-medium">{user.data.user_name}</span>
+              <span className="font-medium block px-2">{user.data.user_name}</span>
               <FaAngleDown className="opacity-50 ml-2"/>
             </Menu.Button>
           </div>

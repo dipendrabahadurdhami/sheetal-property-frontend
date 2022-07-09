@@ -5,13 +5,28 @@ import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import LoginModel from "../../Login/LoginModel";
 import { navigation } from "./navigation";
 import { LoggedUserContext } from "../../Context/LoginContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUserInfo } from "../../../features/slices/userInformation";
+import { removeAllFavorites } from "../../../features/slices/favourites";
+import { FaUser } from "react-icons/fa";
 
 const Sidebar = () => {
   const { token, setToken } = useContext(LoggedUserContext);
   const [r, setR] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   let navigate = useNavigate();
+  const dispatch =  useDispatch();
+  // const { setToken } = useContext(LoggedUserContext);
+  const user = useSelector(state=>state.user)
+  const SignOut = () => {
+    localStorage.removeItem("sheetal_token");
+    dispatch(removeUserInfo())
+    dispatch(removeAllFavorites())
+    setSidebarOpen(false);
+    navigate("/",{replace:true})
+   
+  };
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -98,7 +113,10 @@ const Sidebar = () => {
                               {item.title}
                             </a>
                           </div>
-                        ) : (
+                        ) : 
+                        
+                        
+                        (
                           <Disclosure
                             as="div"
                             key={item.title}
@@ -138,10 +156,13 @@ const Sidebar = () => {
                                       as="a"
                                       // href={subItem.link}
                                       onClick={() => {
-                                        navigate({
-                                          pathname: "/productSearch",
-                                          search: `?tab=${subItem.title}`,
-                                        })}}
+                                          navigate({
+                                            pathname: "/productSearch",
+                                            search: `?advertisement_purpose=${subItem.title}`,
+                                          });
+                                          setSidebarOpen(false);
+                                        }
+                                      }
                                       
                                       className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
                                     >
@@ -156,11 +177,25 @@ const Sidebar = () => {
                       )}
                     </nav>
                   </div>
+                  {user.data && 
+                  <div className="mt-4 pt-4 ">
+                      <nav className="flex-1 px-2 pt-2 bg-white border-t border-gray-200">
+                        <div className="flex justify-start items-center">
+                          <FaUser className="w-5 h-5 text-red-700" />
+                          <Link
+                            to="/my-profile?section=profile"
+                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
+                          >
+                            My Profile
+                          </Link>
+                        </div>           
+                      </nav>
+                  </div>}
                 </div>
                 <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                   <div className="flex-shrink-0 group block">
                     <div className="flex items-center justify-center space-x-3 text-sm">
-                      {token ? (
+                      {!user.data ? (
                         <button
                           onClick={() => {
                             setR(true);
@@ -172,19 +207,19 @@ const Sidebar = () => {
                         </button>
                       ) : (
                         <button
-                          onClick={() => {
-                            localStorage.removeItem("token");
-                            setToken(null);
-                            setSidebarOpen(false);
-                          }}
+                          onClick={SignOut}
                           className="border-2 rounded-lg border-red-500 p-2 "
                         >
                           SignOut
                         </button>
                       )}
-                      <div className="border-2 rounded-lg border-red-500 p-2 text-white bg-red-500">
-                        Post Property
-                      </div>
+                      <Link
+                        to="/my-profile?section=post-property"
+                        className="px-5 py-3 bg-red-700 hover:bg-red-800 text-sm text-white capitalize rounded-lg"
+                        onClick={()=>setSidebarOpen(false)}
+                      >
+                        post property{" "}
+                      </Link>
                     </div>
                   </div>
                 </div>

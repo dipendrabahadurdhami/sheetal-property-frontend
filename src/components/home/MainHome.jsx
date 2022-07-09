@@ -25,7 +25,7 @@ const MainHome = () => {
         </h1>
       </div>
       <div className="px-5 md:px-10 flex justify-center">
-        <div className="w-full xl:w-9/12 -mt-40 md:-mt-32 md:bg-white rounded md:shadow-xl md:border border-gray-100 md:p-5 lg:p-10">
+        <div className="w-full xl:w-9/12 -mt-40 md:-mt-40  rounded md:shadow-xl">
           <Search setFilterModal={setFilterModal} />
         </div>
       </div>

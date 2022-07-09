@@ -17,12 +17,12 @@ const InputBox = ({ setFilterModal, showFilters=true }) => {
   }
   return (
     <>
-      <form onSubmit={onSearchButtonClick} className="border-2 border-gray-600 flex items-center rounded-md bg-white hover:border-gray-900 focus:ring-2 focus:ring-red-700 overflow-hidden space-x-2 xs:space-x-5">
+      <form onSubmit={onSearchButtonClick} className="border-2 border-red-700 flex items-center rounded-md bg-white hover:border-red-900 focus:ring-2 focus:ring-red-700 overflow-hidden space-x-2 xs:space-x-5">
         <input
           type={"text"}
           value={search}
           placeholder="Enter an address, neighbourhood, city or ZIP code"
-          className="w-full h-full p-3 xs:p-5 border-none outline-none"
+          className="w-full h-full p-2 xs:p-3 border-none outline-none"
           onChange={onInputChange}
           required
         />
@@ -36,8 +36,8 @@ const InputBox = ({ setFilterModal, showFilters=true }) => {
           <span>Filters</span>
         </button>
         }
-        <button type="submit" disabled={!search} className="p-3 xs:p-5 h-full space-x-3 font-medium text-xl flex items-center bg-red-700 text-white" >
-          <FaSearch className="w-7 h-7" />
+        <button type="submit" disabled={!search} className="p-2 xs:p-4 h-full space-x-2 font-medium text-lg flex items-center bg-red-700 text-white" >
+          <FaSearch className="w-4 h-4" />
           <span className="hidden md:inline">Search</span>
         </button>
         
