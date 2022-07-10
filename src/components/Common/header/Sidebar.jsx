@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUserInfo } from "../../../features/slices/userInformation";
 import { removeAllFavorites } from "../../../features/slices/favourites";
-import { FaUser } from "react-icons/fa";
+import { FaHeart, FaHome, FaPlus, FaUser } from "react-icons/fa";
 
 const Sidebar = () => {
   const { token, setToken } = useContext(LoggedUserContext);
@@ -185,10 +185,44 @@ const Sidebar = () => {
                           <Link
                             to="/my-profile?section=profile"
                             className="flex rounded-md items-center w-full px-2 py-2 text-sm"
+                            onClick={()=>setSidebarOpen(false)}
                           >
                             My Profile
                           </Link>
-                        </div>           
+                        </div>  
+
+                        <div className="flex justify-start items-center">
+                          <FaPlus className="w-5 h-5 text-red-700" />
+                          <Link
+                            to="/my-profile?section=post-property"
+                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
+                            onClick={()=>setSidebarOpen(false)}
+                          >
+                            Post Property
+                          </Link>
+                        </div>   
+
+                        <div className="flex justify-start items-center">
+                          <FaHeart className="w-5 h-5 text-red-700" />
+                          <Link
+                            to="/my-profile?section=favourites"
+                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
+                            onClick={()=>setSidebarOpen(false)}
+                          >
+                            Favorite Properties
+                          </Link>
+                        </div> 
+
+                        <div className="flex justify-start items-center">
+                          <FaHome className="w-5 h-5 text-red-700" />
+                          <Link
+                            to="/my-profile?section=my-properties"
+                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
+                            onClick={()=>setSidebarOpen(false)}
+                          >
+                            My Properties
+                          </Link>
+                        </div>         
                       </nav>
                   </div>}
                 </div>

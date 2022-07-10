@@ -25,7 +25,7 @@ const Properties = () => {
       <div className="text-xl font-bold">Your Favourite Properties</div>
       <div className="">
         {favorites.isLoading && <FaSpinner className="spin" />}
-        {!favorites.isLoading && favorites.data && favorites.data.map((item,i) => <PropertyCard key={i} data={item} action={fetchFavorites} />)}
+        {!favorites.isLoading && favorites.data && favorites.data.map((item,i) => <div className="mb-32"><PropertyCard key={i} data={item} action={fetchFavorites} /></div>)}
         {!favorites.isLoading && favorites.data && favorites.data.length === 0 ? <p>You haven't added on your favorite list</p>: ''}
       </div>
     </div>

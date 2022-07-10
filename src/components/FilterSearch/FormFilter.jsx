@@ -69,14 +69,14 @@ const FormFilter = ({ setFilterModal, setAction }) => {
           <div>
             <h1 className="font-bold text-lg mb-4">Property Status</h1>
             <div className="text-sm flex flex-wrap -mx-2">
-              <div className="px-2 mb-4">
+              <div className="px-2 mb-14">
                 <button className={`border rounded  p-3 mb-4 ${purpose === 'all'?'bg-red-500 border-red-500 text-white':'border-gray-400'}`}  onClick={()=>setPurpose('all')}>
                   All Status
                 </button>
               </div>
               {properties?.purposes.length > 0 && properties?.purposes.map((_purpose,i)=>{
                 return(
-                  <div className="px-2 mb-4" key={i}>
+                  <div className="px-2 mb-14" key={i}>
                     <button className={`border rounded  p-3 mb-4  ${purpose === _purpose?.name?'bg-red-500 border-red-500 text-white':'border-gray-400'}`} onClick={()=>setPurpose(_purpose?.name)}>
                       {_purpose?.name}
                     </button>
@@ -92,14 +92,14 @@ const FormFilter = ({ setFilterModal, setAction }) => {
       <div className="space-y-6">
         <h1 className="font-bold text-lg">Property Types</h1>
         <div className="flex -mx-2 items-center text-sm flex-wrap">
-          <div className="px-2 mb-4">
+          <div className="px-2 mb-14">
             <button className={`border rounded p-3 whitespace-nowrap ${property_type === 'all'?'bg-red-500 border-red-500 text-white':'border-gray-400'}`}  onClick={()=>setProperty_type('all')}>
               All Types
             </button>
           </div>
           {properties?.property_types.length > 0 && properties?.property_types.map((property,i)=>{
             return (
-              <div className="px-2 mb-4" key={i}>
+              <div className="px-2 mb-14" key={i}>
                 <button className={`border rounded  p-3 whitespace-nowrap ${property_type === property?.name?'bg-red-500 border-red-500 text-white':'border-gray-400'}`} onClick={()=>setProperty_type(property?.name)}>
                   {property?.name}
                 </button>
@@ -144,13 +144,13 @@ const FormFilter = ({ setFilterModal, setAction }) => {
 
 
             <div className="flex flex-wrap -mx-2">
-                <div className="px-2">
+                <div className="px-2 w-6/12">
                   <label className="block text-sm">Minimum</label>
-                  <input type={'text'} name="min" value={price[0]} className="border border-gray-300 py-2 px-2 rounded-sm"  onChange={onPriceInputChange}/>
+                  <input type={'text'} name="min" value={price[0]} className="border border-gray-300 py-2 px-2 w-full rounded-sm"  onChange={onPriceInputChange}/>
                 </div>
-                <div className="px-2">
+                <div className="px-2 w-6/12">
                   <label className="block text-sm">Maximum</label>
-                  <input type={'text'} name="max" value={price[1]} className="border border-gray-300 py-2 px-2 rounded-sm" onChange={onPriceInputChange}/>
+                  <input type={'text'} name="max" value={price[1]} className="border border-gray-300 py-2 px-2 w-full rounded-sm" onChange={onPriceInputChange}/>
                 </div>
             </div>
           </div>

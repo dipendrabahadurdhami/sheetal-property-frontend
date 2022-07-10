@@ -17,12 +17,12 @@ const InputBox = ({ setFilterModal, showFilters=true }) => {
   }
   return (
     <>
-      <form onSubmit={onSearchButtonClick} className="border-2 border-red-700 flex items-center rounded-md bg-white hover:border-red-900 focus:ring-2 focus:ring-red-700 overflow-hidden space-x-2 xs:space-x-5">
+      <form onSubmit={onSearchButtonClick} className="border-2 border-red-700 flex items-center rounded-md bg-white hover:border-red-900 focus:ring-2 focus:ring-red-700 overflow-hidden px-1">
         <input
           type={"text"}
           value={search}
           placeholder="Enter an address, neighbourhood, city or ZIP code"
-          className="w-full h-full p-2 xs:p-3 border-none outline-none"
+          className="w-full h-full p-4 px-4 text-sm border-none outline-none overflow-hidden text-ellipsis"
           onChange={onInputChange}
           required
         />
@@ -30,14 +30,14 @@ const InputBox = ({ setFilterModal, showFilters=true }) => {
         <button
           type="button"
           onClick={() => setFilterModal(true)}
-          className="p-1 sm:px-3 sm:py-2 space-x-1 flex items-center text-red-700 font-bold sm:font-base sm:text-gray-700 sm:border rounded-md border-gray-700"
+          className="p-2 sm:px-3 sm:mr-4 sm:py-2 space-x-1 flex items-center text-red-700 font-medium text-sm sm:font-base sm:text-gray-700 sm:border rounded-md border-gray-700"
         >
           <AiOutlineControl className="hidden sm:inline w-6 h-6" />
           <span>Filters</span>
         </button>
         }
-        <button type="submit" disabled={!search} className="p-2 xs:p-4 h-full space-x-2 font-medium text-lg flex items-center bg-red-700 text-white" >
-          <FaSearch className="w-4 h-4" />
+        <button type="submit" disabled={!search} className="p-2 sm:p-3 border md:border-none border-red-700 h-full font-medium text-sm flex items-center bg-red-700 text-white rounded-md disabled:opacity-50" >
+          <FaSearch className="w-4 h-4 md:mr-4" />
           <span className="hidden md:inline">Search</span>
         </button>
         

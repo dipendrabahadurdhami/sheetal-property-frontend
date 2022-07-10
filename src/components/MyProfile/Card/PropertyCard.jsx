@@ -16,8 +16,9 @@ const PropertyCard = ({data,action}) => {
   const token = localStorage.getItem('sheetal_token');
   let navigate = useNavigate();
   useEffect(()=>{
+   
     if(favorites){
-      if(favorites.find(item=>item.property_id === data.id)){
+      if(favorites.find(item=>item.property_id === data.property_id)){
         setFavorite(true)
       }
     }
@@ -91,7 +92,7 @@ const removeFromFavorite = async (id) => {
         <div className="space-y-1">
           <div className="flex justify-between">
             <span className="font-bold text-lg relative pr-24">{data?.name}</span>
-            <div className="w-8 h-8 cursor-pointer" onClick={(e)=>onFavoriteClick(e,data.id)}>
+            <div className="w-8 h-8 cursor-pointer" onClick={(e)=>onFavoriteClick(e,data.property_id)}>
               {favorite ? (
                 <FaHeart className="w-8 h-8 text-red-700" />
               ) : (

@@ -48,7 +48,7 @@ const Model = ({ setFilterModal, filterModal }) => {
           >
             &#8203;
           </span>
-          <div className="hidden md:block absolute top-0 right-0 pt-4 pr-4">
+          <div className=" md:block absolute top-0 right-0 pt-4 pr-4 z-10">
             <button
               type="button"
               className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
@@ -69,7 +69,7 @@ const Model = ({ setFilterModal, filterModal }) => {
           >
             <div className="relative inline-block align-bottom bg-white pt-5 pb-4 text-left overflow-hidden transform transition-all sm:align-middle md:max-w-4xl w-full md:p-6">
               <div className="py-10 bg-gray-500 md:bg-white px-8">
-                <input type="text" name="search" placeholder="Search" value={search} className="border-4 border-gray-400 py-4 block w-full px-4 rounded-md" onChange={(e)=>setSearch(e.target.value)}/>
+                <input type="text" name="search" placeholder="Search" value={search} className="border-2 border-red-700 py-3 block w-full px-4 rounded-md" onChange={(e)=>setSearch(e.target.value)}/>
               </div>
               <div className="md:flex justify-center px-4">
                 <div className="md:max-w-3xl">

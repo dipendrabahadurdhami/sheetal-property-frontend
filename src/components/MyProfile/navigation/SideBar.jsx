@@ -7,7 +7,8 @@ import {
   UserIcon,
   InboxIcon,
   UsersIcon,
-  PlusIcon
+  PlusIcon,
+  HeartIcon
 } from "@heroicons/react/outline";
 import DashBoard from "../DashBoard";
 import Properties from "../Properties";
@@ -46,7 +47,7 @@ const SideBar = ({ menubutton }) => {
     {
       name: "Favourite Properties",
       href: "favourites",
-      icon: UsersIcon,
+      icon: HeartIcon,
       current: false,
     },
 

@@ -34,7 +34,7 @@ const MyProperties = () => {
       <div className="text-xl font-bold">My Properties</div>
       <div className="">
         {loading && <FaSpinner className="spin" />}
-        {!loading && properties && properties.map((item,i) => <PropertyCard key={i} data={item}/>)}
+        {!loading && properties && properties.map((item,i) => <div className="mb-32"><PropertyCard key={i} data={item}/></div>)}
         {!loading && properties && properties.length === 0 ? <p>You haven't posted any property</p>: ''}
       </div>
     </div>
