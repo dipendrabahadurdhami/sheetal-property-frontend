@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInformation } from "./features/slices/userInformation";
 import Protected from "./routes/protectedRoute";
 import { fetchFavoritesList, removeAllFavorites } from "./features/slices/favourites";
+import Test from "./pages/Test";
 
 function App() {
 
@@ -82,6 +83,7 @@ function App() {
             <Route path="/my-profile/messages" element={<Message />} />
             <Route path="/investDetail" element={<InvestDetails />} />
             <Route path="/project" element={<Project />} />
+            <Route path="/test" element={<Test/>}/>
             <Route
               path="/investment/viewallproduct"
               element={<InvestmentAllProduct />}
