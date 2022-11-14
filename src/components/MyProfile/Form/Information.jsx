@@ -2,67 +2,70 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchUserInformation } from "../../../features/slices/userInformation";
 import apiClient from "../../../utils/apiClient";
-import {  toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
-const Information = ({data}) => {
+const Information = ({ data }) => {
   const dispatch = useDispatch();
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    user_name:'',
-    email:'',
-    first_name:'',
-    last_name:''
+    user_name: "",
+    email: "",
+    first_name: "",
+    last_name: "",
   });
-  useEffect(()=>{
+  useEffect(() => {
     setForm({
       user_name: data?.user_name,
       email: data?.email,
       first_name: data?.first_name,
-      last_name: data?.last_name
-    })
-  },[data])
+      last_name: data?.last_name,
+    });
+  }, [data]);
 
   const onInputChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]:e.target.value
-    })
-  } 
+      [e.target.name]: e.target.value,
+    });
+  };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     const formData = new FormData();
-    const newData =  {...data, ...form};
+    const newData = { ...data, ...form };
 
-    Object.entries(newData).map(item=>{
-      console.log(item[0],item[1])
-      formData.append(item[0],item[1])
-    })
+    Object.entries(newData).map((item) => {
+      formData.append(item[0], item[1]);
+    });
 
-    try{
-      await apiClient.post('update-profile', formData).then(res=>{
-        if(res.status === 200){
-          dispatch(fetchUserInformation())
+    try {
+      await apiClient.post("update-profile", formData).then((res) => {
+        if (res.status === 200) {
+          dispatch(fetchUserInformation());
           setLoading(false);
           toast.success(`Profile Information updated successfully.`);
-        }else{
+        } else {
           setLoading(false);
           toast.error(res.message);
         }
-      })
-    }catch(error){
+      });
+    } catch (error) {
       console.error(error);
       setLoading(false);
-      toast.error(`There's an error updating profile information. Please contact admin`);
+      toast.error(
+        `There's an error updating profile information. Please contact admin`
+      );
     }
-    
-  }
+  };
   return (
     <div className="space-y-5 md:space-y-10">
       <div className="max-w-7xl mx-auto ">
         <h1 className="text-2xl font-semibold text-gray-900">Information</h1>
       </div>
-      <form className="grid md:grid-cols-2 gap-5 md:gap-10" onSubmit={handleFormSubmit}>
+      <form
+        className="grid md:grid-cols-2 gap-5 md:gap-10"
+        onSubmit={handleFormSubmit}
+      >
         <label className="flex flex-col space-y-2">
           <span>Username</span>
           <input
@@ -108,8 +111,12 @@ const Information = ({data}) => {
 
         <div></div>
         <div className="flex w-100 justify-end">
-          <button className="text-white font-medium bg-red-700 rounded px-5 py-2" type="submit" disabled={loading}>
-            {loading ?<FaSpinner className="spin"/> : 'Update Information'}
+          <button
+            className="text-white font-medium bg-red-700 rounded px-5 py-2"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? <FaSpinner className="spin" /> : "Update Information"}
           </button>
         </div>
       </form>

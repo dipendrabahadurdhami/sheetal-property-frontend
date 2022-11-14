@@ -14,7 +14,6 @@ export const SelectBox = () => {
     { id: 2, name: "Buy" },
     { id: 3, name: "Invest" },
   ];
-  console.log(people[2]);
 
   const [selected, setSelected] = useState(people[2]);
 

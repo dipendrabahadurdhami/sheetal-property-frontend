@@ -6,58 +6,59 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import KhaltiCheckout from "khalti-checkout-web";
 
-const PaymentFormModal = ({data, open, setOpen, tenants, action,onPaymentFormClose }) => {
-  const [loading,setLoading]=useState(false);
-  const [form,setForm]=useState({
-    name:'',
-  })
-  console.log(tenants, data)
+const PaymentFormModal = ({
+  data,
+  open,
+  setOpen,
+  tenants,
+  action,
+  onPaymentFormClose,
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+  });
   const onFormSubmit = async (e) => {
     e.preventDefault();
-
-  }
+  };
 
   let amount;
 
-  if(data.tenant_option  === 'Rent') amount = 300;
-  if(data.tenant_option === 'Sale') amount = 500;
-  if(data.tenant_option === 'Invest') amount = 500;
+  if (data.tenant_option === "Rent") amount = 300;
+  if (data.tenant_option === "Sale") amount = 500;
+  if (data.tenant_option === "Invest") amount = 500;
   let config = {
     // replace this key with yours
-    publicKey: 'test_public_key_df3b7db67f2e4517837f0e502b9d444c',
+    publicKey: "test_public_key_df3b7db67f2e4517837f0e502b9d444c",
     productIdentity: "ShetalRealState",
     productName: "Shetal Property Requirement Form ",
     productUrl: "https://sheetalproperty-nine.vercel.app/",
     eventHandler: {
-        onSuccess (payload) {
-            // hit merchant api for initiating verfication
-            console.log(payload);
-            toast.success("Khalti payment successfull. Please wait for a minute");
-            setTimeout(()=>{
-              action();
-            },2000);
-       
-        },
-        // onError handler is optional
-        onError (error) {
-            // handle errors
-            console.log(error);
-            toast.error("There's an error paying with Khalti");
-            onPaymentFormClose()
-        },
-        onClose () {
-            console.log('widget is closing');
-            toast.info("Khalti widget closed");
-            onPaymentFormClose()
-        }
+      onSuccess(payload) {
+        // hit merchant api for initiating verfication
+        toast.success("Khalti payment successfull. Please wait for a minute");
+        setTimeout(() => {
+          action();
+        }, 2000);
+      },
+      // onError handler is optional
+      onError(error) {
+        // handle errors
+        toast.error("There's an error paying with Khalti");
+        onPaymentFormClose();
+      },
+      onClose() {
+        toast.info("Khalti widget closed");
+        onPaymentFormClose();
+      },
     },
     paymentPreference: ["KHALTI"],
-};
+  };
 
-  const payWithKhalti = () =>{
+  const payWithKhalti = () => {
     let checkout = new KhaltiCheckout(config);
-    checkout.show({amount: amount * 100});
-  }
+    checkout.show({ amount: amount * 100 });
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -113,14 +114,15 @@ const PaymentFormModal = ({data, open, setOpen, tenants, action,onPaymentFormClo
                       <FaUserCircle className="text-gray-700 w-10 h-10" />
                     </div>
                     <div className="flex flex-col">
-      
-                      <div className="text-sm">Pay with <strong>Khalti</strong></div>
+                      <div className="text-sm">
+                        Pay with <strong>Khalti</strong>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className="p-5">
                   <form className="space-y-5" onSubmit={onFormSubmit}>
-                      {/* <select name="" className="border-b w-full p-2 text-xl" >
+                    {/* <select name="" className="border-b w-full p-2 text-xl" >
                         <option value="">Property Type</option>
                         {tenants && tenants.map(purpose=>{
                             return <option key={purpose.id} value={purpose.name} selected={data?.tenant_option === purpose.name}>{purpose.name}</option>
@@ -137,12 +139,19 @@ const PaymentFormModal = ({data, open, setOpen, tenants, action,onPaymentFormClo
                       onChange={(e)=>setForm({...form, [e.target.name]: e.target.value})}
                     /> */}
 
-                    <h2>Property Purpose: <strong>{data.tenant_option}</strong></h2>
-                    <p>Amount: Rs. <strong>{amount}</strong></p>
-                  
+                    <h2>
+                      Property Purpose: <strong>{data.tenant_option}</strong>
+                    </h2>
+                    <p>
+                      Amount: Rs. <strong>{amount}</strong>
+                    </p>
+
                     <div>
-                      <button  className={`w-full bg-red-700 py-2 text-lg font-bold text-white flex items-center justify-center rounded-lg`} onClick={payWithKhalti}>
-                        {loading?<FaSpinner className="spin"/>:'Pay Now'}
+                      <button
+                        className={`w-full bg-red-700 py-2 text-lg font-bold text-white flex items-center justify-center rounded-lg`}
+                        onClick={payWithKhalti}
+                      >
+                        {loading ? <FaSpinner className="spin" /> : "Pay Now"}
                       </button>
                     </div>
                   </form>

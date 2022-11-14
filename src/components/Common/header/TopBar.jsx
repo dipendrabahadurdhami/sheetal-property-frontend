@@ -14,22 +14,19 @@ const TopBar = (props) => {
 
   const [r, setR] = useState(false);
   // const [logged, setLogged] = useState(true);
-  const navigate =  useNavigate()
-  const user = useSelector(state=>state.user)
-  const favorites =  useSelector(state=>state.favorites);
-  useEffect(()=>{
-    console.log("Search Params",searchParams)
-    if(searchParams.has("login")){
-
-      const needsToLogin = searchParams.get("login")
-      if(needsToLogin){
-        searchParams.delete("login")
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+  const favorites = useSelector((state) => state.favorites);
+  useEffect(() => {
+    if (searchParams.has("login")) {
+      const needsToLogin = searchParams.get("login");
+      if (needsToLogin) {
+        searchParams.delete("login");
         setSearchParams(searchParams);
-        setR(true)
-
+        setR(true);
       }
-  }
-  },[searchParams])
+    }
+  }, [searchParams]);
   return (
     <>
       <div className="px-5 lg:px-10 py-3 shadow flex justify-between items-center">
@@ -63,10 +60,17 @@ const TopBar = (props) => {
           {user.data && (
             <div className="flex items-center justify-center space-x-7">
               {/* <FaBell className="w-8 h-8 rounded-full text-red-700" /> */}
-              <div className="w-8 h-8 rounded-full text-red-700 cursor-pointer relative" onClick={()=> navigate('/my-profile?section=favourites')}>
-                {!user.data && <AiOutlineHeart className="w-8 h-8"/>}
-                {user.data && <AiFillHeart className="w-8 h-8"/> }
-                {user.data && favorites.data.length > 0 && <span className="absolute -right-2 top-0 rounded-full w-4 h-4 bg-white border border-red-700 text-red-700 text-xs flex items-center justify-center text-center font-medium">{favorites.data.length}</span>}
+              <div
+                className="w-8 h-8 rounded-full text-red-700 cursor-pointer relative"
+                onClick={() => navigate("/my-profile?section=favourites")}
+              >
+                {!user.data && <AiOutlineHeart className="w-8 h-8" />}
+                {user.data && <AiFillHeart className="w-8 h-8" />}
+                {user.data && favorites.data.length > 0 && (
+                  <span className="absolute -right-2 top-0 rounded-full w-4 h-4 bg-white border border-red-700 text-red-700 text-xs flex items-center justify-center text-center font-medium">
+                    {favorites.data.length}
+                  </span>
+                )}
               </div>
               <UserLogin />
             </div>

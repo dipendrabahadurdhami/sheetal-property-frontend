@@ -6,14 +6,6 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 
 const Header = () => {
-  // const { token, setToken } = useContext(LoggedUserContext);
-  // useEffect(() => {
-  //   const Token = localStorage.getItem("token");
-  //   setToken(Token);
-  // }, [setToken]);
-  // console.log(token);
-
-  
   return (
     <Fragment>
       <div className="">

@@ -2,15 +2,15 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const SideBar = () => {
-  const dispatch =  useDispatch();
-  const user =  useSelector(state=>state.user);
-  console.log(user)
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
   return (
     <div className="border rounded pt-5 space-y-5">
       <div className="px-5 flex items-center space-x-2">
         <div>
           <img
-            src={`${user.data?.photo?user.data?.photo:'noUser.png'}`}
+            src={`${user.data?.photo ? user.data?.photo : "noUser.png"}`}
             alt="noUser"
             className="rounded-full w-12 h-12 object-cover object-center"
           />

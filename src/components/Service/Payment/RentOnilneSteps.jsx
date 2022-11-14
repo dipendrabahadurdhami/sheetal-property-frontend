@@ -6,7 +6,6 @@ import ChoosePaymentMethod from "./ChoosePaymentMethod";
 
 const RentOnilneSteps = () => {
   const [select, setSelect] = useState(1);
-  console.log(select);
   const steps = [
     {
       id: 1,

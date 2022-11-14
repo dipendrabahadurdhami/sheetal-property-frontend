@@ -1,24 +1,23 @@
 import React from "react";
 // import { product } from "../Object/product";
-import Parser from 'html-react-parser';
-const Description = ({data}) => {
-  console.log("Data",data)
-
+import Parser from "html-react-parser";
+const Description = ({ data }) => {
   return (
     <div className="">
-      {data && <>
-      <div className="border-b-2 border-gray-200 py-3 font-bold text-xl sm:text-2xl">
-        Description
-      </div>
-      <div className="text-xs md:text-sm space-y-2 md:space-y-5 py-5">
-        {data.property_description?Parser(data.property_description):''}
-      </div>
+      {data && (
+        <>
+          <div className="border-b-2 border-gray-200 py-3 font-bold text-xl sm:text-2xl">
+            Description
+          </div>
+          <div className="text-xs md:text-sm space-y-2 md:space-y-5 py-5">
+            {data.property_description ? Parser(data.property_description) : ""}
+          </div>
 
-      <div className="text-xs md:text-sm space-y-2 md:space-y-5 py-5">
-        {data.other_description?Parser(data?.other_description):''}
-      </div>
-      </>
-      }   
+          <div className="text-xs md:text-sm space-y-2 md:space-y-5 py-5">
+            {data.other_description ? Parser(data?.other_description) : ""}
+          </div>
+        </>
+      )}
       {/* <div className="py-10 px-5 lg:px-10 text-xs md:text-base">
         <p className="text-gray-700">{product.discription}</p>
         <div className="py-10">

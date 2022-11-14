@@ -1,8 +1,6 @@
 import React from "react";
-import { RiArrowDownSLine } from "react-icons/ri";
 
 const SingleRate = ({ item }) => {
-  console.log(item);
   return (
     <div className="py-3 md:p-5 lg:py-10">
       <div className="flex justify-between md:grid md:grid-cols-2">

@@ -98,8 +98,6 @@ const PropertyCard = ({ data, action }) => {
       });
   };
 
-  console.log(data);
-
   return (
     <div className="grid sm:grid-cols-5 items-center border border-gray-200 shadow-xl rounded overflow-hidden mb-6 relative">
       <img

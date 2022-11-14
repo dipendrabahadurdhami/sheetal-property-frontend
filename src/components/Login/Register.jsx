@@ -36,7 +36,7 @@ const Register = ({ setR }) => {
   const [selected, setSelected] = useState(people[0]);
   const [error, setError] = useState(people[0]);
   const [serverError, setServerError] = useState(null);
-  const [loading,setLoading]= useState(false);
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="p-3 text-sm">
@@ -59,27 +59,25 @@ const Register = ({ setR }) => {
                 email: values.email,
                 password: values.password,
                 password_confirmation: values.confirmPassword,
-                user_type: selected.name
+                user_type: selected.name,
               }
             );
             if (res.data.errors) {
               setError(Object.values(res.data.errors)[0]);
               setLoading(false);
-              console.log(error);
-              toast.error("User failed to register")
+              toast.error("User failed to register");
             } else {
               setR(false);
-              console.log(res);
               setLoading(false);
-              navigate('/');
-              toast.success("User successfully registered. Click login to continue")
-
+              navigate("/");
+              toast.success(
+                "User successfully registered. Click login to continue"
+              );
             }
           } catch (err) {
-            console.log(err);
             setLoading(false);
             setServerError(err.response.data.errors);
-            toast.error("User failed to register")
+            toast.error("User failed to register");
           }
         }}
       >
@@ -99,7 +97,7 @@ const Register = ({ setR }) => {
 
               {errors.user_name && touched.name ? (
                 <div className="text-red-700 font-base border-b-2 border-gray-400  p-1">
-                  {errors.user_name }
+                  {errors.user_name}
                   <sup>*</sup>
                 </div>
               ) : null}
@@ -134,7 +132,6 @@ const Register = ({ setR }) => {
                       onClick={(e) => {
                         e.preventDefault();
                         setPasswordShown(false);
-                        console.log(passwordShown);
                       }}
                     >
                       <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
@@ -144,9 +141,7 @@ const Register = ({ setR }) => {
                   <button
                     onClick={(e) => {
                       e.preventDefault();
-
                       setPasswordShown(true);
-                      console.log(passwordShown);
                     }}
                   >
                     <AiOutlineEye className="w-6 h-6 text-gray-500" />
@@ -260,21 +255,32 @@ const Register = ({ setR }) => {
                 <span className="text-red-700">Terms & Conditions</span>
               </span>
             </label>
-            {serverError &&         
+            {serverError && (
               <ul className="text-red-500 bg-red-100 rounded-sm p-2 list-none">
-            
-                {serverError && Object.entries(serverError).map((item,i)=>{
-                return <li className={`block py-2  ${i < Object.entries(serverError).length - 1?' border-b border-red-200':''}`} key={i}>{item[1]}</li>
-                })}
+                {serverError &&
+                  Object.entries(serverError).map((item, i) => {
+                    return (
+                      <li
+                        className={`block py-2  ${
+                          i < Object.entries(serverError).length - 1
+                            ? " border-b border-red-200"
+                            : ""
+                        }`}
+                        key={i}
+                      >
+                        {item[1]}
+                      </li>
+                    );
+                  })}
               </ul>
-            }
+            )}
 
             <button
               type="submit"
               className="text-white bg-red-700 rounded-lg w-full font-bold p-3 text-center flex items-center justify-center"
               disabled={loading}
             >
-              {loading?<FaSpinner className="spin"/>: 'Register'}
+              {loading ? <FaSpinner className="spin" /> : "Register"}
             </button>
           </Form>
         )}

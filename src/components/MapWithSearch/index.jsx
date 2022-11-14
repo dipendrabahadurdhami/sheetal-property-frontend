@@ -4,7 +4,7 @@ import {
   GoogleMap,
   withScriptjs,
   InfoWindow,
-  Marker
+  Marker,
 } from "react-google-maps";
 import Autocomplete from "react-google-autocomplete";
 import Geocode from "react-geocode";
@@ -20,12 +20,12 @@ class Map extends Component {
       state: "",
       mapPosition: {
         lat: this.props.center.lat,
-        lng: this.props.center.lng
+        lng: this.props.center.lng,
       },
       markerPosition: {
         lat: this.props.center.lat,
-        lng: this.props.center.lng
-      }
+        lng: this.props.center.lng,
+      },
     };
   }
   /**
@@ -36,24 +36,26 @@ class Map extends Component {
       this.state.mapPosition.lat,
       this.state.mapPosition.lng
     ).then(
-      response => {
+      (response) => {
         const address = response.results[0].formatted_address,
           addressArray = response.results[0].address_components,
           city = this.getCity(addressArray),
           area = this.getArea(addressArray),
           state = this.getState(addressArray);
 
-        console.log("city", city, area, state);
-
         this.setState({
           address: address ? address : "",
           area: area ? area : "",
           city: city ? city : "",
-          state: state ? state : ""
+          state: state ? state : "",
         });
-        this.onLocationUpdate( this.state.mapPosition.lat,  this.state.mapPosition.lng, address)
+        this.onLocationUpdate(
+          this.state.mapPosition.lat,
+          this.state.mapPosition.lng,
+          address
+        );
       },
-      error => {
+      (error) => {
         console.error(error);
       }
     );
@@ -84,7 +86,7 @@ class Map extends Component {
    * @param addressArray
    * @return {string}
    */
-  getCity = addressArray => {
+  getCity = (addressArray) => {
     let city = "";
     for (let i = 0; i < addressArray.length; i++) {
       if (
@@ -102,7 +104,7 @@ class Map extends Component {
    * @param addressArray
    * @return {string}
    */
-  getArea = addressArray => {
+  getArea = (addressArray) => {
     let area = "";
     for (let i = 0; i < addressArray.length; i++) {
       if (addressArray[i].types[0]) {
@@ -124,7 +126,7 @@ class Map extends Component {
    * @param addressArray
    * @return {string}
    */
-  getState = addressArray => {
+  getState = (addressArray) => {
     let state = "";
     for (let i = 0; i < addressArray.length; i++) {
       for (let i = 0; i < addressArray.length; i++) {
@@ -142,7 +144,7 @@ class Map extends Component {
    * And function for city,state and address input
    * @param event
    */
-  onChange = event => {
+  onChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
   /**
@@ -150,12 +152,12 @@ class Map extends Component {
    *
    * @param event
    */
-  onInfoWindowClose = event => {};
+  onInfoWindowClose = (event) => {};
   /**
    * When the user types an address in the search box
    * @param place
    */
-  onPlaceSelected = place => {
+  onPlaceSelected = (place) => {
     const address = place.formatted_address,
       addressArray = place.address_components,
       city = this.getCity(addressArray),
@@ -171,15 +173,15 @@ class Map extends Component {
       state: state ? state : "",
       markerPosition: {
         lat: latValue,
-        lng: lngValue
+        lng: lngValue,
       },
       mapPosition: {
         lat: latValue,
-        lng: lngValue
-      }
+        lng: lngValue,
+      },
     });
 
-    this.onLocationUpdate(latValue, lngValue, address)
+    this.onLocationUpdate(latValue, lngValue, address);
   };
   /**
    * When the marker is dragged you get the lat and long using the functions available from event object.
@@ -188,62 +190,58 @@ class Map extends Component {
    *
    * @param event
    */
-  onMarkerDragEnd = event => {
-    console.log("event", event);
+  onMarkerDragEnd = (event) => {
     let newLat = event.latLng.lat(),
       newLng = event.latLng.lng(),
       addressArray = [],
-      address = '',
-      city = '',
-      state = '',
-      area=''
+      address = "",
+      city = "",
+      state = "",
+      area = "";
 
-    
     Geocode.fromLatLng(newLat, newLng).then(
-      response => {
-          address = response.results[0].formatted_address;
-          addressArray = response.results[0].address_components;
-          city = this.getCity(addressArray);
-          area = this.getArea(addressArray);
-          state = this.getState(addressArray);
+      (response) => {
+        address = response.results[0].formatted_address;
+        addressArray = response.results[0].address_components;
+        city = this.getCity(addressArray);
+        area = this.getArea(addressArray);
+        state = this.getState(addressArray);
         this.setState({
           address: address ? address : "",
           area: area ? area : "",
           city: city ? city : "",
           state: state ? state : "",
-          mapPosition:{
+          mapPosition: {
             lat: newLat,
-            lng: newLng
+            lng: newLng,
           },
           markerPosition: {
             lat: newLat,
-            lng: newLng
+            lng: newLng,
           },
         });
 
-        this.onLocationUpdate(newLat, newLng, address)
+        this.onLocationUpdate(newLat, newLng, address);
       },
-      error => {
+      (error) => {
         console.error(error);
       }
     );
-   
   };
 
   onLocationUpdate = (lat, lng, address) => {
-
     this.props.mapLocation(lat, lng, address);
-  }
+  };
   render() {
     const AsyncMap = withScriptjs(
-      withGoogleMap(props => (
+      withGoogleMap((props) => (
         <div className="relative mb-6">
           <GoogleMap
             google={this.props.google}
             defaultZoom={this.props.zoom}
             defaultCenter={{
               lat: this.state.mapPosition.lat,
-              lng: this.state.mapPosition.lng
+              lng: this.state.mapPosition.lng,
             }}
             onClick={this.onMarkerDragEnd}
           >
@@ -256,15 +254,14 @@ class Map extends Component {
                 paddingLeft: "16px",
                 marginTop: "2px",
                 marginBottom: "0",
-                borderBottomLeftRadius:'4px',
-                borderBottomRightRadius:'4px',
-                border:'1px solid #dedede'
-             
+                borderBottomLeftRadius: "4px",
+                borderBottomRightRadius: "4px",
+                border: "1px solid #dedede",
               }}
               onPlaceSelected={this.onPlaceSelected}
               options={{
-                  types: [],
-                  componentRestrictions: { country: "np" },
+                types: [],
+                componentRestrictions: { country: "np" },
               }}
             />
             {/*Marker*/}
@@ -273,11 +270,9 @@ class Map extends Component {
               name={"Dolores park"}
               draggable={true}
               onDragEnd={this.onMarkerDragEnd}
-            
-              
               position={{
                 lat: this.state.markerPosition.lat,
-                lng: this.state.markerPosition.lng
+                lng: this.state.markerPosition.lng,
               }}
             />
             {/* <Marker /> */}
@@ -286,7 +281,7 @@ class Map extends Component {
               onClose={this.onInfoWindowClose}
               position={{
                 lat: this.state.markerPosition.lat + 0.0018,
-                lng: this.state.markerPosition.lng
+                lng: this.state.markerPosition.lng,
               }}
             >
               <div>
@@ -352,13 +347,19 @@ class Map extends Component {
           <AsyncMap
             googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjQbpLmWtP5SBJQ6RWzplfIg0Sd0rpDYg&libraries=geometry,drawing,places&sensor=true"
             loadingElement={<div style={{ height: `100%` }} />}
-            containerElement={<div style={{ minHeight: this.props.minHeight, height:'100%' }} />}
+            containerElement={
+              <div
+                style={{ minHeight: this.props.minHeight, height: "100%" }}
+              />
+            }
             mapElement={<div style={{ height: `300px` }} />}
           />
         </div>
       );
     } else {
-      map = <div style={{ minHeight: this.props.minHeight }} className="mb-6" />;
+      map = (
+        <div style={{ minHeight: this.props.minHeight }} className="mb-6" />
+      );
     }
     return map;
   }

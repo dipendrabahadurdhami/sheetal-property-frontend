@@ -6,11 +6,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import {setLoading ,setLogin, setError} from '../../features/slices/auth';
-import { setUserInfo, fetchUserInformation } from "../../features/slices/userInformation";
+import { setLoading, setLogin, setError } from "../../features/slices/auth";
+import {
+  setUserInfo,
+  fetchUserInformation,
+} from "../../features/slices/userInformation";
 // import { LoggedUserContext } from "../Context/LoginContext";
 
-import {  toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 // import { useCookies } from 'react-cookie';
 import apiClient from "../../utils/apiClient";
@@ -25,8 +28,8 @@ const Login = ({ setR }) => {
   const navigate = useNavigate();
   const [passwordShown, setPasswordShown] = useState(false);
   // const [cookies, setCookie] = useCookies(['sheetal_token']);
-  const auth =  useSelector((state)=>state.auth);
-  const dispatch =  useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   return (
     <div className="p-3 text-sm">
@@ -38,43 +41,40 @@ const Login = ({ setR }) => {
         validationSchema={LoginSchema}
         onSubmit={async (values) => {
           try {
-          
             dispatch(setLoading(true));
-            const res = await axios.post(`${process.env.REACT_APP_API_LINK}/login`,
+            const res = await axios.post(
+              `${process.env.REACT_APP_API_LINK}/login`,
               {
                 email: values.email,
                 password: values.password,
               }
             );
 
-           if(res.status === 200){
+            if (res.status === 200) {
               localStorage.setItem("sheetal_token", res.data.data.token);
               dispatch(setLoading(false));
-              dispatch(setLogin(res.data.data))
-              dispatch(setError(''))
-  
+              dispatch(setLogin(res.data.data));
+              dispatch(setError(""));
+
               // setCookie('sheetal_token', res.data.data.token, { path: '/' });
-              toast.success(`Welcome ${res.data.data.user_name}, You have successfully logged in.`);
+              toast.success(
+                `Welcome ${res.data.data.user_name}, You have successfully logged in.`
+              );
 
-              setTimeout(()=>{
-                dispatch(fetchUserInformation())
-              }, 1000)
+              setTimeout(() => {
+                dispatch(fetchUserInformation());
+              }, 1000);
+            } else {
+              const error = "Something went wrong. Please try again later";
+              toast.error(error);
+              dispatch(setError(error));
+              dispatch(setLoading(false));
+            }
 
-           }else{
-             const error = "Something went wrong. Please try again later";
-            toast.error(error)
-            dispatch(setError(error));
-            dispatch(setLoading(false));
-           }
-
-            
-            // setToken(res.data.data.token);
-            // console.log(res.data.data.token);
             setR(false);
-            // navigate(0);
           } catch (error) {
             console.error(error);
-            toast.error(error.response.data.message)
+            toast.error(error.response.data.message);
             dispatch(setLoading(false));
             dispatch(setError(error.response.data.message));
           }
@@ -115,7 +115,6 @@ const Login = ({ setR }) => {
                       onClick={(e) => {
                         e.preventDefault();
                         setPasswordShown(false);
-                        console.log(passwordShown);
                       }}
                     >
                       <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
@@ -127,7 +126,6 @@ const Login = ({ setR }) => {
                       e.preventDefault();
 
                       setPasswordShown(true);
-                      console.log(passwordShown);
                     }}
                   >
                     <AiOutlineEye className="w-6 h-6 text-gray-500" />
@@ -155,7 +153,7 @@ const Login = ({ setR }) => {
               type="submit"
               className="inline-flex justify-center text-white bg-red-700 rounded-lg w-full text-sm font-medium p-3 text-center"
             >
-              {auth.isLoading?<FaSpinner className="spin"/>: 'Login'}
+              {auth.isLoading ? <FaSpinner className="spin" /> : "Login"}
             </button>
           </Form>
         )}

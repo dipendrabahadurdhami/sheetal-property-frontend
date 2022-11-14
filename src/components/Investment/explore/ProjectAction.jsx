@@ -44,9 +44,7 @@ const ProjectAction = () => {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
-  function SelectTabs() {
-    console.log("tabs");
-  }
+  function SelectTabs() {}
 
   return (
     <div className="py-10">

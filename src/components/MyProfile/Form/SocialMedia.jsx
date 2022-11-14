@@ -2,80 +2,83 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchUserInformation } from "../../../features/slices/userInformation";
 import apiClient from "../../../utils/apiClient";
-import {  toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
-const SocialMedia = ({data}) => {
-  const dispatch =  useDispatch()
-  const [loading,setLoading]= useState(false)
-  const [form,setForm]= useState({
-    skype:'',
-    website_url:'',
-    facebook_url:'',
-    twitter_url:'',
-    linkedin_url:'',
-    instagram_url:'',
-    googleplus_url:'',
-    youtube_url:'',
-    pinterest_url:'',
-    vimeo_url:'',
-  })
+const SocialMedia = ({ data }) => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    skype: "",
+    website_url: "",
+    facebook_url: "",
+    twitter_url: "",
+    linkedin_url: "",
+    instagram_url: "",
+    googleplus_url: "",
+    youtube_url: "",
+    pinterest_url: "",
+    vimeo_url: "",
+  });
 
-  useEffect(()=>{
+  useEffect(() => {
     setForm({
-    skype:data?.skype,
-    website_url:data?.website_url,
-    facebook_url:data?.facebook_url,
-    twitter_url:data?.twitter_url,
-    linkedin_url:data?.linkedin_url,
-    instagram_url:data?.instagram_url,
-    googleplus_url:data?.googleplus_url,
-    youtube_url:data?.youtube_url,
-    pinterest_url:data?.pinterest_url,
-    vimeo_url:data?.vimeo_url,
+      skype: data?.skype,
+      website_url: data?.website_url,
+      facebook_url: data?.facebook_url,
+      twitter_url: data?.twitter_url,
+      linkedin_url: data?.linkedin_url,
+      instagram_url: data?.instagram_url,
+      googleplus_url: data?.googleplus_url,
+      youtube_url: data?.youtube_url,
+      pinterest_url: data?.pinterest_url,
+      vimeo_url: data?.vimeo_url,
     });
-  },[data])
+  }, [data]);
 
   const onInputChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]:e.target.value
-    })
-  } 
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    const newData =  {...data, ...form};
+    const newData = { ...data, ...form };
 
-    Object.entries(newData).map(item=>{
-      console.log(item[0],item[1])
-      formData.append(item[0],item[1])
-    })
-    setLoading(true)
-    try{
-      await apiClient.post('update-profile',formData).then(res=>{
-        if(res.status === 200){
-          dispatch(fetchUserInformation())
+    Object.entries(newData).map((item) => {
+      formData.append(item[0], item[1]);
+    });
+    setLoading(true);
+    try {
+      await apiClient.post("update-profile", formData).then((res) => {
+        if (res.status === 200) {
+          dispatch(fetchUserInformation());
           setLoading(false);
           toast.success(`Profile Social Media updated successfully.`);
-        }else{
+        } else {
           setLoading(false);
           toast.error(res.message);
-        } 
-      })
-    }catch(error){
+        }
+      });
+    } catch (error) {
       console.error(error);
       setLoading(false);
-      toast.error(`There's an error updating social media. Please contact admin`);
+      toast.error(
+        `There's an error updating social media. Please contact admin`
+      );
     }
-    
-  }
+  };
   return (
     <div className="space-y-5 md:space-y-10">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-semibold text-gray-900">Social Link</h1>
       </div>
-      <form className="grid md:grid-cols-2 gap-5 md:gap-10" onSubmit={handleFormSubmit}>
+      <form
+        className="grid md:grid-cols-2 gap-5 md:gap-10"
+        onSubmit={handleFormSubmit}
+      >
         <label className="flex flex-col space-y-2">
           <span>Skype</span>
           <input
@@ -178,12 +181,15 @@ const SocialMedia = ({data}) => {
         </label>
         <div></div>
         <div className="flex justify-end">
-          <button type="submit" className="text-white font-medium bg-red-700 rounded px-5 py-2"  disabled={loading}>
-          {loading ?<FaSpinner className="spin"/> : 'Update Social Links'}
+          <button
+            type="submit"
+            className="text-white font-medium bg-red-700 rounded px-5 py-2"
+            disabled={loading}
+          >
+            {loading ? <FaSpinner className="spin" /> : "Update Social Links"}
           </button>
         </div>
       </form>
-     
     </div>
   );
 };
