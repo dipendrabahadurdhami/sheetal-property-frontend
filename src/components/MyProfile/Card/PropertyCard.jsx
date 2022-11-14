@@ -14,9 +14,9 @@ const PropertyCard = ({ data, action }) => {
   const [id, setId] = useState(null);
   const [favorite, setFavorite] = useState(false);
   const favorites = useSelector((state) => state.favorites.data);
-  const [removing, setRemoving] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const [propertySold, setPropertySold] = useState(false);
   const token = localStorage.getItem("sheetal_token");
   let navigate = useNavigate();
 
@@ -89,6 +89,7 @@ const PropertyCard = ({ data, action }) => {
       .then((res) => {
         if (res.status === 200) {
           toast.success("Property marked as sold");
+          setPropertySold(true);
         } else {
           toast.error("Failed to mark as sold");
         }
@@ -97,6 +98,8 @@ const PropertyCard = ({ data, action }) => {
         toast.error("Failed to mark as sold");
       });
   };
+
+  const { sold } = data;
 
   return (
     <div className="grid sm:grid-cols-5 items-center border border-gray-200 shadow-xl rounded overflow-hidden mb-6 relative">
@@ -119,12 +122,16 @@ const PropertyCard = ({ data, action }) => {
               </div>
             </div>
           </div>
-          <button
-            className="text-white px-2 text-sm py-1 rounded bg-red-700"
-            onClick={() => markAsSold(data?.id)}
-          >
-            Mark As Sold
-          </button>
+          {sold === "1" || propertySold ? (
+            <span className="text-red-700 px-2 text-sm font-bold">Sold</span>
+          ) : (
+            <button
+              className="text-red-700 px-2 text-sm font-bold underline"
+              onClick={() => markAsSold(data?.id)}
+            >
+              Mark As Sold
+            </button>
+          )}
         </div>
         <div className="space-y-1">
           <div className="flex justify-between">
