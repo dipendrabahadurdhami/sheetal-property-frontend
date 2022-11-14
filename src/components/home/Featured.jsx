@@ -14,15 +14,11 @@ const Featured = () => {
         const res = await axios.get(
           `${process.env.REACT_APP_API_LINK}/featured-property-list`
         );
-        
 
         setAllProduct(res.data.data);
-  
       }
       FetchData();
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (e) {}
   }, []);
 
   return (
@@ -31,22 +27,40 @@ const Featured = () => {
         <h1 className="pb-3 text-3xl">Featured Properties</h1>
         <p className="bg-red-700 h-1 w-16"></p>
       </div>
-      
+
       <div className="py-4 md:py-4 md:pb-2 -mx-4">
         <Carousel
           responsive={responsive}
           customRightArrow={<CustomRightArrow />}
           customLeftArrow={<CustomLeftArrow />}
-         
-          className="pb-16 pt-5"
+          className="pb-16 pt-5 flex"
         >
-          {allProduct.map((product, index) => (
+          {[...allProduct].slice(0, 4).map((product, index) => (
             <div key={index} className="h-full px-4 mb-2">
               <FearuredCard product={product} />
             </div>
           ))}
         </Carousel>
       </div>
+
+      {allProduct.length > 4 && (
+        <div className="py-4 md:py-4 md:pb-2 -mx-4">
+          <Carousel
+            responsive={responsive}
+            customRightArrow={<CustomRightArrow />}
+            customLeftArrow={<CustomLeftArrow />}
+            className="pb-16 pt-5"
+          >
+            {[...allProduct]
+              .slice(4, allProduct.length)
+              .map((product, index) => (
+                <div key={index} className="h-full px-4 mb-2">
+                  <FearuredCard product={product} />
+                </div>
+              ))}
+          </Carousel>
+        </div>
+      )}
     </div>
   );
 };

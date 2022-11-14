@@ -3,7 +3,6 @@ import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const SingleInvestment = ({ item }) => {
-  console.log(item);
   return (
     <div className="grid xs:grid-cols-3 gap-8 md:gap-10 border border-gray-100 rounded p-4 shadow bg-gray-50">
       <img

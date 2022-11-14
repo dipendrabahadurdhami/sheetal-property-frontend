@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import apiClient from "../../utils/apiClient";
 import Search from "../Common/SearchBox/HomeSearch";
 import Model from "../FilterSearch/Model";
 import AdviceTools from "./AdviceTools";
 import Featured from "./Featured";
-import Property from "./Property";
-import { TopProjects } from "./TopProjects";
+import LatestProperties from "./LatestProperties";
 
 const MainHome = () => {
   const [filterModal, setFilterModal] = useState(false);
-  // const onSearch = ({params}) => {
-  //     apiClient.post
-  // } 
   return (
     <div className="space-y-2 pb-20">
       <div
@@ -30,9 +25,10 @@ const MainHome = () => {
         </div>
       </div>
       <Featured />
+      <LatestProperties />
       {/* <Property /> */}
       {/* <TopProjects /> */}
-      
+
       {/* <AdviceTools /> */}
       {filterModal && (
         <Model setFilterModal={setFilterModal} filterModal={filterModal} />
