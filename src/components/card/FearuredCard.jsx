@@ -125,14 +125,14 @@ const FearuredCard = ({ product }) => {
               <span className="font-medium">
                 Rs. {product?.total_price ? product?.total_price : "N/A"}{" "}
               </span>
-              <span className="font-medium">
+              {/* <span className="font-medium">
                 {product?.land_according_to_measurements
                   ?.land_area_in_sqft_measurements
                   ? product?.land_according_to_measurements
                       ?.land_area_in_sqft_measurements
                   : " -"}{" "}
                 sq.ft.
-              </span>
+              </span> */}
             </div>
             {product?.property_location && (
               <div className="text-gray-600 text-sm flex flex-wrap">
