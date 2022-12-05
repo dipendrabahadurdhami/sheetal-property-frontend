@@ -151,7 +151,11 @@ const PaymentFormModal = ({
                         className={`w-full bg-red-700 py-2 text-lg font-bold text-white flex items-center justify-center rounded-lg`}
                         onClick={payWithKhalti}
                       >
-                        {loading ? <FaSpinner className="spin" /> : "Pay Now"}
+                        {loading ? (
+                          <FaSpinner className="spin" />
+                        ) : (
+                          "Pay Online"
+                        )}
                       </button>
                     </div>
                   </form>

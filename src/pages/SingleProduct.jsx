@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ReactGA from "react-ga";
 import UserHead from "../components/SingleProduct/UserHead";
 import Description from "../components/SingleProduct/Description";
 import ScheduleTour from "../components/scheduleTour/ScheduleTour";
@@ -48,6 +49,10 @@ const SingleProduct = () => {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname);
+  }, []);
 
   return (
     <>

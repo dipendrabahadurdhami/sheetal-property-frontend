@@ -131,6 +131,21 @@ const SideBar = ({ menubutton }) => {
     }
   }
 
+  console.log(user);
+  const { user_name, first_name, last_name } = user.data || {};
+
+  let username;
+  if (
+    first_name &&
+    last_name &&
+    first_name !== "null" &&
+    last_name !== "null"
+  ) {
+    username = `${first_name} ${last_name}`;
+  } else {
+    username = user_name;
+  }
+
   return (
     <>
       <div className="container mx-auto">
@@ -180,7 +195,7 @@ const SideBar = ({ menubutton }) => {
                   </div>
                   {user?.data?.first_name && user?.data?.last_name && (
                     <div className="text-red-700 text-xl font-medium">
-                      {user?.data?.first_name} {user?.data?.last_name}
+                      {username}
                     </div>
                   )}
                 </div>

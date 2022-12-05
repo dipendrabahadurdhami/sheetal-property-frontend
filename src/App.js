@@ -37,7 +37,6 @@ import {
 import Test from "./pages/Test";
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID);
-ReactGA.pageview(window.location.pathname + window.location.search);
 
 function App() {
   // checking for login state
