@@ -1,6 +1,7 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { BrowserRouter as Router } from "react-router-dom";
+import ReactGA from "react-ga";
 import Footer from "./components/Common/Footer/Footer";
 import Header from "./components/Common/header/Header";
 import Home from "./pages/Home";
@@ -29,38 +30,41 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInformation } from "./features/slices/userInformation";
 import Protected from "./routes/protectedRoute";
-import { fetchFavoritesList, removeAllFavorites } from "./features/slices/favourites";
+import {
+  fetchFavoritesList,
+  removeAllFavorites,
+} from "./features/slices/favourites";
 import Test from "./pages/Test";
 
+ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID);
+ReactGA.pageview(window.location.pathname + window.location.search);
+
 function App() {
-
   // checking for login state
-   const [loggedIn, setLoggedIn] = useState(false);
-   const auth =  useSelector((state)=>state.auth);
-   const user =  useSelector((state)=>state.user);
-   const dispatch =  useDispatch();
-   const token = localStorage.getItem('sheetal_token');
-   
-   useEffect(()=>{
-    if(token){
-      dispatch(fetchUserInformation());
-      
-    }
-   },[])
+  const [loggedIn, setLoggedIn] = useState(false);
+  const auth = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("sheetal_token");
 
-   useEffect(()=>{
-     if(user.data){
-        dispatch(fetchFavoritesList())
-     }else{
-       dispatch(removeAllFavorites())
-     }
-   }, [user])
-   
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchUserInformation());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user.data) {
+      dispatch(fetchFavoritesList());
+    } else {
+      dispatch(removeAllFavorites());
+    }
+  }, [user]);
 
   return (
     <div className="bg-gray-100">
       <Router>
-        <Header isLoggedIn={loggedIn}/>
+        <Header isLoggedIn={loggedIn} />
         {/* <div className="mx-auto max-w-[1440px] bg-white"> */}
         <div className="mx-auto w-full bg-white">
           <Routes>
@@ -75,7 +79,14 @@ function App() {
             <Route path="/rateandtrend" element={<RateAndTrends />} />
             <Route path="/investment" element={<Investment />} />
             <Route path="/investment/export" element={<InvestmentExplore />} />
-            <Route path="/my-profile?section=post-property" element={<Protected><PostProperty /></Protected>} />
+            <Route
+              path="/my-profile?section=post-property"
+              element={
+                <Protected>
+                  <PostProperty />
+                </Protected>
+              }
+            />
             <Route path="/propertyDemand" element={<PropertyDemand />} />
             <Route path="/agents" element={<FindAgent />} />
             <Route path="/agent/:id" element={<SingleAgent />} />
@@ -83,18 +94,24 @@ function App() {
             <Route path="/my-profile/messages" element={<Message />} />
             <Route path="/investDetail" element={<InvestDetails />} />
             <Route path="/project" element={<Project />} />
-            <Route path="/test" element={<Test/>}/>
+            <Route path="/test" element={<Test />} />
             <Route
               path="/investment/viewallproduct"
               element={<InvestmentAllProduct />}
             />
-    
-            <Route path="/my-profile" element={<Protected><MyProfile /></Protected>} />
-  
+
+            <Route
+              path="/my-profile"
+              element={
+                <Protected>
+                  <MyProfile />
+                </Protected>
+              }
+            />
           </Routes>
         </div>
         <Footer />
-        <ToastContainer 
+        <ToastContainer
           position="top-right"
           autoClose={5000}
           hideProgressBar={false}

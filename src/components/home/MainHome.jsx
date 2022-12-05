@@ -3,6 +3,7 @@ import Search from "../Common/SearchBox/HomeSearch";
 import Model from "../FilterSearch/Model";
 import AdviceTools from "./AdviceTools";
 import Featured from "./Featured";
+import Investment from "./Investment";
 import LatestProperties from "./LatestProperties";
 
 const MainHome = () => {
@@ -25,6 +26,7 @@ const MainHome = () => {
         </div>
       </div>
       <Featured />
+      <Investment />
       <LatestProperties />
       {/* <Property /> */}
       {/* <TopProjects /> */}

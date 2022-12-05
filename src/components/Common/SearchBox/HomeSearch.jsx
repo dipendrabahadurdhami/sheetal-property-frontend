@@ -3,13 +3,13 @@ import InputBox from "./InputBox";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { navigation } from "../header/navigation";
 
-const Search = ({ setFilterModal, showFilters=true }) => {
+const Search = ({ setFilterModal, showFilters = true }) => {
   const [params] = useSearchParams();
   const query = params.get("tab");
   let navigate = useNavigate();
 
   return (
-    <div className="">
+    <div>
       <div className="flex xl:w-4/5  sm:text-lg items-center justify-start font-bold overflow-x-auto">
         {navigation[0].subTitle.map((item, index) => (
           <button
