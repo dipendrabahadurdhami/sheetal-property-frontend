@@ -13,7 +13,6 @@ const Investment = () => {
       async function FetchData() {
         const res = await axios.get(`${process.env.REACT_APP_API_LINK}/invest`);
 
-        console.log(res.data.data);
         setAllProduct(res.data.data);
       }
       FetchData();

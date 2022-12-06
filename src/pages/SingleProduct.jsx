@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import ReactGA from "react-ga";
 import UserHead from "../components/SingleProduct/UserHead";
 import Description from "../components/SingleProduct/Description";
 import ScheduleTour from "../components/scheduleTour/ScheduleTour";
@@ -20,14 +19,11 @@ const SingleProduct = () => {
 
   const [property, setProperty] = useState({});
   const [loading, setLoading] = useState(false);
-  let isApiEnabled;
 
   useEffect(() => {
     FetchData();
-    return () => {
-      // cancel the subscription
-      isApiEnabled = false;
-    };
+
+    // eslint-disable-next-line
   }, [id]);
 
   async function FetchData() {
@@ -49,10 +45,6 @@ const SingleProduct = () => {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    ReactGA.pageview(window.location.pathname);
-  }, []);
 
   return (
     <>

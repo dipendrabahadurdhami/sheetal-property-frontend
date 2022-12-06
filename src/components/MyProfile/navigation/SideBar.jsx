@@ -131,7 +131,6 @@ const SideBar = ({ menubutton }) => {
     }
   }
 
-  console.log(user);
   const { user_name, first_name, last_name } = user.data || {};
 
   let username;

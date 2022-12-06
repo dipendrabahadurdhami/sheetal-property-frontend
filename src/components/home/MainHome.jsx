@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Search from "../Common/SearchBox/HomeSearch";
 import Model from "../FilterSearch/Model";
-import AdviceTools from "./AdviceTools";
 import Featured from "./Featured";
 import Investment from "./Investment";
 import LatestProperties from "./LatestProperties";
+import "react-multi-carousel/lib/styles.css";
 
 const MainHome = () => {
   const [filterModal, setFilterModal] = useState(false);
@@ -28,10 +28,6 @@ const MainHome = () => {
       <Featured />
       <Investment />
       <LatestProperties />
-      {/* <Property /> */}
-      {/* <TopProjects /> */}
-
-      {/* <AdviceTools /> */}
       {filterModal && (
         <Model setFilterModal={setFilterModal} filterModal={filterModal} />
       )}
