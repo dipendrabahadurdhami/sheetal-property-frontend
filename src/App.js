@@ -61,7 +61,7 @@ function App() {
   }, [user]);
 
   useEffect(() => {
-    ReactGA.pageview(location.pathname + location.search);
+    ReactGA.pageview(window.location.pathname + location.search);
   }, [location.pathname, location.search]);
 
   return (
