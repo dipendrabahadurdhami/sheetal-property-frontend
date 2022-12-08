@@ -10,7 +10,7 @@ const Pages = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/findAgent">Find Agent</Link>
+            <Link to="/agents">Find Agent</Link>
           </li>
           <li>
             <Link to="/requirementForm">Requirement Form</Link>

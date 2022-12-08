@@ -1,8 +1,7 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationIcon, XIcon } from "@heroicons/react/outline";
+import { XIcon } from "@heroicons/react/outline";
 import { FaSpinner, FaUserCircle } from "react-icons/fa";
-import axios from "axios";
 import { toast } from "react-toastify";
 import KhaltiCheckout from "khalti-checkout-web";
 
@@ -10,45 +9,39 @@ const PaymentFormModal = ({
   data,
   open,
   setOpen,
-  tenants,
   action,
   onPaymentFormClose,
+  loading,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-  });
   const onFormSubmit = async (e) => {
     e.preventDefault();
   };
+
+  const [paymentMode, setPaymentMode] = useState("");
 
   let amount;
 
   if (data.tenant_option === "Rent") amount = 300;
   if (data.tenant_option === "Sale") amount = 500;
   if (data.tenant_option === "Invest") amount = 500;
+
   let config = {
     // replace this key with yours
-    publicKey: "test_public_key_df3b7db67f2e4517837f0e502b9d444c",
+    publicKey: process.env.REACT_APP_KHALTI_PUBLIC_KEY,
     productIdentity: "ShetalRealState",
     productName: "Shetal Property Requirement Form ",
     productUrl: "https://sheetalproperty-nine.vercel.app/",
     eventHandler: {
       onSuccess(payload) {
         // hit merchant api for initiating verfication
-        toast.success("Khalti payment successfull. Please wait for a minute");
-        setTimeout(() => {
-          action();
-        }, 2000);
+        action("khalti", payload);
       },
-      // onError handler is optional
       onError(error) {
         // handle errors
         toast.error("There's an error paying with Khalti");
         onPaymentFormClose();
       },
       onClose() {
-        toast.info("Khalti widget closed");
         onPaymentFormClose();
       },
     },
@@ -56,8 +49,14 @@ const PaymentFormModal = ({
   };
 
   const payWithKhalti = () => {
+    setPaymentMode("khalti");
     let checkout = new KhaltiCheckout(config);
-    checkout.show({ amount: amount * 100 });
+    checkout.show({ amount: 100 * 100 });
+  };
+
+  const payWithQrCode = () => {
+    setPaymentMode("");
+    action("");
   };
 
   return (
@@ -65,7 +64,7 @@ const PaymentFormModal = ({
       <Dialog
         as="div"
         className="fixed z-50 inset-0 overflow-y-auto"
-        onClose={setOpen}
+        onClose={() => setOpen(false)}
       >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -122,23 +121,6 @@ const PaymentFormModal = ({
                 </div>
                 <div className="p-5">
                   <form className="space-y-5" onSubmit={onFormSubmit}>
-                    {/* <select name="" className="border-b w-full p-2 text-xl" >
-                        <option value="">Property Type</option>
-                        {tenants && tenants.map(purpose=>{
-                            return <option key={purpose.id} value={purpose.name} selected={data?.tenant_option === purpose.name}>{purpose.name}</option>
-                        })}
-                        
-                      </select> */}
-                    {/* <input
-                      type="text"
-                      className="border-b w-full p-2 text-xl"
-                      placeholder="Name"
-                      name="name"
-                      value={form.name}
-                      required={true}
-                      onChange={(e)=>setForm({...form, [e.target.name]: e.target.value})}
-                    /> */}
-
                     <h2>
                       Property Purpose: <strong>{data.tenant_option}</strong>
                     </h2>
@@ -147,16 +129,41 @@ const PaymentFormModal = ({
                     </p>
 
                     <div>
-                      <button
-                        className={`w-full bg-red-700 py-2 text-lg font-bold text-white flex items-center justify-center rounded-lg`}
+                      <div
+                        className={`w-full cursor-pointer bg-red-700 py-2 font-semibold text-white flex items-center justify-center rounded-lg`}
                         onClick={payWithKhalti}
                       >
-                        {loading ? (
+                        {loading && paymentMode === "khalti" ? (
                           <FaSpinner className="spin" />
                         ) : (
                           "Pay Online"
                         )}
-                      </button>
+                      </div>
+                    </div>
+
+                    {/* Qr Code */}
+                    <div className="text-center text-sm space-y-2">
+                      <div>Or,</div>
+                      <div className="font-medium">
+                        Pay through QR code and our agent will contact you.
+                      </div>
+                      <div className="flex space-x-4 pt-2">
+                        <div className="border flex-1 w-40 h-40"></div>
+                        <div className="border flex-1 w-40 h-40"></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div
+                        className={`w-full cursor-pointer bg-red-700 py-2 font-semibold text-white flex items-center justify-center rounded-lg`}
+                        onClick={payWithQrCode}
+                      >
+                        {loading && paymentMode === "" ? (
+                          <FaSpinner className="spin" />
+                        ) : (
+                          "Paid Through Qr Code"
+                        )}
+                      </div>
                     </div>
                   </form>
                 </div>

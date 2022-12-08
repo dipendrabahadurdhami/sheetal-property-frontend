@@ -1,40 +1,39 @@
-import { Field, Formik, useFormik } from "formik";
+import { Field, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-import ListBox from "../components/Common/ListBox";
 import PaymentFormModal from "../components/payment/paymentForm";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 
+const initialValues = {
+  name: "",
+  email: "",
+  permanent_address: "",
+  temporary_address: "",
+  contact_number: "",
+  occupation: "",
+  prefered_location: "",
+  maximum_budget: "",
+  tenant_option: "",
+  requirements: "",
+  vehicle: "",
+  facilities: [],
+  description: "",
+};
+
 const RequirementForm = () => {
   const [properties, setProperties] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [tenant, setTenant] = useState(null);
   const [modal, setModal] = useState(false);
-  const [formData, setFormdata] = useState(null);
-  const Vehicle = [
-    { name: "Two Wheeler" },
-    { name: "There Wheeler" },
-    { name: "Four Wheeler" },
-  ];
-  const Requirements = [
-    { name: "Room" },
-    { name: "Flat" },
-    { name: "House" },
-    { name: "Apartment" },
-  ];
+  const [dataId, setDataId] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [formData, setFormData] = useState({});
 
   const allProperties = async () => {
-    setLoading(true);
     await axios
       .get(`${process.env.REACT_APP_API_LINK}/property-attributes`)
       .then((res) => {
         if (res.status === 200) {
-          setLoading(false);
           setProperties(res.data.data);
-        } else {
-          setLoading(false);
         }
       });
   };
@@ -42,24 +41,50 @@ const RequirementForm = () => {
     allProperties();
   }, []);
 
-  const getFormData = (values) => {
-    // access values here
-  };
+  const handleFormSubmit = async (payload) => {
+    let success = false;
+    let { token, amount } = payload;
 
-  const handleFormSubmit = async () => {
+    const data = { token, amount, data_id: String(dataId) };
+
     const axiosConfig = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    await axios.post(
-      `${process.env.REACT_APP_API_LINK}/requirement-form`,
-      formData,
-      axiosConfig
-    );
+
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_API_LINK}/khalti/payment/verify`,
+        data,
+        axiosConfig
+      );
+
+      if (result?.data?.message === "success") {
+        success = true;
+        toast.success("Successfully paid. Now our agent will contact you.");
+      }
+    } catch (e) {}
+
+    return success;
   };
 
-  // validation
+  const paidThroughQr = async () => {
+    let success = false;
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_API_LINK}/qr-data-save`,
+        formData
+      );
+
+      if (result?.data?.message === "success") {
+        success = true;
+        toast.success("Our Agent will contact you as soon as possible");
+      }
+    } catch (e) {}
+
+    return success;
+  };
 
   const requirementSchema = Yup.object().shape({
     name: Yup.string()
@@ -83,6 +108,29 @@ const RequirementForm = () => {
     tenant_option: Yup.string().required("Tenant Option is required"),
     facilities: Yup.array().min(1).required(),
   });
+
+  const validateData = async (values) => {
+    setFormData(values);
+    const axiosConfig = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_API_LINK}/validation`,
+        values,
+        axiosConfig
+      );
+
+      if (result?.data && result?.data["data-id"]) {
+        setDataId(result.data["data-id"]);
+        setModal(true);
+      }
+    } catch (e) {}
+  };
+
   return (
     <div className="flex justify-center px-5 py-10 sm:p-5 lg:p-10 xl:p-24">
       <div className="w-full">
@@ -90,38 +138,9 @@ const RequirementForm = () => {
           Requirement Form{" "}
         </h1>
         <Formik
-          initialValues={{
-            name: "",
-            email: "",
-            permanent_address: "",
-            temporary_address: "",
-            contact_number: "",
-            occupation: "",
-            prefered_location: "",
-            maximum_budget: "",
-            tenant_option: "",
-            requirements: "",
-            vehicle: "",
-            facilities: [],
-            description: "",
-          }}
+          initialValues={initialValues}
           validationSchema={requirementSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            setFormdata(values);
-            // const axiosConfig = {
-            //   headers: {
-            //     "Content-Type": "application/json",
-            //   },
-            // };
-            // await axios.post(
-            //   `${process.env.REACT_APP_API_LINK}/requirement-form`,
-            //   values,
-            //   axiosConfig
-            // );
-
-            // resetForm({ values: "" });
-            setModal(true);
-          }}
+          onSubmit={validateData}
         >
           {({
             values,
@@ -250,7 +269,6 @@ const RequirementForm = () => {
 
                 <label className="flex flex-col space-y-2">
                   <span>Tenant option*</span>
-                  {/* <ListBox list={TenantOption} name="tenant_option" value ={values.tenant_option}   onChange={handleChange} /> */}
                   <Field
                     as="select"
                     name="tenant_option"
@@ -276,12 +294,6 @@ const RequirementForm = () => {
                 </label>
                 <label className="flex flex-col space-y-2">
                   <span>Requirements</span>
-                  {/* <ListBox
-                  list={Requirements}
-                  name="requirements"
-                  value={values.requirements}
-                  onChange={handleChange}
-                /> */}
                   <Field
                     as="select"
                     name="requirements"
@@ -298,12 +310,6 @@ const RequirementForm = () => {
                 </label>
                 <label className="flex flex-col space-y-2">
                   <span>Vehicle</span>
-                  {/* <ListBox
-                  list={Vehicle}
-                  name="vehicle"
-                  value={values.vehicle}
-                  onChange={handleChange}
-                /> */}
                   <Field
                     as="select"
                     name="vehicle"
@@ -368,31 +374,39 @@ const RequirementForm = () => {
 
                 <PaymentFormModal
                   open={modal}
-                  setOpen={setModal}
+                  setOpen={(bool) => setModal(bool)}
                   data={values}
                   tenants={properties?.purposes}
+                  loading={paymentLoading}
                   onPaymentFormClose={() => setSubmitting(false)}
-                  action={() => {
-                    setSubmitting(false);
-                    handleFormSubmit();
-                    setModal(false);
-                    resetForm({
-                      email: "",
-                      name: "",
-                      temporary_address: "",
-                      permanent_address: "",
-                      contact_number: "",
-                      occupation: "",
-                      prefered_location: "",
-                      maximum_budget: "",
-                      tenant_option: "",
-                      requirements: "",
-                      vehicle: "",
-                      facilities: [],
-                      description: "",
-                    });
+                  action={async (type, payload) => {
+                    setPaymentLoading(true);
+                    let success;
+                    if (type === "khalti") {
+                      success = await handleFormSubmit(payload);
+                    } else {
+                      success = await paidThroughQr();
+                    }
+                    setPaymentLoading(false);
 
-                    toast.success("Requirement Form submitted successfully");
+                    if (success) {
+                      setModal(false);
+                      resetForm({
+                        email: "",
+                        name: "",
+                        temporary_address: "",
+                        permanent_address: "",
+                        contact_number: "",
+                        occupation: "",
+                        prefered_location: "",
+                        maximum_budget: "",
+                        tenant_option: "",
+                        requirements: "",
+                        vehicle: "",
+                        facilities: [],
+                        description: "",
+                      });
+                    }
                   }}
                 />
               </form>
