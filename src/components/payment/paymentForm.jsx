@@ -147,9 +147,14 @@ const PaymentFormModal = ({
                       <div className="font-medium">
                         Pay through QR code and our agent will contact you.
                       </div>
-                      <div className="flex space-x-4 pt-2">
-                        <div className="border flex-1 w-40 h-40"></div>
-                        <div className="border flex-1 w-40 h-40"></div>
+                      <div className="flex justify-center pt-2">
+                        <div className="border w-40 h-40">
+                          <img
+                            src="/fone-pay-qr.png"
+                            alt=""
+                            className="w-full h-full"
+                          />
+                        </div>
                       </div>
                     </div>
 
