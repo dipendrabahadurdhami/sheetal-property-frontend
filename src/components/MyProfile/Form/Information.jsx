@@ -15,10 +15,10 @@ const Information = ({ data }) => {
   });
   useEffect(() => {
     setForm({
-      user_name: data?.user_name,
-      email: data?.email,
-      first_name: data?.first_name,
-      last_name: data?.last_name,
+      user_name: data?.user_name || "",
+      email: data?.email || "",
+      first_name: data?.first_name || "",
+      last_name: data?.last_name || "",
     });
   }, [data]);
 
@@ -36,6 +36,8 @@ const Information = ({ data }) => {
 
     Object.entries(newData).map((item) => {
       formData.append(item[0], item[1]);
+
+      return item;
     });
 
     try {

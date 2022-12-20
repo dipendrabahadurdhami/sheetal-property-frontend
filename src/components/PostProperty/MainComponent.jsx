@@ -1,16 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import apiClient from "../../utils/apiClient";
 import AboutProperty from "./AboutProperty";
 import Address from "./Address";
 import AdvertisementTypes from "./AdvertisementTypes";
-
 import DocumentsTypes from "./DocumentsTypes";
 import ExpectedPrice from "./ExpectedPrice";
 import Finance from "./Finance";
-import Video from "./Video";
 import LalPurja from "./LalPurja";
-import LandMeasurements from "./LandMeasurements";
-
 import MyProperty from "./MyProperty";
 import OtherDetails from "./OtherDetails";
 import RoadAccess from "./RoadAccess";
@@ -20,6 +16,7 @@ import MapWithASearchBox from "../MapWithSearch";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
 import IconCheckWhite from "../../assets/images/icon-check-white.svg";
+
 const MainComponent = (props) => {
   const [propertyAttributes, setPropertyAtributes] = useState(null);
   const [errors, setErrors] = useState(null);
@@ -129,10 +126,10 @@ const MainComponent = (props) => {
     } catch (error) {}
   };
   const handleFormInputChange = (name, value) => {
-    setForm({
-      ...form,
+    setForm((f) => ({
+      ...f,
       [name]: value,
-    });
+    }));
   };
 
   const handleFileInputChange = (name, file) => {
@@ -301,6 +298,7 @@ const MainComponent = (props) => {
       await apiClient
         .post("/post-property", formData)
         .then((res) => {
+          console.log(res);
           if (res.status === 200) {
             setLoading(false);
             toast.success("Property Successfully added");
@@ -314,12 +312,16 @@ const MainComponent = (props) => {
           }
         })
         .catch((error) => {
-          console.error(error);
+          let errorMessage = "Something went wrong. Please contact admin";
+          if (error?.response?.status === 403) {
+            errorMessage =
+              "You account has be inactivated. Please contact admin to re-activate your account";
+          }
+
           setLoading(false);
-          toast.error("Something went wrong. Please contact admin");
+          toast.error(errorMessage);
         });
     } catch (error) {
-      console.error(error);
       setLoading(false);
       toast.error("Something went wrong. Please contact admin");
     }

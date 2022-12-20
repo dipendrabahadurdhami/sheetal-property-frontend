@@ -1,18 +1,19 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa";
 
-const AgentSearch = ({filter,onAgentSearch}) => {
+const AgentSearch = ({ filter, onAgentSearch }) => {
   const onInputChange = (e) => {
-    onAgentSearch(e.target.value)
-  }
+    onAgentSearch(e.target.value);
+  };
   return (
     <form className="md:shadow py-5 px-10 mb-10">
       <div className=" -mx-5 flex flex-wrap">
-        <label className="w-full md:w-6/12 bold  px-5">Name
+        <label className="w-full md:w-6/12 bold  px-5">
+          Name
           <div className="border border-gray-300 rounded overflow-hidden flex justify-between items-center p-2 px-4">
             <input
               type={"text"}
-              placeholder="Agent Name / Address"
+              placeholder="Agent Name"
               className="w-full py-2 px-2 outline-none"
               name="name"
               value={filter}

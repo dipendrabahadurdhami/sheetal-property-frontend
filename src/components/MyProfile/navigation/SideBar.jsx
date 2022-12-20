@@ -1,12 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import {
-  CalendarIcon,
-  FolderIcon,
   HomeIcon,
   UserIcon,
   InboxIcon,
-  UsersIcon,
   PlusIcon,
   HeartIcon,
 } from "@heroicons/react/outline";
@@ -14,7 +11,6 @@ import DashBoard from "../DashBoard";
 import Properties from "../Properties";
 import Messages from "../Messages";
 import { Link, useSearchParams } from "react-router-dom";
-import NoData from "../NoData";
 import LogOut from "../LogOut";
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
@@ -79,10 +75,11 @@ const SideBar = ({ menubutton }) => {
     readURL(e.target);
 
     const formData = new FormData();
-    const newData = { ...user.data, photo: files };
+    const newData = { photo: files };
 
     Object.entries(newData).map((item) => {
       formData.append(item[0], item[1]);
+      return item;
     });
     setLoading(true);
     try {
@@ -134,12 +131,7 @@ const SideBar = ({ menubutton }) => {
   const { user_name, first_name, last_name } = user.data || {};
 
   let username;
-  if (
-    first_name &&
-    last_name &&
-    first_name !== "null" &&
-    last_name !== "null"
-  ) {
+  if (first_name && last_name) {
     username = `${first_name} ${last_name}`;
   } else {
     username = user_name;
@@ -192,11 +184,9 @@ const SideBar = ({ menubutton }) => {
                       </div>
                     </form>
                   </div>
-                  {user?.data?.first_name && user?.data?.last_name && (
-                    <div className="text-red-700 text-xl font-medium">
-                      {username}
-                    </div>
-                  )}
+                  <div className="text-red-700 text-xl font-medium">
+                    {username}
+                  </div>
                 </div>
                 <nav className="mt-10 flex-1 px-2 bg-white space-y-1">
                   {navigation.map((item) => (

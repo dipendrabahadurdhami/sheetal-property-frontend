@@ -34,10 +34,11 @@ import {
   removeAllFavorites,
 } from "./features/slices/favourites";
 import Test from "./pages/Test";
+import ResetPassword from "./pages/ResetPassword";
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID);
 
-function App() {
+function App(props) {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const token = localStorage.getItem("sheetal_token");
@@ -80,6 +81,10 @@ function App() {
           <Route path="/rateandtrend" element={<RateAndTrends />} />
           <Route path="/investment" element={<Investment />} />
           <Route path="/investment/export" element={<InvestmentExplore />} />
+          <Route
+            path="/reset-password/:token"
+            element={<ResetPassword {...props} />}
+          />
           <Route
             path="/my-profile?section=post-property"
             element={

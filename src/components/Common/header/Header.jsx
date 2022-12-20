@@ -1,6 +1,4 @@
-import React, { useContext, useEffect } from "react";
-import { Fragment } from "react/cjs/react.production.min";
-import { LoggedUserContext } from "../../Context/LoginContext";
+import { Fragment } from "react";
 import MainNavBar from "./MainNavBar";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";

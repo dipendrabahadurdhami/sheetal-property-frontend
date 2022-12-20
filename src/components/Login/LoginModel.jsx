@@ -1,18 +1,8 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from "react";
 import { Dialog, Tab, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import Register from "./Register";
 import Login from "./Login";
-
-const tabs = [
-  {
-    login: <Login />,
-  },
-  {
-    Register: <Register />,
-  },
-];
 
 const LoginModel = ({ r, setR }) => {
   let [categories] = useState({

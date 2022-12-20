@@ -1,22 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaLock, FaSpinner, FaUserAlt } from "react-icons/fa";
 import { Formik, Form, Field } from "formik";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setLogin, setError } from "../../features/slices/auth";
-import {
-  setUserInfo,
-  fetchUserInformation,
-} from "../../features/slices/userInformation";
-// import { LoggedUserContext } from "../Context/LoginContext";
+import { fetchUserInformation } from "../../features/slices/userInformation";
 
 import { toast } from "react-toastify";
-
-// import { useCookies } from 'react-cookie';
-import apiClient from "../../utils/apiClient";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -24,10 +16,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = ({ setR }) => {
-  // const { setToken } = useContext(LoggedUserContext);
-  const navigate = useNavigate();
   const [passwordShown, setPasswordShown] = useState(false);
-  // const [cookies, setCookie] = useCookies(['sheetal_token']);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -140,13 +129,12 @@ const Login = ({ setR }) => {
               ) : null}
             </div>
             <div className="flex justify-between">
-              {/* <label className="flex items-center text-gray-500 space-x-3">
-                <Field checked={false} type="checkbox" className="w-5 h-5" />
-                <span>Remember me</span>
-              </label> */}
-              <a href="/" className="text-red-700">
+              <span
+                className="text-red-700 cursor-pointer"
+                onClick={() => setR("forgot-password")}
+              >
                 Forgot password?
-              </a>
+              </span>
             </div>
 
             <button

@@ -166,7 +166,7 @@ const PaymentFormModal = ({
                         {loading && paymentMode === "" ? (
                           <FaSpinner className="spin" />
                         ) : (
-                          "Paid Through Qr Code"
+                          "I have paid through QR"
                         )}
                       </div>
                     </div>

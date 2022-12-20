@@ -1,22 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { FaBell } from "react-icons/fa";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { useSelector } from "react-redux";
-import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { LoggedUserContext } from "../../Context/LoginContext";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import ForgotPasswordModel from "../../Login/ForgotPasswordModel";
 import LoginModel from "../../Login/LoginModel";
 import UserLogin from "./UserLogin";
 
-const TopBar = (props) => {
+const TopBar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  // const { token } = useContext(LoggedUserContext);
-
   const [r, setR] = useState(false);
-  // const [logged, setLogged] = useState(true);
   const navigate = useNavigate();
+
   const user = useSelector((state) => state.user);
   const favorites = useSelector((state) => state.favorites);
+
   useEffect(() => {
     if (searchParams.has("login")) {
       const needsToLogin = searchParams.get("login");
@@ -27,6 +25,7 @@ const TopBar = (props) => {
       }
     }
   }, [searchParams]);
+
   return (
     <>
       <div className="px-5 lg:px-10 py-3 shadow flex justify-between items-center">
@@ -77,7 +76,8 @@ const TopBar = (props) => {
           )}
         </div>
       </div>
-      {r && <LoginModel r={r} setR={setR} />}
+      {r === "forgot-password" && <ForgotPasswordModel setR={setR} />}
+      {r && r !== "forgot-password" && <LoginModel r={r} setR={setR} />}
     </>
   );
 };

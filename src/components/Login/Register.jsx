@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -37,6 +37,8 @@ const Register = ({ setR }) => {
   const [error, setError] = useState(people[0]);
   const [serverError, setServerError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const terms = useRef();
+  const [termsError, setTermsError] = useState("");
 
   return (
     <div className="p-3 text-sm">
@@ -50,6 +52,11 @@ const Register = ({ setR }) => {
         validationSchema={SignupSchema}
         onSubmit={async (values) => {
           try {
+            if (!terms.current.checked) {
+              setTermsError("You need to accept terms and conditions.");
+              return;
+            }
+
             setServerError(null);
             setLoading(true);
             const res = await axios.post(
@@ -249,13 +256,25 @@ const Register = ({ setR }) => {
               </div>
             </Listbox>
             <label className="flex items-center text-gray-500 space-x-3">
-              <Field type="checkbox" className="w-5 h-5" />
+              <input
+                type="checkbox"
+                className="w-5 h-5"
+                ref={terms}
+                onChange={(event) => {
+                  const checked = event.target.checked;
+                  if (checked) {
+                    setTermsError("");
+                  }
+                }}
+              />
               <span>
                 I agree with your{" "}
                 <span className="text-red-700">Terms & Conditions</span>
               </span>
             </label>
-            {serverError && (
+            {termsError && <div className="text-red-600">{termsError}</div>}
+
+            {serverError && !termsError && (
               <ul className="text-red-500 bg-red-100 rounded-sm p-2 list-none">
                 {serverError &&
                   Object.entries(serverError).map((item, i) => {
