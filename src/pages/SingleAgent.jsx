@@ -5,6 +5,7 @@ import About from "../components/findAgent/SingleAgent/About";
 import ContactForm from "../components/findAgent/SingleAgent/ContactForm";
 import PersonalInfo from "../components/findAgent/SingleAgent/PersonalInfo";
 import Loader from "../components/Loader";
+import headTag from "../headTag";
 
 const SingleAgent = () => {
   const { id } = useParams();
@@ -27,11 +28,21 @@ const SingleAgent = () => {
       });
   };
 
+  const { id: agentId, first_name, last_name } = data || {};
+
   useEffect(() => {
     fetchAgentDetail();
 
+    let agentName = "Shetal Property Agent";
+
+    if (first_name && last_name) {
+      agentName = `${first_name} ${last_name}`;
+    }
+
+    agentId && headTag({ title: agentName, content: "" });
     // eslint-disable-next-line
-  }, []);
+  }, [agentId]);
+
   return (
     <React.Fragment>
       {loading && (

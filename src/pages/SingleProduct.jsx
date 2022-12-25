@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
 import YoutubeVideo from "../components/SingleProduct/Video";
+import headTag from "../headTag";
 
 const SingleProduct = () => {
   const [open, setOpen] = useState(false);
@@ -45,6 +46,12 @@ const SingleProduct = () => {
       setLoading(false);
     }
   }
+
+  const { name, property_description } = property;
+
+  useEffect(() => {
+    name && headTag({ title: name, content: property_description });
+  }, [name, property_description]);
 
   return (
     <>

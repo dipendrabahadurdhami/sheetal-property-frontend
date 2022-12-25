@@ -4,6 +4,7 @@ import axios from "axios";
 import PaymentFormModal from "../components/payment/paymentForm";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import headTag from "../headTag";
 
 const initialValues = {
   name: "",
@@ -130,6 +131,13 @@ const RequirementForm = () => {
       }
     } catch (e) {}
   };
+
+  useEffect(() => {
+    headTag({
+      title: "Requirement Form",
+      content: "Requirement form for your desired property",
+    });
+  }, []);
 
   return (
     <div className="flex justify-center px-5 py-10 sm:p-5 lg:p-10 xl:p-24">

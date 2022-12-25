@@ -298,7 +298,6 @@ const MainComponent = (props) => {
       await apiClient
         .post("/post-property", formData)
         .then((res) => {
-          console.log(res);
           if (res.status === 200) {
             setLoading(false);
             toast.success("Property Successfully added");

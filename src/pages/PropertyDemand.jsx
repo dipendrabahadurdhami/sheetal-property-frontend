@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import InputBox from "../components/Common/SearchBox/InputBox";
 import Loader from "../components/Loader";
 import PropertyDemandTable from "../components/PropertyDemandTable";
+import headTag from "../headTag";
 
 const PropertyDemand = () => {
   const [demand, setDemand] = useState(null);
@@ -27,6 +27,8 @@ const PropertyDemand = () => {
 
   useEffect(() => {
     displayDemand();
+
+    headTag({ title: "Property Demand", content: "" });
   }, []);
 
   const onSearchClick = () => {

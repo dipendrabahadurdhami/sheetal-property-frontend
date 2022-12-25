@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import AgentSearch from "../components/Common/SearchBox/AgentSearch";
 import AgentList from "../components/findAgent/AgentList";
 import Loader from "../components/Loader";
+import headTag from "../headTag";
 
 const FindAgent = () => {
   const [filter, setFilter] = useState("");
@@ -29,6 +30,8 @@ const FindAgent = () => {
 
   useEffect(() => {
     fetchAgents();
+
+    headTag({ title: "Find Agent", content: "" });
   }, []);
 
   useEffect(() => {
