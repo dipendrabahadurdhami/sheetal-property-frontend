@@ -9,15 +9,15 @@ import "react-multi-carousel/lib/styles.css";
 const MainHome = () => {
   const [filterModal, setFilterModal] = useState(false);
   return (
-    <div className="space-y-2 pb-20">
+    <div className="space-y-2 pb-10">
       <div
         className="w-full h-96 flex items-center justify-center bg-no-repeat bg-cover bg-center px-5"
         style={{
           backgroundImage: `url("349872.jpeg")`,
         }}
       >
-        <h1 className="-mt-10 md:text-5xl text-xl sm:text-3xl font-semibold capitalize text-white">
-          शितलता प्रदान गर्दै शितल रियल स्टेट
+        <h1 className="-mt-10 text-xl sm:text-3xl md:text-4xl xl:text-5xl font-semibold capitalize text-white text-center">
+          Leading Property Management Company
         </h1>
       </div>
       <div className="px-5 md:px-10 flex justify-center">

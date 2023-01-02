@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { FiHeart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -105,7 +104,7 @@ const FilterCard = ({ property }) => {
                   className="font-bold text-gray-600 text-xl"
                   onClick={() => navigate("/property/" + property.id)}
                 >
-                  {property?.title}
+                  {property?.title || property?.name}
                 </h1>
                 <h1 className="text-sm">
                   from{" "}

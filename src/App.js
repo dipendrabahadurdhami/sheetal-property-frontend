@@ -35,6 +35,7 @@ import {
 } from "./features/slices/favourites";
 import Test from "./pages/Test";
 import ResetPassword from "./pages/ResetPassword";
+import AllProperties from "./pages/AllProperties";
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID);
 
@@ -93,6 +94,7 @@ function App(props) {
               </Protected>
             }
           />
+          <Route path="/properties" element={<AllProperties />} />
           <Route path="/propertyDemand" element={<PropertyDemand />} />
           <Route path="/agents" element={<FindAgent />} />
           <Route path="/agent/:id" element={<SingleAgent />} />

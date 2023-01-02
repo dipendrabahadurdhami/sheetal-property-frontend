@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
+import { Link } from "react-router-dom";
 import FearuredCard from "../card/FearuredCard";
 import { CustomLeftArrow, CustomRightArrow } from "../carousel/CustomeButton";
 import { responsive } from "../carousel/Responsive";
@@ -20,7 +21,7 @@ const Investment = () => {
   }, []);
 
   return (
-    <div className="pt-16 px-5 container mx-auto">
+    <div className="pt-4 xl:pt-6 px-5 container mx-auto">
       <div className="">
         <h1 className="pb-3 text-3xl">Investment</h1>
         <p className="bg-red-700 h-1 w-16"></p>
@@ -31,7 +32,7 @@ const Investment = () => {
           responsive={responsive}
           customRightArrow={<CustomRightArrow />}
           customLeftArrow={<CustomLeftArrow />}
-          className="pb-16 pt-5"
+          className="py-3 md:pb-10"
         >
           {[...allProduct].slice(0, 4).map((product, index) => (
             <div key={index} className="h-full px-4 mb-2">
@@ -47,7 +48,7 @@ const Investment = () => {
             responsive={responsive}
             customRightArrow={<CustomRightArrow />}
             customLeftArrow={<CustomLeftArrow />}
-            className="pb-16 pt-5"
+            className="py-3 md:pb-10"
           >
             {allProduct.slice(4, allProduct.length).map((product, index) => (
               <div key={index} className="h-full px-4 mb-2">
@@ -55,6 +56,17 @@ const Investment = () => {
               </div>
             ))}
           </Carousel>
+          <div className="flex justify-end mt-8 md:mt-0">
+            <Link
+              to="/productSearch?advertisement_purpose=Invest"
+              className="flex space-x-2 items-center"
+            >
+              <div>View All</div>
+              <div className="w-6 h-[21px]">
+                <img src="/arrow-right.svg" alt="" />
+              </div>
+            </Link>
+          </div>
         </div>
       )}
     </div>

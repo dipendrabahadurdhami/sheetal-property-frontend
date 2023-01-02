@@ -1,29 +1,25 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import FilterCard from "../components/card/FilterCard";
 import FilterModal from "../components/ProductFilter/FilterModal";
 import apiClient from "../utils/apiClient";
 import ReactPaginate from "react-paginate";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-const ProductSearch = ({ props }) => {
+
+const ProductSearch = () => {
   const [params, setParams] = useSearchParams(window.location.search);
   const _params = Object.fromEntries([...params]);
-  const location = useLocation();
-  // const query = params.get("tab").toLowerCase();
   const [products, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [currentItems, setCurrentItems] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalProducts, setTotalProducts] = useState(0);
+
+  const itemsPerPage = 10;
 
   useEffect(() => {
     // Fetch items from another resources.
-    const endOffset = itemOffset + itemsPerPage;
-    setCurrentItems(products);
     setPageCount(Math.ceil(totalProducts / itemsPerPage));
   }, [itemOffset, itemsPerPage, totalProducts]);
 
@@ -86,6 +82,8 @@ const ProductSearch = ({ props }) => {
 
   useEffect(() => {
     fetchSearch();
+
+    // eslint-disable-next-line
   }, [params]);
 
   return (
