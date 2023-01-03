@@ -26,6 +26,8 @@ const PropertyCard = ({ data, action }) => {
         setFavorite(true);
       }
     }
+
+    // eslint-disable-next-line
   }, [favorites]);
 
   useEffect(() => {

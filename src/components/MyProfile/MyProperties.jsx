@@ -28,6 +28,8 @@ const MyProperties = () => {
     }
   };
 
+  console.log(properties);
+
   return (
     <div className="p-5 lg:p-10 space-y-5 md:space-y-10">
       <div className="text-xl font-bold">My Properties</div>

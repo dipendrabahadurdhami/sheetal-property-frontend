@@ -8,21 +8,19 @@ const Information = ({ data }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    user_name: "",
-    email: "",
     first_name: "",
     last_name: "",
   });
   useEffect(() => {
     setForm({
-      user_name: data?.user_name || "",
-      email: data?.email || "",
       first_name: data?.first_name || "",
       last_name: data?.last_name || "",
     });
   }, [data]);
 
   const onInputChange = (e) => {
+    if (loading) return;
+
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -30,9 +28,11 @@ const Information = ({ data }) => {
   };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+
     setLoading(true);
     const formData = new FormData();
-    const newData = { ...data, ...form };
+    const newData = { ...form };
 
     Object.entries(newData).map((item) => {
       formData.append(item[0], item[1]);
@@ -73,11 +73,9 @@ const Information = ({ data }) => {
           <input
             type="text"
             name="user_name"
-            placeholder="ramparajuli"
             disabled
-            value={form.user_name}
-            className="border-gray-500 bg-gray-200 rounded border p-2"
-            onChange={onInputChange}
+            defaultValue={data?.user_name || ""}
+            className="border p-2 border-gray-200 rounded cursor-not-allowed"
           />
         </label>
         <label className="flex flex-col space-y-2">
@@ -85,9 +83,9 @@ const Information = ({ data }) => {
           <input
             type="email"
             name="email"
-            value={form.email}
-            onChange={onInputChange}
-            className="border p-2 border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
+            disabled
+            defaultValue={data?.email || ""}
+            className="border p-2 border-gray-200 rounded cursor-not-allowed"
           />
         </label>
         <label className="flex flex-col space-y-2">
