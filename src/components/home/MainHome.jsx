@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Search from "../Common/SearchBox/HomeSearch";
 import Model from "../FilterSearch/Model";
 import Featured from "./Featured";
@@ -8,35 +8,26 @@ import "react-multi-carousel/lib/styles.css";
 
 const MainHome = () => {
   const [filterModal, setFilterModal] = useState(false);
-  const videoRef = useRef();
-
-  const playVideo = () => {
-    videoRef.current.play();
-  };
-
-  useEffect(() => {
-    const video = videoRef.current;
-
-    window.addEventListener("load", playVideo);
-    video.addEventListener("ended", playVideo);
-
-    return () => {
-      window.removeEventListener("load", playVideo);
-      video.removeEventListener("ended", playVideo);
-    };
-  }, []);
 
   return (
     <div className="space-y-2 pb-10">
       <div className="w-full h-72 md:h-96 overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-full bg-black">
-          <video
-            src="/videos/banner-video.mp4"
-            ref={videoRef}
-            autoPlay={true}
-            muted="muted"
-            className="h-72 md:h-auto lg:w-full"
-          ></video>
+          <img
+            src="/home-banner1.gif"
+            alt=""
+            className="w-full h-full object-cover lg:hidden"
+          />
+          <img
+            src="/home-banner2.gif"
+            alt=""
+            className="w-full h-full object-cover hidden lg:block xl:hidden"
+          />
+          <img
+            src="/home-banner3.gif"
+            alt=""
+            className="w-full h-full object-cover hidden xl:block"
+          />
         </div>
         <div className="relative w-full h-full flex items-center justify-center px-5 bg-black bg-opacity-40">
           <h1 className="-mt-10 text-xl sm:text-3xl md:text-4xl xl:text-5xl font-semibold capitalize text-white text-center">
