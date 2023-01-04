@@ -31,10 +31,11 @@ const MainHome = () => {
       <div className="w-full h-72 md:h-96 overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-full bg-black">
           <video
-            src="/videos/board video.mp4"
+            src="/videos/banner-video.mp4"
             ref={videoRef}
+            autoPlay={true}
             muted="muted"
-            className="h-72 md:h-auto"
+            className="h-72 md:h-auto lg:w-full"
           ></video>
         </div>
         <div className="relative w-full h-full flex items-center justify-center px-5 bg-black bg-opacity-40">
