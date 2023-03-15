@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "admin.sheetalproperty.com/api/(.)",
+      "source": "admin.sheetalproperty.com/images/(.)",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
         { "key": "Access-Control-Allow-Origin", "value": "" },
