@@ -5,7 +5,8 @@ const apiClient = axios.create({
     headers: {
       "Content-Type": "application/json",
       "Cross-Origin-Resource-Policy": "same-site",
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": "https://admin.sheetalproperty.com",
+
     },
   });
 
