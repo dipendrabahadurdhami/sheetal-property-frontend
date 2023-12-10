@@ -14,6 +14,7 @@ const initialValues = {
   contact_number: "",
   occupation: "",
   prefered_location: "",
+  minimum_budget: "",
   maximum_budget: "",
   tenant_option: "",
   requirements: "",
@@ -265,7 +266,17 @@ const RequirementForm = () => {
                   />
                 </label>
                 <label className="flex flex-col space-y-2">
-                  <span>Maximum budget</span>
+                  <span>Minimum budget <i>Enter Amount</i></span>
+                  <Field
+                    className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
+                    placeholder="Enter your Minimum budget"
+                    name="minimum_budget"
+                    value={values.minimum_budget}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="flex flex-col space-y-2">
+                  <span>Maximum budget <i>Enter Amount</i></span>
                   <Field
                     className="text-gray-500 border border-gray-300 w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-red-700"
                     placeholder="Enter your maximum budget"
@@ -407,6 +418,7 @@ const RequirementForm = () => {
                         contact_number: "",
                         occupation: "",
                         prefered_location: "",
+                        minimum_budget: "",
                         maximum_budget: "",
                         tenant_option: "",
                         requirements: "",
