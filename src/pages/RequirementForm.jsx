@@ -121,7 +121,7 @@ const RequirementForm = () => {
 
     try {
       const result = await axios.post(
-        `${process.env.REACT_APP_API_LINK}/validation`,
+        `${process.env.REACT_APP_API_LINK}/requirement-form`,
         values,
         axiosConfig
       );
