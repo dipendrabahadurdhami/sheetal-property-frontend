@@ -19,6 +19,7 @@ import MyProfile from "./pages/MyProfile";
 import PostProperty from "./pages/PostProperty";
 import PropertyDemand from "./pages/PropertyDemand";
 import FindAgent from "./pages/FindAgent";
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProductSearch from "./pages/ProductSearch";
 import SingleAgent from "./pages/SingleAgent";
 import InvestDetails from "./pages/InvestDetails";
@@ -73,6 +74,7 @@ function App(props) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/requirementForm" element={<RequirementForm />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/property/:id" element={<SingleProduct />} />
           <Route path="/homeLone" element={<HomeLone />} />
           <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />
