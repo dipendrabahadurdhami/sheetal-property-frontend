@@ -16,6 +16,9 @@ const OurServices = () => {
         <li>
           <Link to={'/productSearch?advertisement_purpose=Invest'}>Invest in Properties</Link>
         </li>
+        <li>
+          <Link to={'/productSearch?advertisement_purpose=Invest'}>Invest in Properties</Link>
+        </li>
       </ul>
     </div>
   );
