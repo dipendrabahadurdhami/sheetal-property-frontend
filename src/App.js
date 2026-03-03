@@ -74,7 +74,7 @@ function App(props) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/requirementForm" element={<RequirementForm />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/property/:id" element={<SingleProduct />} />
           <Route path="/homeLone" element={<HomeLone />} />
           <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />
