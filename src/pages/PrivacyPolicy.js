@@ -70,7 +70,7 @@ const PrivacyPolicy = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
               <div>
                 <span className="block text-gray-400 uppercase text-[10px] font-bold">Website</span>
-                <span className="font-medium text-gray-800 tracking-tight">www.sheetalproperty.com</span>
+                <span className="font-medium text-gray-800 tracking-tight">https://www.sheetalproperty.com</span>
               </div>
               <div>
                 <span className="block text-gray-400 uppercase text-[10px] font-bold">Official Email</span>
