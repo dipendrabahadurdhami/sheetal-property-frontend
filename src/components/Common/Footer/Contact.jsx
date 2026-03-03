@@ -27,7 +27,7 @@ const Contact = () => {
           <a href="mailto: shetalrealestate@gmail.com">shetalrealestate@gmail.com </a>
         </div>
       </div>
-      <ul className="flex items-center mt-10 space-x-3">
+      <ul className="flex items-center mt-20 space-x-3">
         <li className="rounded-full w-10 h-10 p-2 overflow-hidden flex items-center justify-center bg-red-700">
           <a href={process.env.REACT_APP_FACEBOOK_URL} target={"_blank"}>
             <BsFacebook className="w-full h-full text-white" />

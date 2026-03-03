@@ -21,8 +21,6 @@ import PropertyDemand from "./pages/PropertyDemand";
 import FindAgent from "./pages/FindAgent";
 import PrivacyPolicy from "./pages/privacy-policy";
 import TermsAndConditions from "./pages/TermsAndConditions";
-import PrivacyPolicy from "./pages/privacy-policy";
-import TermsAndConditions from "./pages/TermsAndConditions";
 import ProductSearch from "./pages/ProductSearch";
 import SingleAgent from "./pages/SingleAgent";
 import InvestDetails from "./pages/InvestDetails";
@@ -77,10 +75,7 @@ function App(props) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/requirementForm" element={<RequirementForm />} />
-
-          <Route path="/privacy-policy" element={<privacy-policy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-and-service" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-service" element={<TermsAndConditions />} />
           <Route path="/property/:id" element={<SingleProduct />} />
