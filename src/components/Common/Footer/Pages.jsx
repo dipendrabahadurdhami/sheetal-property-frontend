@@ -5,18 +5,22 @@ const Pages = () => {
   return (
     <>
       <div className="text-white">
-        <ul className="space-y-3">
+        <h2 className="font-bold mb-4">Quick Links</h2>
+        <ul className="space-y-3 capitalize text-sm">
           <li>
             <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/agents">Find Agent</Link>
           </li>
           <li>
             <Link to="/requirementForm">Requirement Form</Link>
           </li>
           <li>
             <Link to="/propertyDemand">Property Demands</Link>
+          </li>
+          <li>
+            <Link to={'/privacy-policy'}>Privacy Policy</Link>
+          </li>
+          <li>
+            <Link to="/terms-and-service">Terms of Service</Link>
           </li>
         </ul>
       </div>

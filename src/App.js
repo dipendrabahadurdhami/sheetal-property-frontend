@@ -19,7 +19,17 @@ import MyProfile from "./pages/MyProfile";
 import PostProperty from "./pages/PostProperty";
 import PropertyDemand from "./pages/PropertyDemand";
 import FindAgent from "./pages/FindAgent";
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import privacy-policy from './pages/privacy-policy';
+=======
+import PrivacyPolicy from "./pages/privacy-policy";
+import TermsAndConditions from "./pages/TermsAndConditions";
+>>>>>>> Stashed changes
+=======
+import PrivacyPolicy from "./pages/privacy-policy";
+import TermsAndConditions from "./pages/TermsAndConditions";
+>>>>>>> Stashed changes
 import ProductSearch from "./pages/ProductSearch";
 import SingleAgent from "./pages/SingleAgent";
 import InvestDetails from "./pages/InvestDetails";
@@ -74,7 +84,17 @@ function App(props) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/requirementForm" element={<RequirementForm />} />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <Route path="/privacy-policy" element={<privacy-policy />} />
+=======
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-and-service" element={<TermsAndConditions />} />
+>>>>>>> Stashed changes
+=======
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-and-service" element={<TermsAndConditions />} />
+>>>>>>> Stashed changes
           <Route path="/property/:id" element={<SingleProduct />} />
           <Route path="/homeLone" element={<HomeLone />} />
           <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />

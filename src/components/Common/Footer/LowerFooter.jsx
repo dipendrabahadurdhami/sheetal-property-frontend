@@ -5,11 +5,9 @@ const LowerFooter = () => {
   const d = new Date();
 
   return (
-    <div className="bg-gray-50 text-center py-5 font-medium text-md">
-      <p className=" uppercase text-xs">&copy; {d.getFullYear()}. SHEETAL PROPERTY PVT. LTD. ALL RIGHTS RESERVED.</p>
-      <p className="text-gray-500 text-xs">
-        Developed by <a href="https://www.prabidhilabs.com" target="_blank" className="text-red-500">Prabidhi Labs</a>
-      </p>
+    <div className="bg-neutral-900 text-center text-white py-5 font-small">
+      <p className="text-xs">&copy; {d.getFullYear()}. Sheetal Property Pvt. Ltd. All Right Reserved.</p>
+     
     </div>
   );
 };
