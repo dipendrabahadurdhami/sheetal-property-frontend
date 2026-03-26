@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -12,16 +12,28 @@ import { toast } from "react-toastify";
 
 const SignupSchema = Yup.object().shape({
   user_name: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
+    .min(3, "Too Short!")
+    .max(30, "Too Long!")
+    .matches(/^[a-zA-Z0-9_]+$/, "Only alphanumeric and underscores allowed")
     .required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().required("Password is required").min(6, "Too Short!"),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref("password"), null],
-    "Passwords must match"
-  ),
+  email: Yup.string()
+    .email("Invalid email")
+    .required("Required")
+    .max(255),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Minimum 8 characters")
+    .matches(/[a-z]/, "Lowercase required")
+    .matches(/[A-Z]/, "Uppercase required")
+    .matches(/[0-9]/, "Number required")
+    .matches(/[!@#$%^&*]/, "Special character required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Required"),
+  acceptTerms: Yup.boolean()
+    .oneOf([true], "Required"),
 });
+
 const people = [
   { name: "Agent" },
   { name: "Buyer" },
@@ -34,11 +46,13 @@ const Register = ({ setR }) => {
   const [passwordShown, setPasswordShown] = useState(false);
   const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
   const [selected, setSelected] = useState(people[0]);
-  const [error, setError] = useState(people[0]);
   const [serverError, setServerError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const terms = useRef();
-  const [termsError, setTermsError] = useState("");
+
+  const sanitizeInput = (val) => {
+    if (typeof val !== "string") return val;
+    return val.replace(/[<>]/g, "").trim();
+  };
 
   return (
     <div className="p-3 text-sm">
@@ -48,68 +62,64 @@ const Register = ({ setR }) => {
           email: "",
           password: "",
           confirmPassword: "",
+          acceptTerms: false,
         }}
         validationSchema={SignupSchema}
         onSubmit={async (values) => {
           try {
-            if (!terms.current.checked) {
-              setTermsError("You need to accept terms and conditions.");
-              return;
-            }
-
             setServerError(null);
             setLoading(true);
+
+            const payload = {
+              user_name: sanitizeInput(values.user_name),
+              email: sanitizeInput(values.email),
+              password: values.password,
+              password_confirmation: values.confirmPassword,
+              user_type: selected.name,
+            };
+
             const res = await axios.post(
               `${process.env.REACT_APP_API_LINK}/register`,
-              {
-                user_name: values.user_name,
-                email: values.email,
-                password: values.password,
-                password_confirmation: values.confirmPassword,
-                user_type: selected.name,
-              }
+              payload
             );
+
             if (res.data.errors) {
-              setError(Object.values(res.data.errors)[0]);
+              setServerError(res.data.errors);
               setLoading(false);
-              toast.error("User failed to register");
+              toast.error("Registration failed");
             } else {
               setR(false);
               setLoading(false);
+              toast.success("User successfully registered");
               navigate("/");
-              toast.success(
-                "User successfully registered. Click login to continue"
-              );
             }
           } catch (err) {
             setLoading(false);
-            setServerError(err.response.data.errors);
-            toast.error("User failed to register");
+            const msg = err.response?.data?.errors || { error: ["Connection failed"] };
+            setServerError(msg);
+            toast.error("Error submitting form");
           }
         }}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setFieldValue }) => (
           <Form className="w-full space-y-5">
-            <div className="border-2 border-gray-400 rounded-lg">
-              <label className="flex space-x-3 border-b-2 border-gray-400 p-3 items-center">
+            <div className="border-2 border-gray-400 rounded-lg overflow-hidden">
+              <label className="flex space-x-3 border-b-2 border-gray-400 p-3 items-center bg-white">
                 <FaUserAlt className="w-5 h-5 text-gray-400" />
                 <Field
                   type="text"
                   name="user_name"
                   className="w-full focus:outline-none"
-                  placeholder="Username or Email"
-                  required
+                  placeholder="Username"
                 />
               </label>
-
-              {errors.user_name && touched.name ? (
-                <div className="text-red-700 font-base border-b-2 border-gray-400  p-1">
-                  {errors.user_name}
-                  <sup>*</sup>
+              {errors.user_name && touched.user_name && (
+                <div className="text-red-700 font-base border-b-2 border-gray-400 p-1 bg-red-50">
+                  {errors.user_name}<sup>*</sup>
                 </div>
-              ) : null}
+              )}
 
-              <label className="flex space-x-3 border-b-2 border-gray-400 py-2 px-3 items-center">
+              <label className="flex space-x-3 border-b-2 border-gray-400 py-2 px-3 items-center bg-white">
                 <MdEmail className="w-7 h-7 text-gray-400" />
                 <Field
                   type="email"
@@ -118,97 +128,69 @@ const Register = ({ setR }) => {
                   placeholder="Email"
                 />
               </label>
-              {errors.email && touched.email ? (
-                <div className="text-red-700 font-base border-b-2 border-gray-400  p-1">
-                  {errors.email}
-                  <sup>*</sup>
+              {errors.email && touched.email && (
+                <div className="text-red-700 font-base border-b-2 border-gray-400 p-1 bg-red-50">
+                  {errors.email}<sup>*</sup>
                 </div>
-              ) : null}
+              )}
 
-              <label className="flex space-x-3 border-b-2 border-gray-400 p-3 items-center">
+              <label className="flex space-x-3 border-b-2 border-gray-400 p-3 items-center bg-white">
                 <FaLock className="w-5 h-5 text-gray-400" />
                 <Field
                   name="password"
                   type={passwordShown ? "text" : "password"}
                   className="w-full focus:outline-none"
                   placeholder="Password"
+                  autoComplete="new-password"
                 />
-                {passwordShown ? (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPasswordShown(false);
-                      }}
-                    >
-                      <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setPasswordShown(true);
-                    }}
-                  >
+                <button
+                  type="button"
+                  onClick={() => setPasswordShown(!passwordShown)}
+                >
+                  {passwordShown ? (
+                    <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
+                  ) : (
                     <AiOutlineEye className="w-6 h-6 text-gray-500" />
-                  </button>
-                )}
+                  )}
+                </button>
               </label>
-              {errors.password && touched.password ? (
-                <div className="text-red-700 font-base border-b-2 border-gray-400  p-1">
-                  {errors.password}
-                  <sup>*</sup>
+              {errors.password && touched.password && (
+                <div className="text-red-700 font-base border-b-2 border-gray-400 p-1 bg-red-50">
+                  {errors.password}<sup>*</sup>
                 </div>
-              ) : null}
+              )}
 
-              <label className="flex space-x-3  p-3 items-center">
+              <label className="flex space-x-3 p-3 items-center bg-white">
                 <FaLock className="w-5 h-5 text-gray-400" />
                 <Field
                   name="confirmPassword"
                   type={confirmPasswordShown ? "text" : "password"}
                   className="w-full focus:outline-none"
                   placeholder="Confirm Password"
+                  autoComplete="new-password"
                 />
-                {confirmPasswordShown ? (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setConfirmPasswordShown(false);
-                      }}
-                    >
-                      <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setConfirmPasswordShown(true);
-                    }}
-                  >
+                <button
+                  type="button"
+                  onClick={() => setConfirmPasswordShown(!confirmPasswordShown)}
+                >
+                  {confirmPasswordShown ? (
+                    <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
+                  ) : (
                     <AiOutlineEye className="w-6 h-6 text-gray-500" />
-                  </button>
-                )}
+                  )}
+                </button>
               </label>
-              {errors.confirmPassword && touched.confirmPassword ? (
-                <div className="text-red-700 font-base border-t-2 border-gray-400  p-1">
-                  {errors.confirmPassword}
-                  <sup>*</sup>
-                </div>
-              ) : null}
             </div>
+            {errors.confirmPassword && touched.confirmPassword && (
+              <div className="text-red-700 font-base p-1">{errors.confirmPassword}*</div>
+            )}
 
             <Listbox value={selected} onChange={setSelected}>
               <div className="relative mt-1">
-                <Listbox.Button className="relative border-2  border-gray-400 w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-gray-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500">
+                <Listbox.Button className="relative border-2 border-gray-400 w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg focus:outline-none">
                   <span className="block truncate">{selected.name}</span>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <SelectorIcon
-                      className="w-5 h-5 text-gray-400"
-                      aria-hidden="true"
-                    />
+                    <SelectorIcon className="w-5 h-5 text-gray-400" />
                   </span>
                 </Listbox.Button>
                 <Transition
@@ -217,34 +199,25 @@ const Register = ({ setR }) => {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Listbox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                     {people.map((person, personIdx) => (
                       <Listbox.Option
                         key={personIdx}
                         className={({ active }) =>
                           `cursor-default select-none relative py-2 pl-10 pr-4 ${
-                            active
-                              ? "text-gray-900 bg-gray-100"
-                              : "text-gray-900"
+                            active ? "text-gray-900 bg-gray-100" : "text-gray-900"
                           }`
                         }
                         value={person}
                       >
-                        {({ selected }) => (
+                        {({ selected: isSel }) => (
                           <>
-                            <span
-                              className={`block truncate ${
-                                selected ? "font-medium" : "font-normal"
-                              }`}
-                            >
+                            <span className={`block truncate ${isSel ? "font-medium" : "font-normal"}`}>
                               {person.name}
                             </span>
-                            {selected ? (
+                            {isSel ? (
                               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-red-600">
-                                <CheckIcon
-                                  className="w-5 h-5"
-                                  aria-hidden="true"
-                                />
+                                <CheckIcon className="w-5 h-5" />
                               </span>
                             ) : null}
                           </>
@@ -255,51 +228,39 @@ const Register = ({ setR }) => {
                 </Transition>
               </div>
             </Listbox>
-            <label className="flex items-center text-gray-500 space-x-3">
-              <input
-                type="checkbox"
-                className="w-5 h-5"
-                ref={terms}
-                onChange={(event) => {
-                  const checked = event.target.checked;
-                  if (checked) {
-                    setTermsError("");
-                  }
-                }}
-              />
-              <span>
-                I agree with your{" "}
-                <span className="text-red-700">Terms & Conditions</span>
-              </span>
-            </label>
-            {termsError && <div className="text-red-600">{termsError}</div>}
 
-            {serverError && !termsError && (
+            <div className="flex flex-col space-y-2">
+              <label className="flex items-center text-gray-500 space-x-3 cursor-pointer">
+                <Field
+                  type="checkbox"
+                  name="acceptTerms"
+                  className="w-5 h-5"
+                />
+                <span>
+                  I agree with your <span className="text-red-700">Terms & Conditions</span>
+                </span>
+              </label>
+              {errors.acceptTerms && touched.acceptTerms && (
+                <div className="text-red-600">{errors.acceptTerms}</div>
+              )}
+            </div>
+
+            {serverError && (
               <ul className="text-red-500 bg-red-100 rounded-sm p-2 list-none">
-                {serverError &&
-                  Object.entries(serverError).map((item, i) => {
-                    return (
-                      <li
-                        className={`block py-2  ${
-                          i < Object.entries(serverError).length - 1
-                            ? " border-b border-red-200"
-                            : ""
-                        }`}
-                        key={i}
-                      >
-                        {item[1]}
-                      </li>
-                    );
-                  })}
+                {Object.entries(serverError).map(([key, value], i) => (
+                  <li key={i} className="py-1 border-b border-red-200 last:border-0">
+                    {Array.isArray(value) ? value[0] : value}
+                  </li>
+                ))}
               </ul>
             )}
 
             <button
               type="submit"
-              className="text-white bg-red-700 rounded-lg w-full font-bold p-3 text-center flex items-center justify-center"
+              className="text-white bg-red-700 rounded-lg w-full font-bold p-3 text-center flex items-center justify-center disabled:bg-gray-400"
               disabled={loading}
             >
-              {loading ? <FaSpinner className="spin" /> : "Register"}
+              {loading ? <FaSpinner className="animate-spin" /> : "Register"}
             </button>
           </Form>
         )}

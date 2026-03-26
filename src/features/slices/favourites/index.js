@@ -31,22 +31,22 @@ export const FavoritesSlice = createSlice({
       state.isLoading = action.payload;
     },
     setFavoritesList: (state, action) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
       const data = { property_id: action.payload };
-      state.data.push(data);
+      if (!state.data) {
+        state.data = [data]; // ✅ initialize if null
+      } else {
+        state.data.push(data); // ✅ push if already exists
+      }
     },
     removeFavoriteList: (state, action) => {
-      const ids = state.data.filter(
+      if (!state.data) return; // ✅ guard
+      state.data = state.data.filter(
         (item) => item.property_id != action.payload
       );
-      state.data = ids;
     },
 
-    removeAllFavorites: (state, action) => {
-      state.data = [];
+    removeAllFavorites: (state) => {
+      state.data = []; // ✅ only one, duplicate removed
     },
 
     // decrement: (state) => {
@@ -57,10 +57,9 @@ export const FavoritesSlice = createSlice({
     // },
   },
   extraReducers: (builder) => {
-    // Add reducers for additional action types here, and handle loading state as needed
+    // ✅ Fixed: removed nested duplicate addCase
     builder.addCase(fetchFavoritesList.fulfilled, (state, action) => {
-      // Add user to the state array
-      state.data = action.payload ? action.payload.data : null;
+      state.data = action.payload ? action.payload.data : [];
     });
   },
 });

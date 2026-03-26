@@ -4,7 +4,8 @@ const PropertiesInNepal = () => {
   return (
     <>
       <div className="text-white">
-        <ul className="space-y-3">
+         <h2 className="font-bold mb-4">Find Property</h2>
+        <ul className="space-y-3 text-sm">
           <li>
             <a href="/">Property in Nepal</a>
           </li>

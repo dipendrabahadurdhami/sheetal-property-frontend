@@ -152,7 +152,7 @@ const SideBar = ({ menubutton }) => {
                       alt="Workflow"
                     />
                     <form>
-                      <div className="absolute bottom-0 left-0 right-0 w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center">
+                      <div className="absolute bottom-0 left-0 right-0 w-full bg-opacity-50 bg-black text-white py-2 flex space-x-2 justify-center">
                         <input
                           type="file"
                           accept="image/*"

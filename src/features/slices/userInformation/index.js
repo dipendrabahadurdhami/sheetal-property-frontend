@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiClient from "../../../utils/apiClient";
 
 const initialState = {
@@ -10,16 +9,30 @@ const initialState = {
 
 export const fetchUserInformation = createAsyncThunk(
   "user/fetchUserInformation",
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get("/user-info");
-      if (response.status === 200) {
-        return response.data;
+      const token = localStorage.getItem("sheetal_token");
+
+      if (!token) {
+        return rejectWithValue("No token found");
       }
-      return null;
+
+      const response = await apiClient.get("user-info", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      return response.data;
     } catch (error) {
-      console.error(error);
-      return null;
+      console.error("Auth Error Details:", error);
+
+      if (error.response?.status === 401) {
+        return rejectWithValue("Session invalid or expired.");
+      }
+
+      return rejectWithValue(error.response?.data || "Network Error");
     }
   }
 );
@@ -32,30 +45,27 @@ export const UserSlice = createSlice({
       state.isLoading = action.payload;
     },
     setUserInfo: (state, action) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-
-      state.data.push(action.payload);
+      state.data = action.payload;
     },
     removeUserInfo: (state) => {
       state.data = null;
+      localStorage.removeItem("sheetal_token");
     },
-
-    // decrement: (state) => {
-    //   state.value -= 1
-    // },
-    // incrementByAmount: (state, action) => {
-    //   state.value += action.payload
-    // },
   },
   extraReducers: (builder) => {
-    // Add reducers for additional action types here, and handle loading state as needed
-    builder.addCase(fetchUserInformation.fulfilled, (state, action) => {
-      // Add user to the state array
-      state.data = action.payload ? action.payload.data : null;
-    });
+    builder
+      .addCase(fetchUserInformation.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserInformation.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data = action.payload?.data || action.payload;
+      })
+      .addCase(fetchUserInformation.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 

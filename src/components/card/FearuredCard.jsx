@@ -21,7 +21,7 @@ const FearuredCard = ({ product }) => {
   const token = localStorage.getItem("sheetal_token");
 
   useEffect(() => {
-    if (favorites) {
+    if (favorites?.length > 0) {
       if (favorites.find((item) => item.property_id === product.id)) {
         setFavorite(true);
       }
@@ -33,12 +33,13 @@ const FearuredCard = ({ product }) => {
       setFavorite(false);
     }
   }, [user]);
+
   const onFavoriteClick = (e, id) => {
     e.preventDefault();
     if (!user.data && !token) {
       return navigate(`/?login=1`);
     }
-    const isFavoriteAvailable = favorites.find(
+    const isFavoriteAvailable = favorites?.find(
       (item) => item.property_id === id
     );
     if (isFavoriteAvailable) {
@@ -63,7 +64,15 @@ const FearuredCard = ({ product }) => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        // ✅ Handle 409 - already in favourites (not a real error)
+        if (err?.response?.status === 409) {
+          toast.info("Already in your favourites!");
+          setFavorite(true); // ✅ keep heart filled
+        } else {
+          dispatch(removeFavoriteList(id)); // ✅ revert optimistic update
+          setFavorite(false);
+          toast.error("Failed to add to favorite list");
+        }
       });
   };
 
@@ -78,7 +87,10 @@ const FearuredCard = ({ product }) => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        // ✅ Revert optimistic update on failure
+        dispatch(setFavoritesList(id));
+        setFavorite(true);
+        toast.error("Failed to remove from favorite list");
       });
   };
 
@@ -121,18 +133,10 @@ const FearuredCard = ({ product }) => {
                 {favorite && <AiFillHeart className="w-6 h-6 text-red-600" />}
               </div>
             </div>
-            <div className="flex  items-center">
+            <div className="flex items-center">
               <span className="font-medium">
                 Rs. {product?.total_price ? product?.total_price : "N/A"}{" "}
               </span>
-              {/* <span className="font-medium">
-                {product?.land_according_to_measurements
-                  ?.land_area_in_sqft_measurements
-                  ? product?.land_according_to_measurements
-                      ?.land_area_in_sqft_measurements
-                  : " -"}{" "}
-                sq.ft.
-              </span> */}
             </div>
             {product?.property_location && (
               <div className="text-gray-600 text-sm flex flex-wrap">

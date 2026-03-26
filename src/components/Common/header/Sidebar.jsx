@@ -1,31 +1,27 @@
-import React, { useContext } from "react";
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Dialog, Disclosure, Transition } from "@headlessui/react";
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
-import LoginModel from "../../Login/LoginModel";
-import { navigation } from "./navigation";
-import { LoggedUserContext } from "../../Context/LoginContext";
+import { HiX, HiChevronRight } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { FaHeart, FaHome, FaPlus, FaUser, FaBuilding, FaSignOutAlt } from "react-icons/fa";
+
+import LoginModel from "../../Login/LoginModel";
+import { navigation } from "./navigation";
 import { removeUserInfo } from "../../../features/slices/userInformation";
 import { removeAllFavorites } from "../../../features/slices/favourites";
-import { FaHeart, FaHome, FaPlus, FaUser } from "react-icons/fa";
 
-const Sidebar = () => {
-  const { token, setToken } = useContext(LoggedUserContext);
-  const [r, setR] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  let navigate = useNavigate();
-  const dispatch =  useDispatch();
-  // const { setToken } = useContext(LoggedUserContext);
-  const user = useSelector(state=>state.user)
-  const SignOut = () => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+  const [authModal, setAuthModal] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
+  const handleSignOut = () => {
     localStorage.removeItem("sheetal_token");
-    dispatch(removeUserInfo())
-    dispatch(removeAllFavorites())
+    dispatch(removeUserInfo());
+    dispatch(removeAllFavorites());
     setSidebarOpen(false);
-    navigate("/",{replace:true})
-   
+    navigate("/", { replace: true });
   };
 
   function classNames(...classes) {
@@ -34,255 +30,158 @@ const Sidebar = () => {
 
   return (
     <>
-      <div>
-        <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog
-            as="div"
-            className="fixed inset-0 flex z-40 lg:hidden"
-            onClose={setSidebarOpen}
+      <Transition.Root show={sidebarOpen} as={Fragment}>
+        <Dialog as="div" className="fixed inset-0 flex z-[60] lg:hidden" onClose={setSidebarOpen}>
+          {/* Overlay */}
+          <Transition.Child
+            as={Fragment}
+            enter="transition-opacity ease-linear duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-linear duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
           >
-            <Transition.Child
-              as={Fragment}
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-            </Transition.Child>
-            <Transition.Child
-              as={Fragment}
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
-            >
-              <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-in-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in-out duration-300"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
+            <Dialog.Overlay className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" />
+          </Transition.Child>
+
+          {/* Sidebar Panel */}
+          <Transition.Child
+            as={Fragment}
+            enter="transition ease-in-out duration-300 transform"
+            enterFrom="-translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition ease-in-out duration-300 transform"
+            leaveFrom="translate-x-0"
+            leaveTo="-translate-x-full"
+          >
+            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white shadow-2xl">
+              {/* Close Button Inside Sidebar */}
+              <div className="absolute top-2 right-2">
+                <button
+                  type="button"
+                  className="flex items-center justify-center h-10 w-10 rounded-full text-gray-500 hover:bg-gray-100 focus:outline-none"
+                  onClick={() => setSidebarOpen(false)}
                 >
-                  <div className="absolute top-0 right-0 -mr-12 pt-2">
-                    <button
-                      type="button"
-                      className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <span className="sr-only">Close sidebar</span>
-                      <XIcon
-                        className="h-6 w-6 text-white"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                </Transition.Child>
-                <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                  <div className="flex-shrink-0 flex items-center px-4">
-                    <img
-                      className="h-14 w-auto"
-                      src="/shetallogo.png"
-                      alt="Workflow"
-                    />
-                  </div>
-                  <div className="mt-5 flex-grow flex flex-col">
-                    <nav
-                      className="flex-1 px-2 space-y-1 bg-white"
-                      aria-label="Sidebar"
-                    >
-                      {navigation.map((item) =>
-                        item.subTitle.length === 0 ? (
-                          <div key={item.title}>
-                            <a
-                              href={item.link}
-                              className={classNames(
-                                item.current
-                                  ? "bg-gray-100 text-gray-900"
-                                  : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                                "group w-full flex items-center pl-2 py-2 text-sm font-medium rounded-md"
-                              )}
-                            >
-                              {item.title}
-                            </a>
-                          </div>
-                        ) : 
-                        
-                        
-                        (
-                          <Disclosure
-                            as="div"
-                            key={item.title}
-                            className="space-y-1"
-                          >
-                            {({ open }) => (
-                              <>
-                                <Disclosure.Button
-                                  className={classNames(
-                                    item.current
-                                      ? "bg-gray-100 text-gray-900"
-                                      : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                                    "group w-full flex items-center pl-2 pr-1 py-2 text-left text-sm font-medium rounded-md focus:outline-none "
-                                  )}
+                  <HiX className="h-6 w-6" aria-hidden="true" />
+                </button>
+              </div>
+
+              <div className="flex-1 h-0 pt-6 pb-4 overflow-y-auto">
+                {/* Branding */}
+                <div className="flex-shrink-0 flex items-center px-6">
+                  <img className="h-12 w-auto" src="/shetallogo.png" alt="Logo" />
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="mt-8 flex-1 px-4 space-y-1">
+                  {navigation.map((item) =>
+                    item.subTitle.length === 0 ? (
+                      <Link
+                        key={item.title}
+                        to={item.link}
+                        onClick={() => setSidebarOpen(false)}
+                        className="group w-full flex items-center px-3 py-3 text-sm font-bold text-gray-700 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all"
+                      >
+                        {item.title}
+                      </Link>
+                    ) : (
+                      <Disclosure as="div" key={item.title} className="space-y-1">
+                        {({ open }) => (
+                          <>
+                            <Disclosure.Button className="group w-full flex items-center px-3 py-3 text-left text-sm font-bold text-gray-700 hover:bg-gray-50 rounded-xl transition-all">
+                              <span className="flex-1  tracking-wide">{item.title}</span>
+                              <HiChevronRight
+                                className={classNames(
+                                  open ? "rotate-90 text-red-600" : "text-gray-400",
+                                  "ml-3 h-5 w-5 transform transition-transform duration-200"
+                                )}
+                              />
+                            </Disclosure.Button>
+                            <Disclosure.Panel className="space-y-1 ml-4 border-l-2 border-gray-100">
+                              {item.subTitle.map((subItem) => (
+                                <button
+                                  key={subItem.title}
+                                  onClick={() => {
+                                    const path = item.title === "Property Service" ? "/productSearch" : subItem.link;
+                                    navigate(`${path}?advertisement_purpose=${subItem.title}`);
+                                    setSidebarOpen(false);
+                                  }}
+                                  className="group w-full flex items-center pl-6 py-2.5 text-sm font-semibold text-gray-500 hover:text-red-700 hover:bg-red-50/50 rounded-lg transition-all"
                                 >
-                                  <span className="flex-1">{item.title}</span>
-                                  <svg
-                                    className={classNames(
-                                      open
-                                        ? "text-gray-400 rotate-90"
-                                        : "text-gray-300",
-                                      "ml-3 flex-shrink-0 h-5 w-5 transform  group-hover:text-gray-400 transition-colors ease-in-out duration-150"
-                                    )}
-                                    viewBox="0 0 20 20"
-                                    aria-hidden="true"
-                                  >
-                                    <path
-                                      d="M6 6L14 10L6 14V6Z"
-                                      fill="currentColor"
-                                    />
-                                  </svg>
-                                </Disclosure.Button>
-                                <Disclosure.Panel className="space-y-1">
-                                  {item.subTitle.map((subItem) => (
-                                    <Disclosure.Button
-                                      key={subItem.title}
-                                      as="a"
-                                      // href={subItem.link}
-                                      onClick={() => {
-                                          navigate({
-                                            pathname: "/productSearch",
-                                            search: `?advertisement_purpose=${subItem.title}`,
-                                          });
-                                          setSidebarOpen(false);
-                                        }
-                                      }
-                                      
-                                      className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
-                                    >
-                                      {subItem.title}
-                                    </Disclosure.Button>
-                                  ))}
-                                </Disclosure.Panel>
-                              </>
-                            )}
-                          </Disclosure>
-                        )
-                      )}
+                                  {subItem.title}
+                                </button>
+                              ))}
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    )
+                  )}
+                </nav>
+
+                {/* User specific section */}
+                {user.data && (
+                  <div className="mt-8 pt-6 border-t border-gray-100 px-4">
+                    <p className="px-3 text-xs font-black text-gray-400  tracking-widest mb-2">Account</p>
+                    <nav className="space-y-1">
+                      <Link to="/my-profile?section=profile" className="flex items-center px-3 py-2.5 text-sm font-bold text-gray-700 hover:bg-red-50 rounded-xl" onClick={() => setSidebarOpen(false)}>
+                        <FaUser className="w-4 h-4 text-red-600 mr-4" /> My Profile
+                      </Link>
+                      <Link to="/my-profile?section=favourites" className="flex items-center px-3 py-2.5 text-sm font-bold text-gray-700 hover:bg-red-50 rounded-xl" onClick={() => setSidebarOpen(false)}>
+                        <FaHeart className="w-4 h-4 text-red-600 mr-4" /> Favorites
+                      </Link>
+                      <Link to="/my-profile?section=my-properties" className="flex items-center px-3 py-2.5 text-sm font-bold text-gray-700 hover:bg-red-50 rounded-xl" onClick={() => setSidebarOpen(false)}>
+                        <FaBuilding className="w-4 h-4 text-red-600 mr-4" /> My Properties
+                      </Link>
                     </nav>
                   </div>
-                  {user.data && 
-                  <div className="mt-4 pt-4 ">
-                      <nav className="flex-1 px-2 pt-2 bg-white border-t border-gray-200">
-                        <div className="flex justify-start items-center">
-                          <FaUser className="w-5 h-5 text-red-700" />
-                          <Link
-                            to="/my-profile?section=profile"
-                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
-                            onClick={()=>setSidebarOpen(false)}
-                          >
-                            My Profile
-                          </Link>
-                        </div>  
+                )}
+              </div>
 
-                        <div className="flex justify-start items-center">
-                          <FaPlus className="w-5 h-5 text-red-700" />
-                          <Link
-                            to="/my-profile?section=post-property"
-                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
-                            onClick={()=>setSidebarOpen(false)}
-                          >
-                            Post Property
-                          </Link>
-                        </div>   
-
-                        <div className="flex justify-start items-center">
-                          <FaHeart className="w-5 h-5 text-red-700" />
-                          <Link
-                            to="/my-profile?section=favourites"
-                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
-                            onClick={()=>setSidebarOpen(false)}
-                          >
-                            Favorite Properties
-                          </Link>
-                        </div> 
-
-                        <div className="flex justify-start items-center">
-                          <FaHome className="w-5 h-5 text-red-700" />
-                          <Link
-                            to="/my-profile?section=my-properties"
-                            className="flex rounded-md items-center w-full px-2 py-2 text-sm"
-                            onClick={()=>setSidebarOpen(false)}
-                          >
-                            My Properties
-                          </Link>
-                        </div>         
-                      </nav>
-                  </div>}
-                </div>
-                <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-                  <div className="flex-shrink-0 group block">
-                    <div className="flex items-center justify-center space-x-3 text-sm">
-                      {!user.data ? (
-                        <button
-                          onClick={() => {
-                            setR(true);
-                            setSidebarOpen(false);
-                          }}
-                          className="border-2 rounded-lg border-red-500 p-2 "
-                        >
-                          Login / Register
-                        </button>
-                      ) : (
-                        <button
-                          onClick={SignOut}
-                          className="border-2 rounded-lg border-red-500 p-2 "
-                        >
-                          SignOut
-                        </button>
-                      )}
-                      <Link
-                        to="/my-profile?section=post-property"
-                        className="px-5 py-3 bg-red-700 hover:bg-red-800 text-sm text-white capitalize rounded-lg"
-                        onClick={()=>setSidebarOpen(false)}
-                      >
-                        post property{" "}
-                      </Link>
-                    </div>
-                  </div>
+              {/* Bottom Actions */}
+              <div className="p-4 bg-gray-50 border-t border-gray-200">
+                <div className="flex flex-col space-y-3">
+                  {!user.data ? (
+                    <button
+                      onClick={() => { setAuthModal(true); setSidebarOpen(false); }}
+                      className="w-full flex items-center justify-center space-x-2 bg-white border-2 border-red-600 text-red-600 font-black py-3 rounded-xl hover:bg-red-50 transition-all  text-xs"
+                    >
+                      <FaUser className="text-[10px]" />
+                      <span>Login / Register</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center justify-center space-x-2 bg-white border-2 border-gray-200 text-gray-600 font-black py-3 rounded-xl hover:bg-gray-100 transition-all  text-xs"
+                    >
+                      <FaSignOutAlt className="text-[10px]" />
+                      <span>Sign Out</span>
+                    </button>
+                  )}
+                  
+                  <Link
+                    to="/my-profile?section=post-property"
+                    className="w-full bg-red-700 text-white  text-sm text-center font-black py-4 rounded-xl shadow-lg shadow-red-200 active:scale-95 transition-all flex items-center justify-center space-x-2 "
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <FaPlus className="text-[10px]" />
+                    <span>New Post</span>
+                  </Link>
                 </div>
               </div>
-            </Transition.Child>
-            <div className="flex-shrink-0 w-14">
-              {/* Force sidebar to shrink to fit close icon */}
             </div>
-          </Dialog>
-        </Transition.Root>
+          </Transition.Child>
+          
+          {/* Buffer to allow user to tap off to close */}
+          <div className="flex-shrink-0 w-14" aria-hidden="true"></div>
+        </Dialog>
+      </Transition.Root>
 
-        <div className="px-5 flex justify-between items-center py-2 shadow-xl border-b border-gray-100">
-          <a href="/">
-            <img src="/shetallogo.png" alt="" className="w-28 h-auto" />
-          </a>
-          <div className="z-10 lg:hidden sm:pl-3 sm:pt-3 bg-white">
-            <button
-              type="button"
-              className="h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <span className="sr-only">Open sidebar</span>
-              <MenuIcon className="h-8 w-8" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-      </div>
-      {r && <LoginModel r={r} setR={setR} />}
+      {/* Auth Modal */}
+      {authModal && <LoginModel r={authModal} setR={setAuthModal} />}
     </>
   );
 };
+
 export default Sidebar;

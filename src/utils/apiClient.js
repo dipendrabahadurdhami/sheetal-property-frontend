@@ -1,54 +1,49 @@
 import axios from "axios";
-// import { useCookies } from "react-cookie";
+
 const apiClient = axios.create({
-    baseURL: process.env.REACT_APP_API_LINK,
-    headers: {
-      "Content-Type": "application/json",
-      "Cross-Origin-Resource-Policy": "same-site",
-      "Access-Control-Allow-Origin": "https://admin.sheetalproperty.com",
+  baseURL: process.env.REACT_APP_API_LINK,
+  headers: {
+    // REMOVED "Content-Type": "application/json"
+    "Accept": "application/json",
+  },
+});
 
-    },
-  });
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("sheetal_token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    
+    // SMART CHECK: If we are sending FormData (images), 
+    // let the browser set the Content-Type. 
+    // Otherwise, default to JSON for normal API calls.
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    } else {
+      config.headers["Content-Type"] = "application/json";
+    }
 
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-  apiClient.interceptors.request.use(
-     
-    (config) => {
-    //   const [cookie] = useCookies(['sheetal_token'])
-      const token = localStorage.getItem('sheetal_token')?localStorage.getItem('sheetal_token'):''
-      if (token) {
-         config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
-        // config.headers["x-access-token"] = token; // for Node.js Express back-end
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("sheetal_token");
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
       }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
     }
-  );
-  apiClient.interceptors.response.use(
-    (res) => {
-      return res;
-    },
-    async (err) => {
-    //   const originalConfig = err.config;
-    //   if (originalConfig.url !== "/auth/signin" && err.response) {
-    //     // Access Token was expired
-    //     if (err.response.status === 401 && !originalConfig._retry) {
-    //       originalConfig._retry = true;
-    //       try {
-    //         const rs = await instance.post("/auth/refreshtoken", {
-    //           refreshToken: TokenService.getLocalRefreshToken(),
-    //         });
-    //         const { accessToken } = rs.data;
-    //         TokenService.updateLocalAccessToken(accessToken);
-    //         return instance(originalConfig);
-    //       } catch (_error) {
-    //         return Promise.reject(_error);
-    //       }
-    //     }
-    //   }
-      return Promise.reject(err);
-    }
-  );
-  export default apiClient;
+    return Promise.reject(error);
+  }
+);
+
+export default apiClient;

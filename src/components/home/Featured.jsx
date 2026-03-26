@@ -25,7 +25,7 @@ const Featured = () => {
   return (
     <div className="pt-6 md:pt-12 px-5 container mx-auto">
       <div className="">
-        <h1 className="pb-3 text-3xl">Featured Properties</h1>
+        <h1 className="pb-3 text-2xl">Featured Properties</h1>
         <p className="bg-red-700 h-1 w-16"></p>
       </div>
 
@@ -37,7 +37,7 @@ const Featured = () => {
           className="py-3 md:pb-10"
         >
           {[...allProduct].slice(0, 4).map((product, index) => (
-            <div key={index} className="h-full px-4 mb-2">
+            <div key={index} className="h-full px-0 mb-2">
               <FearuredCard product={product} />
             </div>
           ))}

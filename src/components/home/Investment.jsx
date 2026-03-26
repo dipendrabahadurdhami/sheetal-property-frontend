@@ -10,20 +10,27 @@ const Investment = () => {
   const [allProduct, setAllProduct] = useState([]);
 
   useEffect(() => {
-    try {
-      async function FetchData() {
-        const res = await axios.get(`${process.env.REACT_APP_API_LINK}/invest`);
-
-        setAllProduct(res.data.data);
+    async function FetchData() {
+      try {
+        const res = await axios.get("/api/invest");
+        
+        if (res.data && res.data.data) {
+          setAllProduct(res.data.data);
+        } else {
+          setAllProduct([]);
+        }
+      } catch (err) {
+        console.error("API Error:", err);
+        setAllProduct([]); 
       }
-      FetchData();
-    } catch (err) {}
+    }
+    FetchData();
   }, []);
 
   return (
     <div className="pt-4 xl:pt-6 px-5 container mx-auto">
       <div className="">
-        <h1 className="pb-3 text-3xl">Investment</h1>
+        <h1 className="pb-3 text-2xl">Investment</h1>
         <p className="bg-red-700 h-1 w-16"></p>
       </div>
 
@@ -34,15 +41,16 @@ const Investment = () => {
           customLeftArrow={<CustomLeftArrow />}
           className="py-3 md:pb-10"
         >
-          {[...allProduct].slice(0, 4).map((product, index) => (
-            <div key={index} className="h-full px-4 mb-2">
+          {/* Fallback check ensures no crash if allProduct is null */}
+          {(allProduct || []).slice(0, 4).map((product, index) => (
+            <div key={index} className="h-full px-0 mb-2">
               <FearuredCard product={product} />
             </div>
           ))}
         </Carousel>
       </div>
 
-      {allProduct.length > 4 && (
+      {allProduct?.length > 4 && (
         <div className="py-4 md:py-4 md:pb-2 -mx-4">
           <Carousel
             responsive={responsive}
@@ -50,8 +58,8 @@ const Investment = () => {
             customLeftArrow={<CustomLeftArrow />}
             className="py-3 md:pb-10"
           >
-            {allProduct.slice(4, allProduct.length).map((product, index) => (
-              <div key={index} className="h-full px-4 mb-2">
+            {(allProduct || []).slice(4, allProduct.length).map((product, index) => (
+              <div key={index} className="h-full px-0 mb-2">
                 <FearuredCard product={product} />
               </div>
             ))}

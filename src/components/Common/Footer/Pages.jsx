@@ -20,7 +20,7 @@ const Pages = () => {
             <Link to={'/privacy-policy'}>Privacy Policy</Link>
           </li>
           <li>
-            <Link to="/terms-and-service">Terms of Service</Link>
+            <Link to="/terms-and-conditions">Terms and Conditions</Link>
           </li>
         </ul>
       </div>

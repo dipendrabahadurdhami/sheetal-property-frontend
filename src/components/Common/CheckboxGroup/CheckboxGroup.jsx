@@ -22,7 +22,7 @@ const CheckboxGroup = (props) => {
     if (onChange && typeof onChange === "function") {
       onChange(newValues);
     }
-  };
+  }; 
 
   return (
     <div>

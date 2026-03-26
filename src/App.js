@@ -16,6 +16,7 @@ import InvestmentExplore from "./pages/InvestmentExplore";
 import InvestmentAllProduct from "./pages/InvestmentAllProduct";
 import Project from "./pages/Project";
 import MyProfile from "./pages/MyProfile";
+import VerifyEmail from "./pages/VerifyEmail";
 import PostProperty from "./pages/PostProperty";
 import PropertyDemand from "./pages/PropertyDemand";
 import FindAgent from "./pages/FindAgent";
@@ -38,6 +39,22 @@ import {
 import Test from "./pages/Test";
 import ResetPassword from "./pages/ResetPassword";
 import AllProperties from "./pages/AllProperties";
+import axios from "axios";
+
+// --- GLOBAL AXIOS CONFIG ---
+axios.defaults.baseURL = process.env.REACT_APP_API_LINK;
+axios.defaults.withCredentials = true;
+
+// This Interceptor attaches your "sheetal_token" to every request header automatically
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("sheetal_token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID);
 
@@ -45,24 +62,35 @@ function App(props) {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const token = localStorage.getItem("sheetal_token");
-
   const location = useLocation();
 
   useEffect(() => {
-    if (token) {
-      dispatch(fetchUserInformation());
-    }
-    // eslint-disable-next-line
-  }, []);
+    const init = async () => {
+      try {
+        const apiLink = process.env.REACT_APP_API_LINK || "";
+        const sanctumBase = apiLink.split('/api')[0];
+
+        await axios.get(`${sanctumBase}/sanctum/csrf-cookie`);
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        const currentToken = localStorage.getItem("sheetal_token");
+        if (currentToken) {
+          dispatch(fetchUserInformation());
+        }
+      } catch (e) {
+        console.error("Auth Init Error:", e);
+      }
+    };
+    init();
+  }, [dispatch]);
 
   useEffect(() => {
-    if (user.data) {
+    if (user?.data?.id) {
       dispatch(fetchFavoritesList());
-    } else {
+    } else if (!user?.data && !localStorage.getItem("sheetal_token")) {
       dispatch(removeAllFavorites());
     }
-    // eslint-disable-next-line
-  }, [user]);
+  }, [user?.data?.id, user?.data, dispatch]);
 
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + location.search);
@@ -75,9 +103,9 @@ function App(props) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/requirementForm" element={<RequirementForm />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-and-service" element={<TermsAndConditions />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/property/:id" element={<SingleProduct />} />
           <Route path="/homeLone" element={<HomeLone />} />
           <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />
@@ -92,14 +120,9 @@ function App(props) {
             element={<ResetPassword {...props} />}
           />
           <Route
-            path="/my-profile?section=post-property"
-            element={
-              <Protected>
-                <PostProperty />
-              </Protected>
-            }
+            path="/properties"
+            element={<AllProperties />}
           />
-          <Route path="/properties" element={<AllProperties />} />
           <Route path="/propertyDemand" element={<PropertyDemand />} />
           <Route path="/agents" element={<FindAgent />} />
           <Route path="/agent/:id" element={<SingleAgent />} />
@@ -112,12 +135,20 @@ function App(props) {
             path="/investment/viewallproduct"
             element={<InvestmentAllProduct />}
           />
-
+          {/* Protected Routes */}
           <Route
             path="/my-profile"
             element={
               <Protected>
                 <MyProfile />
+              </Protected>
+            }
+          />
+          <Route
+            path="/post-property"
+            element={
+              <Protected>
+                <PostProperty />
               </Protected>
             }
           />
@@ -127,15 +158,7 @@ function App(props) {
       <ToastContainer
         position="top-right"
         autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
         theme="colored"
-        className="font-base text-normal"
       />
     </div>
   );

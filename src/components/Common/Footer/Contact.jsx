@@ -5,44 +5,44 @@ import { BsFacebook, BsInstagram, BsTwitter } from "react-icons/bs";
 
 const Contact = () => {
   return (
-    <div className=" text-white item-leftspace-y-5">
-      <div className="grid grid-cols-12 gap-6 ">
-        <div className="col-span-12 md:col-span-1">
-          <span className="visible md:hidden  font-bold items-left mb-4 ">Contact US</span>{" "}
+    <div className="text-white space-y-6">
+      <h2 className="font-bold text-lg md:text-base">Contact US</h2>
+      
+      <div className="space-y-4">
+        {/* Phone */}
+        <div className="flex items-center gap-4">
+          <div className="">
+             <FaPhone className="w-4 h-4 rotate-90 text-white" />
+          </div>
+          <a href="tel:9801000434" className="hover:text-red-500 transition-colors">
+            +977 9801000434
+          </a>
         </div>
-        <div className="col-span-11  hidden md:block">
-          <span className="hidden sm:block font-bold  mb-4">Contact US</span>
-        </div>
-        <div className="">
-          <FaPhone className="w-5 h-5 rotate-90 text-red-700" />
-        </div>
-        <div className="col-span-11 ">
-          {" "}
-          <a href="tel: 9801000434">+977 9801000434</a>
-        </div>
-        <div className="">
-          <HiMail className="w-6 h-6 text-red-700" />
-        </div>
-        <div className="col-span-10">
-          <a href="mailto: shetalrealestate@gmail.com">shetalrealestate@gmail.com </a>
+
+        {/* Email */}
+        <div className="flex items-center gap-4">
+          <div className="">
+            <HiMail className="w-4 h-4 text-white" />
+          </div>
+          <a href="mailto:shetalrealestate@gmail.com" className="hover:text-red-500 transition-colors break-all">
+            shetalrealestate@gmail.com
+          </a>
         </div>
       </div>
-      <ul className="flex items-center mt-20 space-x-3">
-        <li className="rounded-full w-10 h-10 p-2 overflow-hidden flex items-center justify-center bg-red-700">
-          <a href={process.env.REACT_APP_FACEBOOK_URL} target={"_blank"}>
-            <BsFacebook className="w-full h-full text-white" />
-          </a>
-        </li>
-        <li className="rounded-full w-10 h-10 p-2 overflow-hidden flex items-center justify-center bg-red-700">
-          <a href={process.env.REACT_APP_TWITTER_URL} target={"_blank"}>
-            <BsTwitter className="w-full h-full text-white" />
-          </a>
-        </li>
-        <li className="rounded-full w-10 h-10 p-2 overflow-hidden flex items-center justify-center bg-red-700">
-          <a href={process.env.REACT_APP_INSTAGRAM_URL} target={"_blank"}>
-            <BsInstagram className="w-full h-full text-white" />
-          </a>
-        </li>
+
+      {/* Social Icons - Adjusted margin for mobile */}
+      <ul className="flex items-center pt-0 space-x-4">
+        {[
+          { Icon: BsFacebook, url: process.env.REACT_APP_FACEBOOK_URL },
+          { Icon: BsTwitter, url: process.env.REACT_APP_TWITTER_URL },
+          { Icon: BsInstagram, url: process.env.REACT_APP_INSTAGRAM_URL },
+        ].map((item, idx) => (
+          <li key={idx} className="rounded-full w-10 h-10 flex items-center justify-center bg-red-700 hover:bg-red-600 transition-all transform hover:scale-110">
+            <a href={item.url} target="_blank" rel="noreferrer">
+              <item.Icon className="w-5 h-5 text-white" />
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   );

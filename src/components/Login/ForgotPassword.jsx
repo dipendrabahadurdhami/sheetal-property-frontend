@@ -44,7 +44,7 @@ const ForgotPassword = ({ setR }) => {
       }
     } catch (e) {
       toast.error(
-        "Something went wrong while sending password reset link. Please try again later."
+        "email id not  found"
       );
 
       setLoading(false);

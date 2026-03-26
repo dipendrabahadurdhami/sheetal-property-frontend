@@ -17,11 +17,10 @@ const PropertyTypeItem = ({ id, item, selected, action, onSelectAction }) => {
   };
   return (
     <label
-      className={`flex items-center border border-gray-300 px-4 py-2 rounded cursor-pointer ${
-        selected === item.id
-          ? "bg-red-500 border-red-500 text-white font-medium"
-          : "bg-white border-gray-300 font-light "
-      }`}
+      className={`flex items-center border border-gray-300 px-4 py-2 rounded cursor-pointer ${selected === item.id
+        ? "bg-red-500 border-red-500 text-white font-medium"
+        : "bg-white border-gray-300 font-light "
+        }`}
       htmlFor={"my-property-" + id}
       onClick={(e) => {
         handleSelect();
@@ -34,7 +33,7 @@ const PropertyTypeItem = ({ id, item, selected, action, onSelectAction }) => {
         name="propertytype_id"
         className="border-red-500 w-4 h-4 opacity-0 absolute left-0"
         checked={selected === item.id}
-        onChange={() => {}}
+        onChange={() => { }}
       />
 
       <span className="block">{item.name}</span>
@@ -55,7 +54,7 @@ const MyProperty = ({
   const [selected, setSelected] = useState(null);
   const [galleries, setGalleries] = useState([]);
   const [thumbnailGalleries, setThumbnailGalleries] = useState([]);
-  const [feature, setFeature] = useState(0);
+  const [feature, setFeature] = useState(null);
 
   const [propertyDescription, setPropertyDescription] = useState(() =>
     EditorState.createEmpty()
@@ -63,53 +62,52 @@ const MyProperty = ({
 
   const onGalleryImageChanges = (name, e) => {
     e.preventDefault();
-    let thumbnails = [];
-    let mainImages = [];
-    const files = e.target.files;
-    let i = 0;
-    while (i < files.length) {
-      // let images = thumbnailGalleries;
-      // var reader = new FileReader();
-      thumbnails.push(URL.createObjectURL(files[i]));
-      mainImages.push(files[i]);
-      i++;
-    }
-    onInputChange("feature_image", e.target.files[0]);
+    const files = Array.from(e.target.files);
+    const thumbnails = files.map((file) => URL.createObjectURL(file));
 
     setThumbnailGalleries(thumbnails);
-    setGalleries(mainImages);
-    onInputChange("gallery_images", mainImages);
+    setGalleries(files);
+    onInputChange("gallery_images", files);
+
+    // Automatically set the first image as featured if nothing is selected yet
+    if (files.length > 0 && feature === null) {
+      setFeature(0);
+    }
   };
+
   const deleteGalleryImage = (index) => {
-    const thumbs = thumbnailGalleries.filter((thumb, i) => i !== index);
-    const _galleries = galleries.filter((image, i) => i !== index);
+    const thumbs = thumbnailGalleries.filter((_, i) => i !== index);
+    const _galleries = galleries.filter((_, i) => i !== index);
+
     setThumbnailGalleries(thumbs);
     setGalleries(_galleries);
     onInputChange("gallery_images", _galleries);
-    // }
+
+    // Logic to adjust the "featured" selection index
+    if (_galleries.length === 0) {
+      setFeature(null);
+    } else if (index === feature) {
+      // If deleted image was the featured one, default to the first remaining image
+      setFeature(0);
+    } else if (index < feature) {
+      // If an image before the featured one was deleted, shift index back
+      setFeature(feature - 1);
+    }
   };
 
   const onSetFeaturedImage = (index) => {
-    setFeature(index);
+    if (galleries[index]) {
+      setFeature(index);
+    }
   };
 
   const handleSelectedItem = (item) => {
     setSelected(item.id);
   };
+
   const onFormInputChange = (name, value) => {
     onInputChange(name, value);
   };
-
-  // const onFeatureImageChange = (name,e)=>{
-  //   e.preventDefault();
-
-  //   var reader = new FileReader();
-  //   reader.readAsDataURL(e.target.files[0]);
-  //   reader.onloadend = function (e) {
-  //     setImage(reader.result)
-  //   }
-  //   onFileChange(name,e.target.files[0])
-  // }
 
   const onExteriorChange = (value) => {
     onInputChange("exterior_looks", value);
@@ -126,14 +124,14 @@ const MyProperty = ({
   };
 
   useEffect(() => {
-    if (galleries.length > 0) {
+    if (galleries && galleries.length > 0 && feature !== null) {
+      // Pass the actual File object to the parent
       onInputChange("feature_image", galleries[feature]);
     } else {
-      onInputChange("feature_image", "");
+      // Use null to prevent backend validation strings (like "") from causing errors
+      onInputChange("feature_image", null);
     }
-
-    // eslint-disable-next-line
-  }, [feature, galleries]);
+  }, [feature, galleries, onInputChange]);
 
   return (
     <div className="sm:p-5 sm:border rounded-lg mb-6">
@@ -329,9 +327,8 @@ const MyProperty = ({
                       <img src={closeIcon} alt="Close" width="10" />
                     </span>
                     <div
-                      className={`bg-gray-300 relative border border-gray-300 overflow-hidden ${
-                        feature === i ? "border-4 border-blue-300" : ""
-                      }`}
+                      className={`bg-gray-300 relative border border-gray-300 overflow-hidden ${feature === i ? "border-4 border-blue-300" : ""
+                        }`}
                       style={{
                         borderRadius: "4px",
                         height: "100px",

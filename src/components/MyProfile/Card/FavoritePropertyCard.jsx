@@ -7,7 +7,7 @@ import { removeFavoriteList } from "../../../features/slices/favourites";
 import apiClient from "../../../utils/apiClient";
 
 const FavoritePropertyCard = ({ data }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // ✅ false by default, not true
   const [id, setId] = useState(null);
   const favorites = useSelector((state) => state.favorites.data);
   const dispatch = useDispatch();
@@ -21,8 +21,7 @@ const FavoritePropertyCard = ({ data }) => {
       return navigate(`/?login=1`);
     }
 
-    console.log(favorites);
-    const isFavoriteAvailable = favorites.find(
+    const isFavoriteAvailable = favorites?.find(
       (item) => item.property_id === id
     );
     if (isFavoriteAvailable) {
@@ -32,6 +31,8 @@ const FavoritePropertyCard = ({ data }) => {
   };
 
   const removeFromFavorite = async (id) => {
+    setLoading(true); // ✅ show spinner while removing
+    setId(id);
     await apiClient
       .post("/remove-from-favourite", { property_id: id })
       .then((res) => {
@@ -43,26 +44,45 @@ const FavoritePropertyCard = ({ data }) => {
       })
       .catch((err) => {
         console.error(err);
+        toast.error("Failed to remove from favorite list");
+      })
+      .finally(() => {
+        setLoading(false); // ✅ always hide spinner after done
+        setId(null);
       });
   };
 
   return (
     <div className="grid sm:grid-cols-5 items-center border border-gray-200 shadow-xl rounded overflow-hidden mb-6 relative">
-      <img
-        src={data?.feature_image}
-        alt="/fetured/unsplash_178j8tJrNlc"
-        className="w-full h-full sm:col-span-2"
-      />
-      <div className="p-5 sm:col-span-3  space-y-4 text-sm lg:text-base">
+      {/* ✅ Show placeholder if feature_image is null */}
+      {data?.feature_image ? (
+        <img
+          src={data.feature_image}
+          alt={data?.name || "Property"}
+          className="w-full h-full sm:col-span-2 object-cover"
+          style={{ minHeight: "150px" }}
+        />
+      ) : (
+        <div
+          className="w-full sm:col-span-2 bg-gray-200 flex items-center justify-center"
+          style={{ minHeight: "150px" }}
+        >
+          <span className="text-gray-400 text-sm">No Image</span>
+        </div>
+      )}
+
+      <div className="p-5 sm:col-span-3 space-y-4 text-sm lg:text-base">
         <div className="flex justify-between items-start">
           <div className="flex items-center space-x-3">
             <FaUserCircle className="text-red-700 w-10 h-10" />
             <div className="flex flex-col">
               <span className="text-xs">Posted By</span>
               <div>
-                <span className="capitalize  text-sm">{data?.posted_by}</span>{" "}
+                <span className="capitalize text-sm">
+                  {data?.posted_by || "Unknown"}
+                </span>{" "}
                 <span className="text-gray-400 italic text-xs">
-                  - Posted on <strong>{data?.posted_date}</strong>
+                  - Posted on <strong>{data?.posted_date || "N/A"}</strong>
                 </span>
               </div>
             </div>
@@ -71,7 +91,7 @@ const FavoritePropertyCard = ({ data }) => {
         <div className="space-y-1">
           <div className="flex justify-between">
             <span className="font-bold text-lg relative pr-24">
-              {data?.name}
+              {data?.name || "N/A"}
             </span>
             <div
               className="w-8 h-8 cursor-pointer"
@@ -102,6 +122,8 @@ const FavoritePropertyCard = ({ data }) => {
           </Link>
         </div>
       </div>
+
+      {/* ✅ Only show spinner when this specific card is loading */}
       {loading && id === data?.id && (
         <div className="absolute top-0 left-0 h-full w-full z-10">
           <div className="bg-white opacity-90 h-full w-full"></div>
