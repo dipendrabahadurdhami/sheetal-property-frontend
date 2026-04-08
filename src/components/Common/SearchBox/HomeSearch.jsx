@@ -11,7 +11,7 @@ const HomeSearch = ({ setFilterModal, showFilters = true }) => {
   return (
     <div>
       {/* ── Property type tabs ── */}
-      <div className="flex xl:w-4/5 sm:text-lg items-center justify-start font-bold overflow-x-auto">
+      <div className="flex  w-full 2xl:w-4/5 sm:text-lg items-center justify-start font-bold overflow-x-auto">
         {navigation[0].subTitle.map((item, index) => (
           <button
             key={index}
