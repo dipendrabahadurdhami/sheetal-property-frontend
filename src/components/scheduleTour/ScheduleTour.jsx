@@ -12,7 +12,7 @@ const ScheduleTour = () => {
     name:'',
     phone:'',
     email:'',
-    message:''
+    note:''
   }
   const [form,setForm]= useState(initalFormData)
   const [errors, setErrors] = useState(null);
@@ -27,7 +27,7 @@ const ScheduleTour = () => {
     if(!form.phone) __errors.phone = "Enter phone";
     if(!form.email) __errors.email = "Enter email address";
     else if(!emailRegex.test(form.email)) __errors.email = "Invalid email address";
-    if(!form.message) __errors.message = "Enter message";
+    if(!form.note) __errors.note = "Enter note";
 
     setErrors(__errors);
     return __errors;
@@ -48,7 +48,7 @@ const ScheduleTour = () => {
         name: form.name,
         email: form.email,
         phone: form.phone,
-        message_description: form.message,
+        note_description: form.note,
         property_id: id
       }
       await apiClient.post('/schedule-tour', data).then(res=>{
@@ -148,13 +148,13 @@ const ScheduleTour = () => {
             <div>
             <textarea
               rows={6}
-              placeholder="Message"
+              placeholder="note"
               className="w-full border p-2 rounded"
-              name="message"
-              value={form.message}
+              name="note"
+              value={form.note}
               onChange={onInputChange}
             />
-            {errors?.message && <span className="text-red-500 text-sm block mt-0">{errors?.message}</span>}
+            {errors?.note && <span className="text-red-500 text-sm block mt-0">{errors?.note}</span>}
             </div>
             <div className="">
               <button className="bg-red-700 text-white font-semibold px-5 py-2 rounded-lg">
