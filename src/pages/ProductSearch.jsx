@@ -87,7 +87,7 @@ const ProductSearch = () => {
   }, [params]);
 
   return (
-    <div className="p-5 lg:p-10 space-y-10">
+    <div className="p-5 mt-60 lg:p-10 space-y-10">
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Property</h1>
