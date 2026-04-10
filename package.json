@@ -78,5 +78,5 @@
     "source-map-explorer": "^2.5.3",
     "tailwindcss": "^3.0.18"
   },
-  "proxy": "http://admin.sheetalproperty.com.np"
+  "proxy": "https://admin.sheetalproperty.com"
 }

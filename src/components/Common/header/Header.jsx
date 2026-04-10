@@ -46,15 +46,14 @@ const Header = () => {
   };
 
   const getNavIcon = (title) => {
-    // same sizing as your original — big on mobile, small on lg
     const cls = "w-6 h-6 lg:w-4 lg:h-4 flex-shrink-0 transition-all duration-200";
     switch (title) {
-      case "Home":             return <IoHomeOutline className={cls} />;
+      case "Home": return <IoHomeOutline className={cls} />;
       case "Property Service": return <IoBriefcaseOutline className={cls} />;
-      case "Property Demand":  return <IoLocationOutline className={cls} />;
+      case "Property Demand": return <IoLocationOutline className={cls} />;
       case "Requirement form": return <IoDocumentTextOutline className={cls} />;
-      case "Find Agent":       return <IoPeopleOutline className={cls} />;
-      default:                 return <IoHomeOutline className={cls} />;
+      case "Find Agent": return <IoPeopleOutline className={cls} />;
+      default: return <IoHomeOutline className={cls} />;
     }
   };
 
@@ -62,7 +61,7 @@ const Header = () => {
     const t = title?.toLowerCase() || "";
     const cls = "w-3.5 h-3.5 flex-shrink-0";
     if (t.includes("sell") || t.includes("sale")) return <IoAddCircleOutline className={cls} />;
-    if (t.includes("rent"))                        return <IoHomeOutline className={cls} />;
+    if (t.includes("rent")) return <IoHomeOutline className={cls} />;
     if (t.includes("flat") || t.includes("apart")) return <IoLocationOutline className={cls} />;
     return <IoBriefcaseOutline className={cls} />;
   };
@@ -72,10 +71,10 @@ const Header = () => {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md"
-            : "bg-white py-2 border-b border-gray-100"
+            ? "bg-white/95 backdrop-blur-md shadow-md py-2" 
+            : "bg-transparent py-4" 
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-2 md:px-8 lg:px-12 xs:px-4 flex items-center justify-between">
@@ -96,20 +95,17 @@ const Header = () => {
             {navigation.map((item, idx) => (
               <div key={idx} className="relative">
                 {item.subTitle.length > 0 ? (
-
-                  // ── Dropdown item ──
-                  // Headless UI Menu closes on outside click automatically.
-                  // The key fix: never call close() manually on navigate — just navigate.
-                  // Menu unmounts its Items on outside click natively.
                   <Menu as="div" className="relative">
                     {({ open }) => (
                       <>
                         <Menu.Button
                           title={item.title}
-                          className={`flex items-center gap-2 px-2 lg:px-3 py-2 rounded-lg font-bold   whitespace-nowrap transition-all duration-150 ${
+                          className={`flex items-center gap-2 px-2 lg:px-3 py-2 rounded-lg font-bold whitespace-nowrap transition-all duration-300 ${
                             open
                               ? "text-red-700 bg-red-50"
-                              : "text-gray-700 hover:text-red-700 hover:bg-red-50/60"
+                              : isScrolled
+                              ? "text-gray-700 hover:text-red-700 hover:bg-red-50/60"
+                              : "text-white hover:text-white/80"
                           }`}
                         >
                           {getNavIcon(item.title)}
@@ -133,18 +129,13 @@ const Header = () => {
                           leaveTo="opacity-0 scale-95 translate-y-1"
                         >
                           <Menu.Items
-                            className="absolute left-1/2 -translate-x-1/2 mt-2 w-52 bg-white   rounded-lg shadow-2xl overflow-hidden z-50 "
+                            className="absolute left-1/2 -translate-x-1/2 mt-2 w-52 bg-white rounded-lg shadow-2xl overflow-hidden z-50 "
                             style={{ transformOrigin: "top center" }}
                           >
-                            {/* Header label */}
-                            
-
                             <div className="p-1.5 space-y-0.5">
                               {item.subTitle.map((sub, sIdx) => (
                                 <Menu.Item key={sIdx}>
                                   {({ active }) => (
-                                    // ✅ FIX: just navigate — Menu auto-closes on item click
-                                    // AND auto-closes on outside click (Headless UI native)
                                     <button
                                       onClick={() => {
                                         const path =
@@ -174,29 +165,26 @@ const Header = () => {
                                 </Menu.Item>
                               ))}
                             </div>
-
-                            {/* Footer hint */}
-                            
                           </Menu.Items>
                         </Transition>
                       </>
                     )}
                   </Menu>
-
                 ) : (
-
-                  // ── Plain nav link ──
                   <Link
                     to={item.link}
                     title={item.title}
-                    className="flex items-center gap-1.5 p-2 lg:px-3 lg:py-2 text-gray-700 hover:text-red-700 hover:bg-red-50/60 transition-all rounded-lg font-bold  tracking-tight whitespace-nowrap"
+                    className={`flex items-center gap-1.5 p-2 lg:px-3 lg:py-2 transition-all rounded-lg font-bold tracking-tight whitespace-nowrap ${
+                      isScrolled
+                        ? "text-gray-700 hover:text-red-700 hover:bg-red-50/60"
+                        : "text-white hover:text-white/80"
+                    }`}
                   >
                     {getNavIcon(item.title)}
                     <span className="hidden lg:inline text-[11px] xl:text-[15px]">
                       {item.title}
                     </span>
                   </Link>
-
                 )}
               </div>
             ))}
@@ -208,7 +196,9 @@ const Header = () => {
             {/* Favourites */}
             {user.data && (
               <button
-                className="p-1 text-gray-500 hover:text-red-600 transition-colors relative"
+                className={`p-1 transition-colors relative ${
+                  isScrolled ? "text-gray-500 hover:text-red-600" : "text-white"
+                }`}
                 onClick={() => navigate("/my-profile?section=favourites")}
               >
                 {favorites?.data?.length > 0 ? (
@@ -228,19 +218,23 @@ const Header = () => {
             {!user.data ? (
               <button
                 onClick={() => setAuthModal(true)}
-                className="text-gray-600 hover:text-red-700 p-1 transition-colors"
+                className={`p-1 transition-colors ${
+                  isScrolled ? "text-gray-600 hover:text-red-700" : "text-white"
+                }`}
               >
                 <IoPersonOutline className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             ) : (
               <Menu as="div" className="relative">
-                <Menu.Button className="flex items-center p-0.5 pr-1.5 rounded-full border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all">
+                <Menu.Button className={`flex items-center p-0.5 pr-1.5 rounded-full border transition-all ${
+                  isScrolled ? "border-gray-200 hover:border-red-300" : "border-white/30 hover:border-white"
+                }`}>
                   <img
                     src={user.data?.photo || "/noUser.png"}
                     alt="user"
                     className="w-6 h-6 md:w-7 md:h-7 rounded-full object-cover border border-red-500"
                   />
-                  <IoChevronDownOutline className="w-3 h-3 text-gray-400 ml-0.5" />
+                  <IoChevronDownOutline className={`w-3 h-3 ml-0.5 ${isScrolled ? "text-gray-400" : "text-white"}`} />
                 </Menu.Button>
 
                 <Transition
@@ -254,7 +248,7 @@ const Header = () => {
                 >
                   <Menu.Items className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden z-50 focus:outline-none">
                     <div className="px-4 py-3 border-b border-gray-50 bg-gradient-to-br from-red-50/80 to-white">
-                      <p className="text-[9px] font-black  tracking-[2px] text-red-500">
+                      <p className="text-[9px] font-black tracking-[2px] text-red-500 uppercase">
                         My Account
                       </p>
                     </div>
@@ -298,16 +292,17 @@ const Header = () => {
             {/* Post Property */}
             <Link
               to="/my-profile?section=post-property"
-              className="bg-red-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[12px] md:text-[15px] font-black hover:bg-red-800 transition-all shadow-lg active:scale-95    flex items-center gap-1 whitespace-nowrap"
+              className="bg-red-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[12px] md:text-[15px] font-black hover:bg-red-800 transition-all shadow-lg active:scale-95 flex items-center gap-1 whitespace-nowrap"
             >
-              <IoAddCircleOutline className="w-3.5 h-3.5 not-italic" />
+              <IoAddCircleOutline className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">New Post</span>
-              <span className="sm:hidden"></span>
             </Link>
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-1 text-gray-700 hover:bg-gray-100 rounded-md"
+              className={`md:hidden p-1 rounded-md transition-colors ${
+                isScrolled ? "text-gray-700 hover:bg-gray-100" : "text-white hover:bg-white/10"
+              }`}
               onClick={() => setSidebarOpen(true)}
             >
               <IoMenuOutline className="w-6 h-6" />

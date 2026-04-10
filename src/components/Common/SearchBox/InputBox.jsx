@@ -205,7 +205,7 @@ const InputBox = ({ setFilterModal, showFilters = true }) => {
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <div className="relative max-w-xl">
+    <div className="relative">
 
       {/* ── Search Bar ── */}
       <form
