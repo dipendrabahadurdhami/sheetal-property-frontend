@@ -13,7 +13,7 @@ const MainHome = () => {
   const [banners, setBanners] = useState([]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [videoLoaded, setVideoLoaded] = useState(false); // Track video readiness
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -24,7 +24,6 @@ const MainHome = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // Reset video loaded state when banner changes
   useEffect(() => {
     setVideoLoaded(false);
   }, [activeIdx]);
@@ -45,22 +44,16 @@ const MainHome = () => {
   const renderMedia = (banner) => {
     if (!banner) return null;
 
-    // 1. Get the vertical position from your API (default to center 50 if null)
     const verticalPos = banner.object_position ?? 50;
-
-    // 2. Define dynamic styles
     const dynamicMediaStyle = {
       objectPosition: `50% ${verticalPos}%`,
       objectFit: "cover"
     };
-
-    // Removed 'object-center' from mediaClass to let the dynamic style take over
-    const mediaClass = "w-full h-full transition-all duration-1000 ease-in-out";
+    const mediaClass = "w-full h-full mt-0 transition-all duration-1000 ease-in-out";
 
     if (banner.media_type === "video") {
       return (
-        <div className="relative w-full h-full bg-[#000d20]">
-          {/* 1. Immediate Photo: Alignment must match video exactly */}
+        <div className="relative mt-0 top-0 w-full h-full bg-[#000d20]">
           <img
             src={banner.thumbnail_url || "/home-banner3.gif"}
             className={`absolute inset-0 ${mediaClass} ${videoLoaded ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}`}
@@ -68,8 +61,6 @@ const MainHome = () => {
             loading="eager"
             style={dynamicMediaStyle}
           />
-
-          {/* 2. High-Quality Video */}
           <video
             key={banner.id}
             className={`absolute inset-0 ${mediaClass} ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -88,7 +79,6 @@ const MainHome = () => {
       );
     }
 
-    // Standard Image Banner
     return (
       <img
         key={banner.id}
@@ -98,21 +88,11 @@ const MainHome = () => {
         style={dynamicMediaStyle}
       />
     );
-
-
-    // Standard Image Banner
-    return (
-      <img
-        key={banner.id}
-        src={banner.url}
-        alt={banner.title || "Premium Property"}
-        className={mediaClass}
-      />
-    );
   };
 
   return (
-    <div className="pt-20">
+    // ✅ KEY CHANGE: removed pt-20 — banner now starts at top-0, behind transparent header
+    <div className="pt-0">
       <style>{`
         @keyframes fadeInfinite {
           0%, 5%   { opacity:0; transform:translateY(15px); }
@@ -126,7 +106,8 @@ const MainHome = () => {
         .dot.on { background:#f2243d; transform:scale(1.3); }
       `}</style>
 
-      <div className="w-full h-72 md:h-96 overflow-hidden relative">
+      {/* ✅ KEY CHANGE: increased height — h-96 md:h-[500px] to give room for header overlap */}
+      <div className="w-full h-96 md:h-[500px] overflow-hidden relative">
         <div className="absolute inset-0 bg-[#000d20]">
           {loading ? (
             <div className="w-full h-full bg-[#eeeef1] animate-pulse" />
@@ -137,9 +118,10 @@ const MainHome = () => {
           )}
         </div>
 
-        <div className="relative w-full h-full flex flex-col justify-end items-center px-5 pb-14 bg-black/30">
+        {/* ✅ Overlay with extra top padding so text/dots don't hide behind header */}
+        <div className="relative w-full h-full flex flex-col justify-end items-center px-5 pb-14 bg-black/20">
           {current?.title && (
-            <h1 className="text-sm md:text-3xl font-semibold text-white text-center animate-fade-infinite mb-4 tracking-tight">
+            <h1 className="text-sm md:text-3xl font-semibold text-white text-center animate-fade-infinite mb-4 tracking-tight drop-shadow-lg">
               {current.title}
             </h1>
           )}
@@ -154,10 +136,14 @@ const MainHome = () => {
 
         {banners.length > 1 && (
           <>
-            <button onClick={() => goTo((activeIdx - 1 + banners.length) % banners.length)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-[#f2243d] text-white text-xl rounded-full w-9 h-9 flex items-center justify-center transition-all opacity-70 hover:opacity-100">‹</button>
-            <button onClick={() => goTo((activeIdx + 1) % banners.length)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-[#f2243d] text-white text-xl rounded-full w-9 h-9 flex items-center justify-center transition-all opacity-70 hover:opacity-100">›</button>
+            <button
+              onClick={() => goTo((activeIdx - 1 + banners.length) % banners.length)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-[#f2243d] text-white text-xl rounded-full w-9 h-9 flex items-center justify-center transition-all opacity-70 hover:opacity-100"
+            >‹</button>
+            <button
+              onClick={() => goTo((activeIdx + 1) % banners.length)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-[#f2243d] text-white text-xl rounded-full w-9 h-9 flex items-center justify-center transition-all opacity-70 hover:opacity-100"
+            >›</button>
           </>
         )}
       </div>
