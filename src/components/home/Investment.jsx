@@ -6,14 +6,16 @@ import FearuredCard from "../card/FearuredCard";
 import { CustomLeftArrow, CustomRightArrow } from "../carousel/CustomeButton";
 import { responsive } from "../carousel/Responsive";
 
+const API_BASE = process.env.REACT_APP_API_LINK;
+
 const Investment = () => {
   const [allProduct, setAllProduct] = useState([]);
 
   useEffect(() => {
     async function FetchData() {
       try {
-        const res = await axios.get("/api/invest");
-        
+        const res = await axios.get(`${API_BASE}/invest`);
+
         if (res.data && res.data.data) {
           setAllProduct(res.data.data);
         } else {
@@ -21,7 +23,7 @@ const Investment = () => {
         }
       } catch (err) {
         console.error("API Error:", err);
-        setAllProduct([]); 
+        setAllProduct([]);
       }
     }
     FetchData();
@@ -41,7 +43,6 @@ const Investment = () => {
           customLeftArrow={<CustomLeftArrow />}
           className="py-3 md:pb-10"
         >
-          {/* Fallback check ensures no crash if allProduct is null */}
           {(allProduct || []).slice(0, 4).map((product, index) => (
             <div key={index} className="h-full px-0 mb-2">
               <FearuredCard product={product} />
