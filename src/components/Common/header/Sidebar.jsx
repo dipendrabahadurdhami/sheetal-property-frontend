@@ -1,15 +1,215 @@
 import React, { Fragment, useState } from "react";
-import { Dialog, Disclosure, Transition } from "@headlessui/react";
-import { HiX, HiChevronRight } from "react-icons/hi";
+import { Dialog, Transition } from "@headlessui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { FaHeart, FaHome, FaPlus, FaUser, FaBuilding, FaSignOutAlt } from "react-icons/fa";
+import {
+  IoCloseOutline,
+  IoChevronForwardOutline,
+  IoHomeOutline,
+  IoKeyOutline,
+  IoBriefcaseOutline,
+  IoTrendingUpOutline,
+  IoInformationCircleOutline,
+  IoPersonOutline,
+  IoHeartOutline,
+  IoBusinessOutline,
+  IoLogOutOutline,
+  IoAddOutline,
+  IoSearchOutline,
+  IoCallOutline,
+  IoArrowForwardOutline,
+} from "react-icons/io5";
 
 import LoginModel from "../../Login/LoginModel";
-import { navigation } from "./navigation";
 import { removeUserInfo } from "../../../features/slices/userInformation";
 import { removeAllFavorites } from "../../../features/slices/favourites";
 
+const SIDEBAR_NAV = [
+  {
+    id: "buy",
+    label: "Buy Property",
+    icon: IoKeyOutline,
+    links: [
+      { label: "Residential Houses", link: "/productSearch?advertisement_purpose=For Sale&type=house" },
+      { label: "Apartments & Flats", link: "/productSearch?advertisement_purpose=For Sale&type=apartment" },
+      { label: "Land & Plots", link: "/productSearch?advertisement_purpose=For Sale&type=land" },
+      { label: "Commercial Space", link: "/productSearch?advertisement_purpose=For Sale&type=commercial" },
+      { label: "Browse All For Sale", link: "/productSearch?advertisement_purpose=For Sale", cta: true },
+    ],
+  },
+  {
+    id: "rent",
+    label: "Rent & Lease",
+    icon: IoHomeOutline,
+    links: [
+      { label: "Rooms & Flats", link: "/productSearch?advertisement_purpose=For Rent&type=flat" },
+      { label: "Full Houses", link: "/productSearch?advertisement_purpose=For Rent&type=house" },
+      { label: "Office Space", link: "/productSearch?advertisement_purpose=For Rent&type=office" },
+      { label: "Furnished Rentals", link: "/productSearch?advertisement_purpose=For Rent&furnished=true" },
+      { label: "Browse All Rentals", link: "/productSearch?advertisement_purpose=For Rent", cta: true },
+    ],
+  },
+  {
+    id: "services",
+    label: "Services",
+    icon: IoBriefcaseOutline,
+    links: [
+      { label: "Property Valuation", link: "/services/valuation" },
+      { label: "Legal & Documentation", link: "/services/legal" },
+      { label: "Home Loan Assistance", link: "/services/loan" },
+      { label: "Interior Design", link: "/services/interior" },
+      { label: "All Services", link: "/services", cta: true },
+    ],
+  },
+  {
+    id: "invest",
+    label: "Investments",
+    icon: IoTrendingUpOutline,
+    links: [
+      { label: "Premium Plots", link: "/productSearch?tag=premium-land" },
+      { label: "Apartment Projects", link: "/productSearch?tag=project" },
+      { label: "Commercial Buildings", link: "/productSearch?tag=commercial-invest" },
+      { label: "ROI Calculator", link: "/tools/roi-calculator" },
+      { label: "Investment Properties", link: "/productSearch?tag=investment", cta: true },
+    ],
+  },
+  {
+    id: "about",
+    label: "About Us",
+    icon: IoInformationCircleOutline,
+    links: [
+      { label: "About Sheetal", link: "/about" },
+      { label: "Our Team", link: "/team" },
+      { label: "Find an Agent", link: "/find-agent" },
+      { label: "Contact Us", link: "/contact" },
+      { label: "Client Reviews", link: "/reviews", cta: true },
+    ],
+  },
+];
+
+// ── Single accordion row ────────────────────────────────────────────────────
+const NavRow = ({ item, navigate, setSidebarOpen }) => {
+  const [open, setOpen] = useState(false);
+  const Icon = item.icon;
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          gap: "14px",
+          padding: "13px 20px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <Icon
+          style={{
+            width: "17px",
+            height: "17px",
+            color: open ? "#b91c1c" : "#9ca3af",
+            flexShrink: 0,
+            transition: "color 0.15s",
+          }}
+        />
+        <span
+          style={{
+            flex: 1,
+            fontSize: "14px",
+            fontWeight: 500,
+            color: open ? "#111827" : "#374151",
+            letterSpacing: "-0.01em",
+            transition: "color 0.15s",
+          }}
+        >
+          {item.label}
+        </span>
+        <IoChevronForwardOutline
+          style={{
+            width: "14px",
+            height: "14px",
+            color: "#d1d5db",
+            transform: open ? "rotate(90deg)" : "rotate(0deg)",
+            transition: "transform 0.2s cubic-bezier(0.16,1,0.3,1)",
+            flexShrink: 0,
+          }}
+        />
+      </button>
+
+      {/* Expanded sub-links */}
+      <div
+        style={{
+          maxHeight: open ? "320px" : "0",
+          overflow: "hidden",
+          transition: "max-height 0.28s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
+        <div style={{ paddingBottom: "6px" }}>
+          {item.links.map((lnk, i) =>
+            lnk.cta ? (
+              <button
+                key={i}
+                onClick={() => { navigate(lnk.link); setSidebarOpen(false); }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  width: "calc(100% - 32px)",
+                  margin: "6px 16px 4px",
+                  padding: "10px 14px",
+                  background: "#111827",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  color: "#fff",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                <span style={{ flex: 1 }}>{lnk.label}</span>
+                <IoArrowForwardOutline style={{ width: "13px", height: "13px", opacity: 0.6 }} />
+              </button>
+            ) : (
+              <button
+                key={i}
+                onClick={() => { navigate(lnk.link); setSidebarOpen(false); }}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "9px 20px 9px 51px",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontSize: "13px",
+                  fontWeight: 400,
+                  color: "#6b7280",
+                  letterSpacing: "-0.01em",
+                  transition: "color 0.12s",
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = "#111827"}
+                onMouseLeave={e => e.currentTarget.style.color = "#6b7280"}
+              >
+                {lnk.label}
+              </button>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div style={{ height: "1px", background: "#f3f4f6", margin: "0 20px" }} />
+    </div>
+  );
+};
+
+// ── Main Sidebar ────────────────────────────────────────────────────────────
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const [authModal, setAuthModal] = useState(false);
   const navigate = useNavigate();
@@ -24,161 +224,348 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     navigate("/", { replace: true });
   };
 
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(" ");
-  }
-
   return (
     <>
       <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog as="div" className="fixed inset-0 flex z-[60] lg:hidden" onClose={setSidebarOpen}>
-          {/* Overlay */}
+        <Dialog
+          as="div"
+          style={{ position: "fixed", inset: 0, display: "flex", zIndex: 70 }}
+          className="lg:hidden"
+          onClose={setSidebarOpen}
+        >
+          {/* Backdrop */}
           <Transition.Child
             as={Fragment}
-            enter="transition-opacity ease-linear duration-300"
+            enter="transition-opacity ease-linear duration-250"
             enterFrom="opacity-0"
             enterTo="opacity-100"
-            leave="transition-opacity ease-linear duration-300"
+            leave="transition-opacity ease-linear duration-200"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" />
+            <Dialog.Overlay
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(0,0,0,0.3)",
+                backdropFilter: "blur(4px)",
+                WebkitBackdropFilter: "blur(4px)",
+              }}
+            />
           </Transition.Child>
 
-          {/* Sidebar Panel */}
+          {/* Panel */}
           <Transition.Child
             as={Fragment}
-            enter="transition ease-in-out duration-300 transform"
+            enter="transition ease-out duration-300 transform"
             enterFrom="-translate-x-full"
             enterTo="translate-x-0"
-            leave="transition ease-in-out duration-300 transform"
+            leave="transition ease-in duration-220 transform"
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white shadow-2xl">
-              {/* Close Button Inside Sidebar */}
-              <div className="absolute top-2 right-2">
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                maxWidth: "300px",
+                height: "100%",
+                background: "#fff",
+                overflow: "hidden",
+              }}
+            >
+
+              {/* ── Header ── */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "18px 20px 16px",
+                  flexShrink: 0,
+                }}
+              >
+                <img
+                  src="/shetallogo.png"
+                  alt="Sheetal Real Estate"
+                  style={{ height: "32px", width: "auto" }}
+                />
                 <button
-                  type="button"
-                  className="flex items-center justify-center h-10 w-10 rounded-full text-gray-500 hover:bg-gray-100 focus:outline-none"
                   onClick={() => setSidebarOpen(false)}
+                  style={{
+                    width: "32px", height: "32px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#f9fafb",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    cursor: "pointer",
+                    color: "#6b7280",
+                  }}
                 >
-                  <HiX className="h-6 w-6" aria-hidden="true" />
+                  <IoCloseOutline style={{ width: "18px", height: "18px" }} />
                 </button>
               </div>
 
-              <div className="flex-1 h-0 pt-6 pb-4 overflow-y-auto">
-                {/* Branding */}
-                <div className="flex-shrink-0 flex items-center px-6">
-                  <img className="h-12 w-auto" src="/shetallogo.png" alt="Logo" />
+              {/* ── Search ── */}
+              <div style={{ padding: "0 16px 14px", flexShrink: 0 }}>
+                <button
+                  onClick={() => { navigate("/productSearch"); setSidebarOpen(false); }}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    padding: "10px 14px",
+                    background: "#f9fafb",
+                    border: "1px solid #f3f4f6",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <IoSearchOutline style={{ width: "15px", height: "15px", color: "#9ca3af", flexShrink: 0 }} />
+                  <span style={{ fontSize: "13px", color: "#9ca3af" }}>Search properties…</span>
+                </button>
+              </div>
+
+              {/* ── Top divider ── */}
+              <div style={{ height: "1px", background: "#f3f4f6", flexShrink: 0 }} />
+
+              {/* ── Scrollable content ── */}
+              <div
+                style={{
+                  flex: 1,
+                  overflowY: "auto",
+                  WebkitOverflowScrolling: "touch",
+                }}
+              >
+                {/* Nav accordion */}
+                <div style={{ paddingTop: "8px" }}>
+                  {SIDEBAR_NAV.map((item) => (
+                    <NavRow
+                      key={item.id}
+                      item={item}
+                      navigate={navigate}
+                      setSidebarOpen={setSidebarOpen}
+                    />
+                  ))}
                 </div>
 
-                {/* Main Navigation */}
-                <nav className="mt-8 flex-1 px-4 space-y-1">
-                  {navigation.map((item) =>
-                    item.subTitle.length === 0 ? (
-                      <Link
-                        key={item.title}
-                        to={item.link}
-                        onClick={() => setSidebarOpen(false)}
-                        className="group w-full flex items-center px-3 py-3 text-sm font-bold text-gray-700 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all"
-                      >
-                        {item.title}
-                      </Link>
-                    ) : (
-                      <Disclosure as="div" key={item.title} className="space-y-1">
-                        {({ open }) => (
-                          <>
-                            <Disclosure.Button className="group w-full flex items-center px-3 py-3 text-left text-sm font-bold text-gray-700 hover:bg-gray-50 rounded-xl transition-all">
-                              <span className="flex-1  tracking-wide">{item.title}</span>
-                              <HiChevronRight
-                                className={classNames(
-                                  open ? "rotate-90 text-red-600" : "text-gray-400",
-                                  "ml-3 h-5 w-5 transform transition-transform duration-200"
-                                )}
-                              />
-                            </Disclosure.Button>
-                            <Disclosure.Panel className="space-y-1 ml-4 border-l-2 border-gray-100">
-                              {item.subTitle.map((subItem) => (
-                                <button
-                                  key={subItem.title}
-                                  onClick={() => {
-                                    const path = item.title === "Property Service" ? "/productSearch" : subItem.link;
-                                    navigate(`${path}?advertisement_purpose=${subItem.title}`);
-                                    setSidebarOpen(false);
-                                  }}
-                                  className="group w-full flex items-center pl-6 py-2.5 text-sm font-semibold text-gray-500 hover:text-red-700 hover:bg-red-50/50 rounded-lg transition-all"
-                                >
-                                  {subItem.title}
-                                </button>
-                              ))}
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    )
-                  )}
-                </nav>
+                {/* ── Quick contact ── */}
+                <div style={{ padding: "20px 20px 8px" }}>
+                  <p style={{
+                    fontSize: "10px", fontWeight: 600,
+                    letterSpacing: "1.5px", textTransform: "uppercase",
+                    color: "#d1d5db", marginBottom: "10px",
+                  }}>
+                    Contact
+                  </p>
+                  <button
+                    onClick={() => { navigate("/contact"); setSidebarOpen(false); }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      width: "100%",
+                      padding: "11px 14px",
+                      background: "#f9fafb",
+                      border: "1px solid #f3f4f6",
+                      borderRadius: "10px",
+                      cursor: "pointer",
+                      textAlign: "left",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: "30px", height: "30px",
+                        borderRadius: "8px",
+                        background: "#fef2f2",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IoCallOutline style={{ width: "14px", height: "14px", color: "#b91c1c" }} />
+                    </span>
+                    <div>
+                      <p style={{ fontSize: "12px", fontWeight: 600, color: "#111827", margin: 0 }}>
+                        Talk to an agent
+                      </p>
+                      <p style={{ fontSize: "11px", color: "#9ca3af", margin: 0 }}>Free consultation</p>
+                    </div>
+                    <IoArrowForwardOutline style={{ width: "13px", height: "13px", color: "#d1d5db", marginLeft: "auto" }} />
+                  </button>
+                </div>
 
-                {/* User specific section */}
+                {/* ── Account (logged in only) ── */}
                 {user.data && (
-                  <div className="mt-8 pt-6 border-t border-gray-100 px-4">
-                    <p className="px-3 text-xs font-black text-gray-400  tracking-widest mb-2">Account</p>
-                    <nav className="space-y-1">
-                      <Link to="/my-profile?section=profile" className="flex items-center px-3 py-2.5 text-sm font-bold text-gray-700 hover:bg-red-50 rounded-xl" onClick={() => setSidebarOpen(false)}>
-                        <FaUser className="w-4 h-4 text-red-600 mr-4" /> My Profile
-                      </Link>
-                      <Link to="/my-profile?section=favourites" className="flex items-center px-3 py-2.5 text-sm font-bold text-gray-700 hover:bg-red-50 rounded-xl" onClick={() => setSidebarOpen(false)}>
-                        <FaHeart className="w-4 h-4 text-red-600 mr-4" /> Favorites
-                      </Link>
-                      <Link to="/my-profile?section=my-properties" className="flex items-center px-3 py-2.5 text-sm font-bold text-gray-700 hover:bg-red-50 rounded-xl" onClick={() => setSidebarOpen(false)}>
-                        <FaBuilding className="w-4 h-4 text-red-600 mr-4" /> My Properties
-                      </Link>
-                    </nav>
+                  <div style={{ padding: "8px 20px 16px" }}>
+                    <p style={{
+                      fontSize: "10px", fontWeight: 600,
+                      letterSpacing: "1.5px", textTransform: "uppercase",
+                      color: "#d1d5db", marginBottom: "10px",
+                    }}>
+                      Account
+                    </p>
+
+                    {/* User card */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "12px",
+                        background: "#fafafa",
+                        borderRadius: "10px",
+                        border: "1px solid #f3f4f6",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      <img
+                        src={user.data?.photo || "/noUser.png"}
+                        alt="user"
+                        style={{
+                          width: "36px", height: "36px",
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          border: "1.5px solid #fca5a5",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{
+                          fontSize: "13px", fontWeight: 600, color: "#111827",
+                          margin: 0, overflow: "hidden",
+                          textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        }}>
+                          {user.data?.name || "My Account"}
+                        </p>
+                        <p style={{ fontSize: "11px", color: "#9ca3af", margin: 0 }}>Signed in</p>
+                      </div>
+                    </div>
+
+                    {[
+                      { label: "My Profile", icon: IoPersonOutline, link: "/my-profile?section=profile" },
+                      { label: "Favourites", icon: IoHeartOutline, link: "/my-profile?section=favourites" },
+                      { label: "My Properties", icon: IoBusinessOutline, link: "/my-profile?section=my-properties" },
+                    ].map((acct) => {
+                      const AIcon = acct.icon;
+                      return (
+                        <Link
+                          key={acct.label}
+                          to={acct.link}
+                          onClick={() => setSidebarOpen(false)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "10px 4px",
+                            textDecoration: "none",
+                            borderBottom: "1px solid #f9fafb",
+                          }}
+                        >
+                          <AIcon style={{ width: "15px", height: "15px", color: "#9ca3af", flexShrink: 0 }} />
+                          <span style={{ flex: 1, fontSize: "13px", fontWeight: 500, color: "#374151" }}>
+                            {acct.label}
+                          </span>
+                          <IoArrowForwardOutline style={{ width: "12px", height: "12px", color: "#e5e7eb" }} />
+                        </Link>
+                      );
+                    })}
                   </div>
+                )}
+
+                <div style={{ height: "12px" }} />
+              </div>
+
+              {/* ── Bottom actions ── */}
+              <div
+                style={{
+                  padding: "14px 16px",
+                  borderTop: "1px solid #f3f4f6",
+                  background: "#fff",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  flexShrink: 0,
+                }}
+              >
+                <Link
+                  to="/my-profile?section=post-property"
+                  onClick={() => setSidebarOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "7px",
+                    padding: "13px",
+                    background: "#b91c1c",
+                    color: "#fff",
+                    borderRadius: "10px",
+                    textDecoration: "none",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  <IoAddOutline style={{ width: "16px", height: "16px" }} />
+                  Post a Property — Free
+                </Link>
+
+                {!user.data ? (
+                  <button
+                    onClick={() => { setAuthModal(true); setSidebarOpen(false); }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "7px",
+                      padding: "11px",
+                      background: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "10px",
+                      cursor: "pointer",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      color: "#374151",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    <IoPersonOutline style={{ width: "15px", height: "15px", color: "#6b7280" }} />
+                    Login / Register
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSignOut}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "7px",
+                      padding: "11px",
+                      background: "#fff",
+                      border: "1px solid #fee2e2",
+                      borderRadius: "10px",
+                      cursor: "pointer",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      color: "#b91c1c",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    <IoLogOutOutline style={{ width: "15px", height: "15px" }} />
+                    Sign Out
+                  </button>
                 )}
               </div>
 
-              {/* Bottom Actions */}
-              <div className="p-4 bg-gray-50 border-t border-gray-200">
-                <div className="flex flex-col space-y-3">
-                  {!user.data ? (
-                    <button
-                      onClick={() => { setAuthModal(true); setSidebarOpen(false); }}
-                      className="w-full flex items-center justify-center space-x-2 bg-white border-2 border-red-600 text-red-600 font-black py-3 rounded-xl hover:bg-red-50 transition-all  text-xs"
-                    >
-                      <FaUser className="text-[10px]" />
-                      <span>Login / Register</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full flex items-center justify-center space-x-2 bg-white border-2 border-gray-200 text-gray-600 font-black py-3 rounded-xl hover:bg-gray-100 transition-all  text-xs"
-                    >
-                      <FaSignOutAlt className="text-[10px]" />
-                      <span>Sign Out</span>
-                    </button>
-                  )}
-                  
-                  <Link
-                    to="/my-profile?section=post-property"
-                    className="w-full bg-red-700 text-white  text-sm text-center font-black py-4 rounded-xl shadow-lg shadow-red-200 active:scale-95 transition-all flex items-center justify-center space-x-2 "
-                    onClick={() => setSidebarOpen(false)}
-                  >
-                    <FaPlus className="text-[10px]" />
-                    <span>New Post</span>
-                  </Link>
-                </div>
-              </div>
             </div>
           </Transition.Child>
-          
-          {/* Buffer to allow user to tap off to close */}
-          <div className="flex-shrink-0 w-14" aria-hidden="true"></div>
+
+          <div style={{ flexShrink: 0, width: "56px" }} aria-hidden="true" />
         </Dialog>
       </Transition.Root>
 
-      {/* Auth Modal */}
       {authModal && <LoginModel r={authModal} setR={setAuthModal} />}
     </>
   );

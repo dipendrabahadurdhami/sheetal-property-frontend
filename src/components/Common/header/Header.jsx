@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu, Transition } from "@headlessui/react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {
   IoLogOutOutline, IoPersonOutline, IoHomeOutline, IoPeopleOutline,
   IoLocationOutline, IoDocumentTextOutline, IoAddCircleOutline,
-  IoMenuOutline, IoChevronDownOutline, IoBriefcaseOutline,
-  IoSearchOutline, IoKeyOutline, IoBusinessOutline, IoStatsChartOutline,
-  IoConstructOutline, IoLeafOutline, IoCashOutline, IoMapOutline,
-  IoCallOutline, IoMailOutline, IoInformationCircleOutline,
-  IoNewspaperOutline, IoStarOutline, IoShieldCheckmarkOutline,
-  IoHandLeftOutline, IoCarOutline, IoStorefrontOutline,
-  IoGridOutline, IoTrendingUpOutline, IoArrowForwardOutline,
-  IoApartmentOutline,
+  IoMenuOutline, IoBriefcaseOutline, IoSearchOutline, IoKeyOutline,
+  IoBusinessOutline, IoStatsChartOutline, IoConstructOutline,
+  IoLeafOutline, IoCashOutline, IoMapOutline, IoCallOutline,
+  IoMailOutline, IoInformationCircleOutline, IoNewspaperOutline,
+  IoStarOutline, IoShieldCheckmarkOutline, IoHandLeftOutline,
+  IoCarOutline, IoStorefrontOutline, IoGridOutline, IoTrendingUpOutline,
+  IoArrowForwardOutline, IoChevronDownOutline,
 } from "react-icons/io5";
 
 import Sidebar from "./Sidebar";
@@ -22,12 +21,11 @@ import { removeAllFavorites } from "../../../features/slices/favourites";
 import LoginModel from "../../Login/LoginModel";
 import ForgotPasswordModel from "../../Login/ForgotPasswordModel";
 
-// ─── Navigation Data ───────────────────────────────────────────────────────────
+// ─── Navigation Data ─────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   {
     id: "buy",
     label: "Buy Property",
-    icon: <IoKeyOutline />,
     mega: {
       featured: {
         title: "Find Your Dream Home",
@@ -40,21 +38,31 @@ const NAV_ITEMS = [
         {
           heading: "By Type",
           links: [
-            { label: "Residential Houses", icon: <IoHomeOutline />, link: "/productSearch?advertisement_purpose=For Sale&type=house" },
-            { label: "Apartments & Flats", icon: <IoApartmentOutline />, link: "/productSearch?advertisement_purpose=For Sale&type=apartment" },
-            { label: "Commercial Space", icon: <IoStorefrontOutline />, link: "/productSearch?advertisement_purpose=For Sale&type=commercial" },
-            { label: "Land & Plots", icon: <IoMapOutline />, link: "/productSearch?advertisement_purpose=For Sale&type=land" },
-            { label: "Showroom & Office", icon: <IoBusinessOutline />, link: "/productSearch?advertisement_purpose=For Sale&type=office" },
+            { label: "Residential Houses", sub: "Houses & bungalows", link: "/productSearch?advertisement_purpose=For Sale&type=house" },
+            { label: "Apartments & Flats", sub: "Urban living spaces", link: "/productSearch?advertisement_purpose=For Sale&type=apartment" },
+            { label: "Commercial Space", sub: "Shops & offices", link: "/productSearch?advertisement_purpose=For Sale&type=commercial" },
+            { label: "Land & Plots", sub: "Build your own", link: "/productSearch?advertisement_purpose=For Sale&type=land" },
+            { label: "Showroom & Office", sub: "Business premises", link: "/productSearch?advertisement_purpose=For Sale&type=office" },
           ],
         },
         {
           heading: "By Location",
           links: [
-            { label: "Kathmandu Valley", icon: <IoLocationOutline />, link: "/productSearch?advertisement_purpose=For Sale&location=kathmandu" },
-            { label: "Pokhara", icon: <IoLocationOutline />, link: "/productSearch?advertisement_purpose=For Sale&location=pokhara" },
-            { label: "Chitwan", icon: <IoLocationOutline />, link: "/productSearch?advertisement_purpose=For Sale&location=chitwan" },
-            { label: "Bhaktapur", icon: <IoLocationOutline />, link: "/productSearch?advertisement_purpose=For Sale&location=bhaktapur" },
-            { label: "Lalitpur", icon: <IoLocationOutline />, link: "/productSearch?advertisement_purpose=For Sale&location=lalitpur" },
+            { label: "Kathmandu Valley", sub: "Capital city listings", link: "/productSearch?advertisement_purpose=For Sale&location=kathmandu" },
+            { label: "Pokhara", sub: "Lakeside properties", link: "/productSearch?advertisement_purpose=For Sale&location=pokhara" },
+            { label: "Chitwan", sub: "Southern plains", link: "/productSearch?advertisement_purpose=For Sale&location=chitwan" },
+            { label: "Bhaktapur", sub: "Heritage city homes", link: "/productSearch?advertisement_purpose=For Sale&location=bhaktapur" },
+            { label: "Lalitpur", sub: "Patan district", link: "/productSearch?advertisement_purpose=For Sale&location=lalitpur" },
+          ],
+        },
+        {
+          heading: "By Budget",
+          links: [
+            { label: "Under ₹50 Lakhs", sub: "Starter homes", link: "/productSearch?advertisement_purpose=For Sale&max=5000000" },
+            { label: "₹50L – ₹1 Crore", sub: "Mid-range homes", link: "/productSearch?advertisement_purpose=For Sale&min=5000000&max=10000000" },
+            { label: "₹1Cr – ₹3 Crore", sub: "Premium listings", link: "/productSearch?advertisement_purpose=For Sale&min=10000000&max=30000000" },
+            { label: "Above ₹3 Crore", sub: "Luxury properties", link: "/productSearch?advertisement_purpose=For Sale&min=30000000" },
+            { label: "Negotiable Price", sub: "Open to offers", link: "/productSearch?advertisement_purpose=For Sale&negotiable=true" },
           ],
         },
       ],
@@ -63,7 +71,6 @@ const NAV_ITEMS = [
   {
     id: "rent",
     label: "Rent & Lease",
-    icon: <IoHomeOutline />,
     mega: {
       featured: {
         title: "Rent with Confidence",
@@ -76,21 +83,31 @@ const NAV_ITEMS = [
         {
           heading: "Rental Types",
           links: [
-            { label: "Rooms & Flats", icon: <IoApartmentOutline />, link: "/productSearch?advertisement_purpose=For Rent&type=flat" },
-            { label: "Full Houses", icon: <IoHomeOutline />, link: "/productSearch?advertisement_purpose=For Rent&type=house" },
-            { label: "Office Space", icon: <IoBusinessOutline />, link: "/productSearch?advertisement_purpose=For Rent&type=office" },
-            { label: "Shop & Showroom", icon: <IoStorefrontOutline />, link: "/productSearch?advertisement_purpose=For Rent&type=shop" },
-            { label: "Warehouse & Godown", icon: <IoGridOutline />, link: "/productSearch?advertisement_purpose=For Rent&type=warehouse" },
+            { label: "Rooms & Flats", sub: "Affordable stays", link: "/productSearch?advertisement_purpose=For Rent&type=flat" },
+            { label: "Full Houses", sub: "Family rentals", link: "/productSearch?advertisement_purpose=For Rent&type=house" },
+            { label: "Office Space", sub: "Work-ready spaces", link: "/productSearch?advertisement_purpose=For Rent&type=office" },
+            { label: "Shop & Showroom", sub: "Retail premises", link: "/productSearch?advertisement_purpose=For Rent&type=shop" },
+            { label: "Warehouse & Godown", sub: "Storage & logistics", link: "/productSearch?advertisement_purpose=For Rent&type=warehouse" },
           ],
         },
         {
           heading: "Quick Filters",
           links: [
-            { label: "Furnished Rentals", icon: <IoStarOutline />, link: "/productSearch?advertisement_purpose=For Rent&furnished=true" },
-            { label: "Near Ringroad", icon: <IoCarOutline />, link: "/productSearch?advertisement_purpose=For Rent&near=ringroad" },
-            { label: "Student Friendly", icon: <IoLeafOutline />, link: "/productSearch?advertisement_purpose=For Rent&tag=student" },
-            { label: "Business District", icon: <IoTrendingUpOutline />, link: "/productSearch?advertisement_purpose=For Rent&tag=business" },
-            { label: "New Listings", icon: <IoNewspaperOutline />, link: "/productSearch?advertisement_purpose=For Rent&sort=newest" },
+            { label: "Furnished Rentals", sub: "Move in ready", link: "/productSearch?advertisement_purpose=For Rent&furnished=true" },
+            { label: "Near Ringroad", sub: "Easy commute", link: "/productSearch?advertisement_purpose=For Rent&near=ringroad" },
+            { label: "Student Friendly", sub: "Near colleges", link: "/productSearch?advertisement_purpose=For Rent&tag=student" },
+            { label: "Business District", sub: "Commercial hubs", link: "/productSearch?advertisement_purpose=For Rent&tag=business" },
+            { label: "New Listings", sub: "Just added", link: "/productSearch?advertisement_purpose=For Rent&sort=newest" },
+          ],
+        },
+        {
+          heading: "By Location",
+          links: [
+            { label: "Kathmandu", sub: "Capital rentals", link: "/productSearch?advertisement_purpose=For Rent&location=kathmandu" },
+            { label: "Lalitpur", sub: "Patan & surrounds", link: "/productSearch?advertisement_purpose=For Rent&location=lalitpur" },
+            { label: "Bhaktapur", sub: "Heritage zone", link: "/productSearch?advertisement_purpose=For Rent&location=bhaktapur" },
+            { label: "Pokhara", sub: "Lakeside living", link: "/productSearch?advertisement_purpose=For Rent&location=pokhara" },
+            { label: "Chitwan", sub: "Bharatpur city", link: "/productSearch?advertisement_purpose=For Rent&location=chitwan" },
           ],
         },
       ],
@@ -98,8 +115,7 @@ const NAV_ITEMS = [
   },
   {
     id: "services",
-    label: "Property Services",
-    icon: <IoBriefcaseOutline />,
+    label: "Services",
     mega: {
       featured: {
         title: "Full-Service Real Estate",
@@ -112,21 +128,31 @@ const NAV_ITEMS = [
         {
           heading: "Our Services",
           links: [
-            { label: "Property Valuation", icon: <IoStatsChartOutline />, link: "/services/valuation" },
-            { label: "Legal & Documentation", icon: <IoDocumentTextOutline />, link: "/services/legal" },
-            { label: "Home Loan Assistance", icon: <IoCashOutline />, link: "/services/loan" },
-            { label: "Interior Design", icon: <IoConstructOutline />, link: "/services/interior" },
-            { label: "Property Management", icon: <IoShieldCheckmarkOutline />, link: "/services/management" },
+            { label: "Property Valuation", sub: "Fair market pricing", link: "/services/valuation" },
+            { label: "Legal & Documentation", sub: "Title & deed support", link: "/services/legal" },
+            { label: "Home Loan Assistance", sub: "Bank tie-ups", link: "/services/loan" },
+            { label: "Interior Design", sub: "End-to-end design", link: "/services/interior" },
+            { label: "Property Management", sub: "Hands-off ownership", link: "/services/management" },
           ],
         },
         {
           heading: "For Owners",
           links: [
-            { label: "List Your Property", icon: <IoAddCircleOutline />, link: "/my-profile?section=post-property" },
-            { label: "Demand Registration", icon: <IoHandLeftOutline />, link: "/property-demand" },
-            { label: "Market Insights", icon: <IoTrendingUpOutline />, link: "/market-insights" },
-            { label: "Investment Advisory", icon: <IoLeafOutline />, link: "/services/investment" },
-            { label: "NRN / Foreign Buyers", icon: <IoGridOutline />, link: "/services/nrn" },
+            { label: "List Your Property", sub: "Free listing", link: "/my-profile?section=post-property" },
+            { label: "Demand Registration", sub: "Find buyers fast", link: "/property-demand" },
+            { label: "Market Insights", sub: "Price trends & data", link: "/market-insights" },
+            { label: "Investment Advisory", sub: "Expert guidance", link: "/services/investment" },
+            { label: "NRN / Foreign Buyers", sub: "International rules", link: "/services/nrn" },
+          ],
+        },
+        {
+          heading: "Resources",
+          links: [
+            { label: "Buying Guide", sub: "Step-by-step help", link: "/guides/buying" },
+            { label: "Renting Guide", sub: "Tenant rights & tips", link: "/guides/renting" },
+            { label: "Legal Checklist", sub: "Due diligence list", link: "/guides/legal-checklist" },
+            { label: "EMI Calculator", sub: "Plan your loan", link: "/tools/emi-calculator" },
+            { label: "FAQ", sub: "Common questions", link: "/faq" },
           ],
         },
       ],
@@ -135,7 +161,6 @@ const NAV_ITEMS = [
   {
     id: "invest",
     label: "Investments",
-    icon: <IoTrendingUpOutline />,
     mega: {
       featured: {
         title: "Invest Smart in Nepal",
@@ -148,21 +173,31 @@ const NAV_ITEMS = [
         {
           heading: "Investment Types",
           links: [
-            { label: "Premium Plots", icon: <IoMapOutline />, link: "/productSearch?tag=premium-land" },
-            { label: "Apartment Projects", icon: <IoApartmentOutline />, link: "/productSearch?tag=project" },
-            { label: "Commercial Buildings", icon: <IoBusinessOutline />, link: "/productSearch?tag=commercial-invest" },
-            { label: "Resort & Tourism", icon: <IoLeafOutline />, link: "/productSearch?tag=resort" },
-            { label: "Industrial Land", icon: <IoGridOutline />, link: "/productSearch?tag=industrial" },
+            { label: "Premium Plots", sub: "High-growth zones", link: "/productSearch?tag=premium-land" },
+            { label: "Apartment Projects", sub: "Under-construction", link: "/productSearch?tag=project" },
+            { label: "Commercial Buildings", sub: "Rental income", link: "/productSearch?tag=commercial-invest" },
+            { label: "Resort & Tourism", sub: "Hospitality assets", link: "/productSearch?tag=resort" },
+            { label: "Industrial Land", sub: "Manufacturing zones", link: "/productSearch?tag=industrial" },
           ],
         },
         {
           heading: "Tools & Resources",
           links: [
-            { label: "ROI Calculator", icon: <IoStatsChartOutline />, link: "/tools/roi-calculator" },
-            { label: "Market Reports", icon: <IoNewspaperOutline />, link: "/market-reports" },
-            { label: "Price Trends", icon: <IoTrendingUpOutline />, link: "/price-trends" },
-            { label: "Hotspot Locations", icon: <IoStarOutline />, link: "/hotspots" },
-            { label: "NRN Investment Guide", icon: <IoDocumentTextOutline />, link: "/guides/nrn" },
+            { label: "ROI Calculator", sub: "Estimate returns", link: "/tools/roi-calculator" },
+            { label: "Market Reports", sub: "Quarterly data", link: "/market-reports" },
+            { label: "Price Trends", sub: "City-level charts", link: "/price-trends" },
+            { label: "Hotspot Locations", sub: "Emerging areas", link: "/hotspots" },
+            { label: "NRN Investment Guide", sub: "Foreign ownership rules", link: "/guides/nrn" },
+          ],
+        },
+        {
+          heading: "Why Invest in Nepal",
+          links: [
+            { label: "Stable Market Growth", sub: "10yr trend analysis", link: "/why-invest#growth" },
+            { label: "Tax Benefits", sub: "Govt incentives", link: "/why-invest#tax" },
+            { label: "Infrastructure Projects", sub: "New roads & metros", link: "/why-invest#infra" },
+            { label: "Tourism Boom", sub: "Hospitality demand", link: "/why-invest#tourism" },
+            { label: "Success Stories", sub: "Investor testimonials", link: "/why-invest#stories" },
           ],
         },
       ],
@@ -171,7 +206,6 @@ const NAV_ITEMS = [
   {
     id: "about",
     label: "About Us",
-    icon: <IoInformationCircleOutline />,
     mega: {
       featured: {
         title: "Nepal's Trusted Real Estate Brand",
@@ -184,21 +218,31 @@ const NAV_ITEMS = [
         {
           heading: "Company",
           links: [
-            { label: "About Sheetal", icon: <IoInformationCircleOutline />, link: "/about" },
-            { label: "Our Team", icon: <IoPeopleOutline />, link: "/team" },
-            { label: "Find an Agent", icon: <IoPersonOutline />, link: "/find-agent" },
-            { label: "Careers", icon: <IoBriefcaseOutline />, link: "/careers" },
-            { label: "Press & Media", icon: <IoNewspaperOutline />, link: "/press" },
+            { label: "About Sheetal", sub: "Our mission & story", link: "/about" },
+            { label: "Our Team", sub: "Meet the experts", link: "/team" },
+            { label: "Find an Agent", sub: "Local specialists", link: "/find-agent" },
+            { label: "Careers", sub: "Join our team", link: "/careers" },
+            { label: "Press & Media", sub: "News & coverage", link: "/press" },
           ],
         },
         {
           heading: "Connect",
           links: [
-            { label: "Contact Us", icon: <IoCallOutline />, link: "/contact" },
-            { label: "Requirement Form", icon: <IoDocumentTextOutline />, link: "/requirement-form" },
-            { label: "Email Us", icon: <IoMailOutline />, link: "/contact#email" },
-            { label: "Visit Our Office", icon: <IoLocationOutline />, link: "/contact#office" },
-            { label: "Client Reviews", icon: <IoStarOutline />, link: "/reviews" },
+            { label: "Contact Us", sub: "Get in touch", link: "/contact" },
+            { label: "Requirement Form", sub: "Tell us what you need", link: "/requirement-form" },
+            { label: "Email Us", sub: "Quick enquiry", link: "/contact#email" },
+            { label: "Visit Our Office", sub: "Directions & hours", link: "/contact#office" },
+            { label: "Client Reviews", sub: "What people say", link: "/reviews" },
+          ],
+        },
+        {
+          heading: "Trust & Awards",
+          links: [
+            { label: "Certifications", sub: "Industry accreditations", link: "/about#certifications" },
+            { label: "Awards Won", sub: "Recognised excellence", link: "/about#awards" },
+            { label: "Partner Banks", sub: "Loan tie-ups", link: "/about#partners" },
+            { label: "Media Coverage", sub: "Featured in press", link: "/press" },
+            { label: "Our Milestones", sub: "15 years of growth", link: "/about#milestones" },
           ],
         },
       ],
@@ -206,82 +250,130 @@ const NAV_ITEMS = [
   },
 ];
 
-// ─── Mega Menu Panel ────────────────────────────────────────────────────────────
-const MegaMenu = ({ item, onClose }) => {
+// ─── Full-Width Mega Menu ─────────────────────────────────────────────────────
+const MegaMenu = ({ item, onClose, isOpen }) => {
   const navigate = useNavigate();
   const { mega } = item;
 
   return (
-    <div style={{ width: "780px", maxWidth: "95vw" }}>
-      <div className="h-3" />
+    <div
+      style={{
+        position: "fixed",
+        top: "64px",
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        opacity: isOpen ? 1 : 0,
+        transform: isOpen ? "translateY(0)" : "translateY(-8px)",
+        pointerEvents: isOpen ? "auto" : "none",
+        transition: "opacity 0.22s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1)",
+      }}
+    >
+      {/* Top border accent */}
+      <div style={{ height: "2px", background: "linear-gradient(90deg, #b91c1c 0%, #ef4444 50%, #b91c1c 100%)" }} />
+
       <div
-        className="rounded-2xl overflow-hidden border border-gray-100"
         style={{
-          background: "rgba(255,255,255,0.98)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          boxShadow: "0 25px 60px -10px rgba(0,0,0,0.25), 0 10px 20px -5px rgba(0,0,0,0.1)",
+          background: "#fff",
+          borderBottom: "1px solid #f3f4f6",
+          boxShadow: "0 20px 60px -10px rgba(0,0,0,0.18), 0 8px 20px -5px rgba(0,0,0,0.08)",
         }}
       >
-        <div className="flex">
-          {/* Left Featured Panel */}
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 40px", display: "flex" }}>
+
+          {/* Featured Panel */}
           <div
-            className="w-64 flex-shrink-0 flex flex-col justify-between p-6 relative overflow-hidden"
             style={{
-              background: "linear-gradient(145deg, #7f1d1d 0%, #b91c1c 55%, #dc2626 100%)",
+              width: "280px",
+              flexShrink: 0,
+              padding: "32px 32px 32px 0",
+              borderRight: "1px solid #f3f4f6",
+              display: "flex",
+              flexDirection: "column",
+              gap: "14px",
             }}
           >
-            <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute top-1/2 right-4 w-16 h-16 rounded-full bg-white/5 pointer-events-none" />
+            <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "#ef4444" }}>
+              {item.label}
+            </div>
+            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#111827", lineHeight: "1.3", margin: 0 }}>
+              {mega.featured.title}
+            </h3>
+            <p style={{ fontSize: "13px", color: "#6b7280", lineHeight: "1.6", margin: 0, flex: 1 }}>
+              {mega.featured.desc}
+            </p>
 
-            <div className="relative z-10">
-              <img
-                src="/shetallogo.png"
-                alt="Sheetal Real Estate"
-                className="h-9 w-auto mb-5"
-                style={{ filter: "brightness(0) invert(1) opacity(0.9)" }}
-              />
-              <h3 className="text-white font-black text-[15px] leading-snug mb-2">
-                {mega.featured.title}
-              </h3>
-              <p className="text-red-200 text-[11px] leading-relaxed mb-4">
-                {mega.featured.desc}
-              </p>
-              <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-3 py-1.5 mb-5">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0" />
-                <span className="text-white text-[10px] font-bold tracking-wide">{mega.featured.stat}</span>
-              </div>
+            {/* Stat pill */}
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: "7px",
+              background: "#fef2f2", borderRadius: "999px",
+              padding: "6px 12px", width: "fit-content",
+            }}>
+              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e", flexShrink: 0, display: "block" }} />
+              <span style={{ fontSize: "11px", fontWeight: 700, color: "#991b1b" }}>{mega.featured.stat}</span>
             </div>
 
             <button
               onClick={() => { navigate(mega.featured.link); onClose(); }}
-              className="relative z-10 flex items-center justify-center gap-2 bg-white text-red-700 font-black text-[11px] px-4 py-2.5 rounded-xl hover:bg-red-50 active:scale-95 transition-all group w-full"
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                background: "#b91c1c", color: "#fff",
+                border: "none", borderRadius: "10px",
+                fontSize: "13px", fontWeight: 700,
+                padding: "12px 20px", cursor: "pointer",
+                transition: "background 0.15s",
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "#991b1b"}
+              onMouseLeave={e => e.currentTarget.style.background = "#b91c1c"}
             >
               {mega.featured.cta}
-              <IoArrowForwardOutline className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              <IoArrowForwardOutline style={{ width: "14px", height: "14px" }} />
             </button>
           </div>
 
-          {/* Right Columns */}
-          <div className="flex-1 p-6 grid grid-cols-2 gap-x-6 gap-y-2">
+          {/* Columns */}
+          <div style={{ flex: 1, display: "grid", gridTemplateColumns: `repeat(${mega.columns.length}, 1fr)`, gap: "0" }}>
             {mega.columns.map((col, cIdx) => (
-              <div key={cIdx}>
-                <p className="text-[9px] font-black tracking-[2.5px] text-red-500 uppercase mb-3 pb-2 border-b border-gray-100">
+              <div
+                key={cIdx}
+                style={{
+                  padding: "28px 28px",
+                  borderRight: cIdx < mega.columns.length - 1 ? "1px solid #f3f4f6" : "none",
+                }}
+              >
+                <p style={{
+                  fontSize: "10px", fontWeight: 700,
+                  letterSpacing: "2px", textTransform: "uppercase",
+                  color: "#b91c1c", margin: "0 0 16px 0",
+                  paddingBottom: "10px",
+                  borderBottom: "1px solid #f3f4f6",
+                }}>
                   {col.heading}
                 </p>
-                <div className="space-y-0.5">
+                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                   {col.links.map((lnk, lIdx) => (
                     <button
                       key={lIdx}
                       onClick={() => { navigate(lnk.link); onClose(); }}
-                      className="flex items-center gap-2.5 w-full text-left px-2.5 py-2 rounded-lg text-[12px] font-semibold text-gray-600 hover:bg-red-50 hover:text-red-700 transition-all group"
+                      style={{
+                        display: "flex", flexDirection: "column", gap: "1px",
+                        width: "100%", textAlign: "left",
+                        background: "none", border: "none",
+                        padding: "9px 10px", borderRadius: "8px",
+                        cursor: "pointer",
+                        transition: "background 0.12s",
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = "#fef2f2"}
+                      onMouseLeave={e => e.currentTarget.style.background = "none"}
                     >
-                      <span className="w-6 h-6 rounded-lg bg-gray-100 group-hover:bg-red-100 flex items-center justify-center flex-shrink-0 transition-colors text-gray-400 group-hover:text-red-600 text-sm">
-                        {lnk.icon}
+                      <span style={{ fontSize: "13px", fontWeight: 600, color: "#111827" }}>
+                        {lnk.label}
                       </span>
-                      {lnk.label}
-                      <IoArrowForwardOutline className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-red-400 flex-shrink-0" />
+                      {lnk.sub && (
+                        <span style={{ fontSize: "11px", color: "#9ca3af" }}>
+                          {lnk.sub}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -290,25 +382,35 @@ const MegaMenu = ({ item, onClose }) => {
           </div>
         </div>
 
-        {/* Footer strip */}
-        <div className="border-t border-gray-100 px-6 py-2.5 flex items-center justify-between bg-gray-50/60">
-          <p className="text-[10px] text-gray-400 font-medium">
-            Sheetal Real Estate — Nepal's Most Trusted Property Platform
-          </p>
-          <button
-            onClick={() => { navigate("/requirement-form"); onClose(); }}
-            className="flex items-center gap-1.5 text-[10px] font-bold text-red-600 hover:text-red-800 transition-colors"
-          >
-            <IoDocumentTextOutline className="w-3 h-3" />
-            Submit a Requirement
-          </button>
+        {/* Footer bar */}
+        <div style={{
+          borderTop: "1px solid #f3f4f6",
+          background: "#fafafa",
+          padding: "12px 40px",
+        }}>
+          <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <p style={{ fontSize: "11px", color: "#9ca3af", margin: 0 }}>
+              Sheetal Real Estate — Nepal's Most Trusted Property Platform since 2009
+            </p>
+            <button
+              onClick={() => { navigate("/requirement-form"); onClose(); }}
+              style={{
+                display: "flex", alignItems: "center", gap: "6px",
+                background: "none", border: "none", cursor: "pointer",
+                fontSize: "11px", fontWeight: 700, color: "#b91c1c",
+              }}
+            >
+              <IoDocumentTextOutline style={{ width: "13px", height: "13px" }} />
+              Submit a Requirement →
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// ─── Main Header ────────────────────────────────────────────────────────────────
+// ─── Main Header ──────────────────────────────────────────────────────────────
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeNav, setActiveNav] = useState(null);
@@ -316,6 +418,9 @@ const Header = () => {
   const [authModal, setAuthModal] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const closeTimer = useRef(null);
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+  const isTransparent = isHome && !isScrolled;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -350,7 +455,7 @@ const Header = () => {
   };
 
   const handleMouseLeave = () => {
-    closeTimer.current = setTimeout(() => setActiveNav(null), 130);
+    closeTimer.current = setTimeout(() => setActiveNav(null), 140);
   };
 
   const handleClose = () => {
@@ -362,148 +467,183 @@ const Header = () => {
     <>
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
+      {/* ── Header bar ── */}
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
-          isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md py-2"
-            : "bg-gradient-to-b from-black/55 via-black/20 to-transparent py-4"
-        }`}
+        style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0,
+          zIndex: 60,
+          height: "64px",
+          display: "flex",
+          alignItems: "center",
+          transition: "background 0.4s, box-shadow 0.4s",
+          background: isTransparent ? "transparent" : "rgba(255,255,255,0.97)",
+          backdropFilter: isTransparent ? "none" : "blur(12px)",
+          WebkitBackdropFilter: isTransparent ? "none" : "blur(12px)",
+          boxShadow: isTransparent ? "none" : "0 1px 0 rgba(0,0,0,0.08)",
+        }}
       >
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 lg:px-10 flex items-center justify-between">
-
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link
-              to="/"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="inline-block transition-transform active:scale-95"
+        <div
+          style={{
+            maxWidth: "1400px",
+            margin: "0 auto",
+            padding: "0 40px",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "24px",
+          }}
+        >
+          {/* ── LEFT: Logo + Search ── */}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px", flexShrink: 0 }}>
+            {/* Logo */}
+            <div
+              style={{ display: "flex", alignItems: "center", cursor: "pointer", flexShrink: 0 }}
+              onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
             >
-              <img src="/shetallogo.png" alt="Sheetal Real Estate" className="h-10 md:h-12 w-auto" />
-            </Link>
+              <img
+                src="/shetallogo.png"
+                alt="Sheetal Real Estate"
+                style={{ height: "38px", width: "auto" }}
+              />
+            </div>
+
+            
           </div>
 
-          {/* Desktop Mega Nav */}
-          <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-            {NAV_ITEMS.map((item) => {
-              const isOpen = activeNav === item.id;
-              return (
-                <div
-                  key={item.id}
-                  className="relative"
-                  onMouseEnter={() => handleMouseEnter(item.id)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <button
-                    className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl font-bold text-[13px] whitespace-nowrap transition-all duration-200 ${
-                      isOpen
-                        ? isScrolled
-                          ? "text-red-700 bg-red-50"
-                          : "text-white bg-white/20 backdrop-blur-sm"
-                        : isScrolled
-                        ? "text-gray-700 hover:text-red-700 hover:bg-red-50/60"
-                        : "text-white/90 hover:text-white hover:bg-white/15"
-                    }`}
-                  >
-                    <span className={`text-base transition-transform duration-200 ${isOpen ? "scale-110" : ""}`}>
-                      {item.icon}
-                    </span>
-                    {item.label}
-                    <IoChevronDownOutline
-                      className={`w-3.5 h-3.5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
+          {/* ── RIGHT: Nav + Actions ── */}
+          <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
 
-                  {/* Animated Mega Menu */}
+            {/* Desktop nav — hidden on mobile */}
+            <nav
+              className="hidden lg:flex"
+              style={{ alignItems: "center", gap: "2px" }}
+            >
+              {NAV_ITEMS.map((item) => {
+                const isOpen = activeNav === item.id;
+                return (
                   <div
-                    className="absolute"
-                    style={{
-                      top: "100%",
-                      left: "50%",
-                      transition: "opacity 0.22s ease, transform 0.25s cubic-bezier(0.16,1,0.3,1)",
-                      opacity: isOpen ? 1 : 0,
-                      transform: isOpen
-                        ? "translateX(-50%) translateY(0px)"
-                        : "translateX(-50%) translateY(-12px)",
-                      pointerEvents: isOpen ? "auto" : "none",
-                      zIndex: 50,
-                    }}
+                    key={item.id}
+                    style={{ position: "relative" }}
                     onMouseEnter={() => handleMouseEnter(item.id)}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <MegaMenu item={item} onClose={handleClose} />
+                    <button
+                      style={{
+                        background: isOpen
+                          ? isScrolled ? "#fef2f2" : "rgba(255,255,255,0.15)"
+                          : "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        color: isTransparent
+                          ? "rgba(255,255,255,0.9)"
+                          : isOpen ? "#b91c1c" : "#374151",
+                        padding: "8px 12px",
+                        borderRadius: "8px",
+                        transition: "all 0.15s",
+                        whiteSpace: "nowrap",
+                        letterSpacing: "0.01em",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}
+                      onMouseEnter={e => {
+                        if (!isOpen) {
+                          e.currentTarget.style.color = isTransparent ? "#fff" : "#b91c1c";
+                          e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.12)" : "#fef2f2";
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (!isOpen) {
+                          e.currentTarget.style.color = isTransparent ? "rgba(255,255,255,0.9)" : "#374151";
+                          e.currentTarget.style.background = "none";
+                        }
+                      }}
+                    >
+                      {item.label}
+                    </button>
+
+                    {/* Mega menu — rendered per nav item but positioned fixed full-width */}
+                    <MegaMenu
+                      item={item}
+                      onClose={handleClose}
+                      isOpen={isOpen}
+                    />
                   </div>
-                </div>
-              );
-            })}
-          </nav>
+                );
+              })}
+            </nav>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-
-            {/* Search */}
-            <button
-              onClick={() => navigate("/productSearch")}
-              className={`p-2 rounded-xl transition-all hidden lg:flex ${
-                isScrolled
-                  ? "text-gray-600 hover:bg-gray-100 hover:text-red-700"
-                  : "text-white/80 hover:bg-white/15 hover:text-white"
-              }`}
-            >
-              <IoSearchOutline className="w-5 h-5" />
-            </button>
+            {/* Divider */}
+            <div
+              className="hidden lg:block"
+              style={{ width: "1px", height: "20px", background: isTransparent ? "rgba(255,255,255,0.2)" : "#e5e7eb", margin: "0 6px" }}
+            />
 
             {/* Favourites */}
             {user.data && (
               <button
-                className={`p-2 rounded-xl transition-all relative ${
-                  isScrolled
-                    ? "text-gray-500 hover:text-red-600 hover:bg-gray-100"
-                    : "text-white/80 hover:text-white hover:bg-white/15"
-                }`}
+                style={{
+                  background: "none", border: "none", cursor: "pointer",
+                  padding: "8px", borderRadius: "8px",
+                  color: isTransparent ? "rgba(255,255,255,0.8)" : "#6b7280",
+                  position: "relative", transition: "all 0.15s",
+                }}
                 onClick={() => navigate("/my-profile?section=favourites")}
               >
                 {favorites?.data?.length > 0 ? (
-                  <AiFillHeart className="w-5 h-5 text-red-500" />
+                  <AiFillHeart style={{ width: "19px", height: "19px", color: "#ef4444" }} />
                 ) : (
-                  <AiOutlineHeart className="w-5 h-5" />
+                  <AiOutlineHeart style={{ width: "19px", height: "19px" }} />
                 )}
                 {favorites?.data?.length > 0 && (
-                  <span className="absolute top-0.5 right-0.5 bg-red-600 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center font-bold">
+                  <span style={{
+                    position: "absolute", top: "4px", right: "4px",
+                    background: "#b91c1c", color: "#fff",
+                    fontSize: "8px", fontWeight: 700,
+                    borderRadius: "999px", minWidth: "14px", height: "14px",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    lineHeight: 1,
+                  }}>
                     {favorites.data.length}
                   </span>
                 )}
               </button>
             )}
 
-            {/* Auth / User */}
+            {/* Auth / User menu */}
             {!user.data ? (
               <button
                 onClick={() => setAuthModal(true)}
-                className={`p-2 rounded-xl transition-all ${
-                  isScrolled
-                    ? "text-gray-600 hover:bg-gray-100 hover:text-red-700"
-                    : "text-white/80 hover:bg-white/15 hover:text-white"
-                }`}
+                style={{
+                  background: "none", border: "none", cursor: "pointer",
+                  padding: "8px", borderRadius: "8px",
+                  color: isTransparent ? "rgba(255,255,255,0.8)" : "#6b7280",
+                  transition: "all 0.15s",
+                }}
               >
-                <IoPersonOutline className="w-5 h-5" />
+                <IoPersonOutline style={{ width: "19px", height: "19px" }} />
               </button>
             ) : (
-              <Menu as="div" className="relative">
+              <Menu as="div" style={{ position: "relative" }}>
                 <Menu.Button
-                  className={`flex items-center gap-1.5 p-1 pr-2 rounded-full border transition-all ${
-                    isScrolled
-                      ? "border-gray-200 hover:border-red-300 hover:shadow-sm bg-white"
-                      : "border-white/30 hover:border-white/60"
-                  }`}
+                  style={{
+                    display: "flex", alignItems: "center", gap: "6px",
+                    padding: "4px 8px 4px 4px", borderRadius: "999px",
+                    border: isTransparent ? "0.5px solid rgba(255,255,255,0.3)" : "0.5px solid #e5e7eb",
+                    background: isTransparent ? "rgba(255,255,255,0.1)" : "#fff",
+                    cursor: "pointer", transition: "all 0.15s",
+                  }}
                 >
                   <img
                     src={user.data?.photo || "/noUser.png"}
                     alt="user"
-                    className="w-7 h-7 rounded-full object-cover border-2 border-red-500"
+                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover", border: "2px solid #ef4444" }}
                   />
-                  <IoChevronDownOutline
-                    className={`w-3 h-3 ${isScrolled ? "text-gray-400" : "text-white/70"}`}
-                  />
+                  <IoChevronDownOutline style={{ width: "12px", height: "12px", color: isTransparent ? "rgba(255,255,255,0.7)" : "#9ca3af" }} />
                 </Menu.Button>
 
                 <Transition
@@ -515,21 +655,40 @@ const Header = () => {
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 focus:outline-none">
-                    <div className="px-4 py-3 border-b border-gray-50 bg-gradient-to-br from-red-50/80 to-white">
-                      <p className="text-[9px] font-black tracking-[2px] text-red-500">MY ACCOUNT</p>
+                  <Menu.Items
+                    style={{
+                      position: "absolute", right: 0, marginTop: "8px",
+                      width: "176px", background: "#fff",
+                      borderRadius: "12px",
+                      boxShadow: "0 10px 40px -5px rgba(0,0,0,0.15), 0 4px 10px -3px rgba(0,0,0,0.06)",
+                      border: "0.5px solid #f3f4f6",
+                      overflow: "hidden", zIndex: 70,
+                      outline: "none",
+                    }}
+                  >
+                    <div style={{ padding: "12px 16px 10px", borderBottom: "0.5px solid #f9fafb", background: "linear-gradient(135deg, #fef2f2, #fff)" }}>
+                      <p style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "2px", color: "#ef4444", margin: 0, textTransform: "uppercase" }}>My Account</p>
                     </div>
-                    <div className="p-1.5 space-y-0.5">
+                    <div style={{ padding: "6px" }}>
                       <Menu.Item>
                         {({ active }) => (
                           <Link
                             to="/my-profile?section=profile"
-                            className={`flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold rounded-lg transition-all ${
-                              active ? "bg-red-50 text-red-700" : "text-gray-700"
-                            }`}
+                            style={{
+                              display: "flex", alignItems: "center", gap: "10px",
+                              padding: "10px 12px", borderRadius: "8px",
+                              textDecoration: "none", fontSize: "13px", fontWeight: 600,
+                              color: active ? "#b91c1c" : "#374151",
+                              background: active ? "#fef2f2" : "transparent",
+                              transition: "all 0.1s",
+                            }}
                           >
-                            <span className={`w-6 h-6 rounded-lg flex items-center justify-center ${active ? "bg-red-100" : "bg-gray-100"}`}>
-                              <IoPersonOutline className="w-3.5 h-3.5" />
+                            <span style={{
+                              width: "24px", height: "24px", borderRadius: "6px",
+                              background: active ? "#fee2e2" : "#f3f4f6",
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                              <IoPersonOutline style={{ width: "13px", height: "13px" }} />
                             </span>
                             My Profile
                           </Link>
@@ -539,12 +698,21 @@ const Header = () => {
                         {({ active }) => (
                           <button
                             onClick={handleSignOut}
-                            className={`flex items-center gap-2.5 w-full px-3 py-2.5 text-xs font-semibold rounded-lg text-left transition-all ${
-                              active ? "bg-red-50 text-red-700" : "text-gray-700"
-                            }`}
+                            style={{
+                              display: "flex", alignItems: "center", gap: "10px",
+                              width: "100%", padding: "10px 12px", borderRadius: "8px",
+                              textAlign: "left", background: active ? "#fef2f2" : "transparent",
+                              border: "none", fontSize: "13px", fontWeight: 600,
+                              color: active ? "#b91c1c" : "#374151",
+                              cursor: "pointer", transition: "all 0.1s",
+                            }}
                           >
-                            <span className={`w-6 h-6 rounded-lg flex items-center justify-center ${active ? "bg-red-100" : "bg-gray-100"}`}>
-                              <IoLogOutOutline className="w-3.5 h-3.5" />
+                            <span style={{
+                              width: "24px", height: "24px", borderRadius: "6px",
+                              background: active ? "#fee2e2" : "#f3f4f6",
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                            }}>
+                              <IoLogOutOutline style={{ width: "13px", height: "13px" }} />
                             </span>
                             Sign Out
                           </button>
@@ -559,42 +727,100 @@ const Header = () => {
             {/* Post Property CTA */}
             <Link
               to="/my-profile?section=post-property"
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-black transition-all shadow-lg active:scale-95 whitespace-nowrap ml-1 ${
-                isScrolled
-                  ? "bg-red-700 text-white hover:bg-red-800"
-                  : "bg-white/20 backdrop-blur-sm text-white border border-white/40 hover:bg-white/30"
-              }`}
+              style={{
+                display: "flex", alignItems: "center", gap: "6px",
+                padding: "9px 18px", borderRadius: "999px",
+                fontSize: "13px", fontWeight: 700,
+                textDecoration: "none",
+                background: isTransparent ? "rgba(255,255,255,0.18)" : "#b91c1c",
+                border: isTransparent ? "0.5px solid rgba(255,255,255,0.4)" : "none",
+                color: "#fff",
+                backdropFilter: isScrolled ? "none" : "blur(8px)",
+                WebkitBackdropFilter: isScrolled ? "none" : "blur(8px)",
+                boxShadow: isScrolled ? "0 2px 12px rgba(185,28,28,0.3)" : "none",
+                transition: "all 0.2s",
+                marginLeft: "4px",
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.28)" : "#991b1b";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.18)" : "#b91c1c";
+              }}
             >
-              <IoAddCircleOutline className="w-4 h-4" />
+              <IoAddCircleOutline style={{ width: "15px", height: "15px" }} />
               <span className="hidden sm:inline">Post Property</span>
             </Link>
 
             {/* Mobile hamburger */}
             <button
-              className={`lg:hidden p-2 rounded-xl transition-colors ${
-                isScrolled ? "text-gray-700 hover:bg-gray-100" : "text-white hover:bg-white/20"
-              }`}
+              className="lg:hidden"
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                padding: "8px", borderRadius: "8px",
+                ccolor: isTransparent ? "rgba(255,255,255,0.9)" : "#374151",
+                marginLeft: "2px",
+              }}
               onClick={() => setSidebarOpen(true)}
             >
-              <IoMenuOutline className="w-6 h-6" />
+              <IoMenuOutline style={{ width: "22px", height: "22px" }} />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Backdrop when mega menu open */}
+      {/* ── Full-width mega menu backdrop ── */}
       <div
-        className="fixed inset-0 z-30 transition-all duration-300"
         style={{
-          background: "rgba(0,0,0,0.18)",
-          backdropFilter: activeNav ? "blur(1.5px)" : "none",
-          WebkitBackdropFilter: activeNav ? "blur(1.5px)" : "none",
+          position: "fixed",
+          inset: 0,
+          top: "64px",
+          zIndex: 40,
+          background: "rgba(0,0,0,0.2)",
+          backdropFilter: "blur(2px)",
+          WebkitBackdropFilter: "blur(2px)",
           opacity: activeNav ? 1 : 0,
           pointerEvents: activeNav ? "auto" : "none",
+          transition: "opacity 0.22s",
         }}
+        onMouseEnter={handleMouseLeave}
         onClick={handleClose}
       />
 
+      {/* ── Mega menu mouse bridge (covers gap between header and panel) ── */}
+      {activeNav && (
+        <div
+          style={{
+            position: "fixed",
+            top: "60px",
+            left: 0,
+            right: 0,
+            height: "8px",
+            zIndex: 55,
+          }}
+          onMouseEnter={() => handleMouseEnter(activeNav)}
+          onMouseLeave={handleMouseLeave}
+        />
+      )}
+
+      {/* Render one mega menu per nav item, each fully positioned */}
+      {NAV_ITEMS.map((item) => (
+        <div
+          key={item.id}
+          onMouseEnter={() => handleMouseEnter(item.id)}
+          onMouseLeave={handleMouseLeave}
+          style={{ zIndex: 55, position: "relative" }}
+        >
+          <MegaMenu
+            item={item}
+            onClose={handleClose}
+            isOpen={activeNav === item.id}
+          />
+        </div>
+      ))}
+
+      {/* Auth modals */}
       {authModal === "forgot-password" ? (
         <ForgotPasswordModel setR={setAuthModal} />
       ) : (
