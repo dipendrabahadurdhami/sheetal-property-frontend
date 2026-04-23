@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 // ── Constants ──────────────────────────────────────────────────────────────────
 const RECENT_KEY = "sheetal_recent_searches";
 const MAX_RECENT = 5;
-const API_BASE   = process.env.REACT_APP_API_URL || "";
+const API_BASE   = process.env.REACT_APP_API_LINK || "";
 
 // ── Recent search helpers ──────────────────────────────────────────────────────
 function getRecent() {
