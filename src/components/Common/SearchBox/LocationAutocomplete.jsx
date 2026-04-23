@@ -7,7 +7,7 @@ import {
   IoHomeOutline,
 } from "react-icons/io5";
 
-const API_BASE = process.env.REACT_APP_API_URL || "";
+const API_BASE = process.env.REACT_APP_API_LINK || "";
 
 // Same TypeIcon as InputBox for consistency
 const TypeIcon = ({ type }) => {
