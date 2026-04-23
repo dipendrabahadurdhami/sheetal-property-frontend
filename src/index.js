@@ -11,7 +11,7 @@ import { store } from "./features";
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || "";
+axios.defaults.baseURL = process.env.REACT_APP_API_LINK || "";
 
 const container = document.getElementById("root");
 const root = createRoot(container);

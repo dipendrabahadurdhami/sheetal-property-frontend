@@ -15,7 +15,7 @@ import {
   IoQrCodeOutline, IoCheckmarkDoneOutline, IoAlertCircleOutline,
 } from "react-icons/io5";
 
-const API_BASE     = process.env.REACT_APP_API_URL  || "";
+const API_BASE     = process.env.REACT_APP_API_LINK  || "";
 const API_LINK     = process.env.REACT_APP_API_LINK || "";
 const PAYMENT_AMOUNT = 500; // match your .env / PaymentController const
 
