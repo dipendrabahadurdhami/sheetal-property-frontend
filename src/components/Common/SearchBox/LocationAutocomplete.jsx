@@ -53,7 +53,7 @@ const LocationAutocomplete = ({ value, onChange }) => {
     setLoading(true);
     try {
       const res  = await fetch(
-        `${API_BASE}/api/search/suggestions?q=${encodeURIComponent(q)}`,
+        `${API_BASE}/search/suggestions?q=${encodeURIComponent(q)}`,
         { signal: abortRef.current.signal }
       );
       const json = await res.json();
