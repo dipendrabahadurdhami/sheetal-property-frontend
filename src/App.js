@@ -15,6 +15,7 @@ import Investment from "./pages/Investment";
 import InvestmentExplore from "./pages/InvestmentExplore";
 import InvestmentAllProduct from "./pages/InvestmentAllProduct";
 import Project from "./pages/Project";
+import About from "./pages/About";
 import MyProfile from "./pages/MyProfile";
 import VerifyEmail from "./pages/VerifyEmail";
 import PostProperty from "./pages/PostProperty";
@@ -108,6 +109,7 @@ function App(props) {
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/property/:id" element={<SingleProduct />} />
           <Route path="/homeLone" element={<HomeLone />} />
+          <Route path="/About" element={<About />} />
           <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />
           <Route path="/payRentOnline" element={<PayRentOnline />} />
           <Route path="/LegalHelp" element={<LegalHelp />} />
