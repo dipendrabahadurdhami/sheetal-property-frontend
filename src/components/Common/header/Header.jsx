@@ -211,14 +211,14 @@ const NAV_ITEMS = [
         title: "Nepal's Trusted Real Estate Brand",
         desc: "Sheetal Real Estate — built on trust, driven by excellence. Helping families find homes since 2009.",
         cta: "Our Full Story",
-        link: "/about",
+        link: "/About",
         stat: "10,000+ Families Served",
       },
       columns: [
         {
           heading: "Company",
           links: [
-            { label: "About Sheetal", sub: "Our mission & story", link: "/about" },
+            { label: "About Sheetal", sub: "Our mission & story", link: "/About" },
             { label: "Our Team", sub: "Meet the experts", link: "/team" },
             { label: "Find an Agent", sub: "Local specialists", link: "/find-agent" },
             { label: "Careers", sub: "Join our team", link: "/careers" },
