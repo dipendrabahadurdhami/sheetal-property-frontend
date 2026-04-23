@@ -55,7 +55,7 @@ const MainHome = () => {
       return (
         <div className="relative mt-0 top-0 w-full h-full bg-[#000d20]">
           <img
-            src={banner.thumbnail_url || "/home-banner3.gif"}
+            src={banner.thumbnail_url || "/home-banner1.gif"}
             className={`absolute inset-0 ${mediaClass} ${videoLoaded ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}`}
             alt="Banner Preview"
             loading="eager"

@@ -151,10 +151,7 @@ const About = () => {
           className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 py-24 grid md:grid-cols-2 gap-16 items-center"
         >
           <div style={{ opacity: heroInView ? 1 : 0, transform: heroInView ? "translateY(0)" : "translateY(40px)", transition: "all 0.8s ease" }}>
-            <div className="inline-flex items-center gap-2 bg-red-700/20 border border-red-700/30 text-red-400 text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-              Est. 2009 · Kathmandu, Nepal
-            </div>
+            
             <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
               Nepal's First<br />
               <span className="text-red-500">Property Management</span><br />
