@@ -775,7 +775,7 @@ export default function About() {
             <SR cls="sr-l">
               <iframe
                 title="Sheetal Real Estate Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.4887065906547!2d85.33117!3d27.73978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19f6d5c2f48f%3A0x4dfff5a7e7399fb8!2sBansbari%2C%20Kathmandu%2044600!5e0!3m2!1sen!2snp!4v1699000000000!5m2!1sen!2snp"
+                src="https://maps.app.goo.gl/pFnQwZNQCyTfkDj2A"
                 width="100%" height="380" style={{ border: 0, display: "block" }}
                 allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"
               />
