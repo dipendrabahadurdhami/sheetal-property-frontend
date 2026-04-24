@@ -46,7 +46,6 @@ import axios from "axios";
 axios.defaults.baseURL = process.env.REACT_APP_API_LINK;
 axios.defaults.withCredentials = true;
 
-// This Interceptor attaches your "sheetal_token" to every request header automatically
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("sheetal_token");
   if (token) {
@@ -58,6 +57,15 @@ axios.interceptors.request.use((config) => {
 });
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID);
+
+// ── Scroll to top on every route change ──────────────────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
 
 function App(props) {
   const user = useSelector((state) => state.user);
@@ -99,6 +107,7 @@ function App(props) {
 
   return (
     <div className="bg-gray-100">
+      <ScrollToTop />   {/* ← only addition */}
       <Header />
       <div className="mx-auto w-full bg-white">
         <Routes>
@@ -121,10 +130,7 @@ function App(props) {
             path="/reset-password/:token"
             element={<ResetPassword {...props} />}
           />
-          <Route
-            path="/properties"
-            element={<AllProperties />}
-          />
+          <Route path="/properties" element={<AllProperties />} />
           <Route path="/propertyDemand" element={<PropertyDemand />} />
           <Route path="/agents" element={<FindAgent />} />
           <Route path="/agent/:id" element={<SingleAgent />} />
