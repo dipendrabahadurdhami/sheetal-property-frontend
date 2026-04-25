@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu, Transition } from "@headlessui/react";
+import '../../../index.css';
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {
   IoLogOutOutline, IoPersonOutline, IoHomeOutline, IoPeopleOutline,
@@ -270,12 +271,12 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
       }}
     >
       {/* Top border accent */}
-      <div style={{ height: "2px", background: "linear-gradient(90deg, #b91c1c 0%, #ef4444 50%, #b91c1c 100%)" }} />
+      <div style={{ height: "2px", background: "linear-gradient(90deg, var(--r) 0%, var(--r) 50%, var(--r) 100%)" }} />
 
       <div
         style={{
           background: "#fff",
-          borderBottom: "1px solid #f3f4f6",
+          borderBottom: "1px solid var(--l)",
           boxShadow: "0 20px 60px -10px rgba(0,0,0,0.18), 0 8px 20px -5px rgba(0,0,0,0.08)",
         }}
       >
@@ -287,44 +288,44 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
               width: "280px",
               flexShrink: 0,
               padding: "32px 32px 32px 0",
-              borderRight: "1px solid #f3f4f6",
+              borderRight: "1px solid var(--l)",
               display: "flex",
               flexDirection: "column",
               gap: "14px",
             }}
           >
-            <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "#ef4444" }}>
+            <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--r)" }}>
               {item.label}
             </div>
-            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#111827", lineHeight: "1.3", margin: 0 }}>
+            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "var(--d)", lineHeight: "1.3", margin: 0 }}>
               {mega.featured.title}
             </h3>
-            <p style={{ fontSize: "13px", color: "#6b7280", lineHeight: "1.6", margin: 0, flex: 1 }}>
+            <p style={{ fontSize: "13px", color: "var(--d)", lineHeight: "1.6", margin: 0, flex: 1 }}>
               {mega.featured.desc}
             </p>
 
             {/* Stat pill */}
             <div style={{
               display: "inline-flex", alignItems: "center", gap: "7px",
-              background: "#fef2f2", borderRadius: "999px",
+              background: "var(--r06)", borderRadius: "999px",
               padding: "6px 12px", width: "fit-content",
             }}>
               <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e", flexShrink: 0, display: "block" }} />
-              <span style={{ fontSize: "11px", fontWeight: 700, color: "#991b1b" }}>{mega.featured.stat}</span>
+              <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--rd)" }}>{mega.featured.stat}</span>
             </div>
 
             <button
               onClick={() => { navigate(mega.featured.link); onClose(); }}
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
-                background: "#b91c1c", color: "#fff",
+                background: "var(--r)", color: "#fff",
                 border: "none", borderRadius: "10px",
                 fontSize: "13px", fontWeight: 700,
                 padding: "12px 20px", cursor: "pointer",
                 transition: "background 0.15s",
               }}
-              onMouseEnter={e => e.currentTarget.style.background = "#991b1b"}
-              onMouseLeave={e => e.currentTarget.style.background = "#b91c1c"}
+              onMouseEnter={e => e.currentTarget.style.background = "var(--rd)"}
+              onMouseLeave={e => e.currentTarget.style.background = "var(--r)"}
             >
               {mega.featured.cta}
               <IoArrowForwardOutline style={{ width: "14px", height: "14px" }} />
@@ -338,15 +339,15 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
                 key={cIdx}
                 style={{
                   padding: "28px 28px",
-                  borderRight: cIdx < mega.columns.length - 1 ? "1px solid #f3f4f6" : "none",
+                  borderRight: cIdx < mega.columns.length - 1 ? "1px solid var(--l)" : "none",
                 }}
               >
                 <p style={{
                   fontSize: "10px", fontWeight: 700,
                   letterSpacing: "2px", textTransform: "uppercase",
-                  color: "#b91c1c", margin: "0 0 16px 0",
+                  color: "var(--r)", margin: "0 0 16px 0",
                   paddingBottom: "10px",
-                  borderBottom: "1px solid #f3f4f6",
+                  borderBottom: "1px solid var(--l)",
                 }}>
                   {col.heading}
                 </p>
@@ -363,14 +364,14 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
                         cursor: "pointer",
                         transition: "background 0.12s",
                       }}
-                      onMouseEnter={e => e.currentTarget.style.background = "#fef2f2"}
+                      onMouseEnter={e => e.currentTarget.style.background = "var(--r06)"}
                       onMouseLeave={e => e.currentTarget.style.background = "none"}
                     >
-                      <span style={{ fontSize: "13px", fontWeight: 600, color: "#111827" }}>
+                      <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--d)" }}>
                         {lnk.label}
                       </span>
                       {lnk.sub && (
-                        <span style={{ fontSize: "11px", color: "#9ca3af" }}>
+                        <span style={{ fontSize: "11px", color: "var(--d)" }}>
                           {lnk.sub}
                         </span>
                       )}
@@ -384,12 +385,12 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
 
         {/* Footer bar */}
         <div style={{
-          borderTop: "1px solid #f3f4f6",
-          background: "#fafafa",
+          borderTop: "1px solid var(--l)",
+          background: "var(--l)",
           padding: "12px 40px",
         }}>
           <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <p style={{ fontSize: "11px", color: "#9ca3af", margin: 0 }}>
+            <p style={{ fontSize: "11px", color: "var(--d)", margin: 0 }}>
               Sheetal Real Estate — Nepal's Most Trusted Property Platform since 2009
             </p>
             <button
@@ -397,7 +398,7 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
                 background: "none", border: "none", cursor: "pointer",
-                fontSize: "11px", fontWeight: 700, color: "#b91c1c",
+                fontSize: "11px", fontWeight: 700, color: "var(--r)",
               }}
             >
               <IoDocumentTextOutline style={{ width: "13px", height: "13px" }} />
@@ -532,7 +533,7 @@ const Header = () => {
                     <button
                       style={{
                         background: isOpen
-                          ? isScrolled ? "#fef2f2" : "rgba(255,255,255,0.15)"
+                          ? isScrolled ? "var(--r06)" : "rgba(255,255,255,0.15)"
                           : "none",
                         border: "none",
                         cursor: "pointer",
@@ -540,7 +541,7 @@ const Header = () => {
                         fontWeight: 600,
                         color: isTransparent
                           ? "rgba(255,255,255,0.9)"
-                          : isOpen ? "#b91c1c" : "#374151",
+                          : isOpen ? "var(--r)" : "var(--d)",
                         padding: "8px 12px",
                         borderRadius: "8px",
                         transition: "all 0.15s",
@@ -552,13 +553,13 @@ const Header = () => {
                       }}
                       onMouseEnter={e => {
                         if (!isOpen) {
-                          e.currentTarget.style.color = isTransparent ? "#fff" : "#b91c1c";
-                          e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.12)" : "#fef2f2";
+                          e.currentTarget.style.color = isTransparent ? "#fff" : "var(--r)";
+                          e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.12)" : "var(--r06)";
                         }
                       }}
                       onMouseLeave={e => {
                         if (!isOpen) {
-                          e.currentTarget.style.color = isTransparent ? "rgba(255,255,255,0.9)" : "#374151";
+                          e.currentTarget.style.color = isTransparent ? "rgba(255,255,255,0.9)" : "var(--d)";
                           e.currentTarget.style.background = "none";
                         }
                       }}
@@ -580,7 +581,7 @@ const Header = () => {
             {/* Divider */}
             <div
               className="hidden lg:block"
-              style={{ width: "1px", height: "20px", background: isTransparent ? "rgba(255,255,255,0.2)" : "#e5e7eb", margin: "0 6px" }}
+              style={{ width: "1px", height: "20px", background: isTransparent ? "rgba(255,255,255,0.2)" : "var(--l)", margin: "0 6px" }}
             />
 
             {/* Favourites */}
@@ -589,20 +590,20 @@ const Header = () => {
                 style={{
                   background: "none", border: "none", cursor: "pointer",
                   padding: "8px", borderRadius: "8px",
-                  color: isTransparent ? "rgba(255,255,255,0.8)" : "#6b7280",
+                  color: isTransparent ? "rgba(255,255,255,0.8)" : "var(--d)",
                   position: "relative", transition: "all 0.15s",
                 }}
                 onClick={() => navigate("/my-profile?section=favourites")}
               >
                 {favorites?.data?.length > 0 ? (
-                  <AiFillHeart style={{ width: "19px", height: "19px", color: "#ef4444" }} />
+                  <AiFillHeart style={{ width: "19px", height: "19px", color: "var(--r)" }} />
                 ) : (
                   <AiOutlineHeart style={{ width: "19px", height: "19px" }} />
                 )}
                 {favorites?.data?.length > 0 && (
                   <span style={{
                     position: "absolute", top: "4px", right: "4px",
-                    background: "#b91c1c", color: "#fff",
+                    background: "var(--r)", color: "#fff",
                     fontSize: "8px", fontWeight: 700,
                     borderRadius: "999px", minWidth: "14px", height: "14px",
                     display: "flex", alignItems: "center", justifyContent: "center",
@@ -621,7 +622,7 @@ const Header = () => {
                 style={{
                   background: "none", border: "none", cursor: "pointer",
                   padding: "8px", borderRadius: "8px",
-                  color: isTransparent ? "rgba(255,255,255,0.8)" : "#6b7280",
+                  color: isTransparent ? "rgba(255,255,255,0.8)" : "var(--d)",
                   transition: "all 0.15s",
                 }}
               >
@@ -633,17 +634,17 @@ const Header = () => {
                   style={{
                     display: "flex", alignItems: "center", gap: "6px",
                     padding: "4px 8px 4px 4px", borderRadius: "999px",
-                    border: isTransparent ? "0.5px solid rgba(255,255,255,0.3)" : "0.5px solid #e5e7eb",
-                    background: isTransparent ? "rgba(255,255,255,0.1)" : "#fff",
+                    border: isTransparent ? "0.5px solid rgba(255,255,255,0.3)" : "0.5px solid var(--l)",
+                    background: isTransparent ? "rgba(255,255,255,0.1)" : "var(--l)",
                     cursor: "pointer", transition: "all 0.15s",
                   }}
                 >
                   <img
                     src={user.data?.photo || "/noUser.png"}
                     alt="user"
-                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover", border: "2px solid #ef4444" }}
+                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--r)" }}
                   />
-                  <IoChevronDownOutline style={{ width: "12px", height: "12px", color: isTransparent ? "rgba(255,255,255,0.7)" : "#9ca3af" }} />
+                  <IoChevronDownOutline style={{ width: "12px", height: "12px", color: isTransparent ? "rgba(255,255,255,0.7)" : "var(--d)" }} />
                 </Menu.Button>
 
                 <Transition
@@ -661,13 +662,13 @@ const Header = () => {
                       width: "176px", background: "#fff",
                       borderRadius: "12px",
                       boxShadow: "0 10px 40px -5px rgba(0,0,0,0.15), 0 4px 10px -3px rgba(0,0,0,0.06)",
-                      border: "0.5px solid #f3f4f6",
+                      border: "0.5px solid var(--l)",
                       overflow: "hidden", zIndex: 70,
                       outline: "none",
                     }}
                   >
-                    <div style={{ padding: "12px 16px 10px", borderBottom: "0.5px solid #f9fafb", background: "linear-gradient(135deg, #fef2f2, #fff)" }}>
-                      <p style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "2px", color: "#ef4444", margin: 0, textTransform: "uppercase" }}>My Account</p>
+                    <div style={{ padding: "12px 16px 10px", borderBottom: "0.5px solid var(--l)", background: "linear-gradient(135deg, var(--r06), #fff)" }}>
+                      <p style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "2px", color: "var(--r)", margin: 0, textTransform: "uppercase" }}>My Account</p>
                     </div>
                     <div style={{ padding: "6px" }}>
                       <Menu.Item>
@@ -678,14 +679,14 @@ const Header = () => {
                               display: "flex", alignItems: "center", gap: "10px",
                               padding: "10px 12px", borderRadius: "8px",
                               textDecoration: "none", fontSize: "13px", fontWeight: 600,
-                              color: active ? "#b91c1c" : "#374151",
-                              background: active ? "#fef2f2" : "transparent",
+                              color: active ? "var(--r)" : "var(--d)",
+                              background: active ? "var(--r06)" : "transparent",
                               transition: "all 0.1s",
                             }}
                           >
                             <span style={{
                               width: "24px", height: "24px", borderRadius: "6px",
-                              background: active ? "#fee2e2" : "#f3f4f6",
+                              background: active ? "var(--r14)" : "var(--l)",
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
                               <IoPersonOutline style={{ width: "13px", height: "13px" }} />
@@ -701,15 +702,15 @@ const Header = () => {
                             style={{
                               display: "flex", alignItems: "center", gap: "10px",
                               width: "100%", padding: "10px 12px", borderRadius: "8px",
-                              textAlign: "left", background: active ? "#fef2f2" : "transparent",
+                              textAlign: "left", background: active ? "var(--r06)" : "transparent",
                               border: "none", fontSize: "13px", fontWeight: 600,
-                              color: active ? "#b91c1c" : "#374151",
+                              color: active ? "var(--r)" : "var(--d)",
                               cursor: "pointer", transition: "all 0.1s",
                             }}
                           >
                             <span style={{
                               width: "24px", height: "24px", borderRadius: "6px",
-                              background: active ? "#fee2e2" : "#f3f4f6",
+                              background: active ? "var(--r14)" : "var(--l)",
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
                               <IoLogOutOutline style={{ width: "13px", height: "13px" }} />
@@ -732,7 +733,7 @@ const Header = () => {
                 padding: "9px 18px", borderRadius: "999px",
                 fontSize: "13px", fontWeight: 700,
                 textDecoration: "none",
-                background: isTransparent ? "rgba(255,255,255,0.18)" : "#b91c1c",
+                background: isTransparent ? "rgba(255,255,255,0.18)" : "var(--r)",
                 border: isTransparent ? "0.5px solid rgba(255,255,255,0.4)" : "none",
                 color: "#fff",
                 backdropFilter: isScrolled ? "none" : "blur(8px)",
@@ -743,10 +744,10 @@ const Header = () => {
                 whiteSpace: "nowrap",
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.28)" : "#991b1b";
+                e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.28)" : "var(--rd)";
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.18)" : "#b91c1c";
+                e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.18)" : "var(--r)";
               }}
             >
               <IoAddCircleOutline style={{ width: "15px", height: "15px" }} />
@@ -759,7 +760,7 @@ const Header = () => {
               style={{
                 background: "none", border: "none", cursor: "pointer",
                 padding: "8px", borderRadius: "8px",
-                ccolor: isTransparent ? "rgba(255,255,255,0.9)" : "#374151",
+                color: isTransparent ? "rgba(255,255,255,0.9)" : "var(--d)",
                 marginLeft: "2px",
               }}
               onClick={() => setSidebarOpen(true)}
