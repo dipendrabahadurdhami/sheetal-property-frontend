@@ -163,7 +163,7 @@ const FeaturedCard = ({ product }) => {
   };
 
   // Kind-specific label for the type badge
-  const kindLabel = { land: "Land", apartment: "Apartment", house: "House" }[kind];
+  //const kindLabel = { land: "Land", apartment: "Apartment", house: "House" }[kind];
 
   return (
     <div className="h-full p-2 ab">
