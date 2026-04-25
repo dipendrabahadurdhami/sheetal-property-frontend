@@ -163,8 +163,7 @@ const FeaturedCard = ({ product }) => {
   };
 
   // Kind-specific label for the type badge
-  //const kindLabel = { land: "Land", apartment: "Apartment", house: "House" }[kind];
-
+ 
   return (
     <div className="h-full p-2 ab">
       <div
@@ -200,10 +199,7 @@ const FeaturedCard = ({ product }) => {
           <div className="px-2.5 py-1 bg-[#e02424] rounded text-[10px] font-bold text-white uppercase shadow-md w-fit">
             For {product.purpose?.name || product.purpose || "SALE"}
           </div>
-          {/* Property kind badge */}
-          <div className="px-2 py-1 bg-white/20 backdrop-blur-md rounded text-[10px] font-bold text-white border border-white/30 w-fit">
-            {kindLabel}
-          </div>
+          
           <div className="px-2 py-1 bg-[#111827]/60 backdrop-blur-md rounded text-[10px] font-bold text-white border border-white/20 w-fit flex items-center">
             <FaHashtag className="mr-1 text-[#e02424]" />
             {product.property_code || product.id}
