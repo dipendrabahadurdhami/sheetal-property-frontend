@@ -9,7 +9,6 @@ import SingleProduct from "./pages/SingleProduct";
 import HomeLone from "./pages/HomeLone";
 import PayRentOnline from "./pages/PayRentOnline";
 import LegalHelp from "./pages/LegalHelp";
-import EmiCalculatorPage from "./pages/EmiCalculatorPage";
 import RateAndTrends from "./pages/RateAndTrends";
 import Investment from "./pages/Investment";
 import InvestmentExplore from "./pages/InvestmentExplore";
@@ -33,6 +32,15 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInformation } from "./features/slices/userInformation";
 import Protected from "./routes/protectedRoute";
+import Blog from './pages/Blog';
+import BlogSingle from './pages/BlogSingle';
+import BlogCategory from './pages/BlogCategory';
+import UnitConverter        from "./pages/UnitConverter";
+import EmiCalculatorPage    from "./pages/EmiCalculatorPage";
+import ROICalculator        from "./pages/ROICalculator";
+import LandPriceEstimator   from "./pages/LandPriceEstimator";
+import PropertyTaxEstimator from "./pages/PropertyTaxEstimator";
+import RentVsBuy            from "./pages/RentVsBuy";
 import {
   fetchFavoritesList,
   removeAllFavorites,
@@ -122,7 +130,6 @@ function App(props) {
           <Route path="/homeLone/applyOnline" element={<HomeLoneOnline />} />
           <Route path="/payRentOnline" element={<PayRentOnline />} />
           <Route path="/LegalHelp" element={<LegalHelp />} />
-          <Route path="/emiCalculator" element={<EmiCalculatorPage />} />
           <Route path="/rateandtrend" element={<RateAndTrends />} />
           <Route path="/investment" element={<Investment />} />
           <Route path="/investment/export" element={<InvestmentExplore />} />
@@ -143,6 +150,17 @@ function App(props) {
             path="/investment/viewallproduct"
             element={<InvestmentAllProduct />}
           />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogSingle />} />
+          <Route path="/blog/category/:slug" element={<BlogCategory />} />
+         
+
+          <Route path="/tools/unit-converter" element={<UnitConverter />} />
+          <Route path="/tools/emi-calculator" element={<EmiCalculatorPage />} />
+          <Route path="/tools/roi-calculator" element={<ROICalculator />} />
+          <Route path="/tools/land-estimator" element={<LandPriceEstimator />} />
+          <Route path="/tools/property-tax" element={<PropertyTaxEstimator />} />
+          <Route path="/tools/rent-vs-buy" element={<RentVsBuy />} />
           {/* Protected Routes */}
           <Route
             path="/my-profile"

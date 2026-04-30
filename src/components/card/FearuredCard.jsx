@@ -1,116 +1,157 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import '../../index.css';
 import {
   FaMapMarkerAlt, FaBed, FaBath, FaUtensils,
   FaLayerGroup, FaCalendarAlt, FaHashtag,
   FaRulerCombined, FaRoad, FaBuilding
 } from "react-icons/fa";
+import "./FeaturedCard.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { removeFavoriteList, setFavoritesList } from "../../features/slices/favourites";
 import apiClient from "../../utils/apiClient";
 
-// ─── Helper: detect property category ───────────────────────────────────────
+/* ── HELPERS ── */
 const getPropertyKind = (product) => {
+  const category = (product?.propertycategory || "").toLowerCase();
+  if (category === "land") return "land";
+  if (category === "apartment") return "apartment";
+  if (category === "house" || category === "commercial") return "house";
+
   const type = (
+    product?.property_type ||
     product?.propertyType?.name ||
-    product?.property_type?.name ||
     product?.category?.name ||
     ""
   ).toLowerCase();
-
   if (type.includes("land") || type.includes("plot")) return "land";
   if (type.includes("apartment") || type.includes("flat")) return "apartment";
-  return "house"; // house, bungalow, commercial, etc.
+  return "house";
 };
 
-// ─── Stats row per type ──────────────────────────────────────────────────────
+const CATEGORY_CLASS = {
+  house:      "cat-house",
+  commercial: "cat-commercial",
+  land:       "cat-land",
+  apartment:  "cat-apartment",
+};
+const CATEGORY_LABEL = {
+  house:      "House",
+  commercial: "Commercial",
+  land:       "Land",
+  apartment:  "Apartment",
+};
+
+/* ── STATUS CHIP ── */
+const getChipClass = (product) => {
+  const days = product.created_at
+    ? Math.floor((Date.now() - new Date(product.created_at)) / 86400000)
+    : 999;
+  if (days <= 7)  return { cls: "chip-new",      label: "New" };
+  if (days <= 30) return { cls: "chip-prime",    label: "Prime" };
+  if (product.featured) return { cls: "chip-featured", label: "Featured" };
+  return null;
+};
+
+/* ── SUB-COMPONENTS ── */
+const CategoryBadge = ({ product }) => {
+  const raw = (product?.propertycategory || "").toLowerCase();
+  const cls = CATEGORY_CLASS[raw];
+  const lbl = CATEGORY_LABEL[raw];
+  if (!cls) return null;
+  return <div className={`fc-badge fc-badge-cat ${cls}`}>{lbl}</div>;
+};
+
+const StatItem = ({ icon, value, label }) => (
+  <div className="fc-stat">
+    <span className="fc-stat-icon">{icon}</span>
+    <span className="fc-stat-val">{value}</span>
+    <span className="fc-stat-lbl">{label}</span>
+  </div>
+);
+
 const LandStats = ({ product }) => (
   <>
     {product.land_area_in_anna_lal && (
-      <StatItem icon={<FaRulerCombined />} label={`${product.land_area_in_anna_lal} Anna`} />
+      <StatItem icon={<FaRulerCombined />} value={product.land_area_in_anna_lal} label="Anna" />
     )}
     {product.land_area_in_ropani_lal && (
-      <StatItem icon={<FaRulerCombined />} label={`${product.land_area_in_ropani_lal} Ropani`} />
+      <StatItem icon={<FaRulerCombined />} value={product.land_area_in_ropani_lal} label="Ropani" />
     )}
     {product.land_area_in_sqft_lal && (
-      <StatItem icon={<FaRulerCombined />} label={`${product.land_area_in_sqft_lal} sqft`} />
+      <StatItem icon={<FaRulerCombined />} value={product.land_area_in_sqft_lal} label="sqft" />
     )}
     {product.geometry_of_land && (
-      <StatItem icon={<FaRoad />} label={product.geometry_of_land} />
+      <StatItem icon={<FaRoad />} value={product.geometry_of_land} label="Shape" />
     )}
   </>
 );
 
 const HouseStats = ({ product }) => (
   <>
-    <StatItem icon={<FaBed />} label={product.bedrooms || 0} />
-    <StatItem icon={<FaBath />} label={product.bathrooms || 0} />
-    <StatItem icon={<FaUtensils />} label={product.kitchens || 0} />
-    <StatItem icon={<FaLayerGroup />} label={product.floors || 0} />
+    <StatItem icon={<FaBed />}        value={product.bedrooms  || 0} label="Beds" />
+    <StatItem icon={<FaBath />}       value={product.bathrooms || 0} label="Baths" />
+    <StatItem icon={<FaUtensils />}   value={product.kitchens  || 0} label="Kitchen" />
+    <StatItem icon={<FaLayerGroup />} value={`${product.floors || 0}`} label="Floors" />
   </>
 );
 
 const ApartmentStats = ({ product }) => (
   <>
-    <StatItem icon={<FaBed />} label={product.bedrooms || 0} />
-    <StatItem icon={<FaBath />} label={product.bathrooms || 0} />
-    <StatItem icon={<FaBuilding />} label={`Fl ${product.floors || 0}`} />
+    <StatItem icon={<FaBed />}          value={product.bedrooms  || 0} label="Beds" />
+    <StatItem icon={<FaBath />}         value={product.bathrooms || 0} label="Baths" />
+    <StatItem icon={<FaBuilding />}     value={`${product.floors || 0}th`} label="Floor" />
     {product.land_area_in_sqft_lal && (
-      <StatItem icon={<FaRulerCombined />} label={`${product.land_area_in_sqft_lal} sqft`} />
+      <StatItem icon={<FaRulerCombined />} value={product.land_area_in_sqft_lal} label="sqft" />
     )}
   </>
 );
 
-const StatItem = ({ icon, label }) => (
-  <div className="flex flex-col items-center flex-1 border-l border-white/10 first:border-l-0">
-    <span className="text-[#e02424] opacity-80 text-sm mb-1">{icon}</span>
-    <span className="text-[11px] font-bold">{label}</span>
-  </div>
-);
-
-// ─── Main Card ───────────────────────────────────────────────────────────────
+/* ── MAIN COMPONENT ── */
 const FeaturedCard = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [favorite, setFavorite] = useState(false);
-  const [imgIdx, setImgIdx] = useState(0);
+  const [favorite,  setFavorite]  = useState(false);
+  const [imgIdx,    setImgIdx]    = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   const favorites = useSelector((state) => state.favorites.data);
-  const user = useSelector((state) => state.user);
-  const token = localStorage.getItem("sheetal_token");
+  const user      = useSelector((state) => state.user);
+  const token     = localStorage.getItem("sheetal_token");
+  const kind      = getPropertyKind(product);
+  const chip      = getChipClass(product);
 
-  const kind = getPropertyKind(product);
+  const purposeName  = product.purpose?.name || product.purpose || "SALE";
+  const isRent       = purposeName.toLowerCase().includes("rent");
+  const purposeLabel = `For ${purposeName}`;
 
   const allImages = useMemo(() => {
-    const gallery = product.images || [];
-    return [
-      product.feature_image,
-      ...gallery.map((img) => img.image_path || img.image || img),
-    ].filter(Boolean);
+    const gallery = (product.images || []).map((img) => {
+      if (typeof img === "string") return img;
+      return img.image_path || img.filename || img.image || null;
+    }).filter(Boolean);
+    return [product.feature_image, ...gallery].filter(Boolean);
   }, [product]);
 
-  // Slideshow
+  /* Slideshow — only while hovered */
   useEffect(() => {
-    let interval = null;
+    let timer = null;
     if (isHovered && allImages.length > 1) {
-      interval = setInterval(() => {
+      timer = setInterval(() => {
         setImgIdx((prev) => (prev + 1) % allImages.length);
-      }, 1500);
+      }, 2200);
     } else {
       setImgIdx(0);
     }
-    return () => { if (interval) clearInterval(interval); };
+    return () => { if (timer) clearInterval(timer); };
   }, [isHovered, allImages.length]);
 
-  // Favorite sync
   useEffect(() => {
-    if (favorites?.length > 0) {
+    if (favorites?.length > 0)
       setFavorite(!!favorites.find((item) => item.property_id === product.id));
-    }
   }, [favorites, product.id]);
 
   useEffect(() => {
@@ -162,103 +203,93 @@ const FeaturedCard = ({ product }) => {
     }
   };
 
-  // Kind-specific label for the type badge
- 
   return (
-    <div className="h-full p-2 ab">
+    <div className="h-full p-2">
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => navigate(`/property/${product.id}`)}
-        className="group relative h-[400px] w-full overflow-hidden rounded-2xl shadow-xl cursor-pointer bg-[#f9fafb]"
+        className="fc-card"
       >
-        {/* IMAGE */}
-        <div className="absolute inset-0 z-0 bg-gray-200">
-          <img
-            src={allImages[imgIdx] || "/fallback-image.jpg"}
-            alt="property"
-            className="w-full h-full object-cover transition-opacity duration-500 ease-in-out"
-          />
-          {allImages.length > 1 && (
-            <div className="absolute top-2 left-0 right-0 flex gap-1 px-4 z-30">
-              {allImages.map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-0.5 flex-1 rounded-full transition-all duration-300 ${
-                    i === imgIdx ? "bg-white" : "bg-white/30"
-                  }`}
-                />
-              ))}
+        {/* IMAGE STACK */}
+        <div className="fc-img-wrap">
+          {allImages.map((src, i) => (
+            <div key={i} className={`fc-slide${i === imgIdx ? " active" : ""}`}>
+              <img src={src} alt="property" className="fc-img" loading="lazy" />
             </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111827]/100 via-[#111827]/10 to-transparent" />
+          ))}
+          <div className="fc-scrim" />
         </div>
 
-        {/* TOP BADGES */}
-        <div className="absolute top-4 left-3 z-20 flex flex-col gap-2">
-          <div className="px-2.5 py-1 bg-[#e02424] rounded text-[10px] font-bold text-white uppercase shadow-md w-fit">
-            For {product.purpose?.name || product.purpose || "SALE"}
+        {/* PROGRESS BARS */}
+        {allImages.length > 1 && (
+          <div className="fc-progress-bars">
+            {allImages.map((_, i) => (
+              <div key={i} className={`fc-bar${i === imgIdx ? " active" : ""}`} />
+            ))}
           </div>
-          
-          <div className="px-2 py-1 bg-[#111827]/60 backdrop-blur-md rounded text-[10px] font-bold text-white border border-white/20 w-fit flex items-center">
-            <FaHashtag className="mr-1 text-[#e02424]" />
+        )}
+
+        {/* TOP BADGES */}
+        <div className="fc-top-badges">
+          <div className={`fc-badge fc-badge-purpose${isRent ? " rent" : ""}`}>
+            {purposeLabel}
+          </div>
+          <CategoryBadge product={product} />
+          <div className="fc-badge fc-badge-code">
+            <FaHashtag style={{ width: 8, height: 8 }} />
             {product.property_code || product.id}
           </div>
         </div>
 
         {/* HEART */}
-        <div
-          className="absolute top-4 right-3 z-20 p-2 rounded-full bg-[#111827]/30 backdrop-blur-md border border-white/10 hover:bg-[#e02424]/20 transition-colors"
-          onClick={(e) => onFavoriteClick(e, product.id)}
-        >
+        <div className="fc-heart" onClick={(e) => onFavoriteClick(e, product.id)}>
           {favorite
-            ? <AiFillHeart className="text-[#e02424] w-4 h-4" />
-            : <AiOutlineHeart className="text-white w-4 h-4" />}
+            ? <AiFillHeart  style={{ color: "var(--r)", width: 14, height: 14 }} />
+            : <AiOutlineHeart style={{ color: "var(--r)", width: 14, height: 14 }} />}
         </div>
 
-        {/* PRICE */}
-        <div className="absolute left-5 z-20 bottom-[165px]">
-          <h2 className="text-[#f9fafb] text-3xl font-bold drop-shadow-2xl serif">
-            Rs. {product?.total_price
-              ? Number(product.total_price).toLocaleString()
-              : "Contact for Price"}
-          </h2>
-        </div>
+        {/* GLASS PANEL — floats over image */}
+        <div className="fc-panel">
 
-        {/* DETAILS PANEL */}
-        <div
-          className="absolute bottom-0 left-0 right-0 z-10 p-4"
-          style={{
-            background: "rgba(17, 24, 39, 0.85)",
-            backdropFilter: "blur(12px)",
-            borderTop: "1px solid rgba(249, 250, 251, 0.1)",
-          }}
-        >
-          <div className="mb-1">
-            <h3 className="text-white text-md font-semibold truncate serif leading-tight">
-              {product.name?.length > 80
-                ? product.name.slice(0, 80) + "..."
-                : product.name}
-            </h3>
-            <p className="text-[#f9fafb]/70 text-[11px] flex items-center mt-1">
-              <FaMapMarkerAlt className="mr-1 text-[#e02424]" />
-              {product.property_location}
-            </p>
-            <p className="text-[#f9fafb]/50 text-[9px] flex items-center mt-1">
-              <FaCalendarAlt className="mr-1 text-[#e02424]" />
-              Posted:{" "}
-              {product.created_at
-                ? new Date(product.created_at).toLocaleDateString()
-                : "Recently"}
-            </p>
+          <div className="fc-price-row">
+            <div className="fc-price serif">
+              {product?.total_price
+                ? <>Rs. {Number(product.total_price).toLocaleString()}<span className="fc-price-sub"> total</span></>
+                : <span className="fc-price-contact">Contact for Price</span>}
+            </div>
+            {chip && (
+              <div className={`fc-chip ${chip.cls}`}>{chip.label}</div>
+            )}
           </div>
 
-          {/* STATS ROW — varies by type */}
-          <div className="flex justify-between items-center py-2 mt-2 border-y border-white/10 text-white">
-            {kind === "land" && <LandStats product={product} />}
-            {kind === "house" && <HouseStats product={product} />}
+          <div className="fc-price-divider" />
+
+          <div className="fc-title serif">
+            {product.name?.length > 80
+              ? product.name.slice(0, 80) + "…"
+              : product.name}
+          </div>
+
+          <p className="fc-location">
+            <FaMapMarkerAlt className="fc-pin" />
+            {product.property_location}
+          </p>
+
+          <p className="fc-date">
+            <FaCalendarAlt className="fc-cal" />
+            Posted:{" "}
+            {product.created_at
+              ? new Date(product.created_at).toLocaleDateString()
+              : "Recently"}
+          </p>
+
+          <div className="fc-stats">
+            {kind === "land"      && <LandStats      product={product} />}
+            {kind === "house"     && <HouseStats     product={product} />}
             {kind === "apartment" && <ApartmentStats product={product} />}
           </div>
+
         </div>
       </div>
     </div>

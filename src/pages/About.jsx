@@ -187,19 +187,7 @@ export default function About() {
           </svg>
         </div>
 
-        {/* Glow */}
-        <div style={{ position: "absolute", top: "-20%", right: "-8%", width: "55vw", height: "55vw", maxWidth: 800, borderRadius: "50%", background: "radial-gradient(circle,var(--r06) 0%,transparent 65%)", pointerEvents: "none" }} />
-
-        {/* Corner accents */}
-        <div style={{ position: "absolute", top: 0, right: 0, pointerEvents: "none" }}>
-          <div style={{ position: "absolute", top: 28, right: 0, width: 100, height: 1, background: "var(--r)" }} />
-          <div style={{ position: "absolute", top: 0, right: 28, width: 1, height: 100, background: "var(--r)" }} />
-        </div>
-        <div style={{ position: "absolute", bottom: 0, left: 0, pointerEvents: "none" }}>
-          <div style={{ position: "absolute", bottom: 28, left: 0, width: 100, height: 1, background: "var(--r)" }} />
-          <div style={{ position: "absolute", bottom: 0, left: 28, width: 1, height: 100, background: "var(--r)" }} />
-        </div>
-
+       
         <div className="hero-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 48px 80px", width: "100%" }}>
           <div className="g2" style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 64, alignItems: "center" }}>
 

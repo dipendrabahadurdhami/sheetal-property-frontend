@@ -1,5 +1,5 @@
 import React from "react";
-import EmiCalculator from "../components/Common/EmiCalculator";
+import EmiCalculatorPage from "./EmiCalculatorPage";
 import Contact from "../components/Common/Contact";
 import Details from "../components/Service/HomeLone/Details";
 import HowToWork from "../components/Service/HomeLone/HowToWork";
@@ -11,7 +11,7 @@ const HomeLone = () => {
       <Details />
       <HowToWork />
       <LinkBanks />
-      <EmiCalculator />
+      <EmiCalculatorPage />
       <Contact />
     </div>
   );

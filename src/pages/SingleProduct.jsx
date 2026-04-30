@@ -7,11 +7,16 @@ import ProductLocation from "../components/SingleProduct/ProductLocation";
 import ImageGallery from "../components/SingleProduct/ImageGallery";
 import PropertyHighlight from "../components/SingleProduct/PropertyHighlight";
 import Details from "../components/SingleProduct/Details";
+import ToolsWidget from "../components/SingleProduct/ToolsWidget";
+import RelatedProperties from "../components/SingleProduct/RelatedProperties";
+import BlogStrip from "../components/SingleProduct/BlogStrip";
+import ProductMap from "../components/SingleProduct/Details/ProductMap";
+import YoutubeVideo from "../components/SingleProduct/Video";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
-import YoutubeVideo from "../components/SingleProduct/Video";
 import headTag from "../headTag";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 const SingleProduct = () => {
   const [open, setOpen] = useState(false);
@@ -23,7 +28,6 @@ const SingleProduct = () => {
 
   useEffect(() => {
     FetchData();
-
     // eslint-disable-next-line
   }, [id]);
 
@@ -39,10 +43,8 @@ const SingleProduct = () => {
             setLoading(false);
           }
         })
-        .catch((err) => {
-          setLoading(false);
-        });
-    } catch (err) {
+        .catch(() => setLoading(false));
+    } catch {
       setLoading(false);
     }
   }
@@ -64,31 +66,163 @@ const SingleProduct = () => {
           {!loading && Object.keys(property).length > 0 && (
             <>
               <UserHead setOpen={setOpen} property={property} />
-              <div className="px-5 lg:px-10 py-10 pb-10 container mx-auto">
+
+              <div
+                style={{ marginTop: "50px" }}
+                className="px-5 lg:px-10 py-10 container mx-auto"
+              >
+                {/* ── Full-width top section ── */}
                 <ProductLocation property={property} />
                 <ImageGallery property={property} />
 
-                {property?.property_description && (
-                  <Description data={property} />
-                )}
-                {/* <ExtraValue /> */}
-                {property?.property_highlights && (
-                  <PropertyHighlight data={property?.property_highlights} />
-                )}
-                <Details data={property} />
-                {/* <ReviewComponent property={property} /> */}
-                {property?.youtube_url && (
-                  <YoutubeVideo url={property?.youtube_url} />
-                )}
-                <ScheduleTour property={property} />
+                {/* ── Two-column layout ── */}
+                <div className="sp-layout" style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 360px",
+                  gap: "32px",
+                  alignItems: "start",
+                  marginTop: "8px",
+                }}>
+
+                  {/* ════ LEFT COLUMN ════ */}
+                  <div style={{ minWidth: 0 }}>
+
+                    {property?.property_description && (
+                      <Description data={property} />
+                    )}
+
+                    {property?.property_highlights && (
+                      <PropertyHighlight data={property.property_highlights} />
+                    )}
+
+                    {/* Details WITHOUT the map (map is in right sidebar) */}
+                    <Details data={property} hideMap />
+
+                    {property?.youtube_url && (
+                      <YoutubeVideo url={property.youtube_url} />
+                    )}
+
+                    <ToolsWidget property={property} />
+                    <RelatedProperties property={property} />
+                    <BlogStrip />
+
+                  </div>
+                  {/* ════ END LEFT COLUMN ════ */}
+
+                  {/* ════ RIGHT COLUMN (sticky sidebar) ════ */}
+                  <div className="sp-sidebar" style={{
+                    position: "sticky",
+                    top: "90px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "20px",
+                  }}>
+
+                    {/* ── Map Card ── */}
+                    {property?.latitude && property?.longitude && (
+                      <div style={{
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "14px",
+                        overflow: "hidden",
+                        background: "#fff",
+                      }}>
+                        {/* Card header */}
+                        <div style={{
+                          padding: "13px 16px",
+                          borderBottom: "1px solid #f3f4f6",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}>
+                          <span style={{
+                            width: "4px", height: "18px",
+                            background: "var(--r, #e53935)",
+                            borderRadius: "2px",
+                            display: "inline-block",
+                          }} />
+                          <span style={{
+                            fontWeight: "700",
+                            fontSize: "15px",
+                            color: "var(--d, #111827)",
+                          }}>
+                            Location on Map
+                          </span>
+                        </div>
+
+                        {/* Map */}
+                        <div style={{ height: "220px", overflow: "hidden" }}>
+                          <ProductMap
+                            latitude={property.latitude}
+                            longitude={property.longitude}
+                            data={property}
+                          />
+                        </div>
+
+                        {/* Address footer */}
+                        {property?.property_location && (
+                          <div style={{
+                            padding: "9px 14px",
+                            borderTop: "1px solid #f3f4f6",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            fontSize: "12px",
+                            color: "#6b7280",
+                          }}>
+                            <FaMapMarkerAlt style={{
+                              color: "var(--r, #e53935)",
+                              fontSize: "11px",
+                              flexShrink: 0,
+                            }} />
+                            <span style={{
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}>
+                              {property.property_location}
+                              {property.district ? `, ${property.district}` : ""}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* ── Schedule Tour Card ── */}
+                    <div style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "14px",
+                      overflow: "hidden",
+                      background: "#fff",
+                    }}>
+                      <ScheduleTour property={property} sidebar />
+                    </div>
+
+                  </div>
+                  {/* ════ END RIGHT COLUMN ════ */}
+
+                </div>
+                {/* ── End two-column ── */}
+
               </div>
-              {/* <Featured /> */}
-              {/* <Property /> */}
+
               <ContactModel data={property} open={open} setOpen={setOpen} />
             </>
           )}
         </>
       )}
+
+      {/* Responsive: collapse to single column on tablet/mobile */}
+      <style>{`
+        @media (max-width: 1024px) {
+          .sp-layout {
+            grid-template-columns: 1fr !important;
+          }
+          .sp-sidebar {
+            position: static !important;
+            top: auto !important;
+          }
+        }
+      `}</style>
     </>
   );
 };

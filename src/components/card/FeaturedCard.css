@@ -1,0 +1,343 @@
+/* FeaturedCard.css — Full-image glass overlay theme */
+
+/* ── CARD SHELL ── */
+.fc-card {
+  position: relative;
+  height: 420px;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #111;
+  font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.18);
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s ease;
+}
+
+.fc-card:hover {
+  transform: translateY(-6px) scale(1.012);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.32),
+    0 2px 8px rgba(224, 36, 36, 0.12);
+}
+
+/* ── IMAGE STACK ── */
+.fc-img-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.fc-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease, transform 6s ease;
+  transform: scale(1.06);
+}
+
+.fc-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fc-card:hover .fc-slide.active {
+  transform: scale(1.04);
+  transition: opacity 0.9s ease, transform 4s ease;
+}
+
+.fc-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── DARK SCRIM — fades image bottom for text legibility ── */
+.fc-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.52) 38%,
+    rgba(0, 0, 0, 0.18) 65%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+}
+
+/* ── PROGRESS BARS ── */
+.fc-progress-bars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 3px;
+  padding: 12px 14px 0;
+  z-index: 30;
+}
+
+.fc-bar {
+  height: 2px;
+  flex: 1;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.28);
+  overflow: hidden;
+  position: relative;
+}
+
+.fc-bar.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.9);
+  animation: barFill 1.8s linear forwards;
+}
+
+@keyframes barFill {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+
+/* ── TOP BADGES ── */
+.fc-top-badges {
+  position: absolute;
+  top: 14px;
+  left: 13px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fc-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  width: fit-content;
+}
+
+/* purpose pill */
+.fc-badge-purpose {
+  background: var(--r);
+  color: #fff;
+  box-shadow: 0 2px 10px var(--r28);
+}
+
+.fc-badge-purpose.rent {
+  background: #185FA5;
+  box-shadow: 0 2px 10px rgba(24, 95, 165, 0.35);
+}
+
+/* category pill — tinted glass */
+.fc-badge-cat {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 0.5px solid rgba(255, 255, 255, 0.18);
+}
+
+.cat-house      { background: rgba(39, 80, 10, 0.55);   color: #c6f0a0; }
+.cat-land       { background: rgba(99, 56, 6, 0.55);    color: #fad89a; }
+.cat-commercial { background: rgba(99, 56, 6, 0.55);    color: #fad89a; }
+.cat-apartment  { background: rgba(60, 52, 137, 0.55);  color: #c8c4f8; }
+
+/* property code */
+.fc-badge-code {
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.75);
+  border: 0.5px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ── HEART ── */
+.fc-heart {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  z-index: 20;
+  width: 34px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 0.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.fc-heart:hover {
+  background: var(--r);
+  transform: scale(1.12);
+  box-shadow: 0 4px 14px rgba(224, 36, 36, 0.5);
+}
+
+/* ── GLASS PANEL — floats over image ── */
+.fc-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 16px 16px 18px;
+}
+
+/* ── PRICE ── */
+.fc-price-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.fc-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.4px;
+  line-height: 1;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.fc-price-sub {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  margin-left: 2px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.fc-price-contact {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* status chips */
+.fc-chip {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.chip-new      { background: rgba(4,  52,  44,  0.65); color: #7fdfc4; border: 0.5px solid rgba(127, 223, 196, 0.25); }
+.chip-prime    { background: rgba(38, 33,  92,  0.65); color: #bbb8f8; border: 0.5px solid rgba(187, 184, 248, 0.25); }
+.chip-featured { background: rgba(65, 36,  2,   0.65); color: #fac775; border: 0.5px solid rgba(250, 199, 117, 0.25); }
+.chip-hot      { background: rgba(80, 19,  19,  0.65); color: #f09595; border: 0.5px solid rgba(240, 149, 149, 0.25); }
+
+/* ── DIVIDER ── */
+.fc-price-divider {
+  height: 0.5px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-bottom: 8px;
+}
+
+/* ── TITLE ── */
+.fc-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* ── LOCATION ── */
+.fc-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.fc-pin {
+  color: var(--r);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* ── DATE ── */
+.fc-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.40);
+  line-height: 1.4;
+  margin-bottom: 11px;
+}
+
+.fc-cal {
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* ── STATS ── */
+.fc-stats {
+  display: flex;
+  align-items: center;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+  padding-top: 10px;
+}
+
+.fc-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-left: 0.5px solid rgba(255, 255, 255, 0.10);
+  padding: 2px 4px;
+}
+
+.fc-stat:first-child { border-left: none; }
+
+.fc-stat-icon {
+  color: var(--r);
+  font-size: 12px;
+  margin-bottom: 3px;
+  opacity: 0.9;
+}
+
+.fc-stat-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+
+.fc-stat-lbl {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}

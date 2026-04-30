@@ -10,26 +10,46 @@ const Featured = () => {
   const [allProduct, setAllProduct] = useState([]);
 
   useEffect(() => {
-    try {
-      async function FetchData() {
+    async function FetchData() {
+      try {
         const res = await axios.get(
           `${process.env.REACT_APP_API_LINK}/featured-property-list`
         );
-
         setAllProduct(res.data.data);
+      } catch (e) {
+        console.error("Featured fetch error:", e);
       }
-      FetchData();
-    } catch (e) {}
+    }
+    FetchData();
   }, []);
 
   return (
-    <div className="pt-6 md:pt-12 px-5 container mx-auto">
-      <div className="">
-        <h1 className="pb-3 text-2xl">Featured Properties</h1>
-        <p className="bg-red-700 h-1 w-16"></p>
+    <section className="ab py-10 md:py-16 px-5 container mx-auto">
+
+      {/* HEADER */}
+      <div className="flex items-end justify-between mb-2">
+        <div>
+          <div className="lbl">
+            <div className="lbl-line" />
+            <span className="lbl-txt">Handpicked for you</span>
+          </div>
+          <h2 className="h-lg serif">Featured Properties</h2>
+        </div>
+        <Link
+          to="/properties?type=featured-properties"
+          className="btn-g hidden md:inline-flex items-center gap-2"
+          style={{ fontSize: "12px", padding: "10px 20px" }}
+        >
+          View All
+          <img src="/arrow-right.svg" alt="" className="w-4 h-4" />
+        </Link>
       </div>
 
-      <div className="py-4 md:py-4 md:pb-2 -mx-4">
+      {/* RED DIVIDER */}
+      <div style={{ height: "1px", width: "48px", background: "var(--r)", margin: "12px 0 28px" }} />
+
+      {/* FIRST ROW */}
+      <div className="-mx-2">
         <Carousel
           responsive={responsive}
           customRightArrow={<CustomRightArrow />}
@@ -37,43 +57,53 @@ const Featured = () => {
           className="py-3 md:pb-10"
         >
           {[...allProduct].slice(0, 4).map((product, index) => (
-            <div key={index} className="h-full px-0 mb-2">
+            <div key={index} className="h-full px-2 mb-2">
               <FearuredCard product={product} />
             </div>
           ))}
         </Carousel>
       </div>
 
+      {/* SECOND ROW */}
       {allProduct.length > 4 && (
-        <div className="py-4 md:py-4 md:pb-2 -mx-4">
+        <div className="-mx-2 mt-2">
           <Carousel
             responsive={responsive}
             customRightArrow={<CustomRightArrow />}
             customLeftArrow={<CustomLeftArrow />}
             className="py-3 md:pb-10"
           >
-            {[...allProduct]
-              .slice(4, allProduct.length)
-              .map((product, index) => (
-                <div key={index} className="h-full px-4 mb-2">
-                  <FearuredCard product={product} />
-                </div>
-              ))}
+            {[...allProduct].slice(4).map((product, index) => (
+              <div key={index} className="h-full px-2 mb-2">
+                <FearuredCard product={product} />
+              </div>
+            ))}
           </Carousel>
-          <div className="flex justify-end mt-8 md:mt-0">
+
+          {/* MOBILE VIEW ALL */}
+          <div className="flex justify-end mt-6 md:hidden">
             <Link
               to="/properties?type=featured-properties"
-              className="flex space-x-2 items-center"
+              className="btn-g flex items-center gap-2"
+              style={{ fontSize: "12px", padding: "10px 20px" }}
             >
-              <div>View All</div>
-              <div className="w-6 h-[21px]">
-                <img src="/arrow-right.svg" alt="" />
-              </div>
+              View All
+              <img src="/arrow-right.svg" alt="" className="w-4 h-4" />
             </Link>
           </div>
         </div>
       )}
-    </div>
+
+      {/* EMPTY STATE */}
+      {allProduct.length === 0 && (
+        <div className="text-center py-20">
+          <p style={{ color: "var(--d)", opacity: 0.35, fontSize: "14px" }}>
+            No featured properties at the moment.
+          </p>
+        </div>
+      )}
+
+    </section>
   );
 };
 

@@ -1,174 +1,227 @@
 import React, { useState } from "react";
-import MortageCalculator from "./MortageCalculator";
-import apiClient from '../../utils/apiClient';
-import { FaSpinner } from "react-icons/fa";
+import apiClient from "../../utils/apiClient";
+import {
+  FaSpinner, FaCalendarAlt, FaClock,
+  FaUser, FaPhone, FaEnvelope,
+} from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-const ScheduleTour = () => {
 
-  const initalFormData={
-    date: '',
-    time:'',
-    name:'',
-    phone:'',
-    email:'',
-    note:''
-  }
-  const [form,setForm]= useState(initalFormData)
-  const [errors, setErrors] = useState(null);
+const initialFormData = { date: "", time: "", name: "", phone: "", email: "", note: "" };
+
+const Field = ({ icon, label, error, children }) => (
+  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+    {label && (
+      <label style={{
+        fontSize: "11px", fontWeight: "700",
+        color: "var(--d, #111827)",
+        textTransform: "uppercase", letterSpacing: "0.05em",
+      }}>
+        {label}
+      </label>
+    )}
+    <div style={{ position: "relative" }}>
+      {icon && (
+        <span style={{
+          position: "absolute", left: "10px", top: "50%",
+          transform: "translateY(-50%)",
+          color: "#9ca3af", fontSize: "12px", pointerEvents: "none",
+        }}>
+          {icon}
+        </span>
+      )}
+      {children}
+    </div>
+    {error && (
+      <span style={{ fontSize: "11px", color: "var(--r, #e53935)", fontWeight: "600" }}>
+        {error}
+      </span>
+    )}
+  </div>
+);
+
+const iStyle = (hasIcon = true, error = false) => ({
+  width: "100%",
+  padding: hasIcon ? "8px 10px 8px 30px" : "8px 10px",
+  fontSize: "12px",
+  border: `1px solid ${error ? "var(--r, #e53935)" : "#e5e7eb"}`,
+  borderRadius: "8px",
+  outline: "none",
+  color: "var(--d, #111827)",
+  background: "#fff",
+  boxSizing: "border-box",
+  transition: "border-color 0.15s",
+  fontFamily: "inherit",
+});
+
+const ScheduleTour = ({ property, sidebar = false }) => {
+  const [form, setForm] = useState(initialFormData);
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const {id} = useParams();
+  const params = useParams();
+  const propertyId = property?.id || params?.id;
+
   const validate = () => {
-    const __errors = {};
-    const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/
-    if(!form.date) __errors.date = "Enter date";
-    if(!form.time) __errors.time = "Enter time";
-    if(!form.name) __errors.name = "Enter name";
-    if(!form.phone) __errors.phone = "Enter phone";
-    if(!form.email) __errors.email = "Enter email address";
-    else if(!emailRegex.test(form.email)) __errors.email = "Invalid email address";
-    if(!form.note) __errors.note = "Enter note";
+    const e = {};
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!form.date)  e.date  = "Required";
+    if (!form.time)  e.time  = "Required";
+    if (!form.name)  e.name  = "Enter your name";
+    if (!form.phone) e.phone = "Enter phone";
+    if (!form.email)            e.email = "Enter email";
+    else if (!emailRe.test(form.email)) e.email = "Invalid email";
+    if (!form.note)  e.note  = "Enter a note";
+    setErrors(e);
+    return e;
+  };
 
-    setErrors(__errors);
-    return __errors;
-  }
-  const handleFormSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const _errors = validate();
-    
+    const errs = validate();
+    if (Object.keys(errs).length > 0) return;
     setLoading(true);
-    if(Object.keys(_errors).length > 0){
-      setLoading(false)
-      return false;
-    }
-    try{
-      const data ={
-        date: form.date,
-        time: form.time,
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        note_description: form.note,
-        property_id: id
+    try {
+      const res = await apiClient.post("/schedule-tour", {
+        date: form.date, time: form.time,
+        name: form.name, email: form.email,
+        phone: form.phone, note_description: form.note,
+        property_id: propertyId,
+      });
+      if (res.status === 200) {
+        toast.success("Tour scheduled successfully!");
+        setForm(initialFormData);
+        setErrors({});
+      } else {
+        toast.error("Failed to schedule. Please try again.");
       }
-      await apiClient.post('/schedule-tour', data).then(res=>{
-        if(res.status === 200){
-          setLoading(false);
-          toast.success("Tour scheduled successfully");
-          setForm(initalFormData)
-        }else{
-          setLoading(false);
-          toast.error("Tour failed to schedule");
-        }
-      })
-    }catch(error){
-      console.error(error)
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      toast.error("Something went wrong. Please try again later or contact admin.");
     }
+  };
 
+  const onChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: null });
+  };
 
+  const focusStyle  = (e) => (e.target.style.borderColor = "var(--r, #e53935)");
+  const blurStyle   = (e, field) => (e.target.style.borderColor = errors[field] ? "var(--r,#e53935)" : "#e5e7eb");
 
-  }
-
-  const onInputChange = (e)=>{
-    setForm({
-      ...form,
-      [e.target.name]:e.target.value
-    })
-  }
   return (
-    <div className="py-16 space-y-8">
-      <div className="text-xl sm:text-2xl font-bold">Schedule Tour</div>
-      <div className="grid lg:grid-cols-3 gap-10 xl:gap-16">
-        <div className="lg:col-span-2 pb-5 border-b sm:border border-gray-300 sm:rounded-lg sm:p-5">
-          <form className="space-y-8" onSubmit={handleFormSubmit}>
-            <div className="grid md:grid-cols-2 gap-5">
-              <label className="flex flex-col">
-                <span>Date</span>
-                <input
-                  type={"text"}
-                  placeholder="Select Tour Date"
-                  className="border rounded w-full p-2"
-                  name="date"
-                  value={form.date}
-                  onChange={onInputChange}
-                />
-                {errors?.date && <span className="text-red-500 text-sm block">{errors?.date}</span>}
-              </label>
-              <label className="flex flex-col">
-                <span>Time</span>
-                <input
-                  type={"text"}
-                  placeholder="Select preferrable time"
-                  className="border rounded w-full p-2"
-                  name="time"
-                  value={form.time}
-                  onChange={onInputChange}
-                />
-                {errors?.time && <span className="text-red-500 text-sm block">{errors?.time}</span>}
-              </label>
-            </div>
-            <div className="grid md:grid-cols-3 items-end gap-5">
-              <label className="flex flex-col">
-                <span>Your Information</span>
-                <input
-                  name="name"
-                  type={"text"}
-                  placeholder="Name"
-                  className="border rounded w-full p-2"
-                  value={form.name}
-                  onChange={onInputChange}
-                />
-                {errors?.name && <span className="text-red-500 text-sm block">{errors?.name}</span>}
-              </label>
-              <label className="flex flex-col">
-                <input
-                  name="phone"
-                  type={"text"}
-                  placeholder="Phone"
-                  className="border rounded w-full p-2"
-                  value={form.phone}
-                  onChange={onInputChange}
-                />
-                {errors?.phone && <span className="text-red-500 text-sm block">{errors?.phone}</span>}
-              </label>
-              <label className="flex flex-col">
-                <input
-                  name="email"
-                  type={"email"}
-                  placeholder="Email"
-                  className="border rounded w-full p-2"
-                  value={form.email}
-                  onChange={onInputChange}
-                />
-                {errors?.email && <span className="text-red-500 text-sm block">{errors?.email}</span>}
-              </label>
-            </div>
-            <div>
-            <textarea
-              rows={6}
-              placeholder="note"
-              className="w-full border p-2 rounded"
-              name="note"
-              value={form.note}
-              onChange={onInputChange}
-            />
-            {errors?.note && <span className="text-red-500 text-sm block mt-0">{errors?.note}</span>}
-            </div>
-            <div className="">
-              <button className="bg-red-700 text-white font-semibold px-5 py-2 rounded-lg">
-                {loading?<FaSpinner className="spin"/>:'Contact Owner'}
-              </button>
-            </div>
-          </form>
-        </div>
-        {/* <div className="flex justify-center">
-          <div className="w-full lg:w-96">
-            <MortageCalculator />
-          </div>
-        </div> */}
+    <div>
+      {/* Header */}
+      <div style={{
+        padding: "13px 16px",
+        borderBottom: "1px solid #f3f4f6",
+        display: "flex", alignItems: "center", gap: "8px",
+      }}>
+        <span style={{
+          width: "4px", height: "18px",
+          background: "var(--r, #e53935)",
+          borderRadius: "2px", display: "inline-block",
+        }} />
+        <span style={{ fontWeight: "700", fontSize: "15px", color: "var(--d, #111827)" }}>
+          Schedule a Tour
+        </span>
       </div>
+
+      {/* Form */}
+      <div style={{ padding: sidebar ? "16px" : "20px 24px 24px" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+
+          {/* Date + Time */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <Field icon={<FaCalendarAlt />} label="Date" error={errors.date}>
+              <input type="date" name="date" value={form.date} onChange={onChange}
+                style={iStyle(true, !!errors.date)}
+                onFocus={focusStyle} onBlur={(e) => blurStyle(e, "date")}
+              />
+            </Field>
+            <Field icon={<FaClock />} label="Time" error={errors.time}>
+              <input type="time" name="time" value={form.time} onChange={onChange}
+                style={iStyle(true, !!errors.time)}
+                onFocus={focusStyle} onBlur={(e) => blurStyle(e, "time")}
+              />
+            </Field>
+          </div>
+
+          {/* Section label */}
+          <div style={{
+            fontSize: "11px", fontWeight: "700",
+            color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em",
+          }}>
+            Your Information
+          </div>
+
+          {/* Name */}
+          <Field icon={<FaUser />} error={errors.name}>
+            <input type="text" name="name" placeholder="Full Name"
+              value={form.name} onChange={onChange}
+              style={iStyle(true, !!errors.name)}
+              onFocus={focusStyle} onBlur={(e) => blurStyle(e, "name")}
+            />
+          </Field>
+
+          {/* Phone + Email */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <Field icon={<FaPhone />} error={errors.phone}>
+              <input type="text" name="phone" placeholder="Phone"
+                value={form.phone} onChange={onChange}
+                style={iStyle(true, !!errors.phone)}
+                onFocus={focusStyle} onBlur={(e) => blurStyle(e, "phone")}
+              />
+            </Field>
+            <Field icon={<FaEnvelope />} error={errors.email}>
+              <input type="email" name="email" placeholder="Email"
+                value={form.email} onChange={onChange}
+                style={iStyle(true, !!errors.email)}
+                onFocus={focusStyle} onBlur={(e) => blurStyle(e, "email")}
+              />
+            </Field>
+          </div>
+
+          {/* Note */}
+          <Field label="Note" error={errors.note}>
+            <textarea name="note" rows={sidebar ? 3 : 4}
+              placeholder="Anything you'd like us to know..."
+              value={form.note} onChange={onChange}
+              style={{ ...iStyle(false, !!errors.note), resize: "vertical", lineHeight: "1.6" }}
+              onFocus={focusStyle} onBlur={(e) => blurStyle(e, "note")}
+            />
+          </Field>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: "100%",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+              padding: "10px 0",
+              background: "var(--r, #e53935)", color: "#fff",
+              fontSize: "13px", fontWeight: "700",
+              border: "none", borderRadius: "8px",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.8 : 1,
+              transition: "opacity 0.15s",
+              marginTop: "4px",
+            }}
+            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.opacity = "0.88"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+          >
+            {loading
+              ? <><FaSpinner style={{ animation: "spin 0.8s linear infinite" }} /> Scheduling...</>
+              : "Schedule Tour →"
+            }
+          </button>
+
+        </form>
+      </div>
+
+      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 };

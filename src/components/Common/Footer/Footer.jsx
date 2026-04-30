@@ -67,7 +67,7 @@ const Footer = () => {
     { label: "Rent Properties",      to: "/productSearch?advertisement_purpose=Rent" },
     { label: "Invest in Properties", to: "/productSearch?advertisement_purpose=Invest" },
     { label: "Find Agent",           to: "/agents" },
-    { label: "Technical Services",   href: "https://www.prabidhilabs.com", external: true },
+    { label: "Technical Services",   href: "https://dhamiplus.com", external: true },
   ];
 
   return (
