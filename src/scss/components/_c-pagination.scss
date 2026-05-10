@@ -1,0 +1,49 @@
+.c-pagination{
+    li{
+        a{
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            padding:5px 10px;
+            border:1px solid #dedede;
+            margin:0 2px;
+        }
+        &.disabled{
+            a{
+                pointer-events: none;
+                opacity: 0.5
+            }
+        }
+        &.selected{
+            a{
+                @apply bg-red-500 text-white border-none;
+            }
+        }
+        &.previous:not(.disabled){
+            a{
+                padding:8px 10px;
+                
+            }
+            &:hover{
+                @apply border-none;
+                a{
+                    @apply bg-red-400 text-white;
+                }
+            }
+            
+        }
+        &.next:not(.disabled){
+            a{
+                padding:8px 10px;
+            }
+            &:hover{
+                @apply border-none;
+                a{
+                    @apply bg-red-400 text-white;
+                }
+            }
+        }
+           
+        
+    }
+}

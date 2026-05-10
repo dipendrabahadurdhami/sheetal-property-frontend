@@ -1,0 +1,18 @@
+Folder PATH listing
+Volume serial number is 60E0-98EF
+C:\USERS\USER\DESKTOP\SF\SHEETALPROPERTY\APP
+Invalid path - \USERS\USER\DESKTOP\SF\SHEETALPROPERTY\APP
+No subfolders exist 
+
+Folder PATH listing
+Volume serial number is 60E0-98EF
+C:\USERS\USER\DESKTOP\SF\SHEETALPROPERTY\ROUTES
+Invalid path - \USERS\USER\DESKTOP\SF\SHEETALPROPERTY\ROUTES
+No subfolders exist 
+
+Folder PATH listing
+Volume serial number is 60E0-98EF
+C:\USERS\USER\DESKTOP\SF\SHEETALPROPERTY\DATABASE
+Invalid path - \USERS\USER\DESKTOP\SF\SHEETALPROPERTY\DATABASE
+No subfolders exist 
+

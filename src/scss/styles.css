@@ -1,0 +1,136 @@
+.Toastify .Toastify__toast-body * {
+  @apply font-sans text-sm;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  -webkit-animation: spin 1s linear infinite;
+          animation: spin 1s linear infinite;
+}
+
+.public-DraftEditor-content {
+  min-height: 250px;
+}
+
+.c-single-image-block {
+  position: relative;
+}
+.c-single-image-block input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  padding: 0;
+}
+.c-single-image-block label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+}
+.c-single-image-block label .image {
+  display: inline-block;
+  height: 140px;
+  width: 140px;
+  background-color: #dedede;
+  border-radius: 4px;
+  background: #dedede url("../../assets/images/icon-image-fallback.svg") no-repeat center center/50%;
+}
+.c-single-image-block label .text {
+  font-size: 12px;
+  position: absolute;
+  bottom: 7px;
+  left: 0;
+  right: 0;
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  display: block;
+  color: #fff;
+  text-align: center;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+.c-single-image-block.small {
+  @apply inline-block;
+}
+.c-single-image-block.small label {
+  height: 100px;
+}
+.c-single-image-block.small label .image {
+  width: 100px;
+  height: 100px;
+}
+.c-single-image-block.small label .text {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.c-tags-input .tags-dropdown {
+  background-color: #fff;
+  @apply border border-gray-300 rounded-sm;
+  max-height: 200px;
+  overflow: auto;
+}
+@media print {
+  .c-tags-input {
+    display: none;
+  }
+}
+
+.c-pagination li a {
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  padding: 5px 10px;
+  border: 1px solid #dedede;
+  margin: 0 2px;
+}
+.c-pagination li.disabled a {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.c-pagination li.selected a {
+  @apply bg-red-500 text-white border-none;
+}
+.c-pagination li.previous:not(.disabled) a {
+  padding: 8px 10px;
+}
+.c-pagination li.previous:not(.disabled):hover {
+  @apply border-none;
+}
+.c-pagination li.previous:not(.disabled):hover a {
+  @apply bg-red-400 text-white;
+}
+.c-pagination li.next:not(.disabled) a {
+  padding: 8px 10px;
+}
+.c-pagination li.next:not(.disabled):hover {
+  @apply border-none;
+}
+.c-pagination li.next:not(.disabled):hover a {
+  @apply bg-red-400 text-white;
+}/*# sourceMappingURL=styles.css.map */

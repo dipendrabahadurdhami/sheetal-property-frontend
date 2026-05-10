@@ -1,0 +1,704 @@
+/* ═══════════════════════════════════════════════════════════
+   FeaturedCard.css  —  Ultra-premium property card v3
+   Fonts: Playfair Display (display) + Outfit (UI)
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* ── TOKENS ── */
+:root {
+  --fc-red:      var(--r, #c0121a);
+  --fc-red-glow: rgba(192, 18, 26, 0.45);
+  --fc-white:    #ffffff;
+  --fc-radius:   20px;
+  --fc-font-ui:  'Outfit',    sans-serif;
+  --fc-font-dis: 'Playfair Display', serif;
+  --fc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --fc-ease-spr: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ══════════════════════════════════
+   CARD SHELL
+══════════════════════════════════ */
+.fc2-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 420px;
+  border-radius: var(--fc-radius);
+  overflow: hidden;
+  cursor: pointer;
+  background: #0c0c0c;
+  font-family: var(--fc-font-ui);
+  outline: none;
+
+  /* Layered shadow — depth without heaviness */
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05),
+    0 2px 6px  rgba(0,0,0,0.10),
+    0 8px 28px rgba(0,0,0,0.16);
+
+  transition:
+    transform  0.55s var(--fc-ease-out),
+    box-shadow 0.50s var(--fc-ease-out);
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.fc2-card:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--fc-red),
+    0 8px 28px rgba(0,0,0,0.20);
+}
+
+/* Hover lift */
+.fc2-card.fc2-hovered,
+.fc2-card:hover {
+  transform: translateY(-8px) scale(1.018);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 24px 64px rgba(0,0,0,0.42),
+    0 6px 20px  rgba(0,0,0,0.20),
+    0 0  52px  var(--fc-red-glow);
+}
+
+
+/* ══════════════════════════════════
+   IMAGE LAYER
+══════════════════════════════════ */
+.fc2-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.fc2-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.fc2-slide.is-active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.fc2-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.08);
+  transition: transform 7s ease, opacity 0.4s ease;
+  opacity: 0;
+}
+
+.fc2-img.loaded { opacity: 1; }
+
+.fc2-slide.is-active .fc2-img {
+  transform: scale(1.0);
+}
+
+.fc2-card.fc2-hovered .fc2-slide.is-active .fc2-img {
+  transform: scale(1.04);
+  transition: transform 5s ease;
+}
+
+/* Cinematic gradients */
+.fc2-scrim-top {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.10) 35%,
+    transparent 55%
+  );
+}
+
+.fc2-scrim-bottom {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.96) 0%,
+    rgba(0,0,0,0.72) 28%,
+    rgba(0,0,0,0.28) 55%,
+    transparent 75%
+  );
+}
+
+
+/* ══════════════════════════════════
+   SLIDESHOW PROGRESS DOTS
+══════════════════════════════════ */
+.fc2-progress {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.fc2-prog-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.28);
+  transition: background 0.3s, transform 0.3s var(--fc-ease-spr), width 0.3s var(--fc-ease-out);
+}
+
+.fc2-prog-dot.done {
+  background: rgba(255,255,255,0.50);
+}
+
+.fc2-prog-dot.active {
+  background: #fff;
+  width: 18px;
+  border-radius: 99px;
+  transform: none;
+}
+
+
+/* ══════════════════════════════════
+   PHOTO COUNT
+══════════════════════════════════ */
+.fc2-photo-count {
+  position: absolute;
+  bottom: 136px;
+  right: 14px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 50px;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.72);
+  letter-spacing: 0.05em;
+  font-family: var(--fc-font-ui);
+}
+
+.fc2-photo-count svg {
+  font-size: 9px;
+  opacity: 0.6;
+}
+
+
+/* ══════════════════════════════════
+   BADGES — TOP LEFT
+══════════════════════════════════ */
+.fc2-tl {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Purpose pill */
+.fc2-purpose {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 5px 13px;
+  border-radius: 50px;
+  font-family: var(--fc-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--fc-red);
+  color: #fff;
+  box-shadow:
+    0 2px 14px var(--fc-red-glow),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+.fc2-purpose.rent {
+  background: #1058b0;
+  box-shadow: 0 2px 14px rgba(16,88,176,0.50), inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+/* Category pill */
+.fc2-cat {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 4px 11px;
+  border-radius: 50px;
+  font-family: var(--fc-font-ui);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--cb);
+  color: var(--cc);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 0.5px solid rgba(255,255,255,0.14);
+}
+
+
+/* ══════════════════════════════════
+   BADGES — TOP RIGHT
+══════════════════════════════════ */
+.fc2-tr {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+/* Status badge */
+.fc2-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 50px;
+  font-family: var(--fc-font-ui);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--sb);
+  color: var(--sc);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 0.5px solid color-mix(in srgb, var(--sc) 30%, transparent);
+}
+
+.fc2-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: fc2-pulse 2s ease-in-out infinite;
+}
+
+@keyframes fc2-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);   }
+  50%       { opacity: 0.5; transform: scale(0.65); }
+}
+
+/* Heart button */
+.fc2-heart {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s var(--fc-ease-spr);
+}
+
+.fc2-heart-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 0.5px solid rgba(255,255,255,0.20);
+  transition: background 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.fc2-heart:hover .fc2-heart-bg {
+  background: var(--fc-red);
+  border-color: transparent;
+  box-shadow: 0 4px 20px var(--fc-red-glow);
+}
+
+.fc2-heart.active .fc2-heart-bg {
+  background: rgba(192,18,26,0.22);
+  border-color: rgba(192,18,26,0.40);
+}
+
+.fc2-heart.active:hover .fc2-heart-bg {
+  background: var(--fc-red);
+  border-color: transparent;
+}
+
+.fc2-heart:active {
+  transform: scale(0.88);
+}
+
+.fc2-heart-ico {
+  position: relative;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  color: rgba(255,255,255,0.80);
+  transition: color 0.22s, transform 0.3s var(--fc-ease-spr);
+  display: block;
+}
+
+.fc2-heart-ico.filled {
+  color: var(--fc-red);
+}
+
+.fc2-heart:hover .fc2-heart-ico,
+.fc2-heart.active:hover .fc2-heart-ico {
+  color: #fff;
+}
+
+.fc2-heart:hover .fc2-heart-ico {
+  transform: scale(1.15);
+}
+
+
+/* ══════════════════════════════════
+   BOTTOM PANEL
+══════════════════════════════════ */
+.fc2-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 20px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+
+/* ── PRICE ROW ── */
+.fc2-top-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.fc2-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--fc-font-dis);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.fc2-rs {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  font-family: var(--fc-font-ui);
+  font-style: normal;
+  align-self: baseline;
+  padding-bottom: 2px;
+}
+
+.fc2-amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+  font-style: italic;
+}
+
+.fc2-unit {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  font-style: normal;
+  padding-bottom: 3px;
+}
+
+.fc2-contact-price {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  font-family: var(--fc-font-ui);
+}
+
+/* Property ID */
+.fc2-id {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.07em;
+  font-family: var(--fc-font-ui);
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+.fc2-id svg {
+  font-size: 8px;
+}
+
+
+/* ── TITLE ── */
+.fc2-title {
+  font-family: var(--fc-font-dis);
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.35;
+  margin: 0 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.6);
+  letter-spacing: 0.01em;
+}
+
+
+/* ── LOCATION ── */
+.fc2-loc {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.fc2-loc-pin {
+  color: var(--fc-red);
+  font-size: 10px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 4px var(--fc-red-glow));
+}
+
+.fc2-loc-text {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+  font-family: var(--fc-font-ui);
+}
+
+
+/* ══════════════════════════════════
+   STATS ROW
+══════════════════════════════════ */
+.fc2-stats {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 9px 0;
+  margin-bottom: 10px;
+}
+
+.fc2-stat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3px;
+  padding: 2px 4px;
+  border-left: 1px solid rgba(255,255,255,0.07);
+  min-width: 0;
+}
+
+.fc2-stat:first-child {
+  border-left: none;
+}
+
+.fc2-stat-icon {
+  font-size: 11px;
+  color: var(--fc-red);
+  opacity: 0.85;
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 1px 4px var(--fc-red-glow));
+  transition: transform 0.3s var(--fc-ease-spr), opacity 0.2s;
+}
+
+.fc2-card:hover .fc2-stat-icon {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.fc2-stat-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  font-family: var(--fc-font-ui);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fc2-stat-label {
+  font-size: 8.5px;
+  color: rgba(255,255,255,0.32);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  font-family: var(--fc-font-ui);
+  white-space: nowrap;
+}
+
+
+/* ══════════════════════════════════
+   FOOTER BAR
+══════════════════════════════════ */
+.fc2-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fc2-posted {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.30);
+  font-family: var(--fc-font-ui);
+  white-space: nowrap;
+}
+
+.fc2-posted svg {
+  font-size: 9px;
+  flex-shrink: 0;
+}
+
+/* View Details CTA */
+.fc2-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  font-family: var(--fc-font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fc-red);
+  white-space: nowrap;
+  transition: color 0.2s, gap 0.25s var(--fc-ease-out), letter-spacing 0.2s;
+  filter: drop-shadow(0 1px 6px var(--fc-red-glow));
+}
+
+.fc2-card:hover .fc2-cta {
+  gap: 8px;
+  letter-spacing: 0.12em;
+}
+
+.fc2-cta svg {
+  flex-shrink: 0;
+  transition: transform 0.3s var(--fc-ease-out);
+}
+
+.fc2-card:hover .fc2-cta svg {
+  transform: translateX(3px);
+}
+
+
+/* ══════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+══════════════════════════════════ */
+
+/* Large desktop */
+@media (min-width: 1400px) {
+  .fc2-card    { height: 460px; }
+  .fc2-amount  { font-size: 36px; }
+  .fc2-title   { font-size: 17.5px; }
+}
+
+/* Standard desktop */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .fc2-card   { height: 440px; }
+  .fc2-amount { font-size: 30px; }
+}
+
+/* Tablet */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .fc2-card   { height: 420px; }
+  .fc2-amount { font-size: 28px; }
+  .fc2-title  { font-size: 15.5px; }
+}
+
+/* Mobile */
+@media (max-width: 639px) {
+  .fc2-card {
+    height: 390px;
+    border-radius: 16px;
+  }
+  .fc2-amount  { font-size: 26px; }
+  .fc2-title   { font-size: 14.5px; }
+  .fc2-panel   { padding: 16px 14px 14px; }
+
+  /* Hide date on small screens to save space */
+  .fc2-posted  { display: none; }
+
+  /* Slightly smaller badges */
+  .fc2-purpose,
+  .fc2-cat,
+  .fc2-status  { font-size: 9px; padding: 4px 10px; }
+
+  .fc2-stat-value { font-size: 12px; }
+  .fc2-stat-label { font-size: 8px; }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .fc2-card   { height: 360px; }
+  .fc2-amount { font-size: 22px; }
+  .fc2-title  { font-size: 13.5px; }
+  .fc2-stats  { padding: 7px 0; }
+}
+
+/* Disable hover on touch */
+@media (hover: none) and (pointer: coarse) {
+  .fc2-card:hover,
+  .fc2-card.fc2-hovered {
+    transform: none !important;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.05),
+      0 2px 6px  rgba(0,0,0,0.10),
+      0 8px 28px rgba(0,0,0,0.16) !important;
+  }
+
+  .fc2-card.fc2-hovered .fc2-slide.is-active .fc2-img {
+    transform: scale(1.0);
+    transition: transform 7s ease;
+  }
+
+  /* Show CTA always on touch */
+  .fc2-cta {
+    gap: 5px;
+    letter-spacing: 0.08em;
+  }
+}
