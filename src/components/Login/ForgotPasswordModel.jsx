@@ -6,9 +6,10 @@ import ForgotPassword from "./ForgotPassword";
 const ForgotPasswordModel = ({ setR }) => {
   return (
     <Transition.Root show={true} as={Fragment}>
+      {/* z-10 → z-[99999] so this always renders above navbar, UserHead, TabNav */}
       <Dialog
         as="div"
-        className="fixed z-10 inset-0"
+        className="fixed z-[99999] inset-0"
         onClose={() => setR(false)}
       >
         <div className="flex items-end justify-center min-h-screen sm:pt-4 sm:px-4 sm:pb-20 text-center sm:block sm:p-0">
@@ -30,6 +31,7 @@ const ForgotPasswordModel = ({ setR }) => {
           >
             &#8203;
           </span>
+
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -41,15 +43,14 @@ const ForgotPasswordModel = ({ setR }) => {
           >
             <div className="inline-block align-bottom bg-white rounded text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full h-screen sm:h-auto">
               <Tab.Group>
-                <Tab.List className="flex p-1 space-x-1 bg-red-700 text-white ">
+                <Tab.List className="flex p-1 space-x-1 bg-red-700 text-white">
                   <div className="w-full py-4 mx-3 leading-5 font-medium text-white text-center">
                     Forgot Password
                   </div>
-
                   <div className="pr-4 pt-4">
                     <button
                       type="button"
-                      className=" rounded-md text-white focus:outline-none"
+                      className="rounded-md text-white focus:outline-none"
                       onClick={() => setR(false)}
                     >
                       <span className="sr-only">Close</span>
@@ -58,9 +59,7 @@ const ForgotPasswordModel = ({ setR }) => {
                   </div>
                 </Tab.List>
                 <Tab.Panels className="mt-2">
-                  <Tab.Panel
-                    className={"bg-white rounded-xl p-3 focus:outline-none"}
-                  >
+                  <Tab.Panel className="bg-white rounded-xl p-3 focus:outline-none">
                     <ForgotPassword setR={setR} />
                   </Tab.Panel>
                 </Tab.Panels>

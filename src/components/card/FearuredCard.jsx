@@ -255,7 +255,7 @@ const FeaturedCard = ({ product }) => {
           <div className="fc-price-row">
             <div className="fc-price serif">
               {product?.total_price
-                ? <>Rs. {Number(product.total_price).toLocaleString()}<span className="fc-price-sub"> total</span></>
+                ? <>Rs. {Number(product.total_price).toLocaleString()}<span className="fc-price-sub"></span></>
                 : <span className="fc-price-contact">Contact for Price</span>}
             </div>
             {chip && (
@@ -284,11 +284,7 @@ const FeaturedCard = ({ product }) => {
               : "Recently"}
           </p>
 
-          <div className="fc-stats">
-            {kind === "land"      && <LandStats      product={product} />}
-            {kind === "house"     && <HouseStats     product={product} />}
-            {kind === "apartment" && <ApartmentStats product={product} />}
-          </div>
+          
 
         </div>
       </div>

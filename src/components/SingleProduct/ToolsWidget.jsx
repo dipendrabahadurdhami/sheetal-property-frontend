@@ -134,11 +134,7 @@ const ToolsWidget = ({ property }) => {
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-        <span style={{
-          width: "4px", height: "22px",
-          background: "var(--r)",
-          borderRadius: "2px", display: "inline-block",
-        }} />
+        
         <span style={{ fontSize: "22px", fontWeight: "700", color: "var(--d)" }}>
           Property Tools
         </span>

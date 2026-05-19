@@ -15,6 +15,8 @@ import InvestmentExplore from "./pages/InvestmentExplore";
 import InvestmentAllProduct from "./pages/InvestmentAllProduct";
 import Project from "./pages/Project";
 import About from "./pages/About";
+import Rent from "./pages/Rent";
+import Sale from "./pages/Sale";
 import MyProfile from "./pages/MyProfile";
 import VerifyEmail from "./pages/VerifyEmail";
 import PostProperty from "./pages/PostProperty";
@@ -143,8 +145,10 @@ function App(props) {
           <Route path="/agent/:id" element={<SingleAgent />} />
           <Route path="/productSearch" element={<ProductSearch />} />
           <Route path="/my-profile/messages" element={<Message />} />
-          <Route path="/investDetail" element={<InvestDetails />} />
+          <Route path="/investDetail/:id" element={<InvestDetails />} />
           <Route path="/project" element={<Project />} />
+          <Route path="/rent" element={<Rent />} />
+          <Route path="/sale" element={<Sale />} />
           <Route path="/test" element={<Test />} />
           <Route
             path="/investment/viewallproduct"

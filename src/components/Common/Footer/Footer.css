@@ -6,7 +6,7 @@
 
 /* ── Root ── */
 .ft {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--d);
   position: relative;
   overflow: hidden;

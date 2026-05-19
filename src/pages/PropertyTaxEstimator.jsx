@@ -36,12 +36,12 @@ function TaxRow({ label, amount, rate, note, highlight }) {
       alignItems: "start",
     }}>
       <div>
-        <div style={{ fontSize: "13px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", fontWeight: highlight ? 600 : 400 }}>{label}</div>
-        {note && <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif", marginTop: "2px" }}>{note}</div>}
-        {rate && <div style={{ fontSize: "11px", color: "var(--r)", fontFamily: "'DM Sans', sans-serif", marginTop: "2px" }}>Rate: {rate}</div>}
+        <div style={{ fontSize: "13px", fontFamily: "'Inter', sans-serif", color: "var(--d)", fontWeight: highlight ? 600 : 400 }}>{label}</div>
+        {note && <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif", marginTop: "2px" }}>{note}</div>}
+        {rate && <div style={{ fontSize: "11px", color: "var(--r)", fontFamily: "'Inter', sans-serif", marginTop: "2px" }}>Rate: {rate}</div>}
       </div>
       <div style={{
-        fontFamily: "'Cormorant Garamond', serif", fontSize: "18px",
+        fontFamily: "'Inter', serif", fontSize: "18px",
         fontWeight: 700, color: highlight ? "var(--r)" : "var(--d)",
         textAlign: "right", whiteSpace: "nowrap",
       }}>
@@ -143,7 +143,7 @@ export default function PropertyTaxEstimator() {
               flex: 1, padding: "14px 20px",
               background: calcType === t.key ? "var(--d)" : "#fff",
               color: calcType === t.key ? "var(--l)" : "var(--d)",
-              border: "none", fontFamily: "'DM Sans', sans-serif",
+              border: "none", fontFamily: "'Inter', sans-serif",
               fontSize: "13px", fontWeight: 500,
               cursor: "pointer", transition: "all 0.2s",
               opacity: calcType === t.key ? 1 : 0.6,
@@ -165,7 +165,7 @@ export default function PropertyTaxEstimator() {
 
           <Fld label="Market Value of Property (NPR)">
             <input type="number" placeholder="e.g. 15000000" value={propValue} onChange={e => setPropValue(e.target.value)} />
-            {propVal > 0 && <small style={{ color: "var(--r)", fontFamily: "'DM Sans', sans-serif", marginTop: "4px", display: "block" }}>NPR {fmt(propVal)}</small>}
+            {propVal > 0 && <small style={{ color: "var(--r)", fontFamily: "'Inter', sans-serif", marginTop: "4px", display: "block" }}>NPR {fmt(propVal)}</small>}
           </Fld>
 
           <Fld label="Government Assessed Value (NPR)" note="Usually 50–70% of market value. Leave blank to auto-estimate.">
@@ -194,13 +194,13 @@ export default function PropertyTaxEstimator() {
             <>
               <Fld label={`Holding Period: ${holdingYears} years`}>
                 <input type="range" min={1} max={30} value={holdingYears} onChange={e => setHoldingYears(Number(e.target.value))} style={{ width: "100%", accentColor: "var(--r)", border: "none", boxShadow: "none", padding: 0 }} />
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--d)", opacity: 0.35, fontFamily: "'DM Sans', sans-serif" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--d)", opacity: 0.35, fontFamily: "'Inter', sans-serif" }}>
                   <span>1 yr</span><span>Short-term</span><span>Long-term (5+)</span>
                 </div>
               </Fld>
 
               <Fld label="Property Type">
-                <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontSize: "13px", fontFamily: "'DM Sans', sans-serif" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontSize: "13px", fontFamily: "'Inter', sans-serif" }}>
                   <input type="checkbox" checked={isPrimary} onChange={e => setIsPrimary(e.target.checked)} style={{ width: "auto", margin: 0 }} />
                   Primary Residence (first/only property — CGT may be exempt)
                 </label>
@@ -214,7 +214,7 @@ export default function PropertyTaxEstimator() {
           {!result ? (
             <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,0.08)", padding: "48px", textAlign: "center" }}>
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>🧾</div>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.45, fontSize: "14px" }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.45, fontSize: "14px" }}>
                 Enter property value to see tax estimates
               </p>
             </div>
@@ -247,16 +247,16 @@ export default function PropertyTaxEstimator() {
 
               {/* Total */}
               <div style={{ background: "var(--d)", padding: "20px 24px", marginTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(249,250,251,0.7)", fontFamily: "'DM Sans', sans-serif" }}>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(249,250,251,0.7)", fontFamily: "'Inter', sans-serif" }}>
                   Total Annual Tax
                 </div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 700, color: "var(--r)" }}>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "28px", fontWeight: 700, color: "var(--r)" }}>
                   NPR {fmt(result.totalAnnual)}
                 </div>
               </div>
 
               <div style={{ marginTop: "16px", padding: "14px", background: "var(--r06)", borderLeft: "3px solid var(--r)" }}>
-                <p style={{ fontSize: "11px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.65, margin: 0, lineHeight: 1.6 }}>
+                <p style={{ fontSize: "11px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.65, margin: 0, lineHeight: 1.6 }}>
                   Monthly equivalent: <strong>NPR {fmt(result.totalAnnual / 12)}/month</strong>. Taxes are assessed and collected by local municipality offices.
                 </p>
               </div>
@@ -293,14 +293,14 @@ export default function PropertyTaxEstimator() {
               />
 
               <div style={{ background: "var(--d)", padding: "20px 24px", marginTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(249,250,251,0.7)", fontFamily: "'DM Sans', sans-serif" }}>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(249,250,251,0.7)", fontFamily: "'Inter', sans-serif" }}>
                   Total Transaction Cost
                 </div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 700, color: "var(--r)" }}>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "28px", fontWeight: 700, color: "var(--r)" }}>
                   NPR {fmt(result.totalTransaction)}
                 </div>
               </div>
-              <div style={{ textAlign: "right", marginTop: "6px", fontSize: "12px", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif" }}>
+              <div style={{ textAlign: "right", marginTop: "6px", fontSize: "12px", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}>
                 {fmtD((result.totalTransaction / propVal) * 100)}% of market value
               </div>
             </div>
@@ -318,10 +318,10 @@ export default function PropertyTaxEstimator() {
 function Fld({ label, children, note }) {
   return (
     <div style={{ marginBottom: "18px" }}>
-      <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'DM Sans', sans-serif" }}>
+      <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'Inter', sans-serif" }}>
         {label}
       </label>
-      {note && <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif", marginBottom: "6px" }}>{note}</div>}
+      {note && <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif", marginBottom: "6px" }}>{note}</div>}
       {children}
     </div>
   );

@@ -324,7 +324,7 @@ const RequirementForm = () => {
 
     try {
       const result = await axios.post(
-        `${API_LINK}/requirement-form`,
+        `${API_LINK}/requirementform`,
         { ...values, payment_transaction_id: verifiedTxnId },
         { headers: { "Content-Type": "application/json" } }
       );

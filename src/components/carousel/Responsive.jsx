@@ -1,6 +1,5 @@
 export const responsive = {
   three_xl: {
-    // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
     items: 4,
   },
@@ -10,19 +9,19 @@ export const responsive = {
   },
   xl: {
     breakpoint: { max: 1400, min: 1260 },
-    items: 3.6,
+    items: 4,
   },
   lg: {
     breakpoint: { max: 1260, min: 1150 },
-    items: 3.2,
+    items: 3,
   },
   md: {
     breakpoint: { max: 1150, min: 978 },
-    items: 2.75,
+    items: 3,
   },
   sm: {
     breakpoint: { max: 977, min: 768 },
-    items: 2.1,
+    items: 2,
   },
   xsm: {
     breakpoint: { max: 767, min: 640 },
@@ -34,7 +33,7 @@ export const responsive = {
   },
   xxs: {
     breakpoint: { max: 560, min: 465 },
-    items: 1.6,
+    items: 1,
   },
   xxxs: {
     breakpoint: { max: 464, min: 0 },

@@ -16,7 +16,8 @@ const LoginModel = ({ r, setR }) => {
 
   return (
     <Transition.Root show={r} as={Fragment}>
-      <Dialog as="div" className="fixed z-10 inset-0" onClose={setR}>
+      {/* z-10 → z-[99999] so this always renders above navbar, UserHead, TabNav */}
+      <Dialog as="div" className="fixed z-[99999] inset-0" onClose={setR}>
         <div className="flex items-end justify-center min-h-screen sm:pt-4 sm:px-4 sm:pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -36,6 +37,7 @@ const LoginModel = ({ r, setR }) => {
           >
             &#8203;
           </span>
+
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -47,7 +49,7 @@ const LoginModel = ({ r, setR }) => {
           >
             <div className="inline-block align-bottom bg-white rounded text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full h-screen sm:h-auto">
               <Tab.Group>
-                <Tab.List className="flex p-1 space-x-1 bg-red-700 text-white ">
+                <Tab.List className="flex p-1 space-x-1 bg-red-700 text-white">
                   {Object.keys(categories).map((category, index) => (
                     <Tab
                       key={index}
@@ -65,7 +67,7 @@ const LoginModel = ({ r, setR }) => {
                   <div className="pr-4 pt-4">
                     <button
                       type="button"
-                      className=" rounded-md text-white focus:outline-none"
+                      className="rounded-md text-white focus:outline-none"
                       onClick={() => setR(false)}
                     >
                       <span className="sr-only">Close</span>

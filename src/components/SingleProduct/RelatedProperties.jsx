@@ -243,15 +243,7 @@ const RelatedProperties = ({ property }) => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span
-            style={{
-              width: "4px",
-              height: "22px",
-              background: "var(--r, #e53935)",
-              borderRadius: "2px",
-              display: "inline-block",
-            }}
-          />
+          
           <span className="text-xl sm:text-2xl font-bold">Related Properties</span>
         </div>
         <span style={{ fontSize: "12px", color: "#9ca3af" }}>

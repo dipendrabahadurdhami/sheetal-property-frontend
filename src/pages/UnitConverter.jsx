@@ -86,7 +86,7 @@ export default function UnitConverter() {
         >
           {/* FROM */}
           <div>
-            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'DM Sans', sans-serif" }}>
+            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'Inter', sans-serif" }}>
               From
             </label>
             <select
@@ -129,7 +129,7 @@ export default function UnitConverter() {
 
           {/* TO */}
           <div>
-            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'DM Sans', sans-serif" }}>
+            <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'Inter', sans-serif" }}>
               To
             </label>
             <select
@@ -153,7 +153,7 @@ export default function UnitConverter() {
                 display: "flex",
                 alignItems: "center",
                 padding: "0 14px",
-                fontFamily: "'Cormorant Garamond', serif",
+                fontFamily: "'Inter', serif",
                 fontSize: "20px",
                 fontWeight: 700,
                 color: value && !isNaN(result) ? "var(--r)" : "rgba(17,24,39,0.25)",
@@ -176,14 +176,14 @@ export default function UnitConverter() {
               flexWrap: "wrap",
             }}
           >
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 700, color: "var(--l)" }}>
+            <span style={{ fontFamily: "'Inter', serif", fontSize: "22px", fontWeight: 700, color: "var(--l)" }}>
               {parseFloat(value).toLocaleString()} {fromDef.label}
             </span>
             <span style={{ color: "var(--r)", fontSize: "18px" }}>=</span>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 700, color: "var(--r)" }}>
+            <span style={{ fontFamily: "'Inter', serif", fontSize: "22px", fontWeight: 700, color: "var(--r)" }}>
               {fmt(result)} {toDef.label}
             </span>
-            <span style={{ fontSize: "12px", color: "rgba(249,250,251,0.4)", fontFamily: "'DM Sans', sans-serif", marginLeft: "auto" }}>
+            <span style={{ fontSize: "12px", color: "rgba(249,250,251,0.4)", fontFamily: "'Inter', sans-serif", marginLeft: "auto" }}>
               via {fmt(sqm)} sq m
             </span>
           </div>
@@ -213,13 +213,13 @@ export default function UnitConverter() {
                   className="svc"
                   style={{ padding: "16px 18px", cursor: "default" }}
                 >
-                  <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.45, fontFamily: "'DM Sans', sans-serif", marginBottom: "6px" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.45, fontFamily: "'Inter', sans-serif", marginBottom: "6px" }}>
                     {u.label}
                   </div>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 700, color: "var(--d)" }}>
+                  <div style={{ fontFamily: "'Inter', serif", fontSize: "20px", fontWeight: 700, color: "var(--d)" }}>
                     {fmt(val)}
                   </div>
-                  <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.35, fontFamily: "'DM Sans', sans-serif" }}>
+                  <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.35, fontFamily: "'Inter', sans-serif" }}>
                     {u.labelNp}
                   </div>
                 </div>
@@ -254,10 +254,10 @@ export default function UnitConverter() {
                 alignItems: "center",
               }}
             >
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, color: "var(--r)" }}>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "var(--r)" }}>
                 {r.label}
               </span>
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "var(--d)", opacity: 0.7 }}>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "var(--d)", opacity: 0.7 }}>
                 {r.equals}
               </span>
             </div>
@@ -266,7 +266,7 @@ export default function UnitConverter() {
 
         {/* Hill vs Terai note */}
         <div style={{ marginTop: "24px", padding: "16px 20px", background: "var(--r06)", borderLeft: "3px solid var(--r)" }}>
-          <p style={{ fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.7, margin: 0, lineHeight: 1.7 }}>
+          <p style={{ fontSize: "12px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.7, margin: 0, lineHeight: 1.7 }}>
             <strong style={{ color: "var(--r)" }}>Hill Region</strong> (Kathmandu Valley & hilly areas) uses <strong>Ropani → Aana → Paisa → Daam</strong>.
             &nbsp;&nbsp;|&nbsp;&nbsp;
             <strong style={{ color: "var(--r)" }}>Terai Region</strong> (Madhesh, lowlands) uses <strong>Bigha → Kattha → Dhur</strong>.

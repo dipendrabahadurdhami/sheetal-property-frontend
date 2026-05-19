@@ -184,7 +184,7 @@ export default function RentVsBuy() {
           {!calc ? (
             <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,0.08)", padding: "48px", textAlign: "center" }}>
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>⚖️</div>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.45, fontSize: "14px" }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.45, fontSize: "14px" }}>
                 Enter rent and property price to compare
               </p>
             </div>
@@ -195,15 +195,15 @@ export default function RentVsBuy() {
                 <div style={{ fontSize: "48px", marginBottom: "12px" }}>
                   {calc.buyWins ? "🏠" : "🏢"}
                 </div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 700, color: "var(--l)", marginBottom: "8px" }}>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 700, color: "var(--l)", marginBottom: "8px" }}>
                   {calc.buyWins ? "Buying is Better" : "Renting is Better"}
                   {" "}over {holdingYears} years
                 </div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 700, color: "var(--r)" }}>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "24px", fontWeight: 700, color: "var(--r)" }}>
                   Save NPR {fmt(calc.diff)} by {calc.buyWins ? "buying" : "renting"}
                 </div>
                 {calc.breakEvenYear && calc.buyWins && (
-                  <div style={{ marginTop: "10px", fontSize: "12px", color: "rgba(249,250,251,0.45)", fontFamily: "'DM Sans', sans-serif" }}>
+                  <div style={{ marginTop: "10px", fontSize: "12px", color: "rgba(249,250,251,0.45)", fontFamily: "'Inter', sans-serif" }}>
                     Break-even point: approximately year {calc.breakEvenYear}
                   </div>
                 )}
@@ -213,7 +213,7 @@ export default function RentVsBuy() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 {/* Rent side */}
                 <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,0.08)", padding: "20px" }}>
-                  <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif", marginBottom: "16px" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif", marginBottom: "16px" }}>
                     🏢 Renting — Total Cost
                   </div>
                   <CRow label="Total Rent Paid" val={`NPR ${fmt(calc.totalRentCost)}`} />
@@ -225,7 +225,7 @@ export default function RentVsBuy() {
 
                 {/* Buy side */}
                 <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,0.08)", padding: "20px" }}>
-                  <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif", marginBottom: "16px" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif", marginBottom: "16px" }}>
                     🏠 Buying — Net Cost
                   </div>
                   <CRow label="Down Payment + Reg" val={`NPR ${fmt(calc.totalUpfront)}`} />
@@ -247,20 +247,20 @@ export default function RentVsBuy() {
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                   <div style={{ textAlign: "center", padding: "16px", background: "rgba(17,24,39,0.03)" }}>
-                    <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.45, fontFamily: "'DM Sans', sans-serif", marginBottom: "6px" }}>Monthly Rent</div>
-                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 700, color: "var(--d)" }}>
+                    <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.45, fontFamily: "'Inter', sans-serif", marginBottom: "6px" }}>Monthly Rent</div>
+                    <div style={{ fontFamily: "'Inter', serif", fontSize: "24px", fontWeight: 700, color: "var(--d)" }}>
                       NPR {fmt(parseFloat(monthlyRent))}
                     </div>
                   </div>
                   <div style={{ textAlign: "center", padding: "16px", background: "var(--r06)" }}>
-                    <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.45, fontFamily: "'DM Sans', sans-serif", marginBottom: "6px" }}>Monthly EMI</div>
-                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 700, color: "var(--r)" }}>
+                    <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.45, fontFamily: "'Inter', sans-serif", marginBottom: "6px" }}>Monthly EMI</div>
+                    <div style={{ fontFamily: "'Inter', serif", fontSize: "24px", fontWeight: 700, color: "var(--r)" }}>
                       NPR {fmt(calc.emi)}
                     </div>
                   </div>
                 </div>
                 <div style={{ marginTop: "14px", padding: "12px 16px", background: "var(--r06)", borderLeft: "3px solid var(--r)" }}>
-                  <p style={{ fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.65, margin: 0 }}>
+                  <p style={{ fontSize: "12px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.65, margin: 0 }}>
                     EMI is {calc.emi > parseFloat(monthlyRent) ? `NPR ${fmt(calc.emi - parseFloat(monthlyRent))} more` : `NPR ${fmt(parseFloat(monthlyRent) - calc.emi)} less`} than your current rent per month.
                     {calc.emi > parseFloat(monthlyRent) ? " However, you're building equity in an appreciating asset." : " Buying is affordable on a monthly basis too."}
                   </p>
@@ -269,13 +269,13 @@ export default function RentVsBuy() {
 
               {/* Appreciation insight */}
               <div style={{ background: "var(--r06)", border: "1px solid var(--r28)", padding: "20px 24px" }}>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 700, color: "var(--d)", marginBottom: "6px" }}>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "18px", fontWeight: 700, color: "var(--d)", marginBottom: "6px" }}>
                   Property Value after {holdingYears} years
                 </div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 700, color: "var(--r)" }}>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "28px", fontWeight: 700, color: "var(--r)" }}>
                   NPR {fmt(calc.resaleValue)}
                 </div>
-                <div style={{ fontSize: "12px", color: "var(--d)", opacity: 0.55, fontFamily: "'DM Sans', sans-serif", marginTop: "4px" }}>
+                <div style={{ fontSize: "12px", color: "var(--d)", opacity: 0.55, fontFamily: "'Inter', sans-serif", marginTop: "4px" }}>
                   Capital gain: NPR {fmt(calc.capitalGain)} ({pct(appreciation)}% p.a. appreciation)
                 </div>
               </div>
@@ -294,10 +294,10 @@ export default function RentVsBuy() {
 function FI({ label, children, note }) {
   return (
     <div style={{ marginBottom: "16px" }}>
-      <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "6px", fontFamily: "'DM Sans', sans-serif" }}>
+      <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "6px", fontFamily: "'Inter', sans-serif" }}>
         {label}
       </label>
-      {note && <div style={{ fontSize: "11px", color: "var(--r)", fontFamily: "'DM Sans', sans-serif", marginBottom: "5px" }}>{note}</div>}
+      {note && <div style={{ fontSize: "11px", color: "var(--r)", fontFamily: "'Inter', sans-serif", marginBottom: "5px" }}>{note}</div>}
       {children}
     </div>
   );
@@ -305,7 +305,7 @@ function FI({ label, children, note }) {
 
 function CRow({ label, val, note, bold }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "6px 0", fontSize: "12px", fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "6px 0", fontSize: "12px", fontFamily: "'Inter', sans-serif" }}>
       <div style={{ color: "var(--d)", opacity: 0.6 }}>
         {label}
         {note && <div style={{ fontSize: "10px", opacity: 0.6 }}>{note}</div>}

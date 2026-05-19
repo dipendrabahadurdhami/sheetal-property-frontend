@@ -47,11 +47,7 @@ const Section = ({ title, children }) => (
       paddingBottom: "8px", marginBottom: "14px",
       display: "flex", alignItems: "center", gap: "8px",
     }}>
-      <span style={{
-        width: "4px", height: "18px",
-        background: "var(--r)",
-        borderRadius: "2px", display: "inline-block",
-      }} />
+      
       {title}
     </div>
     {children}

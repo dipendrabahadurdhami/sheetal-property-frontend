@@ -161,9 +161,9 @@ const MyProperty = ({
       {/* /.form-group */}
 
       <div className="w-full mb-4">
-        <label className="block mb-2">Property Name</label>
+        <label className="block mb-2">Property title</label>
         <input
-          placeholder="Enter your property name"
+          placeholder="Enter your property title"
           className="w-full  px-2 border border-gray-300 rounded text-md mb-2"
           name="propertyName"
           style={{ height: "50px" }}

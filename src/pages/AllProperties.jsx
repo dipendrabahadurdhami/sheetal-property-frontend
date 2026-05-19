@@ -20,7 +20,7 @@ const AllProperties = () => {
   const [itemOffset, setItemOffset] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
 
   const handlePageClick = (event) => {
     const newOffset = ((event.selected + 1) * itemsPerPage) % totalProducts;

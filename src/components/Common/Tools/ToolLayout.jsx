@@ -61,7 +61,7 @@ export default function ToolLayout({ title, subtitle, icon, badge, children }) {
               marginBottom: "28px",
               fontSize: "12px",
               color: "rgba(249,250,251,0.45)",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: "0.04em",
             }}
           >
@@ -121,7 +121,7 @@ export default function ToolLayout({ title, subtitle, icon, badge, children }) {
                     marginTop: "12px",
                     fontSize: "14px",
                     color: "rgba(249,250,251,0.55)",
-                    fontFamily: "'DM Sans', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                     lineHeight: 1.7,
                     maxWidth: "560px",
                     opacity: 1,
@@ -164,7 +164,7 @@ export default function ToolLayout({ title, subtitle, icon, badge, children }) {
                   padding: "14px 18px",
                   fontSize: "12px",
                   fontWeight: active ? 600 : 400,
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   letterSpacing: "0.04em",
                   color: active ? "var(--r)" : "var(--d)",
                   textDecoration: "none",
@@ -201,7 +201,7 @@ export default function ToolLayout({ title, subtitle, icon, badge, children }) {
             fontSize: "11px",
             color: "var(--d)",
             opacity: 0.45,
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             lineHeight: 1.6,
             textAlign: "center",
           }}

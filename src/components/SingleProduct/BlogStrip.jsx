@@ -3,12 +3,36 @@ import { Link } from "react-router-dom";
 import "../../index.css";
 import blogApi from "../../utils/blogApi";
 
+/* ─── helpers ─────────────────────────────────────── */
+const thumb = (path) =>
+  path
+    ? `${(process.env.REACT_APP_API_LINK || "").replace(/\/api$/, "")}/storage/${path}`
+    : null;
+
+/* ─── BlogStrip ───────────────────────────────────── */
 const BlogStrip = () => {
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [imgsReady, setImgsReady] = useState(false);
 
   useEffect(() => {
     fetchBlogs();
   }, []);
+
+  useEffect(() => {
+    if (!blogs.length) return;
+    const srcs = blogs.map(b => thumb(b.thumbnail)).filter(Boolean);
+    if (!srcs.length) { setImgsReady(true); return; }
+    let loaded = 0;
+    srcs.forEach((src) => {
+      const img = new Image();
+      img.onload = img.onerror = () => {
+        loaded += 1;
+        if (loaded >= srcs.length) setImgsReady(true);
+      };
+      img.src = src;
+    });
+  }, [blogs]);
 
   const fetchBlogs = async () => {
     try {
@@ -19,20 +43,17 @@ const BlogStrip = () => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!blogs || blogs.length === 0) return null;
+  if (!loading && (!blogs || blogs.length === 0)) return null;
 
   return (
     <div style={{ borderTop: "2px solid #e5e7eb", paddingTop: "2rem", marginBottom: "2rem" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-        <span style={{
-          width: "4px", height: "22px",
-          background: "var(--r, #e53935)",
-          borderRadius: "2px", display: "inline-block",
-        }} />
         <span className="text-xl sm:text-2xl font-bold">From Our Blog</span>
       </div>
 
@@ -68,6 +89,37 @@ const BlogStrip = () => {
         }
       `}</style>
 
+      <style>{`
+        @keyframes bs-shimmer {
+          0%   { background-position: -600px 0; }
+          100% { background-position:  600px 0; }
+        }
+        .bs-skel {
+          background: linear-gradient(90deg, #F1F2F4 25%, #E8E9EC 50%, #F1F2F4 75%);
+          background-size: 600px 100%;
+          animation: bs-shimmer 1.4s infinite linear;
+          border-radius: 4px;
+        }
+      `}</style>
+
+      {loading || !imgsReady ? (
+        <div className="bs-grid">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} style={{ borderRadius: 12, overflow: "hidden", background: "#fff", border: "1px solid #e5e7eb" }}>
+              <div className="bs-skel" style={{ width: "100%", aspectRatio: "16/9", borderRadius: 0 }} />
+              <div style={{ padding: "12px 14px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="bs-skel" style={{ height: 10, width: "35%", borderRadius: 20 }} />
+                <div className="bs-skel" style={{ height: 13, width: "90%" }} />
+                <div className="bs-skel" style={{ height: 13, width: "65%" }} />
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
+                  <div className="bs-skel" style={{ height: 10, width: "30%" }} />
+                  <div className="bs-skel" style={{ height: 10, width: "20%" }} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
       <div className="bs-grid">
         {blogs.map((blog, i) => (
           <Link
@@ -80,21 +132,27 @@ const BlogStrip = () => {
           </Link>
         ))}
       </div>
+      )}
     </div>
   );
 };
 
+/* ─── BlogCard ────────────────────────────────────── */
 const BlogCard = ({ blog }) => {
   const [hovered, setHovered] = useState(false);
+
+  const thumbnailSrc = thumb(blog.thumbnail);
+
+  const categoryLabel =
+    blog.category?.name ||
+    (typeof blog.category === "string" ? blog.category : null);
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        border: hovered
-          ? "1.5px solid var(--r, #e53935)"
-          : "1px solid #e5e7eb",
+        border: hovered ? "1.5px solid var(--r, #e53935)" : "1px solid #e5e7eb",
         borderRadius: "12px",
         overflow: "hidden",
         background: "#fff",
@@ -110,10 +168,12 @@ const BlogCard = ({ blog }) => {
         width: "100%", aspectRatio: "16/9",
         overflow: "hidden", background: "#f3f4f6", flexShrink: 0,
       }}>
-        {blog.thumbnail ? (
+        {thumbnailSrc ? (
           <img
-            src={blog.thumbnail}
+            src={thumbnailSrc}
             alt={blog.title}
+            loading="eager"
+            fetchPriority="high"
             style={{
               width: "100%", height: "100%", objectFit: "cover", display: "block",
               transition: "transform 0.3s",
@@ -136,7 +196,7 @@ const BlogCard = ({ blog }) => {
         padding: "12px 14px 14px",
         display: "flex", flexDirection: "column", gap: "6px", flex: 1,
       }}>
-        {blog.category && (
+        {categoryLabel && (
           <span style={{
             display: "inline-block",
             background: "var(--r06, #fef2f2)",
@@ -146,7 +206,7 @@ const BlogCard = ({ blog }) => {
             padding: "2px 8px", borderRadius: "20px",
             alignSelf: "flex-start",
           }}>
-            {blog.category}
+            {categoryLabel}
           </span>
         )}
 

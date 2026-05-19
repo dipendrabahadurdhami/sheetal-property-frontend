@@ -98,7 +98,7 @@ export default function EmiCalculatorPage() {
               onChange={(e) => setLoanAmt(e.target.value)}
             />
             {principal > 0 && (
-              <small style={{ marginTop: "4px", display: "block", color: "var(--r)", fontFamily: "'DM Sans', sans-serif" }}>
+              <small style={{ marginTop: "4px", display: "block", color: "var(--r)", fontFamily: "'Inter', sans-serif" }}>
                 NPR {fmt(principal)}
               </small>
             )}
@@ -154,14 +154,14 @@ export default function EmiCalculatorPage() {
                 padding: 0,
               }}
             />
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif", marginTop: "4px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif", marginTop: "4px" }}>
               <span>1 yr</span><span>15 yrs</span><span>30 yrs</span>
             </div>
           </div>
 
           {/* NRB note */}
           <div style={{ padding: "12px 16px", background: "var(--r06)", borderLeft: "3px solid var(--r)" }}>
-            <p style={{ fontSize: "11px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.65, margin: 0, lineHeight: 1.6 }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.65, margin: 0, lineHeight: 1.6 }}>
               Rates are indicative as per <strong>Nepal Rastra Bank</strong> guidelines. Actual rates vary by bank and credit profile.
             </p>
           </div>
@@ -172,14 +172,14 @@ export default function EmiCalculatorPage() {
 
           {/* Monthly EMI hero */}
           <div style={{ background: "var(--d)", padding: "36px", textAlign: "center" }}>
-            <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(249,250,251,0.45)", fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>
+            <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(249,250,251,0.45)", fontFamily: "'Inter', sans-serif", marginBottom: "12px" }}>
               Monthly EMI
             </div>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 700, color: emiValid ? "var(--r)" : "rgba(249,250,251,0.2)", lineHeight: 1 }}>
+            <div style={{ fontFamily: "'Inter', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 700, color: emiValid ? "var(--r)" : "rgba(249,250,251,0.2)", lineHeight: 1 }}>
               {emiValid ? `NPR ${fmt(emi)}` : "—"}
             </div>
             {emiValid && (
-              <div style={{ fontSize: "12px", color: "rgba(249,250,251,0.4)", fontFamily: "'DM Sans', sans-serif", marginTop: "8px" }}>
+              <div style={{ fontSize: "12px", color: "rgba(249,250,251,0.4)", fontFamily: "'Inter', sans-serif", marginTop: "8px" }}>
                 per month for {tenure} years @ {rate}% p.a.
               </div>
             )}
@@ -209,13 +209,13 @@ export default function EmiCalculatorPage() {
 
               {/* Principal vs Interest bar */}
               <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,0.08)", padding: "24px" }}>
-                <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.45, fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>
+                <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.45, fontFamily: "'Inter', sans-serif", marginBottom: "12px" }}>
                   Principal vs Interest
                 </div>
                 <div style={{ height: "8px", background: "rgba(17,24,39,0.08)", borderRadius: "4px", overflow: "hidden", marginBottom: "10px" }}>
                   <div style={{ height: "100%", width: `${(principal / totalPayment) * 100}%`, background: "var(--d)", borderRadius: "4px", transition: "width 0.5s" }} />
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", fontFamily: "'DM Sans', sans-serif" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", fontFamily: "'Inter', sans-serif" }}>
                   <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     <span style={{ width: "10px", height: "10px", background: "var(--d)", display: "inline-block" }} />
                     Principal {Math.round((principal / totalPayment) * 100)}%
@@ -246,7 +246,7 @@ export default function EmiCalculatorPage() {
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               fontWeight: 600,
               fontSize: "13px",
               color: "var(--d)",
@@ -259,7 +259,7 @@ export default function EmiCalculatorPage() {
 
           {showSched && (
             <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "'DM Sans', sans-serif", fontSize: "13px" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "'Inter', sans-serif", fontSize: "13px" }}>
                 <thead>
                   <tr style={{ background: "var(--d)" }}>
                     {["Month", "EMI (NPR)", "Principal (NPR)", "Interest (NPR)", "Balance (NPR)"].map((h) => (
@@ -306,7 +306,7 @@ const labelStyle = {
   color: "var(--d)",
   opacity: 0.5,
   marginBottom: "8px",
-  fontFamily: "'DM Sans', sans-serif",
+  fontFamily: "'Inter', sans-serif",
 };
 
 const statLabelStyle = {
@@ -316,12 +316,12 @@ const statLabelStyle = {
   textTransform: "uppercase",
   color: "var(--d)",
   opacity: 0.45,
-  fontFamily: "'DM Sans', sans-serif",
+  fontFamily: "'Inter', sans-serif",
   marginBottom: "6px",
 };
 
 const statValueStyle = {
-  fontFamily: "'Cormorant Garamond', serif",
+  fontFamily: "'Inter', serif",
   fontSize: "20px",
   fontWeight: 700,
   color: "var(--d)",

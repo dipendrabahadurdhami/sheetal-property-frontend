@@ -147,7 +147,7 @@ export default function LandPriceEstimator() {
                       padding: "10px 12px",
                       border: landTypeKey === lt.key ? "1.5px solid var(--r)" : "1px solid rgba(17,24,39,0.12)",
                       background: landTypeKey === lt.key ? "var(--r06)" : "#fff",
-                      fontFamily: "'DM Sans', sans-serif",
+                      fontFamily: "'Inter', sans-serif",
                       fontSize: "12px",
                       fontWeight: landTypeKey === lt.key ? 600 : 400,
                       color: landTypeKey === lt.key ? "var(--r)" : "var(--d)",
@@ -179,7 +179,7 @@ export default function LandPriceEstimator() {
 
           {/* Info box */}
           <div style={{ padding: "20px 24px", background: "var(--r06)", borderLeft: "3px solid var(--r)" }}>
-            <p style={{ fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.7, margin: 0, lineHeight: 1.7 }}>
+            <p style={{ fontSize: "12px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.7, margin: 0, lineHeight: 1.7 }}>
               <strong>How to use:</strong> Select your location and land type to get a price range per {baseUnit}.
               Enter your land area to see total estimated value. All prices are in <strong>Nepali Rupees (NPR)</strong>.
             </p>
@@ -191,25 +191,25 @@ export default function LandPriceEstimator() {
 
           {/* Price per unit */}
           <div style={{ background: "var(--d)", padding: "32px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(249,250,251,0.4)", fontFamily: "'DM Sans', sans-serif", marginBottom: "16px" }}>
+            <div style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(249,250,251,0.4)", fontFamily: "'Inter', sans-serif", marginBottom: "16px" }}>
               Estimated Price per {baseUnit} — {landType.label}
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "16px", flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontSize: "11px", color: "rgba(249,250,251,0.35)", fontFamily: "'DM Sans', sans-serif" }}>From</div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: "var(--l)" }}>
+                <div style={{ fontSize: "11px", color: "rgba(249,250,251,0.35)", fontFamily: "'Inter', sans-serif" }}>From</div>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: "var(--l)" }}>
                   NPR {fmt(adjMin)}
                 </div>
               </div>
               <div style={{ color: "var(--r)", fontSize: "24px", fontWeight: 300 }}>—</div>
               <div>
-                <div style={{ fontSize: "11px", color: "rgba(249,250,251,0.35)", fontFamily: "'DM Sans', sans-serif" }}>To</div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: "var(--r)" }}>
+                <div style={{ fontSize: "11px", color: "rgba(249,250,251,0.35)", fontFamily: "'Inter', sans-serif" }}>To</div>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 700, color: "var(--r)" }}>
                   NPR {fmt(adjMax)}
                 </div>
               </div>
             </div>
-            <div style={{ marginTop: "12px", fontSize: "12px", color: "rgba(249,250,251,0.3)", fontFamily: "'DM Sans', sans-serif" }}>
+            <div style={{ marginTop: "12px", fontSize: "12px", color: "rgba(249,250,251,0.3)", fontFamily: "'Inter', sans-serif" }}>
               NPR {fmt(minPerSqM)} – {fmt(maxPerSqM)} per sq meter
             </div>
           </div>
@@ -243,13 +243,13 @@ export default function LandPriceEstimator() {
                 <div className="lbl-line" />
                 <span className="lbl-txt">Total Estimated Value</span>
               </div>
-              <div style={{ marginBottom: "8px", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.55 }}>
+              <div style={{ marginBottom: "8px", fontSize: "13px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.55 }}>
                 For {parseFloat(areaValue)} {unitDef.label} ({inputInBase.toFixed(2)} {baseUnit} / {Math.round(inputSqM).toLocaleString()} sq m)
               </div>
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px, 3vw, 36px)", fontWeight: 700, color: "var(--r)" }}>
+              <div style={{ fontFamily: "'Inter', serif", fontSize: "clamp(22px, 3vw, 36px)", fontWeight: 700, color: "var(--r)" }}>
                 NPR {fmt(totalMin)} – {fmt(totalMax)}
               </div>
-              <div style={{ marginTop: "8px", fontSize: "12px", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif" }}>
+              <div style={{ marginTop: "8px", fontSize: "12px", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}>
                 Midpoint estimate: NPR {fmt((totalMin + totalMax) / 2)}
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function LandPriceEstimator() {
 
           {/* Disclaimer for this tool */}
           <div style={{ padding: "16px 20px", background: "rgba(17,24,39,0.03)", border: "1px solid rgba(17,24,39,0.06)" }}>
-            <p style={{ fontSize: "11px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.5, margin: 0, lineHeight: 1.6 }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.5, margin: 0, lineHeight: 1.6 }}>
               Prices are based on general Nepal market benchmarks and may vary significantly based on road access, floor area ratio, shape of land, and current market conditions. Government valuation (मूल्यांकन) may differ from market rate.
             </p>
           </div>
@@ -275,14 +275,14 @@ const lbl = {
   display: "block", fontSize: "11px", fontWeight: 600,
   letterSpacing: "0.1em", textTransform: "uppercase",
   color: "var(--d)", opacity: 0.5, marginBottom: "8px",
-  fontFamily: "'DM Sans', sans-serif",
+  fontFamily: "'Inter', sans-serif",
 };
 const statLbl = {
   fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em",
   textTransform: "uppercase", color: "var(--d)", opacity: 0.4,
-  fontFamily: "'DM Sans', sans-serif", marginBottom: "6px",
+  fontFamily: "'Inter', sans-serif", marginBottom: "6px",
 };
 const statVal = {
-  fontFamily: "'DM Sans', sans-serif", fontSize: "13px",
+  fontFamily: "'Inter', sans-serif", fontSize: "13px",
   fontWeight: 600, color: "var(--d)",
 };

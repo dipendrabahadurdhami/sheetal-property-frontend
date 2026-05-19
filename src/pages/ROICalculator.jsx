@@ -30,11 +30,11 @@ function ResultRow({ label, value, highlight, sub }) {
       borderBottom: "1px solid rgba(17,24,39,0.06)",
     }}>
       <div>
-        <div style={{ fontSize: "13px", fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.75 }}>{label}</div>
-        {sub && <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.35, fontFamily: "'DM Sans', sans-serif" }}>{sub}</div>}
+        <div style={{ fontSize: "13px", fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.75 }}>{label}</div>
+        {sub && <div style={{ fontSize: "11px", color: "var(--d)", opacity: 0.35, fontFamily: "'Inter', sans-serif" }}>{sub}</div>}
       </div>
       <div style={{
-        fontFamily: "'Cormorant Garamond', serif",
+        fontFamily: "'Inter', serif",
         fontSize: "18px",
         fontWeight: 700,
         color: highlight === "red" ? "var(--r)" : highlight === "green" ? "#16a34a" : "var(--d)",
@@ -168,7 +168,7 @@ export default function ROICalculator() {
 
             <Field label={`Holding Period: ${holdingYears} years`}>
               <input type="range" min={1} max={30} value={holdingYears} onChange={e => setHoldingYears(Number(e.target.value))} style={{ width: "100%", accentColor: "var(--r)", border: "none", boxShadow: "none", padding: 0 }} />
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif" }}>
                 <span>1 yr</span><span>15 yrs</span><span>30 yrs</span>
               </div>
             </Field>
@@ -223,7 +223,7 @@ export default function ROICalculator() {
           {!calc ? (
             <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,0.08)", padding: "48px", textAlign: "center" }}>
               <div style={{ fontSize: "48px", marginBottom: "16px" }}>📊</div>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", color: "var(--d)", opacity: 0.45, fontSize: "14px" }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", color: "var(--d)", opacity: 0.45, fontSize: "14px" }}>
                 Enter a purchase price to see your ROI analysis
               </p>
             </div>
@@ -264,16 +264,16 @@ export default function ROICalculator() {
 
               {/* Verdict */}
               <div style={{ background: calc.roi >= 8 ? "var(--d)" : calc.roi >= 4 ? "#92400e" : "#7f1d1d", padding: "24px" }}>
-                <div style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(249,250,251,0.5)", fontFamily: "'DM Sans', sans-serif", marginBottom: "8px" }}>
+                <div style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(249,250,251,0.5)", fontFamily: "'Inter', sans-serif", marginBottom: "8px" }}>
                   Investment Verdict
                 </div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 700, color: "var(--l)" }}>
+                <div style={{ fontFamily: "'Inter', serif", fontSize: "22px", fontWeight: 700, color: "var(--l)" }}>
                   {calc.roi >= 10 ? "🔥 Excellent — Strong Nepal market returns" :
                    calc.roi >= 7  ? "✅ Good — Above average for Nepal real estate" :
                    calc.roi >= 4  ? "⚠️  Moderate — Typical Kathmandu valley return" :
                                     "❌ Low — Consider renegotiating or different zone"}
                 </div>
-                <div style={{ fontSize: "12px", color: "rgba(249,250,251,0.45)", fontFamily: "'DM Sans', sans-serif", marginTop: "6px" }}>
+                <div style={{ fontSize: "12px", color: "rgba(249,250,251,0.45)", fontFamily: "'Inter', sans-serif", marginTop: "6px" }}>
                   Nepal real estate average: 6–10% CAGR in valley areas
                 </div>
               </div>
@@ -306,11 +306,11 @@ function Section({ title, children }) {
 function Field({ label, children, note }) {
   return (
     <div>
-      <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'DM Sans', sans-serif" }}>
+      <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--d)", opacity: 0.5, marginBottom: "8px", fontFamily: "'Inter', sans-serif" }}>
         {label}
       </label>
       {children}
-      {note && <small style={{ display: "block", marginTop: "4px", color: "var(--r)", fontFamily: "'DM Sans', sans-serif" }}>{note}</small>}
+      {note && <small style={{ display: "block", marginTop: "4px", color: "var(--r)", fontFamily: "'Inter', sans-serif" }}>{note}</small>}
     </div>
   );
 }
@@ -318,9 +318,9 @@ function Field({ label, children, note }) {
 function HeroStat({ label, value, color, sub }) {
   return (
     <div className="sb" style={{ textAlign: "center", padding: "20px 16px" }}>
-      <div style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--d)", opacity: 0.4, fontFamily: "'DM Sans', sans-serif", marginBottom: "8px" }}>{label}</div>
-      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(18px, 2vw, 26px)", fontWeight: 700, color, lineHeight: 1 }}>{value}</div>
-      {sub && <div style={{ fontSize: "10px", color: "var(--d)", opacity: 0.35, fontFamily: "'DM Sans', sans-serif", marginTop: "4px" }}>{sub}</div>}
+      <div style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--d)", opacity: 0.4, fontFamily: "'Inter', sans-serif", marginBottom: "8px" }}>{label}</div>
+      <div style={{ fontFamily: "'Inter', serif", fontSize: "clamp(18px, 2vw, 26px)", fontWeight: 700, color, lineHeight: 1 }}>{value}</div>
+      {sub && <div style={{ fontSize: "10px", color: "var(--d)", opacity: 0.35, fontFamily: "'Inter', sans-serif", marginTop: "4px" }}>{sub}</div>}
     </div>
   );
 }

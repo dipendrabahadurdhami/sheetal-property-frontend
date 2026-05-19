@@ -32,38 +32,39 @@ const NAV_ITEMS = [
         title: "Find Your Dream Home",
         desc: "Explore thousands of verified properties across Nepal — from cozy apartments to luxury villas.",
         cta: "Browse All Listings",
-        link: "/productSearch?advertisement_purpose=For Sale",
+        link: "/productSearch?advertisement_purpose=Sale",
         stat: "2,400+ Active Listings",
       },
       columns: [
         {
           heading: "By Type",
           links: [
-            { label: "Residential Houses", sub: "Houses & bungalows", link: "/productSearch?advertisement_purpose=For Sale&type=house" },
-            { label: "Apartments & Flats", sub: "Urban living spaces", link: "/productSearch?advertisement_purpose=For Sale&type=apartment" },
-            { label: "Commercial Space", sub: "Shops & offices", link: "/productSearch?advertisement_purpose=For Sale&type=commercial" },
-            { label: "Land & Plots", sub: "Build your own", link: "/productSearch?advertisement_purpose=For Sale&type=land" },
-            { label: "Showroom & Office", sub: "Business premises", link: "/productSearch?advertisement_purpose=For Sale&type=office" },
+            { label: "Residential Houses", sub: "Houses & bungalows", link: "/productSearch?advertisement_purpose=Sale&property_type=Residential&category=House" },
+            { label: "Apartments & Flats", sub: "Urban living spaces", link: "/productSearch?advertisement_purpose=Sale&category=Apartment" },
+            { label: "Commercial Space", sub: "Shops & offices", link: "/productSearch?advertisement_purpose=Sale&property_type=commercial" },
+            { label: "Land & Plots", sub: "Build your own", link: "/productSearch?&category=Land" },
+            { label: "Showroom & Office", sub: "Business premises", link: "/productSearch?advertisement_purpose=Sale&property_type=office" },
           ],
         },
         {
           heading: "By Location",
           links: [
-            { label: "Kathmandu Valley", sub: "Capital city listings", link: "/productSearch?advertisement_purpose=For Sale&location=kathmandu" },
-            { label: "Pokhara", sub: "Lakeside properties", link: "/productSearch?advertisement_purpose=For Sale&location=pokhara" },
-            { label: "Chitwan", sub: "Southern plains", link: "/productSearch?advertisement_purpose=For Sale&location=chitwan" },
-            { label: "Bhaktapur", sub: "Heritage city homes", link: "/productSearch?advertisement_purpose=For Sale&location=bhaktapur" },
-            { label: "Lalitpur", sub: "Patan district", link: "/productSearch?advertisement_purpose=For Sale&location=lalitpur" },
+            // FIX: Kathmandu Valley covers all 3 districts; others are individual cities only
+            { label: "Kathmandu Valley", sub: "Kathmandu, Lalitpur & Bhaktapur", link: "/productSearch?advertisement_purpose=Sale&district=kathmandu,lalitpur,bhaktapur" },
+            { label: "Kathmandu", sub: "Capital city listings", link: "/productSearch?&advertisement_purpose=sale&keyword=kathmandu" },
+            { label: "Lalitpur", sub: "Patan district", link: "/productSearch?&advertisement_purpose=sale&keyword=lalitpur" },
+            { label: "Bhaktapur", sub: "Heritage city homes", link: "/productSearch?&advertisement_purpose=sale&keyword=bhaktapur" },
+            { label: "Chitwan", sub: "Southern plains", link: "/productSearch?&advertisement_purpose=sale&keyword=chitwan" },
           ],
         },
         {
           heading: "By Budget",
           links: [
-            { label: "Under ₹50 Lakhs", sub: "Starter homes", link: "/productSearch?advertisement_purpose=For Sale&max=5000000" },
-            { label: "₹50L – ₹1 Crore", sub: "Mid-range homes", link: "/productSearch?advertisement_purpose=For Sale&min=5000000&max=10000000" },
-            { label: "₹1Cr – ₹3 Crore", sub: "Premium listings", link: "/productSearch?advertisement_purpose=For Sale&min=10000000&max=30000000" },
-            { label: "Above ₹3 Crore", sub: "Luxury properties", link: "/productSearch?advertisement_purpose=For Sale&min=30000000" },
-            { label: "Negotiable Price", sub: "Open to offers", link: "/productSearch?advertisement_purpose=For Sale&negotiable=true" },
+            { label: "Under Rs. 50 Lakhs", sub: "Starter homes", link: "/productSearch?advertisement_purpose=Sale&max_price=5000000" },
+            { label: "Rs. 50L – Rs. 1 Crore", sub: "Mid-range homes", link: "/productSearch?advertisement_purpose=Sale&min_price=5000000&max_price=10000000" },
+            { label: "Rs. 1Cr – Rs. 3 Crore", sub: "Premium listings", link: "/productSearch?advertisement_purpose=Sale&min_price=10000000&max_price=30000000" },
+            { label: "Above Rs. 3 Crore", sub: "Luxury properties", link: "/productSearch?advertisement_purpose=Sale&min_price=30000000" },
+            { label: "Negotiable Price", sub: "Open to offers", link: "/productSearch?advertisement_purpose=Sale&negotiable=true" },
           ],
         },
       ],
@@ -77,38 +78,39 @@ const NAV_ITEMS = [
         title: "Rent with Confidence",
         desc: "Short-term or long-term — find verified rental properties with transparent pricing and no hidden fees.",
         cta: "View Rentals",
-        link: "/productSearch?advertisement_purpose=For Rent",
+        link: "/productSearch?advertisement_purpose=Rent",
         stat: "1,100+ Rental Properties",
       },
       columns: [
         {
           heading: "Rental Types",
           links: [
-            { label: "Rooms & Flats", sub: "Affordable stays", link: "/productSearch?advertisement_purpose=For Rent&type=flat" },
-            { label: "Full Houses", sub: "Family rentals", link: "/productSearch?advertisement_purpose=For Rent&type=house" },
-            { label: "Office Space", sub: "Work-ready spaces", link: "/productSearch?advertisement_purpose=For Rent&type=office" },
-            { label: "Shop & Showroom", sub: "Retail premises", link: "/productSearch?advertisement_purpose=For Rent&type=shop" },
-            { label: "Warehouse & Godown", sub: "Storage & logistics", link: "/productSearch?advertisement_purpose=For Rent&type=warehouse" },
+            { label: "Rooms & Flats", sub: "Affordable stays", link: "/productSearch?advertisement_purpose=Rent&property_type=flat" },
+            { label: "Full Houses", sub: "Family rentals", link: "/productSearch?advertisement_purpose=Rent&property_type=house" },
+            { label: "Office Space", sub: "Work-ready spaces", link: "/productSearch?advertisement_purpose=Rent&property_type=office" },
+            { label: "Shop & Showroom", sub: "Retail premises", link: "/productSearch?advertisement_purpose=Rent&property_type=shop" },
+            { label: "Warehouse & Godown", sub: "Storage & logistics", link: "/productSearch?advertisement_purpose=Rent&property_type=warehouse" },
           ],
         },
         {
           heading: "Quick Filters",
           links: [
-            { label: "Furnished Rentals", sub: "Move in ready", link: "/productSearch?advertisement_purpose=For Rent&furnished=true" },
-            { label: "Near Ringroad", sub: "Easy commute", link: "/productSearch?advertisement_purpose=For Rent&near=ringroad" },
-            { label: "Student Friendly", sub: "Near colleges", link: "/productSearch?advertisement_purpose=For Rent&tag=student" },
-            { label: "Business District", sub: "Commercial hubs", link: "/productSearch?advertisement_purpose=For Rent&tag=business" },
-            { label: "New Listings", sub: "Just added", link: "/productSearch?advertisement_purpose=For Rent&sort=newest" },
+            { label: "Furnished Rentals", sub: "Move in ready", link: "/productSearch?advertisement_purpose=Rent&furnished=true" },
+            { label: "Near Ringroad", sub: "Easy commute", link: "/productSearch?advertisement_purpose=Rent&near=ringroad" },
+            { label: "Student Friendly", sub: "Near colleges", link: "/productSearch?advertisement_purpose=Rent&tag=student" },
+            { label: "Business District", sub: "Commercial hubs", link: "/productSearch?advertisement_purpose=Rent&tag=business" },
+            { label: "New Listings", sub: "Just added", link: "/productSearch?advertisement_purpose=Rent&sort=newest" },
           ],
         },
         {
           heading: "By Location",
           links: [
-            { label: "Kathmandu", sub: "Capital rentals", link: "/productSearch?advertisement_purpose=For Rent&location=kathmandu" },
-            { label: "Lalitpur", sub: "Patan & surrounds", link: "/productSearch?advertisement_purpose=For Rent&location=lalitpur" },
-            { label: "Bhaktapur", sub: "Heritage zone", link: "/productSearch?advertisement_purpose=For Rent&location=bhaktapur" },
-            { label: "Pokhara", sub: "Lakeside living", link: "/productSearch?advertisement_purpose=For Rent&location=pokhara" },
-            { label: "Chitwan", sub: "Bharatpur city", link: "/productSearch?advertisement_purpose=For Rent&location=chitwan" },
+            // FIX: Kathmandu Valley covers all 3 districts; others are individual cities only
+            { label: "Kathmandu Valley", sub: "Kathmandu, Lalitpur & Bhaktapur", link: "/productSearch?advertisement_purpose=Rent&district=kathmandu,lalitpur,bhaktapur" },
+            { label: "Kathmandu", sub: "Capital rentals", link: "/productSearch?advertisement_purpose=Rent&keyword=kathmandu" },
+            { label: "Lalitpur", sub: "Patan & surrounds", link: "/productSearch?advertisement_purpose=Rent&keyword=lalitpur" },
+            { label: "Bhaktapur", sub: "Heritage zone", link: "/productSearch?advertisement_purpose=Rent&keyword=bhaktapur" },
+            { label: "Chitwan", sub: "Bharatpur city", link: "/productSearch?advertisement_purpose=Rent&keyword=chitwan" },
           ],
         },
       ],
@@ -167,7 +169,7 @@ const NAV_ITEMS = [
         title: "Invest Smart in Nepal",
         desc: "Nepal's real estate market is growing. Get expert guidance on high-return investment properties and emerging zones.",
         cta: "See Investment Properties",
-        link: "/productSearch?tag=investment",
+        link: "/investment",
         stat: "Avg. 12% Annual Returns",
       },
       columns: [
@@ -223,14 +225,14 @@ const NAV_ITEMS = [
             { label: "Our Team", sub: "Meet the experts", link: "/team" },
             { label: "Find an Agent", sub: "Local specialists", link: "/find-agent" },
             { label: "Careers", sub: "Join our team", link: "/careers" },
-            { label: "Press & Media", sub: "News & coverage", link: "/press" },
+            { label: "Blogs & Articles", sub: "Blogs & Reasearch", link: "/blog" },
           ],
         },
         {
           heading: "Connect",
           links: [
             { label: "Contact Us", sub: "Get in touch", link: "/contact" },
-            { label: "Requirement Form", sub: "Tell us what you need", link: "/requirement-form" },
+            { label: "Requirement Form", sub: "Tell us what you need", link: "/requirementform" },
             { label: "Email Us", sub: "Quick enquiry", link: "/contact#email" },
             { label: "Visit Our Office", sub: "Directions & hours", link: "/contact#office" },
             { label: "Client Reviews", sub: "What people say", link: "/reviews" },
@@ -252,8 +254,8 @@ const NAV_ITEMS = [
 ];
 
 // ─── Full-Width Mega Menu ─────────────────────────────────────────────────────
+// FIX: Removed useNavigate — all navigation now uses <Link> (supports right-click, new tab, browser history)
 const MegaMenu = ({ item, onClose, isOpen }) => {
-  const navigate = useNavigate();
   const { mega } = item;
 
   return (
@@ -314,12 +316,14 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
               <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--rd)" }}>{mega.featured.stat}</span>
             </div>
 
-            <button
-              onClick={() => { navigate(mega.featured.link); onClose(); }}
+            {/* FIX: was <button onClick={navigate(...)}> with duplicate style props and wrong closing tag */}
+            <Link
+              to={mega.featured.link}
+              onClick={onClose}
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
                 background: "var(--r)", color: "#fff",
-                border: "none", borderRadius: "10px",
+                textDecoration: "none", borderRadius: "10px",
                 fontSize: "13px", fontWeight: 700,
                 padding: "12px 20px", cursor: "pointer",
                 transition: "background 0.15s",
@@ -329,7 +333,7 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
             >
               {mega.featured.cta}
               <IoArrowForwardOutline style={{ width: "14px", height: "14px" }} />
-            </button>
+            </Link>
           </div>
 
           {/* Columns */}
@@ -353,13 +357,15 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                   {col.links.map((lnk, lIdx) => (
-                    <button
+                    // FIX: was <button onClick={navigate(...)}> — now proper <Link> for right-click & new tab support
+                    <Link
                       key={lIdx}
-                      onClick={() => { navigate(lnk.link); onClose(); }}
+                      to={lnk.link}
+                      onClick={onClose}
                       style={{
                         display: "flex", flexDirection: "column", gap: "1px",
                         width: "100%", textAlign: "left",
-                        background: "none", border: "none",
+                        textDecoration: "none",
                         padding: "9px 10px", borderRadius: "8px",
                         cursor: "pointer",
                         transition: "background 0.12s",
@@ -375,7 +381,7 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
                           {lnk.sub}
                         </span>
                       )}
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -393,17 +399,19 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
             <p style={{ fontSize: "11px", color: "var(--d)", margin: 0 }}>
               Sheetal Real Estate — Nepal's Most Trusted Property Platform since 2009
             </p>
-            <button
-              onClick={() => { navigate("/requirement-form"); onClose(); }}
+            {/* FIX: converted to <Link> for consistency */}
+            <Link
+              to="/requirementform"
+              onClick={onClose}
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
-                background: "none", border: "none", cursor: "pointer",
+                textDecoration: "none",
                 fontSize: "11px", fontWeight: 700, color: "var(--r)",
               }}
             >
               <IoDocumentTextOutline style={{ width: "13px", height: "13px" }} />
               Submit a Requirement →
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -488,17 +496,16 @@ const Header = () => {
           style={{
             maxWidth: "1400px",
             margin: "0 auto",
-            padding: "0 40px",
+            padding: "0 25px",
             width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: "24px",
+            gap: "20px",
           }}
         >
-          {/* ── LEFT: Logo + Search ── */}
+          {/* ── LEFT: Logo ── */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px", flexShrink: 0 }}>
-            {/* Logo */}
             <div
               style={{ display: "flex", alignItems: "center", cursor: "pointer", flexShrink: 0 }}
               onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
@@ -509,8 +516,6 @@ const Header = () => {
                 style={{ height: "38px", width: "auto" }}
               />
             </div>
-
-            
           </div>
 
           {/* ── RIGHT: Nav + Actions ── */}
@@ -530,7 +535,9 @@ const Header = () => {
                     onMouseEnter={() => handleMouseEnter(item.id)}
                     onMouseLeave={handleMouseLeave}
                   >
+                    {/* FIX: added onClick to navigate to featured link when nav label is clicked */}
                     <button
+                      onClick={() => { navigate(item.mega.featured.link); handleClose(); }}
                       style={{
                         background: isOpen
                           ? isScrolled ? "var(--r06)" : "rgba(255,255,255,0.15)"
@@ -567,7 +574,7 @@ const Header = () => {
                       {item.label}
                     </button>
 
-                    {/* Mega menu — rendered per nav item but positioned fixed full-width */}
+                    {/* Mega menu rendered per nav item, positioned fixed full-width */}
                     <MegaMenu
                       item={item}
                       onClose={handleClose}
@@ -578,12 +585,7 @@ const Header = () => {
               })}
             </nav>
 
-            {/* Divider */}
-            <div
-              className="hidden lg:block"
-              style={{ width: "1px", height: "20px", background: isTransparent ? "rgba(255,255,255,0.2)" : "var(--l)", margin: "0 6px" }}
-            />
-
+          
             {/* Favourites */}
             {user.data && (
               <button
@@ -622,7 +624,7 @@ const Header = () => {
                 style={{
                   background: "none", border: "none", cursor: "pointer",
                   padding: "8px", borderRadius: "8px",
-                  color: isTransparent ? "rgba(255,255,255,0.8)" : "var(--d)",
+                 
                   transition: "all 0.15s",
                 }}
               >
@@ -634,17 +636,17 @@ const Header = () => {
                   style={{
                     display: "flex", alignItems: "center", gap: "6px",
                     padding: "4px 8px 4px 4px", borderRadius: "999px",
-                    border: isTransparent ? "0.5px solid rgba(255,255,255,0.3)" : "0.5px solid var(--l)",
-                    background: isTransparent ? "rgba(255,255,255,0.1)" : "var(--l)",
-                    cursor: "pointer", transition: "all 0.15s",
+                    
+                    
+                    cursor: "pointer", transition: "all 0.s",
                   }}
                 >
                   <img
                     src={user.data?.photo || "/noUser.png"}
                     alt="user"
-                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--r)" }}
+                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover", border: "px solid var(--r)" }}
                   />
-                  <IoChevronDownOutline style={{ width: "12px", height: "12px", color: isTransparent ? "rgba(255,255,255,0.7)" : "var(--d)" }} />
+                 
                 </Menu.Button>
 
                 <Transition
@@ -730,15 +732,15 @@ const Header = () => {
               to="/my-profile?section=post-property"
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
-                padding: "9px 18px", borderRadius: "999px",
+                padding: "6px 10px", borderRadius: "4px",
                 fontSize: "13px", fontWeight: 700,
                 textDecoration: "none",
-                background: isTransparent ? "rgba(255,255,255,0.18)" : "var(--r)",
-                border: isTransparent ? "0.5px solid rgba(255,255,255,0.4)" : "none",
-                color: "#fff",
-                backdropFilter: isScrolled ? "none" : "blur(8px)",
+                background: isTransparent ? "rgba(255,255,255,0.0)" : "var(--r)",
+               
+                color: "var(--l)",
+               
                 WebkitBackdropFilter: isScrolled ? "none" : "blur(8px)",
-                boxShadow: isScrolled ? "0 2px 12px rgba(185,28,28,0.3)" : "none",
+               
                 transition: "all 0.2s",
                 marginLeft: "4px",
                 whiteSpace: "nowrap",
@@ -750,8 +752,8 @@ const Header = () => {
                 e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.18)" : "var(--r)";
               }}
             >
-              <IoAddCircleOutline style={{ width: "15px", height: "15px" }} />
-              <span className="hidden sm:inline">Post Property</span>
+            
+              <span className=" sm:inline">Post Property</span>
             </Link>
 
             {/* Mobile hamburger */}
@@ -759,13 +761,14 @@ const Header = () => {
               className="lg:hidden"
               style={{
                 background: "none", border: "none", cursor: "pointer",
-                padding: "8px", borderRadius: "8px",
+                padding: "8px", borderRadius: "4px",
                 color: isTransparent ? "rgba(255,255,255,0.9)" : "var(--d)",
                 marginLeft: "2px",
               }}
               onClick={() => setSidebarOpen(true)}
             >
               <IoMenuOutline style={{ width: "22px", height: "22px" }} />
+            
             </button>
           </div>
         </div>
@@ -811,7 +814,7 @@ const Header = () => {
           key={item.id}
           onMouseEnter={() => handleMouseEnter(item.id)}
           onMouseLeave={handleMouseLeave}
-          style={{ zIndex: 55, position: "relative" }}
+          style={{ zIndex: 999, position: "relative" }}
         >
           <MegaMenu
             item={item}
