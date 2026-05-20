@@ -17,8 +17,6 @@ const formatNepaliPrice = (amount) => {
   return new Intl.NumberFormat("en-IN").format(num);
 };
 
-/* ── HELPERS ── */
-
 const getChipClass = (product) => {
   const days = product.created_at
     ? Math.floor((Date.now() - new Date(product.created_at)) / 86400000)
@@ -29,9 +27,6 @@ const getChipClass = (product) => {
   return null;
 };
 
-/* ══════════════════════════════════════════
-   EMBEDDED CSS — no separate .css file needed
-   ══════════════════════════════════════════ */
 const styles = `
   :root {
     --r:   #b91c1c;
@@ -288,6 +283,47 @@ const styles = `
   }
   .fc-cal { color: rgba(255,255,255,0.28); font-size: 10px; flex-shrink: 0; }
 
+  /* ── SKELETON ── */
+  .fc-skeleton {
+    position: relative;
+    height: 357px;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #1a1a1a;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+  }
+  .fc-skeleton-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      #1e1e1e 25%,
+      #2a2a2a 50%,
+      #1e1e1e 75%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.6s ease-in-out infinite;
+  }
+  @keyframes skeletonShimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .fc-skeleton-panel {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 16px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+  }
+  .fc-skeleton-bar {
+    border-radius: 4px;
+    background: rgba(255,255,255,0.10);
+  }
+
   /* ════════════ MOBILE ════════════ */
   @media (max-width: 767px) {
     .fc-card {
@@ -318,8 +354,38 @@ const styles = `
         rgba(0,0,0,0.04) 100%
       );
     }
+    .fc-skeleton { height: 178px; border-radius: 4px; }
   }
 `;
+
+/* ══════════════════════════════════════════
+   SKELETON COMPONENT
+   ══════════════════════════════════════════ */
+const FeaturedCardSkeleton = () => (
+  <>
+    <style>{styles}</style>
+    <div className="h-full p-2">
+      <div className="fc-skeleton">
+        <div className="fc-skeleton-shimmer" />
+        {/* top-left badge placeholders */}
+        <div style={{ position: "absolute", top: 25, left: 13, display: "flex", flexDirection: "column", gap: 5, zIndex: 10 }}>
+          <div className="fc-skeleton-bar" style={{ width: 60, height: 18 }} />
+          <div className="fc-skeleton-bar" style={{ width: 48, height: 16 }} />
+        </div>
+        {/* top-right heart placeholder */}
+        <div className="fc-skeleton-bar" style={{ position: "absolute", top: 16, right: 13, width: 34, height: 34, borderRadius: "50%", zIndex: 10 }} />
+        {/* bottom panel placeholders */}
+        <div className="fc-skeleton-panel">
+          <div className="fc-skeleton-bar" style={{ width: "55%", height: 26 }} />
+          <div className="fc-skeleton-bar" style={{ width: "100%", height: 1 }} />
+          <div className="fc-skeleton-bar" style={{ width: "75%", height: 16 }} />
+          <div className="fc-skeleton-bar" style={{ width: "50%", height: 13 }} />
+          <div className="fc-skeleton-bar" style={{ width: "40%", height: 12 }} />
+        </div>
+      </div>
+    </div>
+  </>
+);
 
 /* ══════════════════════════════════════════
    MAIN COMPONENT
@@ -328,15 +394,16 @@ const FeaturedCard = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [favorite,  setFavorite]  = useState(false);
-  const [imgIdx,    setImgIdx]    = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const [favorite,   setFavorite]   = useState(false);
+  const [imgIdx,     setImgIdx]     = useState(0);
+  const [isHovered,  setIsHovered]  = useState(false);
+  const [imgLoaded,  setImgLoaded]  = useState(false); // ← skeleton control
 
   const favorites = useSelector((state) => state.favorites.data);
   const user      = useSelector((state) => state.user);
   const token     = localStorage.getItem("sheetal_token");
 
-  const chip  = getChipClass(product);
+  const chip = getChipClass(product);
 
   const purposeName  = product.purpose?.name || product.purpose || "SALE";
   const isRent       = purposeName.toLowerCase().includes("rent");
@@ -419,6 +486,23 @@ const FeaturedCard = ({ product }) => {
 
   const formattedPrice = formatNepaliPrice(product?.total_price);
 
+  // ── Show skeleton until feature image loads ────────────────────────────
+  if (!imgLoaded) {
+    return (
+      <>
+        <FeaturedCardSkeleton />
+        {/* Hidden img to detect load — renders skeleton until ready */}
+        <img
+          src={product?.feature_image}
+          alt=""
+          style={{ display: "none" }}
+          onLoad={() => setImgLoaded(true)}
+          onError={() => setImgLoaded(true)} // don't hang forever on broken img
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <style>{styles}</style>
@@ -465,7 +549,6 @@ const FeaturedCard = ({ product }) => {
             <div className={`fc-badge fc-badge-purpose${isRent ? " rent" : ""}`}>
               {purposeLabel}
             </div>
-
             <div className="fc-badge fc-badge-code">
               <FaHashtag style={{ width: 8, height: 8 }} />
               {product.property_code || product.id}
@@ -482,7 +565,6 @@ const FeaturedCard = ({ product }) => {
 
           {/* GLASS PANEL */}
           <div className="fc-panel">
-
             <div className="fc-price-row">
               <div className="fc-price">
                 {formattedPrice
@@ -513,7 +595,6 @@ const FeaturedCard = ({ product }) => {
                 ? new Date(product.created_at).toLocaleDateString()
                 : "Recently"}
             </p>
-
           </div>
         </div>
       </div>
