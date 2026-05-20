@@ -5,10 +5,10 @@ import Featured from "./Featured";
 import LatestProperties from "./LatestProperties";
 import "react-multi-carousel/lib/styles.css";
 
-const API_BASE      = process.env.REACT_APP_API_LINK;
-const SEARCH_H      = 64;
-const IMG_DURATION  = 5000; // ms for image banners
-const FADE_MS       = 700;  // crossfade duration
+const API_BASE     = process.env.REACT_APP_API_LINK;
+const SEARCH_H     = 64;
+const IMG_DURATION = 5000;
+const FADE_MS      = 700;
 
 const TABS = [
   { label: "All",    advertisement_purpose: null },
@@ -17,9 +17,6 @@ const TABS = [
   { label: "Invest", advertisement_purpose: "Invest" },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Checks whether a <video> element has its entire duration buffered
-// ─────────────────────────────────────────────────────────────────────────────
 const isFullyBuffered = (vid) => {
   try {
     if (!vid.duration || !isFinite(vid.duration)) return false;
@@ -30,35 +27,34 @@ const isFullyBuffered = (vid) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MainHome
-// ─────────────────────────────────────────────────────────────────────────────
 const MainHome = () => {
-  const [filterModal,    setFilterModal]    = useState(false);
-  const [activeTab,      setActiveTab]      = useState(0);
-  const [banners,        setBanners]        = useState([]);
-  const [activeIdx,      setActiveIdx]      = useState(0);
-  const [prevIdx,        setPrevIdx]        = useState(null);
-  const [allReady,       setAllReady]       = useState(false);
-  const [loading,        setLoading]        = useState(true);
-  const [scrolled,       setScrolled]       = useState(false);
-  const [visualScrolled, setVisualScrolled] = useState(false);
-  const [bannerH,        setBannerH]        = useState(0);
-  const [bannerReady,    setBannerReady]    = useState(false); // true after first real height measured
+  const [filterModal,  setFilterModal]  = useState(false);
+  const [activeTab,    setActiveTab]    = useState(0);
+  const [banners,      setBanners]      = useState([]);
+  const [activeIdx,    setActiveIdx]    = useState(0);
+  const [prevIdx,      setPrevIdx]      = useState(null);
+  const [allReady,     setAllReady]     = useState(false);
+  const [loading,      setLoading]      = useState(true);
+  const [scrolled,     setScrolled]     = useState(false);
+  const [bannerH,      setBannerH]      = useState(0);
+  const [bannerReady,  setBannerReady]  = useState(false);
 
-  // video DOM nodes keyed by banner index — never moved, never re-created
-  const videoRefs    = useRef({});
-  const readyMap     = useRef({});
-  const videoTotal   = useRef(0);
-  const timerRef     = useRef(null);
-  const fadingRef    = useRef(false);
-  const bannerRef    = useRef(null);
-  const searchRef    = useRef(null);
-  const userClosedRef = useRef(false);
-  const bannersRef   = useRef([]);
-  const activeIdxRef = useRef(0);
+  // ── NEW: controls whether search is "open/active" (moved up) ─────────────
+  const [searchActive,  setSearchActive]  = useState(false);
+  // ── NEW: only enable transition AFTER first user interaction ─────────────
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  bannersRef.current   = banners;
+  const videoRefs     = useRef({});
+  const readyMap      = useRef({});
+  const videoTotal    = useRef(0);
+  const timerRef      = useRef(null);
+  const fadingRef     = useRef(false);
+  const bannerRef     = useRef(null);
+  const searchRef     = useRef(null);
+  const bannersRef    = useRef([]);
+  const activeIdxRef  = useRef(0);
+
+  bannersRef.current  = banners;
   activeIdxRef.current = activeIdx;
 
   // ── resize observer ───────────────────────────────────────────────────────
@@ -67,48 +63,35 @@ const MainHome = () => {
     const ro = new ResizeObserver(([e]) => {
       const h = e.contentRect.height;
       setBannerH(h);
-      if (h > 0) setBannerReady(true); // only enable transition after real height known
+      if (h > 0) setBannerReady(true);
     });
     ro.observe(bannerRef.current);
     return () => ro.disconnect();
   }, []);
 
-  // ── scroll ────────────────────────────────────────────────────────────────
+  // ── scroll: when user scrolls down, collapse search ───────────────────────
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 10);
+    const fn = () => {
+      const isScrolled = window.scrollY > 10;
+      setScrolled(isScrolled);
+      if (isScrolled) setSearchActive(false);
+    };
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  // ── click-outside search ──────────────────────────────────────────────────
+  // ── click outside search → collapse ──────────────────────────────────────
   useEffect(() => {
     const fn = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
-        userClosedRef.current = true;
-        setVisualScrolled(true);
+        setSearchActive(false);
       }
     };
     document.addEventListener("mousedown", fn);
     return () => document.removeEventListener("mousedown", fn);
   }, []);
 
-  useEffect(() => {
-    if (!bannerH) return;
-    searchRef.current?.querySelector("input")?.focus();
-  }, [bannerH]);
-
-  useEffect(() => {
-    if (!scrolled) {
-      if (userClosedRef.current) return;
-      setVisualScrolled(false);
-      searchRef.current?.querySelector("input")?.focus();
-    } else {
-      userClosedRef.current = false;
-      setVisualScrolled(false);
-    }
-  }, [scrolled]);
-
-  // ── crossfade advance ─────────────────────────────────────────────────────
+  // ── crossfade ─────────────────────────────────────────────────────────────
   const advanceTo = useCallback((targetIdx) => {
     if (fadingRef.current) return;
     fadingRef.current = true;
@@ -117,8 +100,6 @@ const MainHome = () => {
     const leavingVid  = videoRefs.current[current];
     const incomingVid = videoRefs.current[targetIdx];
 
-    // Start playing the incoming video BEFORE the fade begins
-    // It's fully buffered so this is instant — no stutter
     if (incomingVid) {
       incomingVid.currentTime = 0;
       incomingVid.play().catch(() => {});
@@ -130,7 +111,6 @@ const MainHome = () => {
     setTimeout(() => {
       setPrevIdx(null);
       fadingRef.current = false;
-      // Rewind the video that just faded out so it's ready for next loop
       if (leavingVid) {
         leavingVid.pause();
         leavingVid.currentTime = 0;
@@ -138,7 +118,6 @@ const MainHome = () => {
     }, FADE_MS);
   }, []);
 
-  // ── schedule next (image banners only — videos fire onEnded) ─────────────
   const scheduleNext = useCallback((idx, arr) => {
     clearTimeout(timerRef.current);
     if (!arr || arr.length <= 1) return;
@@ -149,7 +128,6 @@ const MainHome = () => {
     }
   }, [advanceTo]);
 
-  // ── build video elements — appended to a hidden stage, never moved ────────
   const setupVideos = useCallback((arr) => {
     const vids = arr.filter((b) => b.media_type === "video");
     videoTotal.current = vids.length;
@@ -157,9 +135,7 @@ const MainHome = () => {
     if (vids.length === 0) { setAllReady(true); return; }
 
     const checkDone = () => {
-      if (Object.keys(readyMap.current).length >= videoTotal.current) {
-        setAllReady(true);
-      }
+      if (Object.keys(readyMap.current).length >= videoTotal.current) setAllReady(true);
     };
 
     arr.forEach((banner, idx) => {
@@ -167,33 +143,31 @@ const MainHome = () => {
       if (videoRefs.current[idx]) return;
 
       const vid = document.createElement("video");
-      vid.src          = banner.url;
-      vid.muted        = true;
-      vid.playsInline  = true;
-      vid.preload      = "auto";
-      vid.loop         = false;
-      vid.crossOrigin  = "anonymous";
+      vid.src         = banner.url;
+      vid.muted       = true;
+      vid.playsInline = true;
+      vid.preload     = "auto";
+      vid.loop        = false;
+      vid.crossOrigin = "anonymous";
 
-      // Positioned absolute inside #video-stage, hidden until active
       Object.assign(vid.style, {
         position:       "absolute",
         top:            "0",
         left:           "0",
         width:          "100%",
         height:         "100%",
-        minWidth:       "100%",      // prevent any sub-pixel shrink on mobile
+        minWidth:       "100%",
         objectFit:      "cover",
         objectPosition: `50% ${banner.object_position ?? 50}%`,
         opacity:        "0",
         pointerEvents:  "none",
         willChange:     "opacity",
         transition:     "none",
-        display:        "block",     // no inline baseline gap
+        display:        "block",
       });
 
       videoRefs.current[idx] = vid;
 
-      // ── full-download detection ──────────────────────────────────────────
       let marked = false;
       const markReady = () => {
         if (marked) return;
@@ -206,13 +180,11 @@ const MainHome = () => {
       vid.addEventListener("progress",       checkBuffer);
       vid.addEventListener("suspend",        checkBuffer);
       vid.addEventListener("canplaythrough", checkBuffer);
-      setTimeout(markReady, 20000); // absolute ceiling
-
+      setTimeout(markReady, 20000);
       vid.load();
     });
   }, []);
 
-  // ── fetch banners ─────────────────────────────────────────────────────────
   useEffect(() => {
     fetch(`${API_BASE}/banners`)
       .then((r) => r.json())
@@ -226,48 +198,36 @@ const MainHome = () => {
       .finally(() => setLoading(false));
   }, [setupVideos]);
 
-  // ── once all ready: mount video nodes into #video-stage & play first ──────
   useEffect(() => {
     if (!allReady || banners.length === 0) return;
-
-    // Wait one tick so #video-stage is in the DOM
     const raf = requestAnimationFrame(() => {
       const stage = document.getElementById("video-stage");
       if (!stage) return;
-
       banners.forEach((_, idx) => {
         const vid = videoRefs.current[idx];
         if (vid && !stage.contains(vid)) stage.appendChild(vid);
       });
-
-      // Show & play first video
       const first = videoRefs.current[0];
       if (first) {
         first.style.opacity = "1";
         first.currentTime   = 0;
         first.play().catch(() => {});
       }
-
       scheduleNext(0, banners);
     });
-
     return () => cancelAnimationFrame(raf);
   }, [allReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── sync video opacity on active/prev change ──────────────────────────────
   useEffect(() => {
     if (!allReady) return;
     banners.forEach((_, idx) => {
       const vid = videoRefs.current[idx];
       if (!vid) return;
-
       if (idx === activeIdx) {
-        // Incoming — already playing, reveal instantly (fade handled by prev layer)
         vid.style.transition = "none";
         vid.style.opacity    = "1";
         vid.style.zIndex     = "2";
       } else if (idx === prevIdx) {
-        // Outgoing — fade out
         vid.style.transition = `opacity ${FADE_MS}ms ease-in-out`;
         vid.style.opacity    = "0";
         vid.style.zIndex     = "1";
@@ -279,13 +239,11 @@ const MainHome = () => {
     });
   }, [activeIdx, prevIdx, allReady, banners]);
 
-  // ── re-schedule on active change ──────────────────────────────────────────
   useEffect(() => {
     if (!allReady) return;
     scheduleNext(activeIdx, banners);
   }, [activeIdx, allReady, banners, scheduleNext]);
 
-  // ── attach onEnded to all video nodes after mount ─────────────────────────
   useEffect(() => {
     if (!allReady) return;
     banners.forEach((banner, idx) => {
@@ -309,7 +267,6 @@ const MainHome = () => {
     };
   }, [allReady, banners, advanceTo]);
 
-  // ── cleanup ───────────────────────────────────────────────────────────────
   useEffect(() => {
     return () => {
       clearTimeout(timerRef.current);
@@ -322,23 +279,34 @@ const MainHome = () => {
   }, []);
 
   // ── search positioning ────────────────────────────────────────────────────
-  const isPageScrolled = (scrolled || visualScrolled) && !filterModal;
-  const centeredTop    = bannerH ? Math.round((bannerH - SEARCH_H) / 1.2) : null;
-  const scrolledTop    = bannerH ? bannerH - SEARCH_H : 0;
+  // searchActive=false → bottom (scrolledTop)
+  // searchActive=true  → center (centeredTop)
+  // scrolled or filterModal → always bottom
+  const isAtBottom  = !searchActive || scrolled || filterModal;
+  const centeredTop = bannerH ? Math.round((bannerH - SEARCH_H) / 1.2) : null;
+  const scrolledTop = bannerH ? bannerH - SEARCH_H : 0;
 
   const searchStyle = {
     position:   "absolute",
     left:       0,
     right:      0,
-    top:        isPageScrolled ? scrolledTop : centeredTop,
-    transition: (bannerReady && centeredTop !== null) ? "top 0.5s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
+    top:        isAtBottom ? scrolledTop : centeredTop,
+    // Only animate after user has interacted — no animation on page load
+    transition: (bannerReady && centeredTop !== null && hasInteracted)
+      ? "top 0.45s cubic-bezier(0.4, 0, 0.2, 1)"
+      : "none",
     zIndex:     50,
     visibility: centeredTop === null ? "hidden" : "visible",
   };
 
+  const handleSearchOpen = () => {
+    setHasInteracted(true); // enable animation from now on
+    setSearchActive(true);
+  };
+
   const openFilter = (val) => {
     setFilterModal(val);
-    if (val) { userClosedRef.current = false; setVisualScrolled(false); }
+    if (val) setSearchActive(false);
   };
 
   const currentBanner = banners[activeIdx] || null;
@@ -372,23 +340,7 @@ const MainHome = () => {
         ref={bannerRef}
         className="w-full h-80 sm:h-96 md:h-[380px] lg:h-[420px] relative overflow-visible group"
       >
-        {/* Media layer — overflow-hidden ensures video/img always fills full width */}
         <div className="absolute inset-0 overflow-hidden bg-[#000d20]">
-        {loading && (
-            <div className="absolute inset-0 z-20 flex flex-col justify-end pb-4 px-4 md:px-10">
-              <div className="skeleton-shimmer h-6 w-1/3 mx-auto rounded mb-6 opacity-60" />
-              <div className="w-full xl:w-9/12 mx-auto">
-                <div className="flex gap-1 mb-0">
-                  {[60, 50, 50, 65].map((w, i) => (
-                    <div key={i} className="skeleton-shimmer h-8 rounded-t-sm opacity-50" style={{ width: w }} />
-                  ))}
-                </div>
-                <div className="skeleton-shimmer h-16 w-full rounded-b-md rounded-tr-md opacity-60" />
-              </div>
-            </div>
-          )}
-
-          {/* ── mt.jpg: always rendered, fades out once ready ─────────────── */}
           <img
             src="/mt.jpg"
             alt=""
@@ -408,14 +360,7 @@ const MainHome = () => {
             }}
           />
 
-          {/* ── video stage: all <video> nodes live here permanently ────────── */}
-          {/* z-index below mt.jpg while loading, above after ready             */}
-          <div
-            id="video-stage"
-            className="absolute inset-0"
-            style={{ zIndex: 2 }}
-          >
-            {/* Image banners (non-video) rendered as <img> inside the stage */}
+          <div id="video-stage" className="absolute inset-0" style={{ zIndex: 2 }}>
             {isVisible && banners.map((banner, idx) => {
               if (banner.media_type === "video") return null;
               const isActive = idx === activeIdx;
@@ -443,7 +388,7 @@ const MainHome = () => {
           </div>
         </div>
 
-        {/* ── overlay: title + dots ─────────────────────────────────────────── */}
+        {/* overlay */}
         <div
           className="absolute inset-0 flex flex-col justify-end items-center px-5 pb-10 bg-black/20"
           style={{ zIndex: 10 }}
@@ -453,10 +398,9 @@ const MainHome = () => {
               {currentBanner.title}
             </h1>
           )}
-
         </div>
 
-        {/* ── arrows ───────────────────────────────────────────────────────── */}
+        {/* arrows */}
         {banners.length > 1 && (
           <>
             <button
@@ -472,11 +416,11 @@ const MainHome = () => {
           </>
         )}
 
-        {/* ── search bar ───────────────────────────────────────────────────── */}
+        {/* search bar */}
         <div
           style={searchStyle}
           className="px-4 md:px-10"
-          onMouseDown={() => { userClosedRef.current = false; setVisualScrolled(false); }}
+          onMouseDown={handleSearchOpen}
         >
           <div ref={searchRef} className="w-full xl:w-9/12 mx-auto overflow-visible">
             <div className="flex items-end overflow-x-auto no-scrollbar">
@@ -508,11 +452,11 @@ const MainHome = () => {
         </div>
       </div>
 
-      {/* spacer */}
+      {/* spacer — only shows when search is active (moved up) */}
       <div
         style={{
-          height:     isPageScrolled ? Math.round(SEARCH_H / 2) + 12 : 0,
-          transition: "height 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+          height:     !isAtBottom ? Math.round(SEARCH_H / 2) + 12 : 0,
+          transition: hasInteracted ? "height 0.45s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
         }}
       />
 

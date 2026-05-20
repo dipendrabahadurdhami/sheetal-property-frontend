@@ -49,11 +49,11 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   const propertyLinks = [
-    { label: "Property in Nepal",     href: "/" },
-    { label: "Property in Kathmandu", href: "/" },
-    { label: "Property in Pokhara",   href: "/" },
-    { label: "Property in Dang",      href: "/" },
-    { label: "Property in Illam",     href: "/" },
+    { label: "Property in Nepal",     href: "/productSearch?district=kathmandu,lalitpur,bhaktapur" },
+    { label: "Property in Kathmandu", href: "/productSearch?keyword=kathmandu" },
+    { label: "Property in Lalitpur",   href: "/productSearch?keyword=lalitpur" },
+    { label: "Property in Bhaktapur",      href: "/productSearch?keyword=bhaktapur" },
+    { label: "Property in Chitwan",     href: "/productSearch?keyword=chitwan" },
   ];
   const quickLinks = [
     { label: "Home",                 to: "/" },
@@ -63,9 +63,9 @@ const Footer = () => {
     { label: "Terms and Conditions", to: "/terms-and-conditions" },
   ];
   const serviceLinks = [
-    { label: "Sale Properties",      to: "/productSearch?advertisement_purpose=Sale" },
-    { label: "Rent Properties",      to: "/productSearch?advertisement_purpose=Rent" },
-    { label: "Invest in Properties", to: "/productSearch?advertisement_purpose=Invest" },
+    { label: "Sale Properties",      to: "/sale" },
+    { label: "Rent Properties",      to: "/rent" },
+    { label: "Invest in Properties", to: "/investment" },
     { label: "Find Agent",           to: "/agents" },
     { label: "Technical Services",   href: "https://dhamiplus.com", external: true },
   ];

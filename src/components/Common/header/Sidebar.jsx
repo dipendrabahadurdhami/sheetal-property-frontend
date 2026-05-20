@@ -18,82 +18,305 @@ import {
   IoSearchOutline,
   IoCallOutline,
   IoArrowForwardOutline,
+  IoChevronDownOutline,
 } from "react-icons/io5";
 
 import LoginModel from "../../Login/LoginModel";
 import { removeUserInfo } from "../../../features/slices/userInformation";
 import { removeAllFavorites } from "../../../features/slices/favourites";
 
+// ─── Full nav mirrored from Header NAV_ITEMS ────────────────────────────────
 const SIDEBAR_NAV = [
   {
     id: "buy",
     label: "Buy Property",
     icon: IoKeyOutline,
-    links: [
-      { label: "Residential Houses", link: "/productSearch?advertisement_purpose=For Sale&type=house" },
-      { label: "Apartments & Flats", link: "/productSearch?advertisement_purpose=For Sale&type=apartment" },
-      { label: "Land & Plots", link: "/productSearch?advertisement_purpose=For Sale&type=land" },
-      { label: "Commercial Space", link: "/productSearch?advertisement_purpose=For Sale&type=commercial" },
-      { label: "Browse All For Sale", link: "/productSearch?advertisement_purpose=For Sale", cta: true },
+    featuredLink: "/sale",
+    columns: [
+      {
+        heading: "By Type",
+        links: [
+          { label: "Residential Houses", sub: "Houses & bungalows", link: "/productSearch?advertisement_purpose=Sale&property_type=Residential&category=House" },
+          { label: "Apartments & Flats", sub: "Urban living spaces", link: "/productSearch?advertisement_purpose=Sale&category=Apartment" },
+          { label: "Commercial Space", sub: "Shops & offices", link: "/productSearch?advertisement_purpose=Sale&property_type=commercial" },
+          { label: "Land & Plots", sub: "Build your own", link: "/productSearch?&category=Land" },
+          { label: "Showroom & Office", sub: "Business premises", link: "/productSearch?advertisement_purpose=Sale&property_type=office" },
+        ],
+      },
+      {
+        heading: "By Location",
+        links: [
+          { label: "Kathmandu Valley", sub: "Kathmandu, Lalitpur & Bhaktapur", link: "/productSearch?advertisement_purpose=Sale&district=kathmandu,lalitpur,bhaktapur" },
+          { label: "Kathmandu", sub: "Capital city listings", link: "/productSearch?&advertisement_purpose=sale&keyword=kathmandu" },
+          { label: "Lalitpur", sub: "Patan district", link: "/productSearch?&advertisement_purpose=sale&keyword=lalitpur" },
+          { label: "Bhaktapur", sub: "Heritage city homes", link: "/productSearch?&advertisement_purpose=sale&keyword=bhaktapur" },
+          { label: "Chitwan", sub: "Southern plains", link: "/productSearch?&advertisement_purpose=sale&keyword=chitwan" },
+        ],
+      },
+      {
+        heading: "By Budget",
+        links: [
+          { label: "Under Rs. 50 Lakhs", sub: "Starter homes", link: "/productSearch?advertisement_purpose=Sale&max_price=5000000" },
+          { label: "Rs. 50L – Rs. 1 Crore", sub: "Mid-range homes", link: "/productSearch?advertisement_purpose=Sale&min_price=5000000&max_price=10000000" },
+          { label: "Rs. 1Cr – Rs. 3 Crore", sub: "Premium listings", link: "/productSearch?advertisement_purpose=Sale&min_price=10000000&max_price=30000000" },
+          { label: "Above Rs. 3 Crore", sub: "Luxury properties", link: "/productSearch?advertisement_purpose=Sale&min_price=30000000" },
+          { label: "Negotiable Price", sub: "Open to offers", link: "/productSearch?advertisement_purpose=Sale&negotiable=true" },
+        ],
+      },
     ],
   },
   {
     id: "rent",
     label: "Rent & Lease",
     icon: IoHomeOutline,
-    links: [
-      { label: "Rooms & Flats", link: "/productSearch?advertisement_purpose=For Rent&type=flat" },
-      { label: "Full Houses", link: "/productSearch?advertisement_purpose=For Rent&type=house" },
-      { label: "Office Space", link: "/productSearch?advertisement_purpose=For Rent&type=office" },
-      { label: "Furnished Rentals", link: "/productSearch?advertisement_purpose=For Rent&furnished=true" },
-      { label: "Browse All Rentals", link: "/productSearch?advertisement_purpose=For Rent", cta: true },
+    featuredLink: "/rent",
+    columns: [
+      {
+        heading: "Rental Types",
+        links: [
+          { label: "Rooms & Flats", sub: "Affordable stays", link: "/productSearch?advertisement_purpose=Rent&property_type=flat" },
+          { label: "Full Houses", sub: "Family rentals", link: "/productSearch?advertisement_purpose=Rent&property_type=house" },
+          { label: "Office Space", sub: "Work-ready spaces", link: "/productSearch?advertisement_purpose=Rent&property_type=office" },
+          { label: "Shop & Showroom", sub: "Retail premises", link: "/productSearch?advertisement_purpose=Rent&property_type=shop" },
+          { label: "Warehouse & Godown", sub: "Storage & logistics", link: "/productSearch?advertisement_purpose=Rent&property_type=warehouse" },
+        ],
+      },
+      {
+        heading: "Quick Filters",
+        links: [
+          { label: "Furnished Rentals", sub: "Move in ready", link: "/productSearch?advertisement_purpose=Rent&furnished=true" },
+          { label: "Near Ringroad", sub: "Easy commute", link: "/productSearch?advertisement_purpose=Rent&near=ringroad" },
+          { label: "Student Friendly", sub: "Near colleges", link: "/productSearch?advertisement_purpose=Rent&tag=student" },
+          { label: "Business District", sub: "Commercial hubs", link: "/productSearch?advertisement_purpose=Rent&tag=business" },
+          { label: "New Listings", sub: "Just added", link: "/productSearch?advertisement_purpose=Rent&sort=newest" },
+        ],
+      },
+      {
+        heading: "By Location",
+        links: [
+          { label: "Kathmandu Valley", sub: "Kathmandu, Lalitpur & Bhaktapur", link: "/productSearch?advertisement_purpose=Rent&district=kathmandu,lalitpur,bhaktapur" },
+          { label: "Kathmandu", sub: "Capital rentals", link: "/productSearch?advertisement_purpose=Rent&keyword=kathmandu" },
+          { label: "Lalitpur", sub: "Patan & surrounds", link: "/productSearch?advertisement_purpose=Rent&keyword=lalitpur" },
+          { label: "Bhaktapur", sub: "Heritage zone", link: "/productSearch?advertisement_purpose=Rent&keyword=bhaktapur" },
+          { label: "Chitwan", sub: "Bharatpur city", link: "/productSearch?advertisement_purpose=Rent&keyword=chitwan" },
+        ],
+      },
     ],
   },
   {
     id: "services",
     label: "Services",
     icon: IoBriefcaseOutline,
-    links: [
-      { label: "Property Valuation", link: "/services/valuation" },
-      { label: "Legal & Documentation", link: "/services/legal" },
-      { label: "Home Loan Assistance", link: "/services/loan" },
-      { label: "Interior Design", link: "/services/interior" },
-      { label: "All Services", link: "/services", cta: true },
+    featuredLink: "/services",
+    columns: [
+      {
+        heading: "Our Services",
+        links: [
+          { label: "Property Valuation", sub: "Fair market pricing", link: "/services/valuation" },
+          { label: "Legal & Documentation", sub: "Title & deed support", link: "/services/legal" },
+          { label: "Home Loan Assistance", sub: "Bank tie-ups", link: "/services/loan" },
+          { label: "Interior Design", sub: "End-to-end design", link: "/services/interior" },
+          { label: "Property Management", sub: "Hands-off ownership", link: "/services/management" },
+        ],
+      },
+      {
+        heading: "For Owners",
+        links: [
+          { label: "List Your Property", sub: "Free listing", link: "/my-profile?section=post-property" },
+          { label: "Demand Registration", sub: "Find buyers fast", link: "/property-demand" },
+          { label: "Market Insights", sub: "Price trends & data", link: "/market-insights" },
+          { label: "Investment Advisory", sub: "Expert guidance", link: "/services/investment" },
+          { label: "NRN / Foreign Buyers", sub: "International rules", link: "/services/nrn" },
+        ],
+      },
+      {
+        heading: "Resources",
+        links: [
+          { label: "Buying Guide", sub: "Step-by-step help", link: "/guides/buying" },
+          { label: "Renting Guide", sub: "Tenant rights & tips", link: "/guides/renting" },
+          { label: "Legal Checklist", sub: "Due diligence list", link: "/guides/legal-checklist" },
+          { label: "EMI Calculator", sub: "Plan your loan", link: "/tools/emi-calculator" },
+          { label: "FAQ", sub: "Common questions", link: "/faq" },
+        ],
+      },
     ],
   },
   {
     id: "invest",
     label: "Investments",
     icon: IoTrendingUpOutline,
-    links: [
-      { label: "Premium Plots", link: "/productSearch?tag=premium-land" },
-      { label: "Apartment Projects", link: "/productSearch?tag=project" },
-      { label: "Commercial Buildings", link: "/productSearch?tag=commercial-invest" },
-      { label: "ROI Calculator", link: "/tools/roi-calculator" },
-      { label: "Investment Properties", link: "/productSearch?tag=investment", cta: true },
+    featuredLink: "/investment",
+    columns: [
+      {
+        heading: "Investment Types",
+        links: [
+          { label: "Premium Plots", sub: "High-growth zones", link: "/productSearch?tag=premium-land" },
+          { label: "Apartment Projects", sub: "Under-construction", link: "/productSearch?tag=project" },
+          { label: "Commercial Buildings", sub: "Rental income", link: "/productSearch?tag=commercial-invest" },
+          { label: "Resort & Tourism", sub: "Hospitality assets", link: "/productSearch?tag=resort" },
+          { label: "Industrial Land", sub: "Manufacturing zones", link: "/productSearch?tag=industrial" },
+        ],
+      },
+      {
+        heading: "Tools & Resources",
+        links: [
+          { label: "ROI Calculator", sub: "Estimate returns", link: "/tools/roi-calculator" },
+          { label: "Land Price Estimates", sub: "Area-wise estimates", link: "/tools/land-estimator" },
+          { label: "Property Tax", sub: "Calculate property tax", link: "/tools/property-tax" },
+          { label: "Rent Vs Buy", sub: "Compare rent vs buy", link: "/tools/rent-vs-buy" },
+          { label: "EMI Calculator", sub: "Plan your loan", link: "/tools/emi-calculator" },
+        ],
+      },
+      {
+        heading: "Why Invest in Nepal",
+        links: [
+          { label: "Stable Market Growth", sub: "10yr trend analysis", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+          { label: "Tax Benefits", sub: "Govt incentives", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+          { label: "Infrastructure Projects", sub: "New roads & metros", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+          { label: "Tourism Boom", sub: "Hospitality demand", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+          { label: "Success Stories", sub: "Investor testimonials", link: "/about" },
+        ],
+      },
     ],
   },
   {
     id: "about",
     label: "About Us",
     icon: IoInformationCircleOutline,
-    links: [
-      { label: "About Sheetal", link: "/about" },
-      { label: "Our Team", link: "/team" },
-      { label: "Find an Agent", link: "/find-agent" },
-      { label: "Contact Us", link: "/contact" },
-      { label: "Client Reviews", link: "/reviews", cta: true },
+    featuredLink: "/About",
+    columns: [
+      {
+        heading: "Company",
+        links: [
+          { label: "About Shetal", sub: "Our mission & story", link: "/About" },
+          { label: "Our Team", sub: "Meet the experts", link: "/about" },
+          { label: "Find an Agent", sub: "Local specialists", link: "/agents" },
+          { label: "Careers", sub: "Join our team", link: "/about" },
+          { label: "Blogs & Articles", sub: "Insights & research", link: "/blog" },
+        ],
+      },
+      {
+        heading: "What We Do",
+        links: [
+          { label: "Exclusive Property Sales", sub: "Strategic sales & branding", link: "/about" },
+          { label: "Property Management", sub: "End-to-end management", link: "/about" },
+          { label: "Real Estate Development", sub: "Plotting & housing projects", link: "/about" },
+          { label: "Investment & Hospitality", sub: "High-return ecosystems", link: "/about" },
+          { label: "NRN / Foreign Buyers", sub: "International rules", link: "/about" },
+        ],
+      },
+      {
+        heading: "Connect",
+        links: [
+          { label: "Contact Us", sub: "Get in touch", link: "/about" },
+          { label: "Requirement Form", sub: "Tell us what you need", link: "/about" },
+          { label: "Visit Our Office", sub: "Directions & hours", link: "/about" },
+          { label: "Client Reviews", sub: "What people say", link: "/about" },
+          { label: "Partner With Us", sub: "Investor & developer tie-ups", link: "/about" },
+        ],
+      },
     ],
   },
 ];
 
-// ── Single accordion row ────────────────────────────────────────────────────
+// ── Column accordion (level 2) ──────────────────────────────────────────────
+const ColumnRow = ({ col, navigate, setSidebarOpen }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      {/* Column heading toggle */}
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          padding: "9px 20px 9px 48px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <span
+          style={{
+            flex: 1,
+            fontSize: "11px",
+            fontWeight: 700,
+            letterSpacing: "1.8px",
+            textTransform: "uppercase",
+            color: open ? "#b91c1c" : "#9ca3af",
+            transition: "color 0.15s",
+          }}
+        >
+          {col.heading}
+        </span>
+        <IoChevronDownOutline
+          style={{
+            width: "12px",
+            height: "12px",
+            color: "#d1d5db",
+            transform: open ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.2s cubic-bezier(0.16,1,0.3,1)",
+            flexShrink: 0,
+          }}
+        />
+      </button>
+
+      {/* Sub-links */}
+      <div
+        style={{
+          maxHeight: open ? `${col.links.length * 65}px` : "0",
+          overflow: "hidden",
+          transition: "max-height 0.28s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
+        <div style={{ paddingBottom: "4px" }}>
+          {col.links.map((lnk, i) => (
+            <button
+              key={i}
+              onClick={() => { navigate(lnk.link); setSidebarOpen(false); }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1px",
+                width: "100%",
+                padding: "8px 20px 8px 56px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                transition: "background 0.1s",
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "#fef2f2"}
+              onMouseLeave={e => e.currentTarget.style.background = "none"}
+            >
+              <span style={{ fontSize: "13px", fontWeight: 500, color: "#374151", letterSpacing: "-0.01em" }}>
+                {lnk.label}
+              </span>
+              {lnk.sub && (
+                <span style={{ fontSize: "11px", color: "#9ca3af" }}>
+                  {lnk.sub}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ── Section accordion (level 1) ─────────────────────────────────────────────
 const NavRow = ({ item, navigate, setSidebarOpen }) => {
   const [open, setOpen] = useState(false);
   const Icon = item.icon;
 
   return (
     <div>
+      {/* Section header */}
       <button
         onClick={() => setOpen(!open)}
         style={{
@@ -102,10 +325,11 @@ const NavRow = ({ item, navigate, setSidebarOpen }) => {
           alignItems: "center",
           gap: "14px",
           padding: "13px 20px",
-          background: "none",
+          background: open ? "#fef2f2" : "none",
           border: "none",
           cursor: "pointer",
           textAlign: "left",
+          transition: "background 0.15s",
         }}
       >
         <Icon
@@ -121,7 +345,7 @@ const NavRow = ({ item, navigate, setSidebarOpen }) => {
           style={{
             flex: 1,
             fontSize: "14px",
-            fontWeight: 500,
+            fontWeight: 600,
             color: open ? "#111827" : "#374151",
             letterSpacing: "-0.01em",
             transition: "color 0.15s",
@@ -133,73 +357,57 @@ const NavRow = ({ item, navigate, setSidebarOpen }) => {
           style={{
             width: "14px",
             height: "14px",
-            color: "#d1d5db",
+            color: open ? "#b91c1c" : "#d1d5db",
             transform: open ? "rotate(90deg)" : "rotate(0deg)",
-            transition: "transform 0.2s cubic-bezier(0.16,1,0.3,1)",
+            transition: "transform 0.22s cubic-bezier(0.16,1,0.3,1), color 0.15s",
             flexShrink: 0,
           }}
         />
       </button>
 
-      {/* Expanded sub-links */}
+      {/* Expanded: "Browse All" CTA + column accordions */}
       <div
         style={{
-          maxHeight: open ? "320px" : "0",
+          maxHeight: open ? "1200px" : "0",
           overflow: "hidden",
-          transition: "max-height 0.28s cubic-bezier(0.16,1,0.3,1)",
+          transition: "max-height 0.35s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
-        <div style={{ paddingBottom: "6px" }}>
-          {item.links.map((lnk, i) =>
-            lnk.cta ? (
-              <button
-                key={i}
-                onClick={() => { navigate(lnk.link); setSidebarOpen(false); }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  width: "calc(100% - 32px)",
-                  margin: "6px 16px 4px",
-                  padding: "10px 14px",
-                  background: "#111827",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  color: "#fff",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                <span style={{ flex: 1 }}>{lnk.label}</span>
-                <IoArrowForwardOutline style={{ width: "13px", height: "13px", opacity: 0.6 }} />
-              </button>
-            ) : (
-              <button
-                key={i}
-                onClick={() => { navigate(lnk.link); setSidebarOpen(false); }}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  padding: "9px 20px 9px 51px",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  fontSize: "13px",
-                  fontWeight: 400,
-                  color: "#6b7280",
-                  letterSpacing: "-0.01em",
-                  transition: "color 0.12s",
-                }}
-                onMouseEnter={e => e.currentTarget.style.color = "#111827"}
-                onMouseLeave={e => e.currentTarget.style.color = "#6b7280"}
-              >
-                {lnk.label}
-              </button>
-            )
-          )}
+        {/* Browse All CTA */}
+        <div style={{ padding: "6px 16px 4px 1px" }}>
+          <button
+            onClick={() => { navigate(item.featuredLink); setSidebarOpen(false); }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              width: "100%",
+              padding: "9px 12px",
+              background: "#b91c1c",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: 700,
+              color: "#fff",
+              letterSpacing: "0.01em",
+            }}
+          >
+            <span style={{ flex: 1 }}>Browse All {item.label}</span>
+            <IoArrowForwardOutline style={{ width: "12px", height: "12px", opacity: 0.6 }} />
+          </button>
+        </div>
+
+        {/* Column accordions */}
+        <div style={{ paddingBottom: "8px" }}>
+          {item.columns.map((col, cIdx) => (
+            <ColumnRow
+              key={cIdx}
+              col={col}
+              navigate={navigate}
+              setSidebarOpen={setSidebarOpen}
+            />
+          ))}
         </div>
       </div>
 
@@ -209,7 +417,7 @@ const NavRow = ({ item, navigate, setSidebarOpen }) => {
   );
 };
 
-// ── Main Sidebar ────────────────────────────────────────────────────────────
+// ── Main Sidebar ─────────────────────────────────────────────────────────────
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const [authModal, setAuthModal] = useState(false);
   const navigate = useNavigate();
@@ -229,7 +437,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
-          style={{ position: "fixed", inset: 0, display: "flex", zIndex: 70 }}
+          style={{ position: "fixed", inset: 0, display: "flex", zIndex: 9999 }}
           className="lg:hidden"
           onClose={setSidebarOpen}
         >
@@ -273,10 +481,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 maxWidth: "300px",
                 height: "100%",
                 background: "#fff",
-                overflow: "hidden",
+                overflow: "clip",
               }}
             >
-
               {/* ── Header ── */}
               <div
                 style={{
@@ -295,11 +502,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   onClick={() => setSidebarOpen(false)}
                   style={{
-                    width: "32px", height: "32px",
-                    borderRadius: "8px",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "4px",
                     border: "none",
                     background: "#f9fafb",
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     cursor: "pointer",
                     color: "#6b7280",
                   }}
@@ -320,7 +530,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     padding: "10px 14px",
                     background: "#f9fafb",
                     border: "1px solid #f3f4f6",
-                    borderRadius: "10px",
+                    borderRadius: "4px",
                     cursor: "pointer",
                   }}
                 >
@@ -340,7 +550,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   WebkitOverflowScrolling: "touch",
                 }}
               >
-                {/* Nav accordion */}
+                {/* Nav accordion — Level 1 */}
                 <div style={{ paddingTop: "8px" }}>
                   {SIDEBAR_NAV.map((item) => (
                     <NavRow
@@ -355,9 +565,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 {/* ── Quick contact ── */}
                 <div style={{ padding: "20px 20px 8px" }}>
                   <p style={{
-                    fontSize: "10px", fontWeight: 600,
-                    letterSpacing: "1.5px", textTransform: "uppercase",
-                    color: "#d1d5db", marginBottom: "10px",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                    letterSpacing: "1.5px",
+                    textTransform: "uppercase",
+                    color: "#d1d5db",
+                    marginBottom: "10px",
                   }}>
                     Contact
                   </p>
@@ -371,17 +584,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       padding: "11px 14px",
                       background: "#f9fafb",
                       border: "1px solid #f3f4f6",
-                      borderRadius: "10px",
+                      borderRadius: "4px",
                       cursor: "pointer",
                       textAlign: "left",
                     }}
                   >
                     <span
                       style={{
-                        width: "30px", height: "30px",
-                        borderRadius: "8px",
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "4px",
                         background: "#fef2f2",
-                        display: "flex", alignItems: "center", justifyContent: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                         flexShrink: 0,
                       }}
                     >
@@ -401,9 +617,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 {user.data && (
                   <div style={{ padding: "8px 20px 16px" }}>
                     <p style={{
-                      fontSize: "10px", fontWeight: 600,
-                      letterSpacing: "1.5px", textTransform: "uppercase",
-                      color: "#d1d5db", marginBottom: "10px",
+                      fontSize: "10px",
+                      fontWeight: 600,
+                      letterSpacing: "1.5px",
+                      textTransform: "uppercase",
+                      color: "#d1d5db",
+                      marginBottom: "10px",
                     }}>
                       Account
                     </p>
@@ -416,7 +635,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         gap: "12px",
                         padding: "12px",
                         background: "#fafafa",
-                        borderRadius: "10px",
+                        borderRadius: "4px",
                         border: "1px solid #f3f4f6",
                         marginBottom: "8px",
                       }}
@@ -425,7 +644,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         src={user.data?.photo || "/noUser.png"}
                         alt="user"
                         style={{
-                          width: "36px", height: "36px",
+                          width: "36px",
+                          height: "36px",
                           borderRadius: "50%",
                           objectFit: "cover",
                           border: "1.5px solid #fca5a5",
@@ -434,9 +654,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
-                          fontSize: "13px", fontWeight: 600, color: "#111827",
-                          margin: 0, overflow: "hidden",
-                          textOverflow: "ellipsis", whiteSpace: "nowrap",
+                          fontSize: "13px",
+                          fontWeight: 600,
+                          color: "#111827",
+                          margin: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
                         }}>
                           {user.data?.name || "My Account"}
                         </p>
@@ -501,7 +725,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     padding: "13px",
                     background: "#b91c1c",
                     color: "#fff",
-                    borderRadius: "10px",
+                    borderRadius: "4px",
                     textDecoration: "none",
                     fontSize: "13px",
                     fontWeight: 600,
@@ -523,7 +747,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       padding: "11px",
                       background: "#fff",
                       border: "1px solid #e5e7eb",
-                      borderRadius: "10px",
+                      borderRadius: "4px",
                       cursor: "pointer",
                       fontSize: "13px",
                       fontWeight: 500,
@@ -545,7 +769,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       padding: "11px",
                       background: "#fff",
                       border: "1px solid #fee2e2",
-                      borderRadius: "10px",
+                      borderRadius: "4px",
                       cursor: "pointer",
                       fontSize: "13px",
                       fontWeight: 500,
@@ -558,7 +782,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 )}
               </div>
-
             </div>
           </Transition.Child>
 

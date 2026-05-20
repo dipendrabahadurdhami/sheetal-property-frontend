@@ -47,7 +47,7 @@ body{overflow-x:hidden}
 
 /* ── MARQUEE ── */
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.mq{display:inline-flex;animation:mq 28s linear infinite;white-space:nowrap}
+.mq{display:inline-flex;animation:mq 200s linear infinite;white-space:nowrap}
 .mq:hover{animation-play-state:paused}
 
 /* ── SERVICE CARD ── */

@@ -17,6 +17,7 @@ import Project from "./pages/Project";
 import About from "./pages/About";
 import Rent from "./pages/Rent";
 import Sale from "./pages/Sale";
+import ShetalLeadExtractor from "./pages/ShetalLeadExtractor";
 import MyProfile from "./pages/MyProfile";
 import VerifyEmail from "./pages/VerifyEmail";
 import PostProperty from "./pages/PostProperty";
@@ -134,6 +135,7 @@ function App(props) {
           <Route path="/LegalHelp" element={<LegalHelp />} />
           <Route path="/rateandtrend" element={<RateAndTrends />} />
           <Route path="/investment" element={<Investment />} />
+          <Route path="/ShetalLeadExtractor" element={<ShetalLeadExtractor />} />
           <Route path="/investment/export" element={<InvestmentExplore />} />
           <Route
             path="/reset-password/:token"

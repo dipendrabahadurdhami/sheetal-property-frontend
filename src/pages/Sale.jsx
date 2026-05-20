@@ -960,7 +960,7 @@ const Sale = () => {
                   Property Buying Guides &amp; Tips
                 </h2>
               </div>
-              <button onClick={() => navigate("/blogs")} style={{
+              <button onClick={() => navigate("/blog")} style={{
                 background: "none", border: "none", cursor: "pointer",
                 fontSize: 11, fontWeight: 700, color: "#E02424",
                 fontFamily: "'Outfit', sans-serif",

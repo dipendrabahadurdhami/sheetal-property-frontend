@@ -32,7 +32,7 @@ const NAV_ITEMS = [
         title: "Find Your Dream Home",
         desc: "Explore thousands of verified properties across Nepal — from cozy apartments to luxury villas.",
         cta: "Browse All Listings",
-        link: "/productSearch?advertisement_purpose=Sale",
+        link: "/sale",
         stat: "2,400+ Active Listings",
       },
       columns: [
@@ -49,7 +49,6 @@ const NAV_ITEMS = [
         {
           heading: "By Location",
           links: [
-            // FIX: Kathmandu Valley covers all 3 districts; others are individual cities only
             { label: "Kathmandu Valley", sub: "Kathmandu, Lalitpur & Bhaktapur", link: "/productSearch?advertisement_purpose=Sale&district=kathmandu,lalitpur,bhaktapur" },
             { label: "Kathmandu", sub: "Capital city listings", link: "/productSearch?&advertisement_purpose=sale&keyword=kathmandu" },
             { label: "Lalitpur", sub: "Patan district", link: "/productSearch?&advertisement_purpose=sale&keyword=lalitpur" },
@@ -78,7 +77,7 @@ const NAV_ITEMS = [
         title: "Rent with Confidence",
         desc: "Short-term or long-term — find verified rental properties with transparent pricing and no hidden fees.",
         cta: "View Rentals",
-        link: "/productSearch?advertisement_purpose=Rent",
+        link: "/rent",
         stat: "1,100+ Rental Properties",
       },
       columns: [
@@ -105,7 +104,6 @@ const NAV_ITEMS = [
         {
           heading: "By Location",
           links: [
-            // FIX: Kathmandu Valley covers all 3 districts; others are individual cities only
             { label: "Kathmandu Valley", sub: "Kathmandu, Lalitpur & Bhaktapur", link: "/productSearch?advertisement_purpose=Rent&district=kathmandu,lalitpur,bhaktapur" },
             { label: "Kathmandu", sub: "Capital rentals", link: "/productSearch?advertisement_purpose=Rent&keyword=kathmandu" },
             { label: "Lalitpur", sub: "Patan & surrounds", link: "/productSearch?advertisement_purpose=Rent&keyword=lalitpur" },
@@ -122,7 +120,7 @@ const NAV_ITEMS = [
     mega: {
       featured: {
         title: "Full-Service Real Estate",
-        desc: "From valuation to legal documentation — Sheetal Real Estate handles every step of your property journey.",
+        desc: "From valuation to legal documentation — Shetal Real Estate handles every step of your property journey.",
         cta: "Explore All Services",
         link: "/services",
         stat: "15+ Years of Expertise",
@@ -187,20 +185,20 @@ const NAV_ITEMS = [
           heading: "Tools & Resources",
           links: [
             { label: "ROI Calculator", sub: "Estimate returns", link: "/tools/roi-calculator" },
-            { label: "Market Reports", sub: "Quarterly data", link: "/market-reports" },
-            { label: "Price Trends", sub: "City-level charts", link: "/price-trends" },
-            { label: "Hotspot Locations", sub: "Emerging areas", link: "/hotspots" },
-            { label: "NRN Investment Guide", sub: "Foreign ownership rules", link: "/guides/nrn" },
+            { label: "Land Price Estimates", sub: "Land Price Estimates", link: "/tools/land-estimator" },
+            { label: "Property tax", sub: "Calculate property tax", link: "/tools/property-tax" },
+            { label: "Rent Vs Buy", sub: "Compare rent vs buy", link: "/tools/rent-vs-buy" },
+            { label: "Emi Calculator", sub: "Plan your loan", link: "/tools/emi-calculator" },
           ],
         },
         {
           heading: "Why Invest in Nepal",
           links: [
-            { label: "Stable Market Growth", sub: "10yr trend analysis", link: "/why-invest#growth" },
-            { label: "Tax Benefits", sub: "Govt incentives", link: "/why-invest#tax" },
-            { label: "Infrastructure Projects", sub: "New roads & metros", link: "/why-invest#infra" },
-            { label: "Tourism Boom", sub: "Hospitality demand", link: "/why-invest#tourism" },
-            { label: "Success Stories", sub: "Investor testimonials", link: "/why-invest#stories" },
+            { label: "Stable Market Growth", sub: "10yr trend analysis", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+            { label: "Tax Benefits", sub: "Govt incentives", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+            { label: "Infrastructure Projects", sub: "New roads & metros", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+            { label: "Tourism Boom", sub: "Hospitality demand", link: "/blog/top-5-areas-to-invest-in-nepal-in-2026-1778657157" },
+            { label: "Success Stories", sub: "Investor testimonials", link: "/about" },
           ],
         },
       ],
@@ -211,41 +209,41 @@ const NAV_ITEMS = [
     label: "About Us",
     mega: {
       featured: {
-        title: "Nepal's Trusted Real Estate Brand",
-        desc: "Sheetal Real Estate — built on trust, driven by excellence. Helping families find homes since 2009.",
+        title: "Nepal's Future-Ready Real Estate Brand",
+        desc: "Shetal Real Estate — building trust, long-term value, and future-ready communities across Nepal. Founded to modernize real estate through transparency, professionalism, and innovation.",
         cta: "Our Full Story",
         link: "/About",
-        stat: "10,000+ Families Served",
+        stat: "5,000+ Families Served",
       },
       columns: [
         {
           heading: "Company",
           links: [
-            { label: "About Sheetal", sub: "Our mission & story", link: "/About" },
-            { label: "Our Team", sub: "Meet the experts", link: "/team" },
-            { label: "Find an Agent", sub: "Local specialists", link: "/find-agent" },
-            { label: "Careers", sub: "Join our team", link: "/careers" },
-            { label: "Blogs & Articles", sub: "Blogs & Reasearch", link: "/blog" },
+            { label: "About Shetal", sub: "Our mission & story", link: "/About" },
+            { label: "Our Team", sub: "Meet the experts", link: "/about" },
+            { label: "Find an Agent", sub: "Local specialists", link: "/agents" },
+            { label: "Careers", sub: "Join our team", link: "/about" },
+            { label: "Blogs & Articles", sub: "Insights & research", link: "/blog" },
+          ],
+        },
+        {
+          heading: "What We Do",
+          links: [
+            { label: "Exclusive Property Sales", sub: "Strategic sales & branding", link: "/about" },
+            { label: "Property Management", sub: "End-to-end management", link: "/about" },
+            { label: "Real Estate Development", sub: "Plotting & housing projects", link: "/about" },
+            { label: "Investment & Hospitality", sub: "High-return ecosystems", link: "/about" },
+            { label: "NRN / Foreign Buyers", sub: "International rules", link: "/about" },
           ],
         },
         {
           heading: "Connect",
           links: [
-            { label: "Contact Us", sub: "Get in touch", link: "/contact" },
-            { label: "Requirement Form", sub: "Tell us what you need", link: "/requirementform" },
-            { label: "Email Us", sub: "Quick enquiry", link: "/contact#email" },
-            { label: "Visit Our Office", sub: "Directions & hours", link: "/contact#office" },
-            { label: "Client Reviews", sub: "What people say", link: "/reviews" },
-          ],
-        },
-        {
-          heading: "Trust & Awards",
-          links: [
-            { label: "Certifications", sub: "Industry accreditations", link: "/about#certifications" },
-            { label: "Awards Won", sub: "Recognised excellence", link: "/about#awards" },
-            { label: "Partner Banks", sub: "Loan tie-ups", link: "/about#partners" },
-            { label: "Media Coverage", sub: "Featured in press", link: "/press" },
-            { label: "Our Milestones", sub: "15 years of growth", link: "/about#milestones" },
+            { label: "Contact Us", sub: "Get in touch", link: "/about" },
+            { label: "Requirement Form", sub: "Tell us what you need", link: "/about" },
+            { label: "Visit Our Office", sub: "Directions & hours", link: "/about" },
+            { label: "Client Reviews", sub: "What people say", link: "/about" },
+            { label: "Partner With Us", sub: "Investor & developer tie-ups", link: "/about" },
           ],
         },
       ],
@@ -254,7 +252,6 @@ const NAV_ITEMS = [
 ];
 
 // ─── Full-Width Mega Menu ─────────────────────────────────────────────────────
-// FIX: Removed useNavigate — all navigation now uses <Link> (supports right-click, new tab, browser history)
 const MegaMenu = ({ item, onClose, isOpen }) => {
   const { mega } = item;
 
@@ -306,24 +303,22 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
               {mega.featured.desc}
             </p>
 
-            {/* Stat pill */}
+            {/* Stat pill — no dot icon */}
             <div style={{
               display: "inline-flex", alignItems: "center", gap: "7px",
-              background: "var(--r06)", borderRadius: "999px",
+              background: "var(--r06)", borderRadius: "4px",
               padding: "6px 12px", width: "fit-content",
             }}>
-              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e", flexShrink: 0, display: "block" }} />
               <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--rd)" }}>{mega.featured.stat}</span>
             </div>
 
-            {/* FIX: was <button onClick={navigate(...)}> with duplicate style props and wrong closing tag */}
             <Link
               to={mega.featured.link}
               onClick={onClose}
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
                 background: "var(--r)", color: "#fff",
-                textDecoration: "none", borderRadius: "10px",
+                textDecoration: "none", borderRadius: "4px",
                 fontSize: "13px", fontWeight: 700,
                 padding: "12px 20px", cursor: "pointer",
                 transition: "background 0.15s",
@@ -357,7 +352,6 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                   {col.links.map((lnk, lIdx) => (
-                    // FIX: was <button onClick={navigate(...)}> — now proper <Link> for right-click & new tab support
                     <Link
                       key={lIdx}
                       to={lnk.link}
@@ -366,7 +360,7 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
                         display: "flex", flexDirection: "column", gap: "1px",
                         width: "100%", textAlign: "left",
                         textDecoration: "none",
-                        padding: "9px 10px", borderRadius: "8px",
+                        padding: "9px 10px", borderRadius: "4px",
                         cursor: "pointer",
                         transition: "background 0.12s",
                       }}
@@ -397,9 +391,8 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
         }}>
           <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <p style={{ fontSize: "11px", color: "var(--d)", margin: 0 }}>
-              Sheetal Real Estate — Nepal's Most Trusted Property Platform since 2009
+              Shetal Real Estate — Building Trust, Long-Term Value & Future-Ready Communities
             </p>
-            {/* FIX: converted to <Link> for consistency */}
             <Link
               to="/requirementform"
               onClick={onClose}
@@ -512,7 +505,7 @@ const Header = () => {
             >
               <img
                 src="/shetallogo.png"
-                alt="Sheetal Real Estate"
+                alt="Shetal Real Estate"
                 style={{ height: "38px", width: "auto" }}
               />
             </div>
@@ -535,7 +528,6 @@ const Header = () => {
                     onMouseEnter={() => handleMouseEnter(item.id)}
                     onMouseLeave={handleMouseLeave}
                   >
-                    {/* FIX: added onClick to navigate to featured link when nav label is clicked */}
                     <button
                       onClick={() => { navigate(item.mega.featured.link); handleClose(); }}
                       style={{
@@ -550,7 +542,7 @@ const Header = () => {
                           ? "rgba(255,255,255,0.9)"
                           : isOpen ? "var(--r)" : "var(--d)",
                         padding: "8px 12px",
-                        borderRadius: "8px",
+                        borderRadius: "4px",
                         transition: "all 0.15s",
                         whiteSpace: "nowrap",
                         letterSpacing: "0.01em",
@@ -574,7 +566,6 @@ const Header = () => {
                       {item.label}
                     </button>
 
-                    {/* Mega menu rendered per nav item, positioned fixed full-width */}
                     <MegaMenu
                       item={item}
                       onClose={handleClose}
@@ -585,13 +576,12 @@ const Header = () => {
               })}
             </nav>
 
-          
             {/* Favourites */}
             {user.data && (
               <button
                 style={{
                   background: "none", border: "none", cursor: "pointer",
-                  padding: "8px", borderRadius: "8px",
+                  padding: "8px", borderRadius: "4px",
                   color: isTransparent ? "rgba(255,255,255,0.8)" : "var(--d)",
                   position: "relative", transition: "all 0.15s",
                 }}
@@ -620,33 +610,31 @@ const Header = () => {
             {/* Auth / User menu */}
             {!user.data ? (
               <button
+                className="hidden sm:flex"
                 onClick={() => setAuthModal(true)}
                 style={{
                   background: "none", border: "none", cursor: "pointer",
-                  padding: "8px", borderRadius: "8px",
-                 
+                  padding: "8px", borderRadius: "4px",
                   transition: "all 0.15s",
                 }}
               >
+
                 <IoPersonOutline style={{ width: "19px", height: "19px" }} />
               </button>
             ) : (
-              <Menu as="div" style={{ position: "relative" }}>
+               <Menu as="div" className="hidden sm:flex" style={{ position: "relative" }}>
                 <Menu.Button
                   style={{
                     display: "flex", alignItems: "center", gap: "6px",
                     padding: "4px 8px 4px 4px", borderRadius: "999px",
-                    
-                    
-                    cursor: "pointer", transition: "all 0.s",
+                    cursor: "pointer", transition: "all 0.15s",
                   }}
                 >
                   <img
                     src={user.data?.photo || "/noUser.png"}
                     alt="user"
-                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover", border: "px solid var(--r)" }}
+                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--r)" }}
                   />
-                 
                 </Menu.Button>
 
                 <Transition
@@ -662,7 +650,7 @@ const Header = () => {
                     style={{
                       position: "absolute", right: 0, marginTop: "8px",
                       width: "176px", background: "#fff",
-                      borderRadius: "12px",
+                      borderRadius: "4px",
                       boxShadow: "0 10px 40px -5px rgba(0,0,0,0.15), 0 4px 10px -3px rgba(0,0,0,0.06)",
                       border: "0.5px solid var(--l)",
                       overflow: "hidden", zIndex: 70,
@@ -679,7 +667,7 @@ const Header = () => {
                             to="/my-profile?section=profile"
                             style={{
                               display: "flex", alignItems: "center", gap: "10px",
-                              padding: "10px 12px", borderRadius: "8px",
+                              padding: "10px 12px", borderRadius: "4px",
                               textDecoration: "none", fontSize: "13px", fontWeight: 600,
                               color: active ? "var(--r)" : "var(--d)",
                               background: active ? "var(--r06)" : "transparent",
@@ -687,7 +675,7 @@ const Header = () => {
                             }}
                           >
                             <span style={{
-                              width: "24px", height: "24px", borderRadius: "6px",
+                              width: "24px", height: "24px", borderRadius: "4px",
                               background: active ? "var(--r14)" : "var(--l)",
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
@@ -703,7 +691,7 @@ const Header = () => {
                             onClick={handleSignOut}
                             style={{
                               display: "flex", alignItems: "center", gap: "10px",
-                              width: "100%", padding: "10px 12px", borderRadius: "8px",
+                              width: "100%", padding: "10px 12px", borderRadius: "4px",
                               textAlign: "left", background: active ? "var(--r06)" : "transparent",
                               border: "none", fontSize: "13px", fontWeight: 600,
                               color: active ? "var(--r)" : "var(--d)",
@@ -711,7 +699,7 @@ const Header = () => {
                             }}
                           >
                             <span style={{
-                              width: "24px", height: "24px", borderRadius: "6px",
+                              width: "24px", height: "24px", borderRadius: "4px",
                               background: active ? "var(--r14)" : "var(--l)",
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
@@ -736,11 +724,8 @@ const Header = () => {
                 fontSize: "13px", fontWeight: 700,
                 textDecoration: "none",
                 background: isTransparent ? "rgba(255,255,255,0.0)" : "var(--r)",
-               
                 color: "var(--l)",
-               
                 WebkitBackdropFilter: isScrolled ? "none" : "blur(8px)",
-               
                 transition: "all 0.2s",
                 marginLeft: "4px",
                 whiteSpace: "nowrap",
@@ -752,8 +737,7 @@ const Header = () => {
                 e.currentTarget.style.background = isTransparent ? "rgba(255,255,255,0.18)" : "var(--r)";
               }}
             >
-            
-              <span className=" sm:inline">Post Property</span>
+              <span className="sm:inline">Post Property</span>
             </Link>
 
             {/* Mobile hamburger */}
@@ -768,7 +752,6 @@ const Header = () => {
               onClick={() => setSidebarOpen(true)}
             >
               <IoMenuOutline style={{ width: "22px", height: "22px" }} />
-            
             </button>
           </div>
         </div>
@@ -792,7 +775,7 @@ const Header = () => {
         onClick={handleClose}
       />
 
-      {/* ── Mega menu mouse bridge (covers gap between header and panel) ── */}
+      {/* ── Mega menu mouse bridge ── */}
       {activeNav && (
         <div
           style={{
@@ -808,7 +791,7 @@ const Header = () => {
         />
       )}
 
-      {/* Render one mega menu per nav item, each fully positioned */}
+      {/* Render one mega menu per nav item */}
       {NAV_ITEMS.map((item) => (
         <div
           key={item.id}

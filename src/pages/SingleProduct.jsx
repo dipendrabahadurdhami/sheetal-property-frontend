@@ -40,8 +40,7 @@ const TABS = [
 ];
 
 /* ─────────────────────────────────────────
-   GLOBAL CSS — no bars, no dots, no icons,
-   border-radius 4px only, red theme only
+   GLOBAL CSS — mobile-first, single map
 ───────────────────────────────────────── */
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -57,19 +56,19 @@ const GLOBAL_CSS = `
     --surface: #fff;
   }
 
-  /* Tab nav */
+  /* ── Tab nav ── */
   .sp-tabnav::-webkit-scrollbar { display: none; }
 
   .sp-tab {
     flex-shrink: 0;
-    padding: 0 16px;
+    padding: 0 12px;
     height: 100%;
     border: none;
     border-bottom: 2px solid transparent;
     background: transparent;
     cursor: pointer;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -80,7 +79,7 @@ const GLOBAL_CSS = `
   .sp-tab:hover  { color: var(--ink-2); }
   .sp-tab.active { color: var(--r); border-bottom-color: var(--r); }
 
-  /* Section heading — kicker above, serif title, bottom rule */
+  /* ── Section heading ── */
   .sp-heading {
     margin-bottom: 20px;
     padding-bottom: 14px;
@@ -98,7 +97,7 @@ const GLOBAL_CSS = `
   }
   .sp-heading__title {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
     color: var(--ink);
     margin: 0;
@@ -106,7 +105,7 @@ const GLOBAL_CSS = `
     letter-spacing: -0.01em;
   }
 
-  /* Side card */
+  /* ── Side card ── */
   .sp-sidecard {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -127,10 +126,10 @@ const GLOBAL_CSS = `
     color: var(--ink-2);
   }
 
-  /* Buttons */
+  /* ── Buttons ── */
   .sp-cta {
     flex: 1;
-    height: 40px;
+    height: 44px;
     background: var(--r);
     color: #fff;
     border: none;
@@ -151,8 +150,8 @@ const GLOBAL_CSS = `
   .sp-cta:active { opacity: 0.9; }
 
   .sp-icon-btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 4px;
@@ -165,7 +164,7 @@ const GLOBAL_CSS = `
   }
   .sp-icon-btn:hover { border-color: #bbb; color: var(--ink-2); }
 
-  /* Verified strip */
+  /* ── Verified strip ── */
   .sp-verified {
     display: flex;
     align-items: center;
@@ -180,7 +179,7 @@ const GLOBAL_CSS = `
     color: #065f46;
   }
 
-  /* Map location strip */
+  /* ── Map location strip ── */
   .sp-map-loc {
     padding: 9px 13px;
     border-top: 1px solid #f0f0f0;
@@ -192,13 +191,84 @@ const GLOBAL_CSS = `
     color: var(--ink-3);
   }
 
-  /* Responsive */
-  .sp-layout { display: grid; grid-template-columns: 1fr 354px; gap: 32px; align-items: start; }
+  /* ── Mobile-first sticky CTA bar ── */
+  .sp-mobile-cta-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+  }
 
-  @media (max-width: 1060px) {
-    .sp-layout    { grid-template-columns: 1fr !important; }
-    .sp-sidebar   { position: static !important; top: auto !important; }
-    .sp-map-mob   { display: block !important; }
+  /* ── Layout: mobile-first → desktop ── */
+
+  /* Mobile (default) */
+  .sp-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* The sidebar on mobile becomes a content block (no sticky) */
+  .sp-sidebar {
+    position: static;
+    top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 0;
+  }
+
+  /* Hide desktop CTA row inside sidebar on mobile (we use the fixed bar) */
+  .sp-sidebar-cta-row {
+    display: none;
+  }
+
+  /* Show map in main content area on mobile */
+  .sp-map-main {
+    display: block;
+  }
+
+  /* Hide the sidebar map on mobile (avoid duplicate) */
+  .sp-sidebar-map {
+    display: none;
+  }
+
+  /* Tablet (≥ 768px) */
+  @media (min-width: 768px) {
+    .sp-heading__title { font-size: 20px; }
+    .sp-tab { padding: 0 14px; font-size: 10.5px; }
+
+    /* Hide the mobile fixed bar on tablet+ */
+    .sp-mobile-cta-bar { display: none; }
+
+    /* Show desktop CTA row in sidebar */
+    .sp-sidebar-cta-row { display: flex; }
+  }
+
+  /* Desktop (≥ 1060px) — two-column layout */
+  @media (min-width: 1060px) {
+    .sp-layout {
+      display: grid;
+      grid-template-columns: 1fr 354px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .sp-sidebar {
+      position: sticky;
+      top: ${STICKY_TOP + 12}px;
+    }
+
+    /* On desktop: hide map in main content, show map in sidebar */
+    .sp-map-main    { display: none; }
+    .sp-sidebar-map { display: block; }
   }
 `;
 
@@ -219,7 +289,7 @@ const TabNav = ({ activeTab, onTabClick }) => (
       style={{
         maxWidth: "1320px",
         margin: "0 auto",
-        padding: "0 24px",
+        padding: "0 16px",
         display: "flex",
         alignItems: "stretch",
         height: `${TABNAV_H}px`,
@@ -247,7 +317,7 @@ const Section = ({ id, sectionRef, label, kicker, children, style = {} }) => (
   <div
     id={id}
     ref={sectionRef}
-    style={{ marginBottom: "48px", scrollMarginTop: `${STICKY_TOP + 8}px`, ...style }}
+    style={{ marginBottom: "40px", scrollMarginTop: `${STICKY_TOP + 8}px`, ...style }}
   >
     {label && (
       <div className="sp-heading">
@@ -357,6 +427,8 @@ const SingleProduct = () => {
   const galUrls   = gallery.map(g => (typeof g === "string" ? g : g.image)).filter(Boolean);
   const allImages = [...(feature ? [feature] : []), ...galUrls];
 
+  const hasMap = !!(property?.latitude && property?.longitude);
+
   return (
     <>
       <style>{GLOBAL_CSS}</style>
@@ -372,8 +444,9 @@ const SingleProduct = () => {
         <div style={{
           minHeight: "60vh", display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: "14px",
+          padding: "0 20px",
         }}>
-          <p style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", color: "#e74c3c", fontWeight: 600, fontSize: "14px" }}>
+          <p style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", color: "#e74c3c", fontWeight: 600, fontSize: "14px", textAlign: "center" }}>
             {error}
           </p>
           <button
@@ -422,13 +495,13 @@ const SingleProduct = () => {
             <div style={{
               maxWidth: "1320px",
               margin: "0 auto",
-              padding: "28px 24px 80px",
+              padding: "20px 16px 100px", /* bottom pad for mobile fixed bar */
               fontFamily: "'Plus Jakarta Sans', sans-serif",
             }}>
               <ProductLocation property={property} />
 
               {allImages.length > 1 && (
-                <div style={{ marginBottom: "32px" }}>
+                <div style={{ marginBottom: "28px" }}>
                   <ThumbnailStrip
                     images={allImages} skip={1}
                     onOpenLightbox={setLightboxIdx}
@@ -439,7 +512,7 @@ const SingleProduct = () => {
 
               <div className="sp-layout">
 
-                {/* ═══ LEFT ═══ */}
+                {/* ═══ LEFT (main content) ═══ */}
                 <div style={{ minWidth: 0 }}>
 
                   {property?.property_description && (
@@ -486,27 +559,53 @@ const SingleProduct = () => {
                     </Section>
                   )}
 
-                  {/* Map – mobile only */}
-                  <Section
-                    id="sec-map"
-                    sectionRef={secRefs.current["sec-map"]}
-                    kicker={property?.latitude && property?.longitude ? "Map" : undefined}
-                    label={property?.latitude && property?.longitude ? "Location" : undefined}
-                  >
-                    {property?.latitude && property?.longitude && (
-                      <div className="sp-map-mob" style={{ display: "none" }}>
-                        <div style={{ height: "300px", borderRadius: "4px", overflow: "hidden", border: "1px solid #e6e6e6" }}>
-                          <ProductMap latitude={property.latitude} longitude={property.longitude} data={property} />
+                  {/*
+                    ── MAP SECTION ──
+                    .sp-map-main  = visible on mobile/tablet (CSS: display:block)
+                    .sp-map-main  = hidden on desktop      (CSS: display:none)
+                    Sidebar map   = hidden on mobile/tablet (CSS: display:none)
+                    Sidebar map   = visible on desktop      (CSS: display:block)
+                    → Only ONE map renders at any viewport width.
+                  */}
+                  {hasMap && (
+                    <Section
+                      id="sec-map"
+                      sectionRef={secRefs.current["sec-map"]}
+                      kicker="Map"
+                      label="Location"
+                    >
+                      <div className="sp-map-main">
+                        <div style={{ height: "280px", borderRadius: "4px", overflow: "hidden", border: "1px solid #e6e6e6" }}>
+                          <ProductMap
+                            latitude={property.latitude}
+                            longitude={property.longitude}
+                            data={property}
+                          />
                         </div>
+                        {property?.property_location && (
+                          <div className="sp-map-loc" style={{ borderTop: "1px solid #f0f0f0", marginTop: "8px", padding: "8px 0 0" }}>
+                            <FaMapMarkerAlt style={{ color: "#e74c3c", fontSize: "11px", flexShrink: 0 }} />
+                            <span>{property.property_location}{property.district ? `, ${property.district}` : ""}</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </Section>
+                    </Section>
+                  )}
+
+                  {/* If no map, still register the ref so tab nav works */}
+                  {!hasMap && (
+                    <div
+                      id="sec-map"
+                      ref={secRefs.current["sec-map"]}
+                      style={{ scrollMarginTop: `${STICKY_TOP + 8}px` }}
+                    />
+                  )}
 
                   <Section>
                     <ToolsWidget property={property} />
                   </Section>
 
-                  <div style={{ height: "1px", background: "#e6e6e6", margin: "0 0 48px" }} />
+                  <div style={{ height: "1px", background: "#e6e6e6", margin: "0 0 40px" }} />
 
                   <Section
                     id="sec-related"
@@ -522,18 +621,10 @@ const SingleProduct = () => {
                 {/* ═══ END LEFT ═══ */}
 
                 {/* ═══ SIDEBAR ═══ */}
-                <div
-                  className="sp-sidebar"
-                  style={{
-                    position: "sticky",
-                    top: `${STICKY_TOP + 12}px`,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "12px",
-                  }}
-                >
-                  {/* CTA row */}
-                  <div style={{ display: "flex", gap: "7px" }}>
+                <div className="sp-sidebar">
+
+                  {/* Desktop-only CTA row (hidden on mobile via CSS; mobile uses fixed bar) */}
+                  <div className="sp-sidebar-cta-row" style={{ display: "none", gap: "7px" }}>
                     <button className="sp-cta" onClick={() => setOpen(true)}>
                       <FaPhoneAlt size={11} />
                       Contact Agent
@@ -545,34 +636,39 @@ const SingleProduct = () => {
                     ))}
                   </div>
 
-                  {/* Map card */}
-                  {property?.latitude && property?.longitude && (
-                    <SideCard title="Location">
-                      <div style={{ height: "192px", overflow: "hidden" }}>
-                        <ProductMap
-                          latitude={property.latitude}
-                          longitude={property.longitude}
-                          data={property}
-                        />
-                      </div>
-                      {property?.property_location && (
-                        <div className="sp-map-loc">
-                          <FaMapMarkerAlt style={{ color: "#e74c3c", fontSize: "11px", flexShrink: 0 }} />
-                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {property.property_location}
-                            {property.district ? `, ${property.district}` : ""}
-                          </span>
+                  {/*
+                    Desktop-only map card.
+                    .sp-sidebar-map → display:none on mobile, display:block on desktop.
+                  */}
+                  {hasMap && (
+                    <div className="sp-sidebar-map">
+                      <SideCard title="Location">
+                        <div style={{ height: "192px", overflow: "hidden" }}>
+                          <ProductMap
+                            latitude={property.latitude}
+                            longitude={property.longitude}
+                            data={property}
+                          />
                         </div>
-                      )}
-                    </SideCard>
+                        {property?.property_location && (
+                          <div className="sp-map-loc">
+                            <FaMapMarkerAlt style={{ color: "#e74c3c", fontSize: "11px", flexShrink: 0 }} />
+                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {property.property_location}
+                              {property.district ? `, ${property.district}` : ""}
+                            </span>
+                          </div>
+                        )}
+                      </SideCard>
+                    </div>
                   )}
 
-                  {/* Tour scheduler */}
+                  {/* Tour scheduler — shown in sidebar on desktop; moved below content on mobile */}
                   <SideCard title="Schedule a Tour">
                     <ScheduleTour property={property} sidebar />
                   </SideCard>
 
-                  {/* Verified */}
+                  {/* Verified badge */}
                   <div className="sp-verified">
                     <MdVerified size={15} style={{ color: "#10b981", flexShrink: 0 }} />
                     Verified listing — confirmed by our team
@@ -581,6 +677,20 @@ const SingleProduct = () => {
                 {/* ═══ END SIDEBAR ═══ */}
 
               </div>
+            </div>
+
+            {/* ── Mobile fixed CTA bar (hidden on tablet+) ── */}
+            <div className="sp-mobile-cta-bar">
+              <button className="sp-cta" onClick={() => setOpen(true)}>
+                <FaPhoneAlt size={11} />
+                Contact Agent
+              </button>
+              <button className="sp-icon-btn">
+                <FaBookmark size={13} />
+              </button>
+              <button className="sp-icon-btn">
+                <FaShareAlt size={13} />
+              </button>
             </div>
 
             {galleryOpen && (
