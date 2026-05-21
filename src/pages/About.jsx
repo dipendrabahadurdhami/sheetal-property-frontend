@@ -121,12 +121,12 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { name: "Sanit Tamang", role: "Founder & CEO", ini: "ST" },
-  { name: "Anil Sharma", role: "Head of Sales", ini: "AS" },
-  { name: "Priya Thapa", role: "Investment Lead", ini: "PT" },
-  { name: "Rajan K.C.", role: "Legal & Compliance", ini: "RK" },
-  { name: "Sunita Rai", role: "Client Relations", ini: "SR" },
-  { name: "Bikash Paudel", role: "Property Manager", ini: "BP" },
+  //{ name: "Sanit Tamang", role: "Founder & CEO", ini: "ST" },
+  //{ name: "Anil Sharma", role: "Head of Sales", ini: "AS" },
+  //{ name: "Priya Thapa", role: "Investment Lead", ini: "PT" },
+  //{ name: "Rajan K.C.", role: "Legal & Compliance", ini: "RK" },
+  //{ name: "Sunita Rai", role: "Client Relations", ini: "SR" },
+  //{ name: "Bikash Paudel", role: "Property Manager", ini: "BP" },
 ];
 
 const CITIES = [
