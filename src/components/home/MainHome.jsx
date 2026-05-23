@@ -38,10 +38,11 @@ const MainHome = () => {
   const [scrolled,     setScrolled]     = useState(false);
   const [bannerH,      setBannerH]      = useState(0);
   const [bannerReady,  setBannerReady]  = useState(false);
+  const [isMobile,     setIsMobile]     = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  );
 
-  // ── NEW: controls whether search is "open/active" (moved up) ─────────────
   const [searchActive,  setSearchActive]  = useState(false);
-  // ── NEW: only enable transition AFTER first user interaction ─────────────
   const [hasInteracted, setHasInteracted] = useState(false);
 
   const videoRefs     = useRef({});
@@ -54,10 +55,15 @@ const MainHome = () => {
   const bannersRef    = useRef([]);
   const activeIdxRef  = useRef(0);
 
-  bannersRef.current  = banners;
+  bannersRef.current   = banners;
   activeIdxRef.current = activeIdx;
 
-  // ── resize observer ───────────────────────────────────────────────────────
+  useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+
   useEffect(() => {
     if (!bannerRef.current) return;
     const ro = new ResizeObserver(([e]) => {
@@ -69,7 +75,6 @@ const MainHome = () => {
     return () => ro.disconnect();
   }, []);
 
-  // ── scroll: when user scrolls down, collapse search ───────────────────────
   useEffect(() => {
     const fn = () => {
       const isScrolled = window.scrollY > 10;
@@ -80,7 +85,6 @@ const MainHome = () => {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  // ── click outside search → collapse ──────────────────────────────────────
   useEffect(() => {
     const fn = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -91,30 +95,19 @@ const MainHome = () => {
     return () => document.removeEventListener("mousedown", fn);
   }, []);
 
-  // ── crossfade ─────────────────────────────────────────────────────────────
   const advanceTo = useCallback((targetIdx) => {
     if (fadingRef.current) return;
     fadingRef.current = true;
-
     const current     = activeIdxRef.current;
     const leavingVid  = videoRefs.current[current];
     const incomingVid = videoRefs.current[targetIdx];
-
-    if (incomingVid) {
-      incomingVid.currentTime = 0;
-      incomingVid.play().catch(() => {});
-    }
-
+    if (incomingVid) { incomingVid.currentTime = 0; incomingVid.play().catch(() => {}); }
     setPrevIdx(current);
     setActiveIdx(targetIdx);
-
     setTimeout(() => {
       setPrevIdx(null);
       fadingRef.current = false;
-      if (leavingVid) {
-        leavingVid.pause();
-        leavingVid.currentTime = 0;
-      }
+      if (leavingVid) { leavingVid.pause(); leavingVid.currentTime = 0; }
     }, FADE_MS);
   }, []);
 
@@ -131,54 +124,31 @@ const MainHome = () => {
   const setupVideos = useCallback((arr) => {
     const vids = arr.filter((b) => b.media_type === "video");
     videoTotal.current = vids.length;
-
     if (vids.length === 0) { setAllReady(true); return; }
-
     const checkDone = () => {
       if (Object.keys(readyMap.current).length >= videoTotal.current) setAllReady(true);
     };
-
     arr.forEach((banner, idx) => {
       if (banner.media_type !== "video") return;
       if (videoRefs.current[idx]) return;
-
       const vid = document.createElement("video");
-      vid.src         = banner.url;
-      vid.muted       = true;
-      vid.playsInline = true;
-      vid.preload     = "auto";
-      vid.loop        = false;
-      vid.crossOrigin = "anonymous";
-
+      vid.src = banner.url; vid.muted = true; vid.playsInline = true;
+      vid.preload = "auto"; vid.loop = false; vid.crossOrigin = "anonymous";
       Object.assign(vid.style, {
-        position:       "absolute",
-        top:            "0",
-        left:           "0",
-        width:          "100%",
-        height:         "100%",
-        minWidth:       "100%",
-        objectFit:      "cover",
+        position: "absolute", top: "0", left: "0", width: "100%", height: "100%",
+        minWidth: "100%", objectFit: "cover",
         objectPosition: `50% ${banner.object_position ?? 50}%`,
-        opacity:        "0",
-        pointerEvents:  "none",
-        willChange:     "opacity",
-        transition:     "none",
-        display:        "block",
+        opacity: "0", pointerEvents: "none", willChange: "opacity",
+        transition: "none", display: "block",
       });
-
       videoRefs.current[idx] = vid;
-
       let marked = false;
       const markReady = () => {
-        if (marked) return;
-        marked = true;
-        readyMap.current[idx] = true;
-        checkDone();
+        if (marked) return; marked = true; readyMap.current[idx] = true; checkDone();
       };
       const checkBuffer = () => { if (isFullyBuffered(vid)) markReady(); };
-
-      vid.addEventListener("progress",       checkBuffer);
-      vid.addEventListener("suspend",        checkBuffer);
+      vid.addEventListener("progress", checkBuffer);
+      vid.addEventListener("suspend", checkBuffer);
       vid.addEventListener("canplaythrough", checkBuffer);
       setTimeout(markReady, 20000);
       vid.load();
@@ -188,12 +158,7 @@ const MainHome = () => {
   useEffect(() => {
     fetch(`${API_BASE}/banners`)
       .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setBanners(data);
-          setupVideos(data);
-        }
-      })
+      .then((data) => { if (Array.isArray(data)) { setBanners(data); setupVideos(data); } })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [setupVideos]);
@@ -208,11 +173,7 @@ const MainHome = () => {
         if (vid && !stage.contains(vid)) stage.appendChild(vid);
       });
       const first = videoRefs.current[0];
-      if (first) {
-        first.style.opacity = "1";
-        first.currentTime   = 0;
-        first.play().catch(() => {});
-      }
+      if (first) { first.style.opacity = "1"; first.currentTime = 0; first.play().catch(() => {}); }
       scheduleNext(0, banners);
     });
     return () => cancelAnimationFrame(raf);
@@ -224,17 +185,11 @@ const MainHome = () => {
       const vid = videoRefs.current[idx];
       if (!vid) return;
       if (idx === activeIdx) {
-        vid.style.transition = "none";
-        vid.style.opacity    = "1";
-        vid.style.zIndex     = "2";
+        vid.style.transition = "none"; vid.style.opacity = "1"; vid.style.zIndex = "2";
       } else if (idx === prevIdx) {
-        vid.style.transition = `opacity ${FADE_MS}ms ease-in-out`;
-        vid.style.opacity    = "0";
-        vid.style.zIndex     = "1";
+        vid.style.transition = `opacity ${FADE_MS}ms ease-in-out`; vid.style.opacity = "0"; vid.style.zIndex = "1";
       } else {
-        vid.style.transition = "none";
-        vid.style.opacity    = "0";
-        vid.style.zIndex     = "0";
+        vid.style.transition = "none"; vid.style.opacity = "0"; vid.style.zIndex = "0";
       }
     });
   }, [activeIdx, prevIdx, allReady, banners]);
@@ -251,9 +206,7 @@ const MainHome = () => {
       const vid = videoRefs.current[idx];
       if (!vid) return;
       const handler = () => {
-        if (activeIdxRef.current === idx) {
-          advanceTo((idx + 1) % bannersRef.current.length);
-        }
+        if (activeIdxRef.current === idx) advanceTo((idx + 1) % bannersRef.current.length);
       };
       if (vid._endedHandler) vid.removeEventListener("ended", vid._endedHandler);
       vid._endedHandler = handler;
@@ -270,18 +223,10 @@ const MainHome = () => {
   useEffect(() => {
     return () => {
       clearTimeout(timerRef.current);
-      Object.values(videoRefs.current).forEach((vid) => {
-        vid.pause();
-        vid.src = "";
-        vid.remove();
-      });
+      Object.values(videoRefs.current).forEach((vid) => { vid.pause(); vid.src = ""; vid.remove(); });
     };
   }, []);
 
-  // ── search positioning ────────────────────────────────────────────────────
-  // searchActive=false → bottom (scrolledTop)
-  // searchActive=true  → center (centeredTop)
-  // scrolled or filterModal → always bottom
   const isAtBottom  = !searchActive || scrolled || filterModal;
   const centeredTop = bannerH ? Math.round((bannerH - SEARCH_H) / 1.2) : null;
   const scrolledTop = bannerH ? bannerH - SEARCH_H : 0;
@@ -291,7 +236,6 @@ const MainHome = () => {
     left:       0,
     right:      0,
     top:        isAtBottom ? scrolledTop : centeredTop,
-    // Only animate after user has interacted — no animation on page load
     transition: (bannerReady && centeredTop !== null && hasInteracted)
       ? "top 0.45s cubic-bezier(0.4, 0, 0.2, 1)"
       : "none",
@@ -299,15 +243,8 @@ const MainHome = () => {
     visibility: centeredTop === null ? "hidden" : "visible",
   };
 
-  const handleSearchOpen = () => {
-    setHasInteracted(true); // enable animation from now on
-    setSearchActive(true);
-  };
-
-  const openFilter = (val) => {
-    setFilterModal(val);
-    if (val) setSearchActive(false);
-  };
+  const handleSearchOpen = () => { setHasInteracted(true); setSearchActive(true); };
+  const openFilter = (val) => { setFilterModal(val); if (val) setSearchActive(false); };
 
   const currentBanner = banners[activeIdx] || null;
   const isVisible     = allReady && !loading;
@@ -321,10 +258,8 @@ const MainHome = () => {
           95%,100% { opacity:0; transform:translateY(10px); }
         }
         .animate-fade-infinite { animation: fadeInfinite 5s ease-in-out infinite; }
-
         .no-scrollbar::-webkit-scrollbar { display:none; }
         .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
-
         @keyframes shimmer {
           0%   { background-position: -200% 0; }
           100% { background-position: 200% 0; }
@@ -334,53 +269,42 @@ const MainHome = () => {
           background-size: 200% 100%;
           animation: shimmer 1.8s ease-in-out infinite;
         }
+        @media (max-width: 767px) {
+          .banner-wrapper {
+            height: auto !important;
+            aspect-ratio: 16 / 9;
+            overflow: hidden !important;
+          }
+        }
       `}</style>
 
+      {/* ── BANNER ── */}
       <div
         ref={bannerRef}
-        className="w-full h-80 sm:h-96 md:h-[380px] lg:h-[420px] relative overflow-visible group"
+        className="banner-wrapper w-full h-52 sm:h-64 md:h-[380px] lg:h-[420px] relative overflow-visible group"
       >
         <div className="absolute inset-0 overflow-hidden bg-[#000d20]">
           <img
-            src="/mt.jpg"
-            alt=""
+            src="/mt.jpg" alt=""
             style={{
-              position:      "absolute",
-              top:           0,
-              left:          0,
-              width:         "100%",
-              minWidth:      "100%",
-              height:        "100%",
-              objectFit:     "cover",
-              display:       "block",
-              zIndex:        5,
-              opacity:       isVisible ? 0 : 1,
-              transition:    "opacity 0.9s ease-in-out",
-              pointerEvents: "none",
+              position: "absolute", top: 0, left: 0, width: "100%", minWidth: "100%",
+              height: "100%", objectFit: "cover", display: "block", zIndex: 5,
+              opacity: isVisible ? 0 : 1, transition: "opacity 0.9s ease-in-out", pointerEvents: "none",
             }}
           />
-
           <div id="video-stage" className="absolute inset-0" style={{ zIndex: 2 }}>
             {isVisible && banners.map((banner, idx) => {
               if (banner.media_type === "video") return null;
               const isActive = idx === activeIdx;
               const isFading = idx === prevIdx;
               return (
-                <img
-                  key={banner.id}
-                  src={banner.url}
-                  alt={banner.title || ""}
+                <img key={banner.id} src={banner.url} alt={banner.title || ""}
                   style={{
-                    position:       "absolute",
-                    inset:          0,
-                    width:          "100%",
-                    height:         "100%",
-                    objectFit:      "cover",
-                    objectPosition: `50% ${banner.object_position ?? 50}%`,
-                    opacity:        isActive ? 1 : 0,
-                    transition:     isFading ? `opacity ${FADE_MS}ms ease-in-out` : "none",
-                    zIndex:         isActive ? 2 : isFading ? 1 : 0,
-                    willChange:     "opacity",
+                    position: "absolute", inset: 0, width: "100%", height: "100%",
+                    objectFit: "cover", objectPosition: `50% ${banner.object_position ?? 50}%`,
+                    opacity: isActive ? 1 : 0,
+                    transition: isFading ? `opacity ${FADE_MS}ms ease-in-out` : "none",
+                    zIndex: isActive ? 2 : isFading ? 1 : 0, willChange: "opacity",
                   }}
                 />
               );
@@ -389,10 +313,7 @@ const MainHome = () => {
         </div>
 
         {/* overlay */}
-        <div
-          className="absolute inset-0 flex flex-col justify-end items-center px-5 pb-10 bg-black/20"
-          style={{ zIndex: 10 }}
-        >
+        <div className="absolute inset-0 flex flex-col justify-end items-center px-5 pb-10 bg-black/20" style={{ zIndex: 10 }}>
           {currentBanner?.title && (
             <h1 className="text-xs sm:text-sm md:text-2xl lg:text-3xl font-semibold text-white text-center animate-fade-infinite mb-3 tracking-tight drop-shadow-lg">
               {currentBanner.title}
@@ -416,49 +337,103 @@ const MainHome = () => {
           </>
         )}
 
-        {/* search bar */}
+        {/* ── DESKTOP search bar (unchanged) ── */}
+        {!isMobile && (
+          <div style={searchStyle} className="px-4 md:px-10" onMouseDown={handleSearchOpen}>
+            <div ref={searchRef} className="w-full xl:w-9/12 mx-auto overflow-visible">
+              <div className="flex items-end overflow-x-auto no-scrollbar">
+                {TABS.map((tab, i) => (
+                  <button
+                    key={tab.label}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={() => setActiveTab(i)}
+                    className={[
+                      "relative shrink-0 px-3 sm:px-5 py-2",
+                      "text-xs sm:text-sm font-semibold whitespace-nowrap",
+                      "rounded-t-sm transition-all duration-50 focus:outline-none",
+                      activeTab === i
+                        ? "bg-white text-red-700"
+                        : "bg-red-700 text-white/80 hover:bg-black/40 hover:text-white",
+                    ].join(" ")}
+                  >
+                    {tab.label}
+                    {activeTab === i && (
+                      <span className="absolute bottom-0 left-3 right-3 h-[2.5px] bg-red-600 rounded-full" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="rounded-b-md rounded-tr-md shadow-lg overflow-visible">
+                <Search setFilterModal={openFilter} activeTab={TABS[activeTab]} />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── MOBILE: native app card overlapping banner ── */}
+      {isMobile && (
         <div
-          style={searchStyle}
-          className="px-4 md:px-10"
+          style={{
+            margin:   "0 12px",
+            margin: "0 12px",
+            position: "relative",
+            zIndex:   40,
+          }}
           onMouseDown={handleSearchOpen}
         >
-          <div ref={searchRef} className="w-full xl:w-9/12 mx-auto overflow-visible">
-            <div className="flex items-end overflow-x-auto no-scrollbar">
+          <div
+            style={{
+              background:   "#ffffff",
+              borderRadius: 4,
+              boxShadow:    "0 4px 24px rgba(0,0,0,0.13)",
+              border:       "1px solid rgba(0,0,0,0.07)",
+              overflow:     "visible",
+            }}
+          >
+            {/* Tab row inside card */}
+            <div style={{ display: "flex", gap: 4, padding: "10px 10px 0" }}>
               {TABS.map((tab, i) => (
                 <button
                   key={tab.label}
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setActiveTab(i)}
-                  className={[
-                    "relative shrink-0 px-3 sm:px-5 py-2",
-                    "text-xs sm:text-sm font-semibold whitespace-nowrap",
-                    "rounded-t-sm transition-all duration-50 focus:outline-none",
-                    activeTab === i
-                      ? "bg-white text-red-700"
-                      : "bg-red-700 text-white/80 hover:bg-black/40 hover:text-white",
-                  ].join(" ")}
+                  style={{
+                    flex:         1,
+                    padding:      "8px 4px",
+                    borderRadius: 4,
+                    border:       "none",
+                    background:   activeTab === i ? "#b91c1c" : "#f3f4f6",
+                    color:        activeTab === i ? "#ffffff" : "#6b7280",
+                    fontSize:     12,
+                    fontWeight:   activeTab === i ? 600 : 400,
+                    cursor:       "pointer",
+                    transition:   "background 0.12s ease, color 0.12s ease",
+                  }}
                 >
                   {tab.label}
-                  {activeTab === i && (
-                    <span className="absolute bottom-0 left-3 right-3 h-[2.5px] bg-red-600 rounded-full" />
-                  )}
                 </button>
               ))}
             </div>
-            <div className="rounded-b-md rounded-tr-md shadow-lg overflow-visible">
+
+            {/* Thin rule */}
+            <div style={{ height: 1, background: "#f3f4f6", margin: "10px 0 0" }} />
+
+            {/* Search component — borderless on mobile (handled inside InputBox) */}
+            <div ref={searchRef} style={{ overflow: "visible" }}>
               <Search setFilterModal={openFilter} activeTab={TABS[activeTab]} />
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* spacer — only shows when search is active (moved up) */}
-      <div
-        style={{
+      {/* desktop spacer */}
+      {!isMobile && (
+        <div style={{
           height:     !isAtBottom ? Math.round(SEARCH_H / 2) + 12 : 0,
           transition: hasInteracted ? "height 0.45s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
-        }}
-      />
+        }} />
+      )}
 
       <Featured />
       <LatestProperties />

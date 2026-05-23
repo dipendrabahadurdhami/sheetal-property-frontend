@@ -327,7 +327,7 @@ const styles = `
   /* ════════════ MOBILE ════════════ */
   @media (max-width: 767px) {
     .fc-card {
-      height: 178px;
+      height: 220px;
       border-radius: 4px;
       box-shadow: 0 1px 8px rgba(0,0,0,0.14);
     }

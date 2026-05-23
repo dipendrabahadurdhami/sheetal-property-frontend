@@ -12,14 +12,14 @@ const MobileRow = ({ items }) => {
 
   useEffect(() => {
     const el = scrollRef.current;
-    if (!el) return;
+    if (!el || items.length <= 1) return;
     let current = 0;
 
-    const interval = setInterval(() => {
-      current = (current + 1) % items.length;
-      const cardW = el.offsetWidth;
-      el.scrollTo({ left: current * (cardW + 10), behavior: "smooth" });
-    }, 3000);
+   const interval = setInterval(() => {
+  current = (current + 1) % items.length;
+  const cardWidth = el.scrollWidth / items.length;
+  el.scrollTo({ left: current * cardWidth, behavior: "smooth" });
+}, 3000);
 
     return () => clearInterval(interval);
   }, [items.length]);
@@ -36,8 +36,8 @@ const MobileRow = ({ items }) => {
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
-        paddingLeft: "32px",
-        paddingRight: "32px",
+        paddingLeft: "16px",
+        paddingRight: "16px",
         paddingBottom: "4px",
         margin: "0",
       }}
@@ -47,8 +47,9 @@ const MobileRow = ({ items }) => {
         <div
           key={index}
           style={{
-            flex: "0 0 calc(100vw - 64px)",
-            maxWidth: "calc(100vw - 64px)",
+            flex: "0 0 calc(100vw - 32px)",
+            maxWidth: "calc(100vw - 32px)",
+
             scrollSnapAlign: "center",
           }}
         >
@@ -60,7 +61,7 @@ const MobileRow = ({ items }) => {
   );
 };
 
-const DesktopRow = ({ items }) => (
+const DesktopCarousel = ({ items }) => (
   <div style={{ margin: "0 -6px" }}>
     <Carousel
       responsive={responsive}
@@ -68,9 +69,10 @@ const DesktopRow = ({ items }) => (
       customLeftArrow={<CustomLeftArrow />}
       className="py-2 pb-8"
       autoPlay={true}
-      autoPlaySpeed={3000}
+      autoPlaySpeed={2500}
       infinite={true}
       pauseOnHover={true}
+      transitionDuration={600}
     >
       {items.map((product, index) => (
         <div key={index} style={{ padding: "0 6px", height: "100%" }}>
@@ -107,8 +109,8 @@ const LatestProperties = () => {
     FetchData();
   }, []);
 
-  const row1 = allProduct.slice(0, 4);
-  const row2 = allProduct.slice(4);
+  const mobileRow1 = allProduct.slice(0, 4);
+  const mobileRow2 = allProduct.slice(4);
 
   return (
     <>
@@ -159,10 +161,7 @@ const LatestProperties = () => {
           padding: isMobile ? "0 16px" : "0",
         }}>
           <div>
-            <div className="lbl">
-              <span className="lbl-line" />
-              <span className="lbl-txt">Fresh on the market</span>
-            </div>
+
             <h2
               className="serif"
               style={{
@@ -192,11 +191,7 @@ const LatestProperties = () => {
           )}
         </div>
 
-        {/* Red accent */}
-        <div style={{
-          height: "1.5px", width: "36px", background: "var(--r)",
-          margin: isMobile ? "10px 16px 16px" : "12px 0 28px",
-        }} />
+
 
         {/* ── EMPTY ── */}
         {allProduct.length === 0 && (
@@ -208,19 +203,24 @@ const LatestProperties = () => {
           </p>
         )}
 
-        {/* ── ROW 1 ── */}
-        {row1.length > 0 && (
-          isMobile ? <MobileRow items={row1} /> : <DesktopRow items={row1} />
+        {/* ── DESKTOP: single infinite carousel with ALL items ── */}
+        {!isMobile && allProduct.length > 0 && (
+          <DesktopCarousel items={allProduct} />
         )}
 
-        {/* ── ROW 2 ── */}
-        {row2.length > 0 && (
-          <div style={{ marginTop: isMobile ? "10px" : "8px" }}>
-            {isMobile ? <MobileRow items={row2} /> : <DesktopRow items={row2} />}
-          </div>
+        {/* ── MOBILE: two swipeable rows ── */}
+        {isMobile && (
+          <>
+            {mobileRow1.length > 0 && <MobileRow items={mobileRow1} />}
+            {mobileRow2.length > 0 && (
+              <div style={{ marginTop: "10px" }}>
+                <MobileRow items={mobileRow2} />
+              </div>
+            )}
+          </>
         )}
 
-        {/* ── Scroll dots ── */}
+        {/* ── Scroll dots (mobile only) ── */}
         {isMobile && allProduct.length > 1 && (
           <div className="scroll-dots" aria-hidden>
             {Array.from({ length: Math.min(allProduct.length, 5) }).map((_, i) => (
