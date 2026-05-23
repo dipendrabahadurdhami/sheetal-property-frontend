@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Carousel from "react-multi-carousel";
 import { Link } from "react-router-dom";
 import FearuredCard from "../card/FearuredCard";
@@ -7,39 +7,58 @@ import { CustomLeftArrow, CustomRightArrow } from "../carousel/CustomeButton";
 import { responsive } from "../carousel/Responsive";
 import "react-multi-carousel/lib/styles.css";
 
-const MobileRow = ({ items }) => (
-  <div
-    style={{
-      display: "flex",
-      gap: "10px",
-      overflowX: "auto",
-      overflowY: "visible",
-      scrollSnapType: "x mandatory",
-      WebkitOverflowScrolling: "touch",
-      scrollbarWidth: "none",
-      msOverflowStyle: "none",
-      paddingLeft: "32px",
-      paddingRight: "32px",
-      paddingBottom: "4px",
-      margin: "0",
-    }}
-    className="feat-scroll-hide"
-  >
-    {items.map((product, index) => (
-      <div
-        key={index}
-        style={{
-          flex: "0 0 calc(100vw - 64px)",
-          maxWidth: "calc(100vw - 64px)",
-          scrollSnapAlign: "center",
-        }}
-      >
-        <FearuredCard product={product} />
-      </div>
-    ))}
-    <div style={{ flex: "0 0 1px", minWidth: "1px" }} aria-hidden />
-  </div>
-);
+const MobileRow = ({ items }) => {
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    let current = 0;
+
+    const interval = setInterval(() => {
+      current = (current + 1) % items.length;
+      const cardW = el.offsetWidth;
+      el.scrollTo({ left: current * (cardW + 10), behavior: "smooth" });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [items.length]);
+
+  return (
+    <div
+      ref={scrollRef}
+      style={{
+        display: "flex",
+        gap: "10px",
+        overflowX: "auto",
+        overflowY: "visible",
+        scrollSnapType: "x mandatory",
+        WebkitOverflowScrolling: "touch",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+        paddingLeft: "32px",
+        paddingRight: "32px",
+        paddingBottom: "4px",
+        margin: "0",
+      }}
+      className="feat-scroll-hide"
+    >
+      {items.map((product, index) => (
+        <div
+          key={index}
+          style={{
+            flex: "0 0 calc(100vw - 64px)",
+            maxWidth: "calc(100vw - 64px)",
+            scrollSnapAlign: "center",
+          }}
+        >
+          <FearuredCard product={product} />
+        </div>
+      ))}
+      <div style={{ flex: "0 0 1px", minWidth: "1px" }} aria-hidden />
+    </div>
+  );
+};
 
 const DesktopRow = ({ items }) => (
   <div style={{ margin: "0 -6px" }}>
@@ -48,6 +67,10 @@ const DesktopRow = ({ items }) => (
       customRightArrow={<CustomRightArrow />}
       customLeftArrow={<CustomLeftArrow />}
       className="py-2 pb-8"
+      autoPlay={true}
+      autoPlaySpeed={3000}
+      infinite={true}
+      pauseOnHover={true}
     >
       {items.map((product, index) => (
         <div key={index} style={{ padding: "0 6px", height: "100%" }}>
@@ -155,7 +178,10 @@ const LatestProperties = () => {
           </div>
 
           {!isMobile && allProduct.length > 0 && (
-            <Link to={`/productSearch?date_from=${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}&date_to=${new Date().toISOString().split('T')[0]}`} className="btn-g latest-viewall">
+            <Link
+              to={`/productSearch?date_from=${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}&date_to=${new Date().toISOString().split('T')[0]}`}
+              className="btn-g latest-viewall"
+            >
               View All
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -206,7 +232,10 @@ const LatestProperties = () => {
         {/* ── View All mobile ── */}
         {isMobile && allProduct.length > 0 && (
           <div style={{ marginTop: "20px", padding: "0 16px" }}>
-            <Link to={`/productSearch?date_from=${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}&date_to=${new Date().toISOString().split('T')[0]}`} className="btn-p latest-pill">
+            <Link
+              to={`/productSearch?date_from=${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}&date_to=${new Date().toISOString().split('T')[0]}`}
+              className="btn-p latest-pill"
+            >
               View All Latest Properties
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
