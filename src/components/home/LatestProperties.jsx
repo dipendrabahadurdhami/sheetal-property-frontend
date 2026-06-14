@@ -158,7 +158,7 @@ const LatestProperties = () => {
           alignItems: "flex-end",
           justifyContent: "space-between",
           gap: "12px",
-          padding: isMobile ? "0 16px" : "0",
+          padding: isMobile ? "22px 16px" : "0",
         }}>
           <div>
 
