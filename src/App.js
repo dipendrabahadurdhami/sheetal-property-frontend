@@ -10,6 +10,7 @@ import HomeLone from "./pages/HomeLone";
 import PayRentOnline from "./pages/PayRentOnline";
 import LegalHelp from "./pages/LegalHelp";
 import RateAndTrends from "./pages/RateAndTrends";
+import PropertyManagement from "./pages/PropertyManagement";
 import Investment from "./pages/Investment";
 import InvestmentExplore from "./pages/InvestmentExplore";
 import InvestmentAllProduct from "./pages/InvestmentAllProduct";
@@ -39,6 +40,7 @@ import Blog from './pages/Blog';
 import BlogSingle from './pages/BlogSingle';
 import BlogCategory from './pages/BlogCategory';
 import UnitConverter        from "./pages/UnitConverter";
+import Services from "./pages/Services";
 import EmiCalculatorPage    from "./pages/EmiCalculatorPage";
 import ROICalculator        from "./pages/ROICalculator";
 import LandPriceEstimator   from "./pages/LandPriceEstimator";
@@ -143,11 +145,14 @@ function App(props) {
           />
           <Route path="/properties" element={<AllProperties />} />
           <Route path="/propertyDemand" element={<PropertyDemand />} />
+          <Route path="/property-demand" element={<PropertyDemand />} />
           <Route path="/agents" element={<FindAgent />} />
           <Route path="/agent/:id" element={<SingleAgent />} />
           <Route path="/productSearch" element={<ProductSearch />} />
           <Route path="/my-profile/messages" element={<Message />} />
           <Route path="/investDetail/:id" element={<InvestDetails />} />
+          <Route path="/services/management" element={<PropertyManagement />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/project" element={<Project />} />
           <Route path="/rent" element={<Rent />} />
           <Route path="/sale" element={<Sale />} />

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet";
 import '../index.css';
 
 /* ═══ HOOKS ══════════════════════════════════════════════════════════ */
@@ -211,7 +212,6 @@ export default function About() {
   const tab = w < 1024;
 
   useEffect(() => {
-    document.title = "About | Shetal Real Estate Nepal";
     setTimeout(() => setHero(true), 60);
     const onScroll = () => {
       const el = document.documentElement;
@@ -236,6 +236,19 @@ export default function About() {
 
   return (
     <div className="ab">
+      <Helmet>
+        <title>About Us — Sheetal Real Estate Nepal | Nepal's Trusted Property Company</title>
+        <meta name="description" content="Learn about Sheetal Real Estate Nepal — Nepal's modern real estate company offering exclusive property sales, property management, real estate development and investment solutions since 2015." />
+        <meta name="keywords" content="about Sheetal Property Nepal, Shetal Real Estate Nepal, real estate company Nepal, property company Kathmandu, Shetal Group Nepal" />
+        <link rel="canonical" href="https://sheetalproperty.com/about" />
+        <meta property="og:title" content="About Sheetal Real Estate Nepal | Nepal's Trusted Property Company" />
+        <meta property="og:description" content="Nepal's modern real estate company offering exclusive property sales, property management and real estate development since 2015." />
+        <meta property="og:url" content="https://sheetalproperty.com/about" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Sheetal Property Nepal" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="About Sheetal Real Estate Nepal" />
+      </Helmet>
       <div className="prog" style={{ width: `${prog}%` }} />
 
       {/* ══ HERO ══════════════════════════════════════════════════════ */}

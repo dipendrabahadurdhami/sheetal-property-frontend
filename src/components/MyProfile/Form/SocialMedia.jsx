@@ -3,194 +3,189 @@ import { useDispatch } from "react-redux";
 import { fetchUserInformation } from "../../../features/slices/userInformation";
 import apiClient from "../../../utils/apiClient";
 import { toast } from "react-toastify";
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner, FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaPinterest, FaTwitter, FaWhatsapp, FaGlobe, FaSkype, FaTiktok } from "react-icons/fa";
+import { SiVimeo } from "react-icons/si";
+
+const SOCIALS = [
+  { name: "facebook_url",   label: "Facebook",   icon: <FaFacebook  />, color: "#1877F2", placeholder: "https://facebook.com/yourpage" },
+  { name: "instagram_url",  label: "Instagram",  icon: <FaInstagram />, color: "#E1306C", placeholder: "https://instagram.com/yourhandle" },
+  { name: "tiktok_url",     label: "TikTok",     icon: <FaTiktok    />, color: "#010101", placeholder: "https://tiktok.com/@yourhandle" },
+  { name: "youtube_url",    label: "YouTube",    icon: <FaYoutube   />, color: "#FF0000", placeholder: "https://youtube.com/yourchannel" },
+  { name: "twitter_url",    label: "Twitter / X", icon: <FaTwitter  />, color: "#1DA1F2", placeholder: "https://twitter.com/yourhandle" },
+  { name: "linkedin_url",   label: "LinkedIn",   icon: <FaLinkedin  />, color: "#0077B5", placeholder: "https://linkedin.com/in/yourprofile" },
+  { name: "pinterest_url",  label: "Pinterest",  icon: <FaPinterest />, color: "#E60023", placeholder: "https://pinterest.com/yourprofile" },
+  { name: "website_url",    label: "Website",    icon: <FaGlobe     />, color: "#27ae60", placeholder: "https://yourwebsite.com" },
+  { name: "skype",          label: "Skype",      icon: <FaSkype     />, color: "#00AFF0", placeholder: "live:yourskypeid" },
+  { name: "vimeo_url",      label: "Vimeo",      icon: <SiVimeo     />, color: "#1ab7ea", placeholder: "https://vimeo.com/yourchannel" },
+];
+
 const SocialMedia = ({ data }) => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    skype: "",
-    website_url: "",
-    facebook_url: "",
-    twitter_url: "",
-    linkedin_url: "",
-    instagram_url: "",
-    googleplus_url: "",
-    youtube_url: "",
-    pinterest_url: "",
-    vimeo_url: "",
+  const [loading, setLoading]   = useState(false);
+  const [focused, setFocused]   = useState(null);
+  const [form, setForm]         = useState({
+    facebook_url: "", instagram_url: "", tiktok_url: "",
+    youtube_url: "", twitter_url: "", linkedin_url: "",
+    pinterest_url: "", website_url: "", skype: "", vimeo_url: "",
   });
 
   useEffect(() => {
+    if (!data) return;
     setForm({
-      skype: data?.skype,
-      website_url: data?.website_url,
-      facebook_url: data?.facebook_url,
-      twitter_url: data?.twitter_url,
-      linkedin_url: data?.linkedin_url,
-      instagram_url: data?.instagram_url,
-      googleplus_url: data?.googleplus_url,
-      youtube_url: data?.youtube_url,
-      pinterest_url: data?.pinterest_url,
-      vimeo_url: data?.vimeo_url,
+      facebook_url:  data.facebook_url  || "",
+      instagram_url: data.instagram_url || "",
+      tiktok_url:    data.tiktok_url    || "",
+      youtube_url:   data.youtube_url   || "",
+      twitter_url:   data.twitter_url   || "",
+      linkedin_url:  data.linkedin_url  || "",
+      pinterest_url: data.pinterest_url || "",
+      website_url:   data.website_url   || "",
+      skype:         data.skype         || "",
+      vimeo_url:     data.vimeo_url     || "",
     });
   }, [data]);
 
-  const onInputChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleFormSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    const newData = { ...data, ...form };
-
-    Object.entries(newData).map((item) => {
-      formData.append(item[0], item[1]);
-    });
     setLoading(true);
     try {
-      await apiClient.post("update-profile", formData).then((res) => {
-        if (res.status === 200) {
-          dispatch(fetchUserInformation());
-          setLoading(false);
-          toast.success(`Profile Social Media updated successfully.`);
-        } else {
-          setLoading(false);
-          toast.error(res.message);
-        }
-      });
-    } catch (error) {
-      console.error(error);
+      const formData = new FormData();
+      Object.entries(form).forEach(([k, v]) => formData.append(k, v || ""));
+      const res = await apiClient.post("update-profile", formData);
+      if (res.status === 200) {
+        dispatch(fetchUserInformation());
+        toast.success("Social links updated successfully.");
+      }
+    } catch {
+      toast.error("Failed to update social links.");
+    } finally {
       setLoading(false);
-      toast.error(
-        `There's an error updating social media. Please contact admin`
-      );
     }
   };
+
+  const filledCount = Object.values(form).filter(v => v && v.trim()).length;
+
   return (
-    <div className="space-y-5 md:space-y-10">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-semibold text-gray-900">Social Link</h1>
+    <form onSubmit={handleSubmit} style={{ maxWidth: 860 }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#2c3e50", margin: "0 0 4px" }}>
+          Social Links
+        </h2>
+        <p style={{ fontSize: 13, color: "#7f8c8d", margin: 0 }}>
+          {filledCount} of {SOCIALS.length} links added — these appear on your public agent profile
+        </p>
       </div>
-      <form
-        className="grid md:grid-cols-2 gap-5 md:gap-10"
-        onSubmit={handleFormSubmit}
-      >
-        <label className="flex flex-col space-y-2">
-          <span>Skype</span>
-          <input
-            name="skype"
-            value={form.skype}
-            type="text"
-            onChange={onInputChange}
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Website URL</span>
-          <input
-            type="text"
-            name="website_url"
-            value={form.website_url}
-            onChange={onInputChange}
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Facebook URL</span>
-          <input
-            type="text"
-            name="facebook_url"
-            value={form.facebook_url}
-            onChange={onInputChange}
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Twitter URL</span>
-          <input
-            type="text"
-            name="twitter_url"
-            value={form.twitter_url}
-            onChange={onInputChange}
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Linkedin URL</span>
-          <input
-            name="linkedin_url"
-            value={form.linkedin_url}
-            onChange={onInputChange}
-            type="text"
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Instagram URL</span>
-          <input
-            type="text"
-            name="instagram_url"
-            value={form.instagram_url}
-            onChange={onInputChange}
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Google Plus URL</span>
-          <input
-            type="text"
-            name="googleplus_url"
-            value={form.googleplus_url}
-            onChange={onInputChange}
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Youtube URL</span>
-          <input
-            name="youtube_url"
-            value={form.youtube_url}
-            onChange={onInputChange}
-            type="text"
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Pinterest URL</span>
-          <input
-            name="pinterest_url"
-            value={form.pinterest_url}
-            onChange={onInputChange}
-            type="text"
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Vimeo URL</span>
-          <input
-            name="vimeo_url"
-            value={form.vimeo_url}
-            onChange={onInputChange}
-            type="text"
-            className="p-2 border border-gray-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700"
-          />
-        </label>
-        <div></div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="text-white font-medium bg-red-700 rounded px-5 py-2"
-            disabled={loading}
-          >
-            {loading ? <FaSpinner className="spin" /> : "Update Social Links"}
-          </button>
-        </div>
-      </form>
-    </div>
+
+      {/* Social fields */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+        {SOCIALS.map(({ name, label, icon, color, placeholder }) => {
+          const isFocused = focused === name;
+          const hasValue  = !!form[name];
+          return (
+            <div
+              key={name}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0,
+                border: `1.5px solid ${isFocused ? color : hasValue ? "#dde3ea" : "#eef0f3"}`,
+                borderRadius: 10,
+                overflow: "hidden",
+                background: "#fff",
+                transition: "border-color 0.2s",
+              }}
+            >
+              {/* Icon block */}
+              <div style={{
+                width: 46, height: 46, flexShrink: 0,
+                background: isFocused ? color : hasValue ? color : "#f5f7fa",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 16, color: isFocused || hasValue ? "#fff" : "#bbb",
+                transition: "background 0.2s, color 0.2s",
+              }}>
+                {icon}
+              </div>
+
+              {/* Label */}
+              <div style={{
+                width: 110, flexShrink: 0,
+                padding: "0 12px",
+                fontSize: 12, fontWeight: 700,
+                color: isFocused ? color : "#7f8c8d",
+                borderRight: "1px solid #eef0f3",
+                transition: "color 0.2s",
+              }}>
+                {label}
+              </div>
+
+              {/* Input */}
+              <input
+                type="url"
+                name={name}
+                value={form[name]}
+                onChange={onChange}
+                placeholder={placeholder}
+                onFocus={() => setFocused(name)}
+                onBlur={() => setFocused(null)}
+                style={{
+                  flex: 1,
+                  height: 46,
+                  padding: "0 14px",
+                  border: "none",
+                  outline: "none",
+                  fontSize: 13,
+                  color: "#2c3e50",
+                  background: "transparent",
+                  minWidth: 0,
+                }}
+              />
+
+              {/* Clear button */}
+              {hasValue && (
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, [name]: "" })}
+                  style={{
+                    width: 36, height: 46, flexShrink: 0,
+                    background: "none", border: "none",
+                    cursor: "pointer", color: "#bbb",
+                    fontSize: 16, display: "flex",
+                    alignItems: "center", justifyContent: "center",
+                  }}
+                  title="Clear"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Submit */}
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "11px 28px",
+            background: loading ? "#ccc" : "#e74c3c",
+            color: "#fff", border: "none", borderRadius: 8,
+            fontSize: 13, fontWeight: 700,
+            cursor: loading ? "not-allowed" : "pointer",
+            transition: "background 0.2s",
+          }}
+        >
+          {loading && <FaSpinner className="animate-spin" />}
+          {loading ? "Saving..." : "Save Social Links"}
+        </button>
+      </div>
+    </form>
   );
 };
 

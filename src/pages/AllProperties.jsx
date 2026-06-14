@@ -5,6 +5,7 @@ import apiClient from "../utils/apiClient";
 import ReactPaginate from "react-paginate";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import headTag from "../headTag";
+import axios from "axios";
 
 const AllProperties = () => {
   const [params, setParams] = useSearchParams(window.location.search);
@@ -28,9 +29,9 @@ const AllProperties = () => {
     setParams({ ..._params, page: event.selected + 1 });
   };
 
-  const getFeaturedProperties = async () => {
+  useEffect(() => {
+    const controller = new AbortController();
     const page = params.get("page") ? params.get("page") : 1;
-    setLoading(true);
 
     let url;
     if (propertyType === "featured-properties") {
@@ -39,37 +40,30 @@ const AllProperties = () => {
       url = "/all-properties";
     }
 
-    if (!url) return;
-
-    try {
-      await apiClient
-        .get(`${url}?page=${page}`)
-        .then((res) => {
-          if (res.status === 200) {
-            setProduct(res?.data?.data);
-            setLoading(false);
-            setItemOffset(res?.data?.meta?.current_page);
-            setTotalProducts(res?.data?.meta?.total);
-          }
-        })
-        .catch((err) => {
-          setLoading(false);
-        });
-    } catch (err) {
+    if (!url) {
       setLoading(false);
+      return () => controller.abort();
     }
-  };
 
-  useEffect(() => {
-    setPageCount(Math.ceil(totalProducts / itemsPerPage));
+    setLoading(true);
 
-    // eslint-disable-next-line
-  }, [itemOffset, itemsPerPage, totalProducts]);
+    apiClient
+      .get(`${url}?page=${page}`, { signal: controller.signal })
+      .then((res) => {
+        if (res.status === 200) {
+          setProduct(res?.data?.data);
+          setItemOffset(res?.data?.meta?.current_page);
+          setTotalProducts(res?.data?.meta?.total);
+        }
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) return;
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
-  useEffect(() => {
-    getFeaturedProperties();
-
-    // eslint-disable-next-line
+    return () => controller.abort();
   }, [params]);
 
   let title = "";

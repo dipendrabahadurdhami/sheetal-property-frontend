@@ -19,6 +19,7 @@ import {
   IoSearchOutline,
   IoShieldCheckmarkOutline,
 } from "react-icons/io5";
+import { Helmet } from "react-helmet";
 import BlogStrip from "../components/SingleProduct/BlogStrip";
 import HomeSearch from "../components/Common/SearchBox/HomeSearch";
 
@@ -774,6 +775,19 @@ const Rent = () => {
       `}</style>
 
       <div className="rent-root">
+        <Helmet>
+          <title>Rent Property in Nepal — Houses, Flats & Rooms for Rent | Sheetal Property Nepal</title>
+          <meta name="description" content={`Find ${total > 0 ? total : "thousands of"} verified rental properties in Nepal. Browse houses, flats, rooms and commercial spaces for rent in Kathmandu, Pokhara and across Nepal.`} />
+          <meta name="keywords" content="property for rent Nepal, house for rent Kathmandu, flat for rent Nepal, room for rent Kathmandu, office for rent Nepal, commercial space rent Nepal, Sheetal Property" />
+          <link rel="canonical" href="https://sheetalproperty.com/rent" />
+          <meta property="og:title" content="Rent Property in Nepal | Sheetal Property Nepal" />
+          <meta property="og:description" content="Find verified rental properties across Nepal. Houses, flats, rooms and commercial spaces for rent." />
+          <meta property="og:url" content="https://sheetalproperty.com/rent" />
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="Sheetal Property Nepal" />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content="Rent Property in Nepal | Sheetal Property Nepal" />
+        </Helmet>
 
         {/* ══ HERO ═══════════════════════════════════════════ */}
         <div className="rent-hero-wrap">

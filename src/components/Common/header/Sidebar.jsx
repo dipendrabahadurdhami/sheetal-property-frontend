@@ -122,7 +122,7 @@ const SIDEBAR_NAV = [
       {
         heading: "For Owners",
         links: [
-          { label: "List Your Property", sub: "Free listing", link: "/my-profile?section=post-property" },
+          { label: "List Your Property", sub: "Become an agent to post", link: "/my-profile?section=my-plan" },
           { label: "Demand Registration", sub: "Find buyers fast", link: "/property-demand" },
           { label: "Market Insights", sub: "Price trends & data", link: "/market-insights" },
           { label: "Investment Advisory", sub: "Expert guidance", link: "/services/investment" },
@@ -209,7 +209,7 @@ const SIDEBAR_NAV = [
         heading: "Connect",
         links: [
           { label: "Contact Us", sub: "Get in touch", link: "/about" },
-          { label: "Requirement Form", sub: "Tell us what you need", link: "/about" },
+          { label: "Requirement Form", sub: "Tell us what you need", link: "/requirementform" },
           { label: "Visit Our Office", sub: "Directions & hours", link: "/about" },
           { label: "Client Reviews", sub: "What people say", link: "/about" },
           { label: "Partner With Us", sub: "Investor & developer tie-ups", link: "/about" },
@@ -714,9 +714,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   flexShrink: 0,
                 }}
               >
-                <Link
-                  to="/my-profile?section=post-property"
-                  onClick={() => setSidebarOpen(false)}
+                <button
+                  onClick={() => {
+                    setSidebarOpen(false);
+                    if (!user.data) { setAuthModal(true); return; }
+                    const isAgent = !!(user.data?.is_agent || user.data?.subscription_tier?.startsWith("Agent"));
+                    if (isAgent) { window.open("https://admin.sheetalproperty.com", "_blank"); return; }
+                    navigate("/my-profile?section=my-plan");
+                  }}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -726,15 +731,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     background: "#b91c1c",
                     color: "#fff",
                     borderRadius: "4px",
-                    textDecoration: "none",
+                    border: "none",
+                    cursor: "pointer",
                     fontSize: "13px",
                     fontWeight: 600,
                     letterSpacing: "-0.01em",
+                    width: "100%",
                   }}
                 >
                   <IoAddOutline style={{ width: "16px", height: "16px" }} />
                   Post a Property — Free
-                </Link>
+                </button>
 
                 {!user.data ? (
                   <button

@@ -1,232 +1,196 @@
-import { Fragment, useEffect, useState } from "react";
-import Button from "@material-ui/core/Button";
-import {
-  HomeIcon,
-  UserIcon,
-  InboxIcon,
-  PlusIcon,
-  HeartIcon,
-} from "@heroicons/react/outline";
-import DashBoard from "../DashBoard";
-import Properties from "../Properties";
-import Messages from "../Messages";
-import { Link, useSearchParams } from "react-router-dom";
-import LogOut from "../LogOut";
-import { MdOutlineDriveFolderUpload } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner, FaCrown } from "react-icons/fa";
+import { MdOutlineDriveFolderUpload } from "react-icons/md";
 import { toast } from "react-toastify";
-import { fetchUserInformation } from "../../../features/slices/userInformation";
+import {
+  IoPersonOutline, IoHomeOutline, IoHeartOutline,
+  IoAddOutline, IoNotificationsOutline, IoLogOutOutline,
+  IoShareSocialOutline,
+} from "react-icons/io5";
+import { fetchUserInformation, removeUserInfo } from "../../../features/slices/userInformation";
+import { removeAllFavorites } from "../../../features/slices/favourites";
 import apiClient from "../../../utils/apiClient";
-import PostProperty from "../../../pages/PostProperty";
-import MyProperties from "../MyProperties";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+const NAV = [
+  { name: "My Profile",    href: "profile",       icon: IoPersonOutline,        agentOnly: false },
+  { name: "Social Links",  href: "social",        icon: IoShareSocialOutline,   agentOnly: false },
+  { name: "My Properties", href: "my-properties", icon: IoHomeOutline,          agentOnly: true  },
+  { name: "Post Property", href: "post-property", icon: IoAddOutline,           agentOnly: true  },
+  { name: "Favourites",    href: "favourites",    icon: IoHeartOutline,         agentOnly: false },
+  { name: "Notifications", href: "notifications", icon: IoNotificationsOutline, agentOnly: true  },
+  { name: "My Plan",       href: "my-plan",       icon: FaCrown,                agentOnly: true  },
+];
 
-const SideBar = ({ menubutton }) => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  const [image, setImage] = useState(null);
-  const [file, setFile] = useState(null);
+const SideBar = () => {
+  const dispatch  = useDispatch();
+  const navigate  = useNavigate();
+  const user      = useSelector((state) => state.user);
+  const [params]  = useSearchParams();
+  const section   = params.get("section") || "profile";
+  const [image, setImage]     = useState(null);
   const [loading, setLoading] = useState(false);
-  const [params, setParams] = useSearchParams(window.location.search);
-  const query = params.get("section");
 
-  const [navigation, setNavigation] = useState([
-    { name: "My Profile", href: "profile", icon: UserIcon, current: true },
-    {
-      name: "Post Property",
-      href: "post-property",
-      icon: PlusIcon,
-      current: false,
-    },
-    {
-      name: "Favourite Properties",
-      href: "favourites",
-      icon: HeartIcon,
-      current: false,
-    },
-
-    {
-      name: "My Properties",
-      href: "my-properties",
-      icon: HomeIcon,
-      current: false,
-    },
-    // { name: "Saved Searches", href: "saved", icon: FolderIcon, current: false },
-    // { name: "Messages", href: "messages", icon: CalendarIcon, current: false },
-    { name: "Logout", href: "logout", icon: InboxIcon, current: false },
-  ]);
-
-  const mainComponent = {
-    profile: <DashBoard />,
-    favourites: <Properties />,
-    messages: <Messages />,
-    // saved: <NoData />,
-    "post-property": <PostProperty />,
-    "my-properties": <MyProperties />,
-    logout: <LogOut />,
-  };
-  const onInputChange = async (e) => {
-    const files = e.target.files[0];
-    setFile(e.target.files[0]);
-    readURL(e.target);
-
-    const formData = new FormData();
-    const newData = { photo: files };
-
-    Object.entries(newData).map((item) => {
-      formData.append(item[0], item[1]);
-      return item;
-    });
-    setLoading(true);
-    try {
-      await apiClient.post("update-profile", formData).then((res) => {
-        if (res.status === 200) {
-          dispatch(fetchUserInformation());
-          setLoading(false);
-          toast.success(`Profile Photo  updated successfully.`);
-        } else {
-          setLoading(false);
-          toast.error(res.message);
-        }
-      });
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-      toast.error(
-        `There's an error updating profile photo. Please contact admin`
-      );
-    }
-  };
-  useEffect(() => {
-    if (user?.data?.photo) {
-      setImage(user?.data?.photo);
-    }
-  }, [user]);
-  useEffect(() => {
-    const section = params.get("section");
-    if (section) {
-      const newObject = navigation.map((item) => {
-        if (item.href === section) return { ...item, current: true };
-        else return { ...item, current: false };
-      });
-      setNavigation(newObject);
-    }
-  }, [params]);
-  function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-
-      reader.onload = function (e) {
-        setImage(e.target.result);
-      };
-
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
+  const isAgent = !!(
+    user?.data?.subscription_tier?.startsWith("Agent") ||
+    user?.data?.is_agent
+  );
 
   const { user_name, first_name, last_name } = user.data || {};
+  const username = first_name && last_name
+    ? `${first_name} ${last_name}`
+    : user_name;
 
-  let username;
-  if (first_name && last_name) {
-    username = `${first_name} ${last_name}`;
-  } else {
-    username = user_name;
-  }
+  const visibleNav = NAV.filter(t => !t.agentOnly || isAgent);
+
+  useEffect(() => {
+    if (user?.data?.photo) setImage(user.data.photo);
+  }, [user]);
+
+  const readURL = (input) => {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => setImage(e.target.result);
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
+  const onInputChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    readURL(e.target);
+    const formData = new FormData();
+    formData.append("photo", file);
+    setLoading(true);
+    try {
+      const res = await apiClient.post("update-profile", formData);
+      if (res.status === 200) {
+        dispatch(fetchUserInformation());
+        toast.success("Profile photo updated!");
+      }
+    } catch {
+      toast.error("Failed to update photo.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("sheetal_token");
+    dispatch(removeUserInfo());
+    dispatch(removeAllFavorites());
+    navigate("/", { replace: true });
+  };
 
   return (
-    <>
-      <div className="container mx-auto">
-        <div className="flex justify-center">
-          <div className="hidden md:flex md:w-72 flex-col ">
-            <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
-              <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                <div className="flex flex-col items-center flex-shrink-0 px-4">
-                  <div className={`relative m-4`}>
-                    <img
-                      className="w-full h-auto"
-                      src={image ? image : "noUser.png"}
-                      alt="Workflow"
-                    />
-                    <form>
-                      <div className="absolute bottom-0 left-0 right-0 w-full bg-opacity-50 bg-black text-white py-2 flex space-x-2 justify-center">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="absolute top-0 left-0 p-0 w-0 h-0 overflow-hidden opacity-0"
-                          id="contained-button-file"
-                          onChange={onInputChange}
-                        />
-                        <label htmlFor="contained-button-file">
-                          <Button
-                            variant="contained"
-                            style={{
-                              backgroundColor: "#B91C1B",
-                              color: "white",
-                            }}
-                            component="span"
-                            disabled={loading}
-                            className="w-full bg-opacity-70 bg-black text-white py-2 flex space-x-2 justify-center"
-                          >
-                            <span>
-                              {loading ? (
-                                <FaSpinner className="spin" />
-                              ) : (
-                                "Upload"
-                              )}
-                            </span>
-                            <MdOutlineDriveFolderUpload className="w-5 h-5" />
-                          </Button>
-                        </label>
-                      </div>
-                    </form>
-                  </div>
-                  <div className="text-red-700 text-xl font-medium">
-                    {username}
-                  </div>
-                </div>
-                <nav className="mt-10 flex-1 px-2 bg-white space-y-1">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={`/my-profile?section=${item.href}`}
-                    >
-                      <button
-                        className={classNames(
-                          item.current
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                          "group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full"
-                        )}
-                      >
-                        <item.icon
-                          className={classNames(
-                            item.current
-                              ? "text-gray-500"
-                              : "text-gray-400 group-hover:text-gray-500",
-                            "mr-3 flex-shrink-0 h-6 w-6"
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </button>
-                    </Link>
-                  ))}
-                </nav>
+    <div className="hidden md:flex md:w-64 flex-col flex-shrink-0">
+      <div className="flex flex-col h-full border-r border-gray-200 bg-white">
+        <div className="flex flex-col pt-6 pb-4 overflow-y-auto flex-1">
+
+          {/* Photo + name */}
+          <div className="flex flex-col items-center px-4 mb-4">
+            <div className="relative mb-3" style={{ width: 96, height: 96 }}>
+              <img
+                src={image || "/noUser.png"}
+                alt={username}
+                style={{
+                  width: 96, height: 96, borderRadius: "50%",
+                  objectFit: "cover", border: "3px solid #fecaca",
+                }}
+              />
+              <div style={{
+                position: "absolute", bottom: 0, left: 0, right: 0,
+                background: "rgba(0,0,0,0.5)", borderRadius: "0 0 50px 50px",
+                display: "flex", justifyContent: "center", padding: "4px 0",
+              }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ position: "absolute", opacity: 0, width: 0, height: 0 }}
+                  id="sidebar-photo"
+                  onChange={onInputChange}
+                />
+                <label htmlFor="sidebar-photo" style={{ cursor: "pointer", color: "#fff", display: "flex", alignItems: "center" }}>
+                  {loading
+                    ? <FaSpinner className="spin" style={{ fontSize: 14 }} />
+                    : <MdOutlineDriveFolderUpload style={{ fontSize: 16 }} />
+                  }
+                </label>
               </div>
             </div>
+
+            <div className="text-red-700 text-base font-bold text-center">{username}</div>
+
+            {isAgent && user?.data?.subscription_tier && (
+              <div style={{
+                marginTop: 5, fontSize: 10, fontWeight: 700,
+                letterSpacing: ".08em", textTransform: "uppercase",
+                background: "#fef2f2", color: "#b91c1c",
+                border: "1px solid #fecaca", borderRadius: 4,
+                padding: "2px 10px",
+              }}>
+                {user.data.subscription_tier.replace("Agent: ", "")} Agent
+              </div>
+            )}
           </div>
-          <div className="flex flex-col flex-1">
-            <main className="flex-1">
-              {!query ? mainComponent["profile"] : mainComponent[query]}
-            </main>
-          </div>
+
+          {/* Agent portal link */}
+          {isAgent && (
+            <div style={{ padding: "0 12px 12px" }}>
+              <a
+                href="https://admin.sheetalproperty.com"
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "flex", alignItems: "center",
+                  justifyContent: "center", gap: 6,
+                  padding: "9px 14px", background: "#b91c1c",
+                  color: "#fff", borderRadius: 6,
+                  textDecoration: "none", fontSize: 12, fontWeight: 700,
+                }}
+              >
+                Agent Portal →
+              </a>
+            </div>
+          )}
+
+          {/* Nav */}
+          <nav className="flex-1 px-3 space-y-1">
+            {visibleNav.map((item) => {
+              const Icon   = item.icon;
+              const active = section === item.href;
+              return (
+                <Link key={item.href} to={`/my-profile?section=${item.href}`}>
+                  <button
+                    className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-all"
+                    style={{
+                      background:  active ? "#fef2f2"     : "transparent",
+                      color:       active ? "#b91c1c"     : "#6b7280",
+                      borderLeft:  active ? "3px solid #b91c1c" : "3px solid transparent",
+                    }}
+                  >
+                    <Icon style={{ fontSize: 16, flexShrink: 0 }} />
+                    {item.name}
+                  </button>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Logout */}
+        <div style={{ padding: 12, borderTop: "1px solid #f0f3f7" }}>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-red-600 hover:bg-red-50 transition-all"
+          >
+            <IoLogOutOutline style={{ fontSize: 16 }} />
+            Logout
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

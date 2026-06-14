@@ -20,6 +20,7 @@ import {
   IoShieldCheckmarkOutline,
   IoTrendingUpOutline,
 } from "react-icons/io5";
+import { Helmet } from "react-helmet";
 import BlogStrip from "../components/SingleProduct/BlogStrip";
 import HomeSearch from "../components/Common/SearchBox/HomeSearch";
 
@@ -747,6 +748,19 @@ const Sale = () => {
       `}</style>
 
       <div className="sale-root">
+        <Helmet>
+          <title>Buy Property in Nepal — Houses, Land & Apartments for Sale | Sheetal Property Nepal</title>
+          <meta name="description" content={`Find ${total > 0 ? total : "thousands of"} verified properties for sale in Nepal. Browse houses, land, apartments and commercial properties in Kathmandu, Pokhara and across Nepal.`} />
+          <meta name="keywords" content="property for sale Nepal, house for sale Kathmandu, land for sale Nepal, apartment for sale Kathmandu, buy property Nepal, real estate Nepal, Sheetal Property" />
+          <link rel="canonical" href="https://sheetalproperty.com/sale" />
+          <meta property="og:title" content="Buy Property in Nepal | Sheetal Property Nepal" />
+          <meta property="og:description" content="Find verified properties for sale across Nepal. Houses, land, apartments and commercial properties." />
+          <meta property="og:url" content="https://sheetalproperty.com/sale" />
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="Sheetal Property Nepal" />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content="Buy Property in Nepal | Sheetal Property Nepal" />
+        </Helmet>
 
         {/* ══ HERO ═══════════════════════════════════════════ */}
         <div className="sale-hero-wrap">

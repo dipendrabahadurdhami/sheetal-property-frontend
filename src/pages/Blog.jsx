@@ -5,6 +5,7 @@ import { fetchBlogs, fetchFeatured } from '../features/slices/blog';
 import BlogCard from '../components/blog/BlogCard';
 import BlogSidebar from '../components/blog/BlogSidebar';
 import blogApi from '../utils/blogApi';
+import { Helmet } from "react-helmet";
 import '../index.css';
 
 /* ─── helpers ─────────────────────────────────────── */
@@ -231,6 +232,19 @@ const Blog = () => {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '80px 20px 80px' }}>
+      <Helmet>
+        <title>{search ? `"${search}" — Blog Search` : "Real Estate Blog Nepal — Property Tips & Guides"} | Sheetal Property Nepal</title>
+        <meta name="description" content={search ? `Search results for "${search}" on Sheetal Property Nepal blog.` : "Read the latest real estate news, property buying guides, market trends and investment tips for Nepal's property market."} />
+        <meta name="keywords" content="real estate blog Nepal, property tips Nepal, buy property guide, real estate news Nepal, property investment Nepal, Sheetal Property blog" />
+        <link rel="canonical" href="https://sheetalproperty.com/blog" />
+        <meta property="og:title" content="Real Estate Blog Nepal | Sheetal Property Nepal" />
+        <meta property="og:description" content="Read the latest real estate news, property buying guides and market trends for Nepal." />
+        <meta property="og:url" content="https://sheetalproperty.com/blog" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Sheetal Property Nepal" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Real Estate Blog Nepal | Sheetal Property Nepal" />
+      </Helmet>
       <style>{`
         @media(min-width:1024px){ .blog-main-grid{ grid-template-columns:1fr 300px !important; } }
       `}</style>

@@ -16,10 +16,10 @@ const MobileRow = ({ items }) => {
     let current = 0;
 
     const interval = setInterval(() => {
-  current = (current + 1) % items.length;
-  const cardWidth = el.scrollWidth / items.length;
-  el.scrollTo({ left: current * cardWidth, behavior: "smooth" });
-}, 3000);
+      current = (current + 1) % items.length;
+      const cardWidth = el.scrollWidth / items.length;
+      el.scrollTo({ left: current * cardWidth, behavior: "smooth" });
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [items.length]);
@@ -209,24 +209,18 @@ const Featured = () => {
           <DesktopCarousel items={allProduct} />
         )}
 
-        {/* ── MOBILE: two swipeable rows ── */}
-        {isMobile && (
-          <>
-            {mobileRow1.length > 0 && <MobileRow items={mobileRow1} />}
-            {mobileRow2.length > 0 && (
-              <div style={{ marginTop: "10px" }}>
-                <MobileRow items={mobileRow2} />
-              </div>
-            )}
-          </>
-        )}
-
-        {/* ── Scroll dots (mobile only) ── */}
-        {isMobile && allProduct.length > 1 && (
-          <div className="scroll-dots" aria-hidden>
-            {Array.from({ length: Math.min(allProduct.length, 5) }).map((_, i) => (
-              <div key={i} className={`scroll-dot${i === 0 ? " active" : ""}`} />
-            ))}
+        {/* ── MOBILE: vertical grid ── */}
+        {isMobile && allProduct.length > 0 && (
+          <div style={{ marginTop: "16px" }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              
+            }}>
+              {allProduct.slice(0, 10).map((product, index) => (
+                <FearuredCard key={index} product={product} />
+              ))}
+            </div>
           </div>
         )}
 

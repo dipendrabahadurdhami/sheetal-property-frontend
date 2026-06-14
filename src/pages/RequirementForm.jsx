@@ -3,27 +3,25 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
+import apiClient from "../utils/apiClient";
 import LocationAutocomplete from "../components/Common/SearchBox/LocationAutocomplete";
 import LoginModel from "../components/Login/LoginModel";
-import headTag from "../headTag";
 import {
   IoPersonOutline, IoLocationOutline, IoCallOutline,
   IoMailOutline, IoBriefcaseOutline, IoCashOutline,
   IoCarOutline, IoHomeOutline, IoDocumentTextOutline,
   IoCheckmarkCircle, IoCloseOutline, IoLockClosedOutline,
-  IoQrCodeOutline, IoCheckmarkDoneOutline, IoAlertCircleOutline,
+  IoQrCodeOutline, IoAlertCircleOutline,
 } from "react-icons/io5";
+import { FaSpinner, FaUpload, FaTimes, FaLock, FaClock, FaCheckCircle } from "react-icons/fa";
 
-const API_BASE     = process.env.REACT_APP_API_LINK  || "";
-const API_LINK     = process.env.REACT_APP_API_LINK || "";
-const PAYMENT_AMOUNT = 500; // match your .env / PaymentController const
+const API_LINK = process.env.REACT_APP_API_LINK || "";
 
 function isLoggedIn() {
   return !!localStorage.getItem("sheetal_token");
 }
 
-// ── Yup schema ───────────────────────────────────────────────────────────────
 const requirementSchema = Yup.object().shape({
   name:              Yup.string().min(3).required("Name is required"),
   email:             Yup.string().email("Invalid email").required("Email is required"),
@@ -42,254 +40,191 @@ const initialValues = {
   requirements: "", vehicle: "", facilities: [], description: "",
 };
 
-// ── Shared UI pieces ─────────────────────────────────────────────────────────
-const FormField = ({ icon: Icon, label, required, error, touched, children }) => (
-  <div className="flex flex-col space-y-1.5">
-    <label className="text-xs font-bold uppercase tracking-wider text-gray-500">
-      {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+/* ── Field wrapper ── */
+const RF = ({ icon: Icon, label, required, error, touched, children }) => (
+  <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+    <label style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".08em", color:"#7f8c8d" }}>
+      {label}{required && <span style={{ color:"#b91c1c", marginLeft:2 }}>*</span>}
     </label>
-    <div className={`flex items-center border rounded-xl overflow-hidden transition-all ${
-      error && touched
-        ? "border-red-400 ring-2 ring-red-100"
-        : "border-gray-200 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100"
-    }`}>
+    <div style={{
+      display:"flex", alignItems:"center",
+      border: error && touched ? "1px solid #b91c1c" : "1px solid #e4e4e0",
+      borderRadius:4, overflow:"hidden", background:"#fff",
+      boxShadow: error && touched ? "0 0 0 3px rgba(185,28,28,0.08)" : "none",
+      transition:"border-color .15s, box-shadow .15s",
+    }}>
       {Icon && (
-        <span className="w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50 border-r border-gray-200">
-          <Icon className="w-4 h-4 text-gray-400" />
+        <span style={{ width:40, display:"flex", alignItems:"center", justifyContent:"center", background:"#fafafa", borderRight:"1px solid #e4e4e0", alignSelf:"stretch", flexShrink:0 }}>
+          <Icon style={{ fontSize:14, color:"#9ca3af" }} />
         </span>
       )}
       {children}
     </div>
-    {error && touched && <p className="text-red-500 text-xs font-medium">{error}</p>}
+    {error && touched && <p style={{ fontSize:11, color:"#b91c1c", fontWeight:600, margin:0 }}>{error}</p>}
   </div>
 );
 
-const SectionCard = ({ title, required, children }) => (
-  <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-    <div className="px-4 sm:px-5 py-3.5 bg-gray-50 border-b border-gray-100">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-        {title}{required && <span className="text-red-500 ml-0.5">*</span>}
-      </p>
+/* ── Section card ── */
+const SC = ({ title, required, step, children }) => (
+  <div style={{ border:"1px solid #e4e4e0", borderRadius:4, overflow:"hidden", background:"#fff" }}>
+    <div style={{ padding:"12px 18px", background:"#fafafa", borderBottom:"1px solid #e4e4e0", display:"flex", alignItems:"center", gap:10 }}>
+      {step && (
+        <div style={{ width:22, height:22, borderRadius:"50%", background:"#b91c1c", color:"#fff", fontSize:10, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+          {step}
+        </div>
+      )}
+      <span style={{ fontSize:10, fontWeight:800, textTransform:"uppercase", letterSpacing:".1em", color:"#374151" }}>
+        {title}{required && <span style={{ color:"#b91c1c", marginLeft:2 }}>*</span>}
+      </span>
     </div>
-    <div className="px-4 sm:px-5 py-4 sm:py-5">{children}</div>
+    <div style={{ padding:"18px" }}>{children}</div>
   </div>
 );
 
-const inputCls  = "flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent placeholder-gray-300";
-const selectCls = "flex-1 px-3 py-2.5 text-sm text-gray-700 outline-none bg-transparent";
+const iS = { flex:1, padding:"10px 12px", fontSize:13, color:"#111", outline:"none", background:"transparent", border:"none" };
+const sS = { flex:1, padding:"10px 12px", fontSize:13, color:"#374151", outline:"none", background:"transparent", border:"none" };
 
-// ── Fonepay QR + Transaction ID Modal ────────────────────────────────────────
-const PaymentModal = ({ onClose, onVerified }) => {
-  const [txnId,    setTxnId]    = useState("");
-  const [loading,  setLoading]  = useState(false);
-  const [error,    setError]    = useState("");
-  const [step,     setStep]     = useState("qr"); // "qr" | "verify" | "done"
+/* ── Payment Modal ── */
+const PaymentModal = ({ onClose, onSubmitted, feeSettings }) => {
+  const [refNumber, setRefNumber] = useState("");
+  const [proofFile, setProofFile] = useState(null);
+  const [step, setStep]           = useState(1);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState("");
 
-  const handleVerify = async () => {
-    const clean = txnId.trim();
-    if (clean.length < 6) {
-      setError("Please enter a valid transaction ID (min 6 characters)");
-      return;
-    }
-    setError("");
-    setLoading(true);
+  const handleSubmit = async () => {
+    if (!refNumber.trim()) { setError("Please enter the payment reference number."); return; }
+    setLoading(true); setError("");
     try {
-      const token = localStorage.getItem("sheetal_token");
-      const res   = await axios.post(
-        `${API_BASE}/api/payment/verify`,
-        { transaction_id: clean },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      if (res.data.verified) {
-        setStep("done");
-        setTimeout(() => {
-          onVerified(res.data.transaction_id);
-          onClose();
-        }, 1800);
-      } else {
-        setError(res.data.message || "Verification failed");
-      }
+      const formData = new FormData();
+      formData.append("reference_number", refNumber.trim());
+      formData.append("requirement_form", "1");
+      if (proofFile) formData.append("payment_proof", proofFile);
+      await apiClient.post("contact-fee/submit-requirement", formData);
+      onSubmitted(refNumber.trim());
+      onClose();
     } catch (e) {
-      setError(e.response?.data?.message || "Could not verify. Check your transaction ID.");
-    } finally {
-      setLoading(false);
-    }
+      setError(e.response?.data?.message || "Failed to submit payment.");
+    } finally { setLoading(false); }
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.6)" }}
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
-        onClick={e => e.stopPropagation()}
-      >
+    <div style={{ position:"fixed", inset:0, zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", padding:16, background:"rgba(0,0,0,0.6)" }} onClick={onClose}>
+      <div style={{ background:"#fff", borderRadius:4, width:"100%", maxWidth:400, overflow:"hidden", boxShadow:"0 20px 60px rgba(0,0,0,0.3)" }} onClick={e=>e.stopPropagation()}>
+
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
-            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50">
-              <IoQrCodeOutline className="w-4 h-4 text-blue-600" />
-            </span>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px", borderBottom:"1px solid #e4e4e0", background:"#b91c1c" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <FaLock style={{ color:"#fff", fontSize:14 }} />
             <div>
-              <p className="text-sm font-bold text-gray-900">Pay via Fonepay</p>
-              <p className="text-xs text-gray-400">NPR {PAYMENT_AMOUNT.toLocaleString()}</p>
+              <p style={{ fontSize:13, fontWeight:800, color:"#fff", margin:0 }}>Unlock Requirement Form</p>
+              <p style={{ fontSize:11, color:"rgba(255,255,255,0.7)", margin:0 }}>Rs. {feeSettings?.fee_amount || 500} one-time fee</p>
             </div>
           </div>
-          <button type="button" onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
-            <IoCloseOutline className="w-4 h-4" />
+          <button onClick={onClose} style={{ background:"rgba(255,255,255,0.2)", border:"none", width:28, height:28, borderRadius:4, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff" }}>
+            <FaTimes style={{ fontSize:11 }} />
           </button>
         </div>
 
-        {step === "done" ? (
-          /* ── Success state ── */
-          <div className="px-6 py-10 flex flex-col items-center gap-3 text-center">
-            <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
-              <IoCheckmarkDoneOutline className="w-7 h-7 text-green-600" />
-            </div>
-            <p className="text-sm font-bold text-gray-900">Payment verified!</p>
-            <p className="text-xs text-gray-400">You can now submit your requirement.</p>
-          </div>
-        ) : (
-          <>
-            {/* ── Step indicator ── */}
-            <div className="flex items-center gap-0 px-5 pt-4">
-              {["Scan & Pay", "Enter ID", "Verified"].map((s, i) => (
-                <React.Fragment key={s}>
-                  <div className="flex flex-col items-center gap-1">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${
-                      (step === "qr" && i === 0) || (step === "verify" && i === 1)
-                        ? "bg-red-700 text-white"
-                        : i < (step === "verify" ? 1 : 0)
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-100 text-gray-400"
-                    }`}>{i + 1}</div>
-                    <span className="text-[9px] text-gray-400">{s}</span>
-                  </div>
-                  {i < 2 && <div className={`flex-1 h-px mb-4 mx-1 ${i === 0 && step === "verify" ? "bg-green-400" : "bg-gray-200"}`} />}
-                </React.Fragment>
+        {step === 1 && (
+          <div style={{ padding:20, display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ background:"#fef2f2", border:"1px solid #fecaca", borderRadius:4, padding:16 }}>
+              <div style={{ fontWeight:800, color:"#b91c1c", fontSize:12, marginBottom:10, textTransform:"uppercase", letterSpacing:".06em" }}>💳 Payment Details</div>
+              {[
+                ["Bank", feeSettings?.bank_name || "Nabil Bank"],
+                ["Account", feeSettings?.account_number || "..."],
+                ["Name", feeSettings?.account_name || "Sheetal Property Nepal"],
+                ["Amount", `Rs. ${feeSettings?.fee_amount || 500}`],
+              ].map(([k,v]) => (
+                <div key={k} style={{ display:"flex", gap:8, fontSize:13, color:"#374151", marginBottom:4 }}>
+                  <span style={{ fontWeight:700, minWidth:60, color:"#111" }}>{k}:</span>
+                  <span>{v}</span>
+                </div>
               ))}
             </div>
 
-            {step === "qr" && (
-              <div className="px-5 py-4 flex flex-col items-center gap-4">
-                {/* QR image */}
-                <div className="border-2 border-blue-100 rounded-xl p-2 bg-blue-50">
-                  <img
-                    src="/qr.png"
-                    alt="Fonepay QR"
-                    className="w-52 h-52 object-contain"
-                    onError={e => {
-                      e.target.style.display = "none";
-                      e.target.nextSibling.style.display = "flex";
-                    }}
-                  />
-                  <div className="w-52 h-52 hidden items-center justify-center flex-col gap-2">
-                    <IoQrCodeOutline className="w-16 h-16 text-gray-300" />
-                    <p className="text-xs text-gray-400">Place qr.png in /public</p>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-500">
-                    Open any <span className="font-semibold text-blue-600">Nepali bank app</span> → Scan QR → Pay{" "}
-                    <span className="font-bold text-gray-800">NPR {PAYMENT_AMOUNT.toLocaleString()}</span>
-                  </p>
-                  <p className="text-[11px] text-gray-400 mt-1">
-                    Works with NIC Asia, Nabil, Everest, Laxmi, and all Fonepay-enabled banks
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setStep("verify")}
-                  className="w-full py-2.5 bg-red-700 hover:bg-red-800 text-white text-sm font-bold rounded-xl transition-colors"
-                >
-                  I've paid — enter transaction ID
-                </button>
+            <div style={{ border:"2px dashed #e4e4e0", borderRadius:4, padding:20, textAlign:"center" }}>
+              <IoQrCodeOutline style={{ fontSize:44, color:"#ddd", marginBottom:6 }} />
+              <div style={{ fontSize:12, color:"#9ca3af" }}>Dynamic QR coming soon.<br/>Please use bank transfer above.</div>
+            </div>
+
+            {feeSettings?.payment_instructions && (
+              <p style={{ fontSize:12, color:"#7f8c8d", lineHeight:1.6, margin:0 }}>ℹ️ {feeSettings.payment_instructions}</p>
+            )}
+
+            <button onClick={()=>setStep(2)} style={{ width:"100%", padding:"12px 0", background:"#b91c1c", color:"#fff", border:"none", borderRadius:4, fontSize:13, fontWeight:700, cursor:"pointer" }}>
+              I've Paid — Submit Reference
+            </button>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div style={{ padding:20, display:"flex", flexDirection:"column", gap:12 }}>
+            <button onClick={()=>setStep(1)} style={{ background:"none", border:"none", color:"#7f8c8d", fontSize:13, cursor:"pointer", padding:0, textAlign:"left" }}>← Back</button>
+
+            <div>
+              <label style={{ fontSize:10, fontWeight:700, color:"#7f8c8d", textTransform:"uppercase", letterSpacing:".08em", display:"block", marginBottom:6 }}>Payment Reference Number *</label>
+              <input type="text" placeholder="Enter bank transaction reference" value={refNumber}
+                onChange={e=>{ setRefNumber(e.target.value); setError(""); }}
+                autoFocus
+                style={{ width:"100%", border: error?"1px solid #b91c1c":"1px solid #e4e4e0", borderRadius:4, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"monospace", boxSizing:"border-box" }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize:10, fontWeight:700, color:"#7f8c8d", textTransform:"uppercase", letterSpacing:".08em", display:"block", marginBottom:6 }}>Screenshot (optional)</label>
+              <label style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 12px", border:"1px dashed #e4e4e0", borderRadius:4, cursor:"pointer", fontSize:13, color:"#7f8c8d" }}>
+                <FaUpload style={{ fontSize:11 }} />
+                {proofFile ? proofFile.name : "Upload screenshot"}
+                <input type="file" accept="image/*" style={{ display:"none" }} onChange={e=>setProofFile(e.target.files[0])} />
+              </label>
+            </div>
+
+            {error && (
+              <div style={{ display:"flex", alignItems:"center", gap:6, color:"#b91c1c" }}>
+                <IoAlertCircleOutline style={{ fontSize:14, flexShrink:0 }} />
+                <p style={{ fontSize:12, margin:0 }}>{error}</p>
               </div>
             )}
 
-            {step === "verify" && (
-              <div className="px-5 py-4 flex flex-col gap-3">
-                <p className="text-xs text-gray-500">
-                  Find the transaction ID in your bank app's payment receipt and enter it below.
-                </p>
-                <input
-                  type="text"
-                  value={txnId}
-                  onChange={e => { setTxnId(e.target.value); setError(""); }}
-                  onKeyDown={e => e.key === "Enter" && handleVerify()}
-                  placeholder="e.g. FP2024031512345"
-                  className={`w-full border rounded-xl px-4 py-3 text-sm outline-none transition-all font-mono tracking-wide ${
-                    error
-                      ? "border-red-400 ring-2 ring-red-100"
-                      : "border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                  }`}
-                  autoFocus
-                />
-                {error && (
-                  <div className="flex items-center gap-1.5 text-red-600">
-                    <IoAlertCircleOutline className="w-4 h-4 flex-shrink-0" />
-                    <p className="text-xs">{error}</p>
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setStep("qr")}
-                    className="flex-1 py-2.5 border border-gray-200 text-gray-500 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleVerify}
-                    disabled={loading || txnId.trim().length < 6}
-                    className="flex-1 py-2.5 bg-red-700 hover:bg-red-800 text-white text-sm font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {loading ? (
-                      <>
-                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeOpacity="0.2"/>
-                          <path d="M21 12a9 9 0 00-9-9"/>
-                        </svg>
-                        Verifying…
-                      </>
-                    ) : "Verify Payment"}
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
+            <button onClick={handleSubmit} disabled={loading || !refNumber.trim()}
+              style={{ width:"100%", padding:"12px 0", background: loading||!refNumber.trim()?"#e5e7eb":"#b91c1c", color: loading||!refNumber.trim()?"#9ca3af":"#fff", border:"none", borderRadius:4, fontSize:13, fontWeight:700, cursor: loading||!refNumber.trim()?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:7 }}>
+              {loading ? <FaSpinner style={{ animation:"spin .6s linear infinite" }} /> : "Submit Payment"}
+            </button>
+            <p style={{ fontSize:11, color:"#9ca3af", textAlign:"center", margin:0 }}>Admin will verify within 24 hours</p>
+          </div>
         )}
       </div>
     </div>
   );
 };
 
-// ── Main component ────────────────────────────────────────────────────────────
+/* ══════════════════════════════════
+   MAIN
+══════════════════════════════════ */
 const RequirementForm = () => {
-  const authToken = useSelector(state => state.auth?.token);
-  const loggedIn  = !!authToken || isLoggedIn();
-
-  const [properties,    setProperties]    = useState(null);
-  const [submitting,    setSubmitting]    = useState(false);
-  const [showSuccess,   setShowSuccess]   = useState(false);
-  const [showPayment,   setShowPayment]   = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [paymentVerified, setPaymentVerified] = useState(false);
-  const [verifiedTxnId,   setVerifiedTxnId]   = useState("");
-
+  const loggedIn = isLoggedIn();
+  const [searchParams] = useState(() => new URLSearchParams(window.location.search));
+  const agentId = searchParams.get("agent_id") || null;
+  const [properties,       setProperties]       = useState(null);
+  const [submitting,       setSubmitting]        = useState(false);
+  const [showSuccess,      setShowSuccess]       = useState(false);
+  const [showPayment,      setShowPayment]       = useState(false);
+  const [showLoginModal,   setShowLoginModal]    = useState(false);
+  const [paymentSubmitted, setPaymentSubmitted]  = useState(false);
+  const [refNumber,        setRefNumber]         = useState("");
+  const [feeSettings,      setFeeSettings]       = useState(null);
   const submitLock   = useRef(false);
   const successTimer = useRef(null);
 
   useEffect(() => {
     axios.get(`${API_LINK}/property-attributes`)
       .then(res => { if (res.status === 200) setProperties(res.data.data); })
-      .catch(e => console.error("Failed to load properties", e));
-
-    headTag({ title: "Requirement Form", content: "Requirement form for your desired property" });
+      .catch(() => {});
+    apiClient.get("contact-fee/settings-public")
+      .then(res => setFeeSettings(res.data))
+      .catch(() => setFeeSettings({ fee_amount: 500 }));
+    // Payment handled separately by admin
     return () => { if (successTimer.current) clearTimeout(successTimer.current); };
   }, []);
 
@@ -304,290 +239,303 @@ const RequirementForm = () => {
     setShowPayment(true);
   };
 
-  const handlePaymentVerified = (txnId) => {
-    setPaymentVerified(true);
-    setVerifiedTxnId(txnId);
-    toast.success("Payment verified! You can now submit your form.");
+  const handlePaymentSubmitted = (ref) => {
+    setPaymentSubmitted(true);
+    setRefNumber(ref);
+    toast.success("Payment submitted! Admin will verify within 24 hours.");
   };
 
   const validateData = async (values, { setSubmitting: setFormikSubmitting, resetForm }) => {
     if (!loggedIn) { setShowLoginModal(true); setFormikSubmitting(false); return; }
-    if (!paymentVerified) {
-      toast.warning("Please complete payment verification first.");
-      setShowPayment(true);
-      setFormikSubmitting(false);
-      return;
-    }
+    // Payment verified by admin separately — form can be submitted freely
     if (submitLock.current) return;
     submitLock.current = true;
     setSubmitting(true);
-
     try {
       const result = await axios.post(
-        `${API_LINK}/requirementform`,
-        { ...values, payment_transaction_id: verifiedTxnId },
-        { headers: { "Content-Type": "application/json" } }
+        `${API_LINK}/requirement-form`,
+        { ...values, payment_reference: refNumber, agent_id: agentId },
+        { headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("sheetal_token")}` } }
       );
       if (result?.data) {
         resetForm({ values: initialValues });
-        setPaymentVerified(false);
-        setVerifiedTxnId("");
+        setPaymentSubmitted(false);
+        setRefNumber("");
         showSuccessMessage();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
-    } catch (e) {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setSubmitting(false);
-      setFormikSubmitting(false);
-      submitLock.current = false;
-    }
+    } catch { toast.error("Something went wrong. Please try again."); }
+    finally { setSubmitting(false); setFormikSubmitting(false); submitLock.current = false; }
   };
 
   return (
-    <div className="w-full mt-40 px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12 xl:px-16 xl:py-16 max-w-[1440px] mx-auto">
+    <>
+      <Helmet>
+        <title>Property Requirement Form Nepal — Tell Us What You Need | Sheetal Property Nepal</title>
+        <meta name="description" content="Submit your property requirement to Sheetal Property Nepal. Tell us what you're looking for — location, budget, type — and our agents will find the perfect property for you." />
+        <meta name="keywords" content="property requirement Nepal, find property Nepal, property search form Nepal, Sheetal Property requirement, buy property Nepal" />
+        <link rel="canonical" href="https://sheetalproperty.com/requirementform" />
+        <meta property="og:title" content="Property Requirement Form | Sheetal Property Nepal" />
+        <meta property="og:description" content="Tell us what property you're looking for and our agents will find the perfect match." />
+        <meta property="og:url" content="https://sheetalproperty.com/requirementform" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Sheetal Property Nepal" />
+      </Helmet>
 
-      {showPayment && (
-        <PaymentModal
-          onClose={() => setShowPayment(false)}
-          onVerified={handlePaymentVerified}
-        />
-      )}
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .rf-root { font-family: 'DM Sans', system-ui, sans-serif; }
+        .rf-input:focus-within { border-color: #b91c1c !important; box-shadow: 0 0 0 3px rgba(185,28,28,0.08) !important; }
+        .rf-check:checked { accent-color: #b91c1c; }
+        .rf-select:focus { outline: none; }
+        .rf-textarea:focus { outline: none; }
+        @media(max-width:640px) { .rf-grid-2 { grid-template-columns: 1fr !important; } .rf-grid-3 { grid-template-columns: 1fr !important; } }
+      `}</style>
 
+      {showPayment && <PaymentModal onClose={()=>setShowPayment(false)} onSubmitted={handlePaymentSubmitted} feeSettings={feeSettings} />}
       <LoginModel r={showLoginModal} setR={setShowLoginModal} />
 
-      <div className="w-full mx-auto">
-        <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Requirement Form</h1>
-          <p className="text-sm text-gray-400 mt-2">Fill in your details and we'll find the right property for you</p>
+      <div className="rf-root" style={{ background:"#f4f3f0", minHeight:"100vh", paddingTop:80 }}>
+
+        {/* ── Page Header ── */}
+        <div style={{ background:"linear-gradient(135deg,#b91c1c,#7f1d1d)", padding:"40px 20px 32px" }}>
+          <div style={{ maxWidth:720, margin:"0 auto", textAlign:"center" }}>
+            <span style={{ display:"inline-block", background:"rgba(255,255,255,0.15)", color:"#fff", fontSize:9, fontWeight:800, letterSpacing:".12em", textTransform:"uppercase", padding:"3px 10px", borderRadius:4, marginBottom:12 }}>
+              Property Matching Service
+            </span>
+            <h1 style={{ fontSize:"clamp(22px,4vw,32px)", fontWeight:900, color:"#fff", margin:"0 0 10px", lineHeight:1.1 }}>
+              Tell Us What You're Looking For
+            </h1>
+            <p style={{ fontSize:13, color:"rgba(255,255,255,0.7)", margin:0, lineHeight:1.7, maxWidth:480, marginLeft:"auto", marginRight:"auto" }}>
+              Fill in your details and our team will find the perfect property matching your needs and budget.
+            </p>
+            {/* Steps */}
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:20, flexWrap:"wrap" }}>
+              {["Pay Fee", "Fill Form", "Agent Matches", "Move In"].map((s,i)=>(
+                <React.Fragment key={s}>
+                  <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                    <div style={{ width:20, height:20, borderRadius:"50%", background:"rgba(255,255,255,0.2)", color:"#fff", fontSize:9, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center" }}>{i+1}</div>
+                    <span style={{ fontSize:11, color:"rgba(255,255,255,0.8)", fontWeight:600 }}>{s}</span>
+                  </div>
+                  {i<3 && <span style={{ color:"rgba(255,255,255,0.3)", fontSize:12 }}>→</span>}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Not logged in warning */}
-        {!loggedIn && (
-          <div className="flex items-center gap-3 px-4 py-3.5 mb-5 bg-amber-50 border border-amber-200 rounded-xl">
-            <IoLockClosedOutline className="w-4 h-4 text-amber-600 flex-shrink-0" />
-            <p className="text-sm text-amber-800 flex-1">
-              You must be{" "}
-              <button type="button" onClick={() => setShowLoginModal(true)}
-                className="font-bold underline underline-offset-2 hover:text-red-700 transition-colors">
-                logged in
-              </button>{" "}
-              to submit this form.
-            </p>
-          </div>
-        )}
+        {/* ── Form Body ── */}
+        <div style={{ maxWidth:720, margin:"0 auto", padding:"24px 16px 60px" }}>
 
-        {/* Payment status banner */}
-        {loggedIn && !paymentVerified && (
-          <div className="flex items-center gap-3 px-4 py-3.5 mb-5 bg-blue-50 border border-blue-200 rounded-xl">
-            <IoQrCodeOutline className="w-4 h-4 text-blue-600 flex-shrink-0" />
-            <p className="text-sm text-blue-800 flex-1">
-              Payment of{" "}
-              <span className="font-bold">NPR {PAYMENT_AMOUNT.toLocaleString()}</span>{" "}
-              required before submitting.{" "}
-              <button type="button" onClick={() => setShowPayment(true)}
-                className="font-bold underline underline-offset-2 hover:text-red-700 transition-colors">
-                Pay now
-              </button>
-            </p>
-          </div>
-        )}
-
-        {paymentVerified && (
-          <div className="flex items-center gap-3 px-4 py-3.5 mb-5 bg-green-50 border border-green-200 rounded-xl">
-            <IoCheckmarkDoneOutline className="w-4 h-4 text-green-600 flex-shrink-0" />
-            <p className="text-sm text-green-800 flex-1">
-              Payment verified! Transaction ID:{" "}
-              <span className="font-mono font-bold">{verifiedTxnId}</span>
-            </p>
-          </div>
-        )}
-
-        {showSuccess && (
-          <div className="flex items-start gap-3 px-4 py-4 mb-5 bg-green-50 border border-green-200 rounded-xl">
-            <IoCheckmarkCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-green-800">Requirement submitted successfully!</p>
-              <p className="text-xs text-green-600 mt-0.5">Our agent will review your requirement and contact you shortly.</p>
+          {/* Alerts */}
+          {!loggedIn && (
+            <div style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", marginBottom:16, background:"#fef3c7", border:"1px solid #fde68a", borderRadius:4 }}>
+              <IoLockClosedOutline style={{ fontSize:16, color:"#b45309", flexShrink:0 }} />
+              <p style={{ fontSize:13, color:"#92400e", margin:0 }}>
+                You must be{" "}
+                <button type="button" onClick={()=>setShowLoginModal(true)} style={{ background:"none", border:"none", color:"#b91c1c", fontWeight:700, cursor:"pointer", textDecoration:"underline", padding:0, fontSize:13 }}>
+                  logged in
+                </button>{" "}
+                to submit this form.
+              </p>
             </div>
-            <button type="button" onClick={() => setShowSuccess(false)}
-              className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-green-100 text-green-500 hover:text-green-700 transition-colors flex-shrink-0">
-              <IoCloseOutline className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+          )}
 
-        <Formik initialValues={initialValues} validationSchema={requirementSchema} onSubmit={validateData}>
-          {({ values, handleSubmit, handleChange, isSubmitting, errors, touched }) => (
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+          {loggedIn && !paymentSubmitted && (
+            <div style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", marginBottom:16, background:"#fef2f2", border:"1px solid #fecaca", borderRadius:4 }}>
+              <FaLock style={{ fontSize:13, color:"#b91c1c", flexShrink:0 }} />
+              <p style={{ fontSize:13, color:"#7f1d1d", margin:0 }}>
+                A fee of <strong>Rs. {feeSettings?.fee_amount || 500}</strong> is required.{" "}
+                <button type="button" onClick={()=>setShowPayment(true)} style={{ background:"none", border:"none", color:"#b91c1c", fontWeight:800, cursor:"pointer", textDecoration:"underline", padding:0, fontSize:13 }}>
+                  Pay now →
+                </button>
+              </p>
+            </div>
+          )}
 
-              <SectionCard title="Personal Information">
-                <div className="space-y-4">
-                  <FormField icon={IoPersonOutline} label="Full Name" required error={errors.name} touched={touched.name}>
-                    <Field type="text" name="name" value={values.name} onChange={handleChange} placeholder="Enter your full name" className={inputCls} />
-                  </FormField>
+          {paymentSubmitted && (
+            <div style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", marginBottom:16, background:"#fef3c7", border:"1px solid #fde68a", borderRadius:4 }}>
+              <FaClock style={{ fontSize:13, color:"#d68910", flexShrink:0 }} />
+              <p style={{ fontSize:13, color:"#92400e", margin:0 }}>
+                Payment submitted! Ref: <strong style={{ fontFamily:"monospace" }}>{refNumber}</strong>. Admin will verify within 24 hours. You can still fill and submit the form now.
+              </p>
+            </div>
+          )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField icon={IoMailOutline} label="Email Address" required error={errors.email} touched={touched.email}>
-                      <Field type="email" name="email" value={values.email} onChange={handleChange} placeholder="your@email.com" className={inputCls} />
-                    </FormField>
-                    <FormField icon={IoCallOutline} label="Contact Number" required error={errors.contact_number} touched={touched.contact_number}>
-                      <Field type="number" name="contact_number" value={values.contact_number} onChange={handleChange} placeholder="10-digit number" className={inputCls} />
-                    </FormField>
-                  </div>
+          {showSuccess && (
+            <div style={{ display:"flex", alignItems:"flex-start", gap:12, padding:"16px", marginBottom:16, background:"#f0fdf4", border:"1px solid #a9dfbf", borderRadius:4 }}>
+              <IoCheckmarkCircle style={{ fontSize:18, color:"#27ae60", flexShrink:0, marginTop:1 }} />
+              <div style={{ flex:1 }}>
+                <p style={{ fontSize:13, fontWeight:800, color:"#1e8449", margin:"0 0 2px" }}>Requirement submitted successfully!</p>
+                <p style={{ fontSize:12, color:"#27ae60", margin:0 }}>Our agent will review and contact you shortly.</p>
+              </div>
+              <button onClick={()=>setShowSuccess(false)} style={{ background:"none", border:"none", cursor:"pointer", color:"#27ae60", flexShrink:0 }}>
+                <IoCloseOutline style={{ fontSize:16 }} />
+              </button>
+            </div>
+          )}
 
-                  <FormField icon={IoBriefcaseOutline} label="Occupation" required error={errors.occupation} touched={touched.occupation}>
-                    <Field type="text" name="occupation" value={values.occupation} onChange={handleChange} placeholder="Your occupation" className={inputCls} />
-                  </FormField>
+          <Formik initialValues={initialValues} validationSchema={requirementSchema} onSubmit={validateData}>
+            {({ values, handleSubmit, handleChange, isSubmitting, errors, touched }) => (
+              <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:14 }}>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField icon={IoLocationOutline} label="Temporary Address" required error={errors.temporary_address} touched={touched.temporary_address}>
-                      <Field type="text" name="temporary_address" value={values.temporary_address} onChange={handleChange} placeholder="Temporary address" className={inputCls} />
-                    </FormField>
-                    <FormField icon={IoLocationOutline} label="Permanent Address" required error={errors.permanent_address} touched={touched.permanent_address}>
-                      <Field type="text" name="permanent_address" value={values.permanent_address} onChange={handleChange} placeholder="Permanent address" className={inputCls} />
-                    </FormField>
-                  </div>
-                </div>
-              </SectionCard>
-
-              <SectionCard title="Property Preferences">
-                <div className="space-y-4">
-                  <div className="flex flex-col space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Preferred Location</label>
-                    <div className={`flex items-center border rounded-xl overflow-visible transition-all ${
-                      errors.prefered_location && touched.prefered_location
-                        ? "border-red-400 ring-2 ring-red-100"
-                        : "border-gray-200 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100"
-                    }`}>
-                      <span className="w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50 border-r border-gray-200 rounded-l-xl">
-                        <IoLocationOutline className="w-4 h-4 text-gray-400" />
-                      </span>
-                      <LocationAutocomplete
-                        value={values.prefered_location}
-                        onChange={val => handleChange({ target: { name: "prefered_location", value: val } })}
-                      />
+                {/* Personal Info */}
+                <SC title="Personal Information" step="1">
+                  <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+                    <RF icon={IoPersonOutline} label="Full Name" required error={errors.name} touched={touched.name}>
+                      <Field type="text" name="name" value={values.name} onChange={handleChange} placeholder="Enter your full name" style={iS} />
+                    </RF>
+                    <div className="rf-grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                      <RF icon={IoMailOutline} label="Email Address" required error={errors.email} touched={touched.email}>
+                        <Field type="email" name="email" value={values.email} onChange={handleChange} placeholder="your@email.com" style={iS} />
+                      </RF>
+                      <RF icon={IoCallOutline} label="Contact Number" required error={errors.contact_number} touched={touched.contact_number}>
+                        <Field type="number" name="contact_number" value={values.contact_number} onChange={handleChange} placeholder="10-digit number" style={iS} />
+                      </RF>
+                    </div>
+                    <RF icon={IoBriefcaseOutline} label="Occupation" required error={errors.occupation} touched={touched.occupation}>
+                      <Field type="text" name="occupation" value={values.occupation} onChange={handleChange} placeholder="Your occupation" style={iS} />
+                    </RF>
+                    <div className="rf-grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                      <RF icon={IoLocationOutline} label="Temporary Address" required error={errors.temporary_address} touched={touched.temporary_address}>
+                        <Field type="text" name="temporary_address" value={values.temporary_address} onChange={handleChange} placeholder="Temporary address" style={iS} />
+                      </RF>
+                      <RF icon={IoLocationOutline} label="Permanent Address" required error={errors.permanent_address} touched={touched.permanent_address}>
+                        <Field type="text" name="permanent_address" value={values.permanent_address} onChange={handleChange} placeholder="Permanent address" style={iS} />
+                      </RF>
                     </div>
                   </div>
+                </SC>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField icon={IoCashOutline} label="Minimum Budget" error={errors.minimum_budget} touched={touched.minimum_budget}>
-                      <Field type="text" name="minimum_budget" value={values.minimum_budget} onChange={handleChange} placeholder="Min amount" className={inputCls} />
-                    </FormField>
-                    <FormField icon={IoCashOutline} label="Maximum Budget" error={errors.maximum_budget} touched={touched.maximum_budget}>
-                      <Field type="text" name="maximum_budget" value={values.maximum_budget} onChange={handleChange} placeholder="Max amount" className={inputCls} />
-                    </FormField>
+                {/* Property Preferences */}
+                <SC title="Property Preferences" step="2">
+                  <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+                    <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                      <label style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".08em", color:"#7f8c8d" }}>Preferred Location</label>
+                      <div style={{ display:"flex", alignItems:"center", border:"1px solid #e4e4e0", borderRadius:4, overflow:"visible", background:"#fff" }}>
+                        <span style={{ width:40, display:"flex", alignItems:"center", justifyContent:"center", background:"#fafafa", borderRight:"1px solid #e4e4e0", alignSelf:"stretch", flexShrink:0 }}>
+                          <IoLocationOutline style={{ fontSize:14, color:"#9ca3af" }} />
+                        </span>
+                        <LocationAutocomplete
+                          value={values.prefered_location}
+                          onChange={val => handleChange({ target: { name: "prefered_location", value: val } })}
+                        />
+                      </div>
+                    </div>
+                    <div className="rf-grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                      <RF icon={IoCashOutline} label="Minimum Budget">
+                        <Field type="text" name="minimum_budget" value={values.minimum_budget} onChange={handleChange} placeholder="Min amount (Rs.)" style={iS} />
+                      </RF>
+                      <RF icon={IoCashOutline} label="Maximum Budget">
+                        <Field type="text" name="maximum_budget" value={values.maximum_budget} onChange={handleChange} placeholder="Max amount (Rs.)" style={iS} />
+                      </RF>
+                    </div>
+                    <div className="rf-grid-3" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
+                      <RF icon={IoHomeOutline} label="Tenant Option" required error={errors.tenant_option} touched={touched.tenant_option}>
+                        <Field as="select" name="tenant_option" onChange={handleChange} className="rf-select" style={sS}>
+                          <option value="">Select</option>
+                          {properties?.purposes?.map((p, i) => <option value={p.name} key={i}>{p.name}</option>)}
+                        </Field>
+                      </RF>
+                      <RF icon={IoDocumentTextOutline} label="Requirements">
+                        <Field as="select" name="requirements" onChange={handleChange} className="rf-select" style={sS}>
+                          <option value="">Select</option>
+                          <option value="room">Room</option>
+                          <option value="flat">Flat</option>
+                          <option value="house">House</option>
+                          <option value="apartment">Apartment</option>
+                          <option value="land">Land</option>
+                        </Field>
+                      </RF>
+                      <RF icon={IoCarOutline} label="Vehicle">
+                        <Field as="select" name="vehicle" onChange={handleChange} className="rf-select" style={sS}>
+                          <option value="">Select</option>
+                          <option value="two">Two Wheelers</option>
+                          <option value="three">Three Wheelers</option>
+                          <option value="four">Four Wheelers</option>
+                        </Field>
+                      </RF>
+                    </div>
                   </div>
+                </SC>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <FormField icon={IoHomeOutline} label="Tenant Option" required error={errors.tenant_option} touched={touched.tenant_option}>
-                      <Field as="select" name="tenant_option" onChange={handleChange} className={selectCls}>
-                        <option value="">Select</option>
-                        {properties?.purposes?.map((p, i) => (
-                          <option value={p.name} key={i}>{p.name}</option>
-                        ))}
-                      </Field>
-                    </FormField>
-                    <FormField icon={IoDocumentTextOutline} label="Requirements" error={errors.requirements} touched={touched.requirements}>
-                      <Field as="select" name="requirements" onChange={handleChange} className={selectCls}>
-                        <option value="">Select</option>
-                        <option value="room">Room</option>
-                        <option value="flat">Flat</option>
-                        <option value="house">House</option>
-                        <option value="apartment">Apartment</option>
-                        <option value="land">Land</option>
-                      </Field>
-                    </FormField>
-                    <FormField icon={IoCarOutline} label="Vehicle" error={errors.vehicle} touched={touched.vehicle}>
-                      <Field as="select" name="vehicle" onChange={handleChange} className={selectCls}>
-                        <option value="">Select</option>
-                        <option value="two">Two Wheelers</option>
-                        <option value="three">Three Wheelers</option>
-                        <option value="four">Four Wheelers</option>
-                      </Field>
-                    </FormField>
+                {/* Facilities */}
+                <SC title="Required Facilities" step="3" required>
+                  <div role="group" style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
+                    {properties?.facilities?.map((facility, i) => (
+                      <label key={i} style={{
+                        display:"flex", alignItems:"center", gap:7,
+                        padding:"7px 12px", borderRadius:4, cursor:"pointer",
+                        border: values.facilities.includes(facility.name) ? "1px solid #b91c1c" : "1px solid #e4e4e0",
+                        background: values.facilities.includes(facility.name) ? "#fef2f2" : "#fff",
+                        fontSize:12, fontWeight:600,
+                        color: values.facilities.includes(facility.name) ? "#b91c1c" : "#374151",
+                        transition:"all .15s",
+                      }}>
+                        <Field type="checkbox" name="facilities" value={facility.name} className="rf-check" style={{ accentColor:"#b91c1c", width:13, height:13 }} />
+                        {facility.name}
+                      </label>
+                    ))}
                   </div>
-                </div>
-              </SectionCard>
-
-              <SectionCard title="Required Facilities" required>
-                <div role="group" className="flex flex-wrap gap-2">
-                  {properties?.facilities?.map((facility, i) => (
-                    <label key={i} className={`flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all text-xs sm:text-sm font-medium select-none ${
-                      values.facilities.includes(facility.name)
-                        ? "bg-red-50 border-red-300 text-red-700"
-                        : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
-                    }`}>
-                      <Field type="checkbox" name="facilities" value={facility.name} className="accent-red-700 w-3.5 h-3.5 flex-shrink-0" />
-                      {facility.name}
-                    </label>
-                  ))}
-                </div>
-                {errors.facilities && touched.facilities && (
-                  <p className="text-red-500 text-xs font-medium mt-2">{errors.facilities}</p>
-                )}
-              </SectionCard>
-
-              <SectionCard title="Description (optional)">
-                <textarea rows={5} name="description" value={values.description} onChange={handleChange}
-                  placeholder="Any additional requirements or notes..."
-                  className="w-full text-sm text-gray-700 placeholder-gray-300 outline-none resize-none bg-transparent" />
-              </SectionCard>
-
-              {/* ── Payment + Submit row ── */}
-              <div className="flex flex-col sm:flex-row items-stretch gap-3">
-
-                {/* Fonepay button */}
-                <button
-                  type="button"
-                  onClick={handlePaymentClick}
-                  className={`flex items-center justify-center gap-2 px-5 py-3.5 text-white text-sm font-bold rounded-xl transition-all shadow-sm ${
-                    paymentVerified
-                      ? "bg-green-500 hover:bg-green-600"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }`}
-                >
-                  {paymentVerified
-                    ? <><IoCheckmarkDoneOutline className="w-4 h-4" /> Payment Verified</>
-                    : <><IoQrCodeOutline className="w-4 h-4" /> Pay via Fonepay</>
-                  }
-                </button>
-
-                {/* Submit button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting || submitting || !paymentVerified}
-                  className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-red-700 hover:bg-red-800 active:scale-[0.99] text-white text-sm font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                >
-                  {isSubmitting || submitting ? (
-                    <>
-                      <svg className="animate-spin w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeOpacity="0.25"/>
-                        <path d="M21 12a9 9 0 00-9-9"/>
-                      </svg>
-                      Processing…
-                    </>
-                  ) : (
-                    <>
-                      {!loggedIn && <IoLockClosedOutline className="w-4 h-4" />}
-                      {!paymentVerified && loggedIn && <IoQrCodeOutline className="w-4 h-4 opacity-50" />}
-                      Submit Requirement
-                    </>
+                  {errors.facilities && touched.facilities && (
+                    <p style={{ fontSize:11, color:"#b91c1c", fontWeight:600, margin:"8px 0 0" }}>{errors.facilities}</p>
                   )}
-                </button>
-              </div>
+                </SC>
 
-              {!paymentVerified && loggedIn && (
-                <p className="text-xs text-gray-400 text-center">
-                  Complete payment verification above to enable submission
-                </p>
-              )}
+                {/* Description */}
+                <SC title="Additional Notes" step="4">
+                  <textarea rows={4} name="description" value={values.description} onChange={handleChange}
+                    className="rf-textarea"
+                    placeholder="Any additional requirements, preferences or notes for our agents…"
+                    style={{ width:"100%", fontSize:13, color:"#374151", background:"transparent", border:"none", resize:"none", fontFamily:"inherit", outline:"none", boxSizing:"border-box" }}
+                  />
+                </SC>
 
-            </form>
-          )}
-        </Formik>
+                {/* Submit */}
+                <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+                  <button type="button" onClick={handlePaymentClick}
+                    style={{
+                      display:"flex", alignItems:"center", gap:7,
+                      padding:"12px 20px", borderRadius:4, cursor:"pointer",
+                      fontSize:13, fontWeight:700, fontFamily:"inherit",
+                      background: paymentSubmitted ? "#f0fdf4" : "#b91c1c",
+                      color: paymentSubmitted ? "#27ae60" : "#fff",
+                      border: paymentSubmitted ? "1px solid #a9dfbf" : "none",
+                      flexShrink:0,
+                    }}>
+                    {paymentSubmitted
+                      ? <><FaClock style={{ fontSize:12 }} /> Payment Pending</>
+                      : <><FaLock style={{ fontSize:12 }} /> Pay Fee</>
+                    }
+                  </button>
+
+                  <button type="submit" disabled={isSubmitting || submitting}
+                    style={{
+                      flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                      padding:"12px 24px", border:"none", borderRadius:4,
+                      fontSize:13, fontWeight:700, fontFamily:"inherit",
+                      cursor: isSubmitting||submitting ? "not-allowed" : "pointer",
+                      background: isSubmitting||submitting ? "#e5e7eb" : "#b91c1c",
+                      color: isSubmitting||submitting ? "#9ca3af" : "#fff",
+                      minWidth:160,
+                    }}>
+                    {isSubmitting || submitting
+                      ? <><FaSpinner style={{ animation:"spin .6s linear infinite" }} /> Submitting…</>
+                      : <>{!loggedIn && <IoLockClosedOutline style={{ fontSize:13 }} />} Submit Requirement</>
+                    }
+                  </button>
+                </div>
+
+                {loggedIn && (
+                  <p style={{ fontSize:11, color:"#9ca3af", textAlign:"center", margin:0 }}>Fill the form and submit. Pay the fee separately — our team will verify and connect you with an agent.</p>
+                )}
+
+              </form>
+            )}
+          </Formik>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

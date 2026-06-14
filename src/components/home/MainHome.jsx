@@ -3,17 +3,19 @@ import Search from "../Common/SearchBox/HomeSearch";
 import Model from "../FilterSearch/Model";
 import Featured from "./Featured";
 import LatestProperties from "./LatestProperties";
+import RentSection from "./RentSection";
+import SaleSection from "./SaleSection";
 import "react-multi-carousel/lib/styles.css";
 
-const API_BASE     = process.env.REACT_APP_API_LINK;
-const SEARCH_H     = 64;
+const API_BASE = process.env.REACT_APP_API_LINK;
+const SEARCH_H = 64;
 const IMG_DURATION = 5000;
-const FADE_MS      = 700;
+const FADE_MS = 700;
 
 const TABS = [
-  { label: "All",    advertisement_purpose: null },
-  { label: "Sale",   advertisement_purpose: "Sale" },
-  { label: "Rent",   advertisement_purpose: "Rent" },
+  { label: "All", advertisement_purpose: null },
+  { label: "Sale", advertisement_purpose: "Sale" },
+  { label: "Rent", advertisement_purpose: "Rent" },
   { label: "Invest", advertisement_purpose: "Invest" },
 ];
 
@@ -28,34 +30,34 @@ const isFullyBuffered = (vid) => {
 };
 
 const MainHome = () => {
-  const [filterModal,  setFilterModal]  = useState(false);
-  const [activeTab,    setActiveTab]    = useState(0);
-  const [banners,      setBanners]      = useState([]);
-  const [activeIdx,    setActiveIdx]    = useState(0);
-  const [prevIdx,      setPrevIdx]      = useState(null);
-  const [allReady,     setAllReady]     = useState(false);
-  const [loading,      setLoading]      = useState(true);
-  const [scrolled,     setScrolled]     = useState(false);
-  const [bannerH,      setBannerH]      = useState(0);
-  const [bannerReady,  setBannerReady]  = useState(false);
-  const [isMobile,     setIsMobile]     = useState(
+  const [filterModal, setFilterModal] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [banners, setBanners] = useState([]);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [prevIdx, setPrevIdx] = useState(null);
+  const [allReady, setAllReady] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const [bannerH, setBannerH] = useState(0);
+  const [bannerReady, setBannerReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : false
   );
 
-  const [searchActive,  setSearchActive]  = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  const videoRefs     = useRef({});
-  const readyMap      = useRef({});
-  const videoTotal    = useRef(0);
-  const timerRef      = useRef(null);
-  const fadingRef     = useRef(false);
-  const bannerRef     = useRef(null);
-  const searchRef     = useRef(null);
-  const bannersRef    = useRef([]);
-  const activeIdxRef  = useRef(0);
+  const videoRefs = useRef({});
+  const readyMap = useRef({});
+  const videoTotal = useRef(0);
+  const timerRef = useRef(null);
+  const fadingRef = useRef(false);
+  const bannerRef = useRef(null);
+  const searchRef = useRef(null);
+  const bannersRef = useRef([]);
+  const activeIdxRef = useRef(0);
 
-  bannersRef.current   = banners;
+  bannersRef.current = banners;
   activeIdxRef.current = activeIdx;
 
   useEffect(() => {
@@ -98,10 +100,10 @@ const MainHome = () => {
   const advanceTo = useCallback((targetIdx) => {
     if (fadingRef.current) return;
     fadingRef.current = true;
-    const current     = activeIdxRef.current;
-    const leavingVid  = videoRefs.current[current];
+    const current = activeIdxRef.current;
+    const leavingVid = videoRefs.current[current];
     const incomingVid = videoRefs.current[targetIdx];
-    if (incomingVid) { incomingVid.currentTime = 0; incomingVid.play().catch(() => {}); }
+    if (incomingVid) { incomingVid.currentTime = 0; incomingVid.play().catch(() => { }); }
     setPrevIdx(current);
     setActiveIdx(targetIdx);
     setTimeout(() => {
@@ -173,7 +175,7 @@ const MainHome = () => {
         if (vid && !stage.contains(vid)) stage.appendChild(vid);
       });
       const first = videoRefs.current[0];
-      if (first) { first.style.opacity = "1"; first.currentTime = 0; first.play().catch(() => {}); }
+      if (first) { first.style.opacity = "1"; first.currentTime = 0; first.play().catch(() => { }); }
       scheduleNext(0, banners);
     });
     return () => cancelAnimationFrame(raf);
@@ -227,19 +229,19 @@ const MainHome = () => {
     };
   }, []);
 
-  const isAtBottom  = !searchActive || scrolled || filterModal;
+  const isAtBottom = !searchActive || scrolled || filterModal;
   const centeredTop = bannerH ? Math.round((bannerH - SEARCH_H) / 1.2) : null;
   const scrolledTop = bannerH ? bannerH - SEARCH_H : 0;
 
   const searchStyle = {
-    position:   "absolute",
-    left:       0,
-    right:      0,
-    top:        isAtBottom ? scrolledTop : centeredTop,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: isAtBottom ? scrolledTop : centeredTop,
     transition: (bannerReady && centeredTop !== null && hasInteracted)
       ? "top 0.45s cubic-bezier(0.4, 0, 0.2, 1)"
       : "none",
-    zIndex:     50,
+    zIndex: 50,
     visibility: centeredTop === null ? "hidden" : "visible",
   };
 
@@ -247,7 +249,7 @@ const MainHome = () => {
   const openFilter = (val) => { setFilterModal(val); if (val) setSearchActive(false); };
 
   const currentBanner = banners[activeIdx] || null;
-  const isVisible     = allReady && !loading;
+  const isVisible = allReady && !loading;
 
   return (
     <div className="pt-0">
@@ -375,20 +377,20 @@ const MainHome = () => {
       {isMobile && (
         <div
           style={{
-            margin:   "0 12px",
+            margin: "0 12px",
             margin: "0 12px",
             position: "relative",
-            zIndex:   40,
+            zIndex: 40,
           }}
           onMouseDown={handleSearchOpen}
         >
           <div
             style={{
-              background:   "#ffffff",
+              background: "#ffffff",
               borderRadius: 4,
-              boxShadow:    "0 4px 24px rgba(0,0,0,0.13)",
-              border:       "1px solid rgba(0,0,0,0.07)",
-              overflow:     "visible",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.13)",
+              border: "1px solid rgba(0,0,0,0.07)",
+              overflow: "visible",
             }}
           >
             {/* Tab row inside card */}
@@ -399,16 +401,16 @@ const MainHome = () => {
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => setActiveTab(i)}
                   style={{
-                    flex:         1,
-                    padding:      "8px 4px",
+                    flex: 1,
+                    padding: "8px 4px",
                     borderRadius: 4,
-                    border:       "none",
-                    background:   activeTab === i ? "#b91c1c" : "#f3f4f6",
-                    color:        activeTab === i ? "#ffffff" : "#6b7280",
-                    fontSize:     12,
-                    fontWeight:   activeTab === i ? 600 : 400,
-                    cursor:       "pointer",
-                    transition:   "background 0.12s ease, color 0.12s ease",
+                    border: "none",
+                    background: activeTab === i ? "#b91c1c" : "#f3f4f6",
+                    color: activeTab === i ? "#ffffff" : "#6b7280",
+                    fontSize: 12,
+                    fontWeight: activeTab === i ? 600 : 400,
+                    cursor: "pointer",
+                    transition: "background 0.12s ease, color 0.12s ease",
                   }}
                 >
                   {tab.label}
@@ -430,16 +432,20 @@ const MainHome = () => {
       {/* desktop spacer */}
       {!isMobile && (
         <div style={{
-          height:     !isAtBottom ? Math.round(SEARCH_H / 2) + 12 : 0,
+          height: !isAtBottom ? Math.round(SEARCH_H / 2) + 12 : 0,
           transition: hasInteracted ? "height 0.45s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
         }} />
       )}
 
       <Featured />
       <LatestProperties />
+      <SaleSection />
+      <RentSection />
       {filterModal && <Model setFilterModal={setFilterModal} filterModal={filterModal} />}
     </div>
+    
   );
+  
 };
 
 export default MainHome;

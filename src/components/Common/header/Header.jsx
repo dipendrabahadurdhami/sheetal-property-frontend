@@ -139,7 +139,7 @@ const NAV_ITEMS = [
         {
           heading: "For Owners",
           links: [
-            { label: "List Your Property", sub: "Free listing", link: "/my-profile?section=post-property" },
+            { label: "List Your Property", sub: "Become an agent to post", link: "/my-profile?section=my-plan" },
             { label: "Demand Registration", sub: "Find buyers fast", link: "/property-demand" },
             { label: "Market Insights", sub: "Price trends & data", link: "/market-insights" },
             { label: "Investment Advisory", sub: "Expert guidance", link: "/services/investment" },
@@ -240,7 +240,7 @@ const NAV_ITEMS = [
           heading: "Connect",
           links: [
             { label: "Contact Us", sub: "Get in touch", link: "/about" },
-            { label: "Requirement Form", sub: "Tell us what you need", link: "/about" },
+            { label: "Requirement Form", sub: "Tell us what you need", link: "/requirementform" },
             { label: "Visit Our Office", sub: "Directions & hours", link: "/about" },
             { label: "Client Reviews", sub: "What people say", link: "/about" },
             { label: "Partner With Us", sub: "Investor & developer tie-ups", link: "/about" },
@@ -716,8 +716,13 @@ const Header = () => {
             )}
 
             {/* Post Property CTA */}
-            <Link
-              to="/my-profile?section=post-property"
+            <button
+              onClick={() => {
+                if (!user.data) { setAuthModal(true); return; }
+                const isAgent = !!(user.data?.is_agent || user.data?.subscription_tier?.startsWith("Agent"));
+                if (isAgent) { window.open("https://admin.sheetalproperty.com", "_blank"); return; }
+                navigate("/my-profile?section=my-plan");
+              }}
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
                 padding: "6px 10px", borderRadius: "4px",
@@ -738,7 +743,7 @@ const Header = () => {
               }}
             >
               <span className="sm:inline">Post Property</span>
-            </Link>
+            </button>
 
             {/* Mobile hamburger */}
             <button

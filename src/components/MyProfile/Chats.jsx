@@ -40,7 +40,7 @@ const Chats = () => {
         </div>
         <div className="w-full py-5 space-y-3.5">
           {text.map((item, index) => (
-            <>
+            <React.Fragment key={index}>
               {item.user ? (
                 <div
                   key={index}
@@ -74,7 +74,7 @@ const Chats = () => {
                   />
                 </div>
               )}
-            </>
+            </React.Fragment>
           ))}
         </div>
       </div>

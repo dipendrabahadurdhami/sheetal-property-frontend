@@ -164,13 +164,28 @@ const PropertyCard = ({ data, action }) => {
         {data?.property_location && (
           <div className="font-light">{data?.property_location}</div>
         )}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
           <Link
             to={`/property/${data?.id}`}
             className="text-white px-3 py-2 rounded bg-red-700"
           >
             View Property
           </Link>
+          <button
+            className="text-white px-3 py-2 rounded bg-gray-600"
+            onClick={async () => {
+              if (!window.confirm("Delete this property?")) return;
+              try {
+                await apiClient.delete(`/delete-property/${data?.id}`);
+                toast.success("Property deleted");
+                if (action) action();
+              } catch {
+                toast.error("Failed to delete");
+              }
+            }}
+          >
+            Delete
+          </button>
         </div>
       </div>
       {loading && id === data?.id && (

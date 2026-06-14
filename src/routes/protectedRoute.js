@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const Protected = ({ children }) => {
+const Protected = ({ children, requiredRole }) => {
   const user = useSelector((state) => state.user);
   const token = localStorage.getItem("sheetal_token");
   const [loading, setLoading] = useState(true);
@@ -18,9 +18,15 @@ const Protected = ({ children }) => {
 
 
     if (!token && !user.data) {
-
       if (location.pathname !== "/") {
         return navigate(`/?login=1`);
+      }
+    }
+
+    if (user.data && requiredRole) {
+      const role = user.data.role;
+      if (role !== requiredRole && role !== "Admin") {
+        return navigate("/");
       }
     }
 

@@ -15,6 +15,7 @@ import Details from "../components/SingleProduct/Details";
 import ToolsWidget from "../components/SingleProduct/ToolsWidget";
 import RelatedProperties from "../components/SingleProduct/RelatedProperties";
 import BlogStrip from "../components/SingleProduct/BlogStrip";
+import ReviewComponent from "../components/SingleProduct/review/ReviewComponent";
 import ProductMap from "../components/SingleProduct/Details/ProductMap";
 import YoutubeVideo from "../components/SingleProduct/Video";
 import { useParams } from "react-router-dom";
@@ -352,6 +353,13 @@ const SingleProduct = () => {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(null);
   const [error,       setError]       = useState(null);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1060);
+
+useEffect(() => {
+  const handler = () => setIsDesktop(window.innerWidth >= 1060);
+  window.addEventListener("resize", handler);
+  return () => window.removeEventListener("resize", handler);
+}, []);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
@@ -372,19 +380,24 @@ const SingleProduct = () => {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
     async function FetchData() {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_LINK}/property-detail/${id}`);
+        const res = await axios.get(`${process.env.REACT_APP_API_LINK}/property-detail/${id}`, {
+          signal: controller.signal,
+        });
         if (res.status === 200) setProperty(res.data.data);
       } catch (err) {
+        if (axios.isCancel(err)) return;
         setError("Failed to load property. Please try again.");
         console.error("Property fetch error:", err);
       }
       setLoading(false);
     }
     FetchData();
+    return () => controller.abort();
   }, [id]);
 
   const { name, property_description } = property;
@@ -468,13 +481,39 @@ const SingleProduct = () => {
         !loading && Object.keys(property).length > 0 && (
           <>
             <Helmet>
-              <title>{property?.name || property?.title || "Property"} | Shetal Real Estate</title>
-              <meta property="og:title" content={property?.name || property?.title || "Property"} />
-              <meta property="og:description" content={property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 200) : "View this property on Shetal Real Estate"} />
-              <meta property="og:image" content={property?.feature_image || ""} />
-              <meta property="og:url" content={`${window.location.origin}/property/${id}`} />
-              <meta property="og:type" content="website" />
-              <meta property="og:site_name" content="Shetal Real Estate" />
+              <title>{property?.name || property?.title || "Property"} {property?.property_location ? `in ${property.property_location}` : ""} | Sheetal Property Nepal</title>
+              <meta name="description" content={property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 160) : `${property?.name || "Property"} ${property?.property_location ? `in ${property.property_location}` : ""} — Find verified properties on Sheetal Property Nepal.`} />
+              <meta name="keywords" content={`${property?.name || ""}, ${property?.property_location || ""}, ${property?.district || ""}, ${property?.property_type || ""}, property Nepal, real estate Nepal, Sheetal Property`} />
+              <link rel="canonical" href={`https://sheetalproperty.com/property/${id}`} />
+              <meta property="og:title" content={`${property?.name || "Property"} | Sheetal Property Nepal`} />
+              <meta property="og:description" content={property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 200) : `View this property on Sheetal Property Nepal`} />
+              <meta property="og:image" content={property?.feature_image || "https://sheetalproperty.com/shetallogo.png"} />
+              <meta property="og:url" content={`https://sheetalproperty.com/property/${id}`} />
+              <meta property="og:type" content="article" />
+              <meta property="og:site_name" content="Sheetal Property Nepal" />
+              <meta name="twitter:card" content="summary_large_image" />
+              <meta name="twitter:title" content={`${property?.name || "Property"} | Sheetal Property Nepal`} />
+              <meta name="twitter:description" content={property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 200) : "View this property on Sheetal Property Nepal"} />
+              <meta name="twitter:image" content={property?.feature_image || "https://sheetalproperty.com/shetallogo.png"} />
+              <script type="application/ld+json">{JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "RealEstateListing",
+                "name": property?.name || "Property",
+                "description": property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 300) : "",
+                "url": `https://sheetalproperty.com/property/${id}`,
+                "image": property?.feature_image || "",
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": property?.property_location || "",
+                  "addressRegion": property?.district || "",
+                  "addressCountry": "NP"
+                },
+                "offers": {
+                  "@type": "Offer",
+                  "price": property?.total_price || 0,
+                  "priceCurrency": "NPR"
+                }
+              })}</script>
             </Helmet>
 
             {/* Hero */}
@@ -567,7 +606,7 @@ const SingleProduct = () => {
                     Sidebar map   = visible on desktop      (CSS: display:block)
                     → Only ONE map renders at any viewport width.
                   */}
-                  {hasMap && (
+                  {hasMap && !isDesktop && (
                     <Section
                       id="sec-map"
                       sectionRef={secRefs.current["sec-map"]}
@@ -607,6 +646,8 @@ const SingleProduct = () => {
 
                   <div style={{ height: "1px", background: "#e6e6e6", margin: "0 0 40px" }} />
 
+                  <ReviewComponent propertyId={property?.id} />
+
                   <Section
                     id="sec-related"
                     sectionRef={secRefs.current["sec-related"]}
@@ -640,7 +681,7 @@ const SingleProduct = () => {
                     Desktop-only map card.
                     .sp-sidebar-map → display:none on mobile, display:block on desktop.
                   */}
-                  {hasMap && (
+                  {hasMap && isDesktop && (
                     <div className="sp-sidebar-map">
                       <SideCard title="Location">
                         <div style={{ height: "192px", overflow: "hidden" }}>

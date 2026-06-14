@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
@@ -493,6 +494,19 @@ const ProductSearch = () => {
 
   return (
     <div className="ps-root">
+      <Helmet>
+        <title>{keyword ? `${keyword} — Properties in Nepal` : "Search Properties in Nepal"} | Sheetal Property Nepal</title>
+        <meta name="description" content={keyword ? `Find ${totalProducts} verified properties matching "${keyword}" in Nepal. Buy, sell and rent houses, land, apartments and commercial spaces.` : `Search ${totalProducts} verified properties across Nepal. Find houses, land, apartments and commercial spaces for sale and rent.`} />
+        <meta name="keywords" content={`${keyword ? keyword + ", " : ""}property Nepal, real estate Nepal, house for sale Nepal, land for sale Nepal, flat for rent Kathmandu, Sheetal Property`} />
+        <link rel="canonical" href="https://sheetalproperty.com/search" />
+        <meta property="og:title" content={`${keyword ? keyword + " — " : ""}Search Properties in Nepal | Sheetal Property Nepal`} />
+        <meta property="og:description" content={`Search verified properties across Nepal. Find your perfect home or investment today on Sheetal Property Nepal.`} />
+        <meta property="og:url" content="https://sheetalproperty.com/search" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Sheetal Property Nepal" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Search Properties in Nepal | Sheetal Property Nepal" />
+      </Helmet>
       <style>{CSS}</style>
 
       <header className="ps-search-header">
