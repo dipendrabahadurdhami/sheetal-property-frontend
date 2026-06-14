@@ -575,7 +575,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     Contact
                   </p>
                   <button
-                    onClick={() => { navigate("/contact"); setSidebarOpen(false); }}
+                    onClick={() => { navigate("/agents"); setSidebarOpen(false); }}
                     style={{
                       display: "flex",
                       alignItems: "center",
