@@ -1,3 +1,4 @@
+import PropertyCard, { PropertyCardStyles, PropertyGrid, PropertyCardSkeleton } from "../components/card/PropertyCard";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -507,6 +508,7 @@ const ProductSearch = () => {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Search Properties in Nepal | Sheetal Property Nepal" />
       </Helmet>
+      <PropertyCardStyles />
       <style>{CSS}</style>
 
       <header className="ps-search-header">
@@ -564,7 +566,7 @@ const ProductSearch = () => {
           </div>
         ) : viewMode === "grid" ? (
           <div className="grid-layout">
-            {products.map((p, i) => <GridCard key={p.id ?? i} property={p} />)}
+            {products.map((p, i) => <PropertyCard key={p.id ?? i} property={p} />)}
             {Array.from({ length: ghostCount }).map((_, i) => <GhostCard key={`gh${i}`} />)}
           </div>
         ) : (
@@ -1003,23 +1005,26 @@ const CSS = `
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    min-height: 120px;
+    height: 150px;
     width: 100%;
   }
+  @media (min-width: 480px) { .lc { height: 165px; } }
+  @media (min-width: 600px) { .lc { height: 180px; } }
+  @media (min-width: 820px) { .lc { height: 200px; } }
 
   .lc-img-wrap {
     position: relative;
-    width: 100px;
+    width: 130px;
     flex-shrink: 0;
     background: #eee;
     overflow: hidden;
     border-radius: 4px 0 0 4px;
     z-index: 0;
   }
-  @media (min-width: 420px) { .lc-img-wrap { width: 130px; } }
-  @media (min-width: 600px) { .lc-img-wrap { width: 190px; } }
-  @media (min-width: 820px) { .lc-img-wrap { width: 240px; } }
-  @media (min-width: 1100px){ .lc-img-wrap { width: 280px; } }
+  @media (min-width: 480px) { .lc-img-wrap { width: 150px; } }
+  @media (min-width: 600px) { .lc-img-wrap { width: 210px; } }
+  @media (min-width: 820px) { .lc-img-wrap { width: 270px; } }
+  @media (min-width: 1100px){ .lc-img-wrap { width: 310px; } }
 
   .lc-img {
     width: 100%;
@@ -1028,29 +1033,27 @@ const CSS = `
     display: block;
     transition: transform .38s ease;
   }
-  .ps-card:hover .lc-img { transform: scale(1.03); }
+  .ps-card:hover .lc-img { transform: scale(1.04); }
 
   .lc-purpose { position: absolute; top: 8px; left: 8px; z-index: 6; }
 
   .lc-img-heart {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
-    z-index: 6;
-    display: flex;
+    bottom: 8px; right: 8px;
+    z-index: 6; display: flex;
   }
   @media (min-width: 600px) { .lc-img-heart { display: none; } }
 
   .lc-content {
     flex: 1;
-    padding: 10px 12px;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    justify-content: space-between;
     min-width: 0;
     overflow: hidden;
   }
-  @media (min-width: 600px) { .lc-content { padding: 14px 18px; gap: 9px; } }
+  @media (min-width: 600px) { .lc-content { padding: 12px 18px; } }
 
   .lc-top {
     display: flex;
@@ -1058,9 +1061,8 @@ const CSS = `
     justify-content: space-between;
     gap: 8px;
     min-width: 0;
-    overflow: hidden;
   }
-  .lc-title-wrap { flex: 1; min-width: 0; overflow: hidden; }
+  .lc-title-wrap { flex: 1; min-width: 0; }
   .lc-title {
     font-size: 13px;
     font-weight: 700;
@@ -1088,22 +1090,22 @@ const CSS = `
 
   .lc-price-col {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
     flex-shrink: 0;
   }
   .lc-price {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 800;
     color: var(--d);
     white-space: nowrap;
   }
-  @media (min-width: 600px) { .lc-price { font-size: 14.5px; } }
+  @media (min-width: 600px) { .lc-price { font-size: 15px; } }
 
   .lc-heart-desk { display: none; }
   @media (min-width: 600px) { .lc-heart-desk { display: flex; } }
 
-  /* status badge: mobile shows under title, desktop shows in price col */
   .lc-status-mob  { display: inline-block; margin-top: 4px; }
   .lc-status-desk { display: none; }
   @media (min-width: 600px) {
@@ -1112,15 +1114,19 @@ const CSS = `
   }
 
   .lc-detail-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 7px;
+    display: none;
   }
-  @media (min-width: 600px) { .lc-detail-grid { gap: 10px; } }
-  @media (min-width: 820px) { .lc-detail-grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 360px) { .lc-detail-grid { display: none; } }
+  @media (min-width: 480px) { .lc-detail-grid { display: flex; flex-wrap: wrap; gap: 5px; } }
 
-  .lc-cell { display: flex; flex-direction: column; gap: 2px; }
+  .lc-cell {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: #f3f3f0;
+    border-radius: 4px;
+    padding: 3px 8px;
+    border: 0.5px solid #E9EAEC;
+  }
   .cell-lbl {
     font-size: 9px;
     color: #aaa;
@@ -1128,20 +1134,18 @@ const CSS = `
     letter-spacing: .5px;
     font-weight: 600;
   }
-  .cell-val { font-size: 11.5px; font-weight: 600; color: var(--d); }
-  @media (min-width: 600px) { .cell-val { font-size: 12px; } }
+  .cell-lbl::after { content: ":"; }
+  .cell-val { font-size: 10px; font-weight: 700; color: var(--d); }
 
   .lc-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-top: 1px solid #f0f0ee;
-    padding-top: 8px;
-    margin-top: auto;
+    padding-top: 7px;
     gap: 6px;
     flex-wrap: wrap;
     min-width: 0;
-    overflow: hidden;
   }
   .lc-actions {
     display: flex;

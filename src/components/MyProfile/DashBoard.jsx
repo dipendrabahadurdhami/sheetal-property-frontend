@@ -5,9 +5,8 @@ import Password from "./Form/Password";
 
 const DashBoard = () => {
   const user = useSelector((state) => state.user);
-
   return (
-    <div className="p-5 md:p-10 space-y-16">
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <Information data={user?.data} />
       <Password />
     </div>

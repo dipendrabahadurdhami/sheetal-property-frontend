@@ -4,178 +4,107 @@ import { FaLock, FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 import apiClient from "../../../utils/apiClient";
 
+const inputStyle = {
+  padding: "10px 14px",
+  border: "1px solid #dde3ea",
+  borderRadius: 6,
+  fontSize: 14,
+  color: "#2c3e50",
+  outline: "none",
+  background: "#f8f9fb",
+  width: "100%",
+  boxSizing: "border-box",
+  transition: "border-color 0.2s, background 0.2s",
+};
+
 const Password = () => {
-  const [passwordShown, setPasswordShown] = useState(false);
-  const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
-  const [oldPasswordShown, setOldPasswordShown] = useState(false);
-  const [oldPassword, setOldPassword] = useState('')
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("")
+  const [show, setShow]       = useState({ old: false, new: false, confirm: false });
+  const [oldPassword, setOld] = useState("");
+  const [password, setNew]    = useState("");
+  const [confirmPassword, setCo] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState(null)
-  const validateForm = () => {
-    let errors={};
-    if(!oldPassword) errors.oldPassword = "Please enter your old password";
-    else if(!password) errors.password = "Please enter your new password";
-    else if(password.length < 6) errors.password = "Password length must be at least 6 chararcters"
-    else if(!confirmPassword) errors.confirmPassword = "Please re-enter your new password";
-    else if(password != confirmPassword) errors.confirmPassword="Password Mismatched";
-    setErrors(errors);
-    return errors;
-  }
-  const handleFormSubmit = async (e) => {
+  const [errors, setErrors]   = useState({});
+
+  const validate = () => {
+    const e = {};
+    if (!oldPassword)                    e.old     = "Enter your current password";
+    if (!password)                       e.new     = "Enter a new password";
+    else if (password.length < 6)        e.new     = "At least 6 characters required";
+    if (!confirmPassword)                e.confirm = "Re-enter your new password";
+    else if (password !== confirmPassword) e.confirm = "Passwords do not match";
+    setErrors(e);
+    return e;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
-    const errors = validateForm();
-
-    if(Object.keys(errors).length > 0){
-      setLoading(false);
-      return false;
-    }else{
-      try{
-        await apiClient.post('change-password', {
-          old_password: oldPassword,
-          password: password,
-          password_confirmation: confirmPassword
-        }).then(res=>{
-          if(res.status === 200){
-            setLoading(false);
-            toast.success(`Password updated successfully.`);
-          }else{
-            setLoading(false);
-            toast.error(res.message);
-          }
-        })
-      }catch(error){
-        console.error(error);
-        setLoading(false);
-        toast.error(error.response.data.message);
+    const errs = validate();
+    if (Object.keys(errs).length) return;
+    setLoading(true);
+    try {
+      const res = await apiClient.post("change-password", {
+        old_password: oldPassword,
+        password,
+        password_confirmation: confirmPassword,
+      });
+      if (res.status === 200) {
+        toast.success("Password updated successfully.");
+        setOld(""); setNew(""); setCo(""); setErrors({});
+      } else {
+        toast.error(res.data?.message || "Failed to update.");
       }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update.");
+    } finally {
+      setLoading(false);
     }
-    
-  }
+  };
 
-  
-
- 
-  return (
-    <div className="space-y-5 md:space-y-10">
-      <div className="max-w-7xl mx-auto ">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Change Password
-        </h1>
+  const PwField = ({ label, value, onChange, showKey, error }) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+      <span style={{ fontSize: 11, fontWeight: 700, color: "#7f8c8d", textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</span>
+      <div style={{ position: "relative" }}>
+        <input
+          type={show[showKey] ? "text" : "password"}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          style={{ ...inputStyle, paddingRight: 40 }}
+          onFocus={e => { e.target.style.borderColor = "#e74c3c"; e.target.style.background = "#fff"; }}
+          onBlur={e => { e.target.style.borderColor = "#dde3ea"; e.target.style.background = "#f8f9fb"; }}
+        />
+        <button type="button"
+          onClick={() => setShow(s => ({ ...s, [showKey]: !s[showKey] }))}
+          style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 2 }}
+        >
+          {show[showKey] ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
+        </button>
       </div>
-      <form className="grid gap-5 md:gap-10 md:w-2/4" onSubmit={handleFormSubmit}>
-        <label className="flex flex-col space-y-2">
-          <span>Old Password</span>
-          <div className="p-2 border border-gray-500 rounded overflow-hidden flex space-x-3 pr-3 items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700">
-            <input
-              type={oldPasswordShown ? "text" : "password"}
-              className="w-full border-none"
-              value={oldPassword}
-              onChange={(e)=> setOldPassword
-                (e.target.value)}
-            />
-            {oldPasswordShown ? (
-              <>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOldPasswordShown(false);
-                  }}
-                >
-                  <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOldPasswordShown(true);
-                }}
-              >
-                <AiOutlineEye className="w-6 h-6 text-gray-500" />
-              </button>
-            )}
-          </div>
-          {errors?.oldPassword && <span className="text-red-400 text-sm">{errors?.oldPassword}</span>}
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>New Password</span>
-          <div className="p-2 border border-gray-500 rounded overflow-hidden flex space-x-3 pr-3 items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700">
-            <input
-              type={passwordShown ? "text" : "password"}
-              className="w-full border-none"
-              name="password"
-              value={password}
-              onChange={(e)=> setPassword(e.target.value)}
-            />
-            {passwordShown ? (
-              <>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPasswordShown(false);
-                  }}
-                >
-                  <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPasswordShown(true);
-                }}
-              >
-                <AiOutlineEye className="w-6 h-6 text-gray-500" />
-              </button>
-            )}
-          </div>
-          {errors?.password && <span className="text-red-400 text-sm">{errors?.password}</span>}
-        </label>
-        <label className="flex flex-col space-y-2">
-          <span>Confirm New Password</span>
-          <div className="p-2 border border-gray-500 rounded overflow-hidden flex space-x-3 pr-3 items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-red-700 focus-visible:ring-offset-2 focus-visible:border-red-700">
-            <input
-              type={confirmPasswordShown ? "text" : "password"}
-              className="w-full border-none"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={(e)=> setConfirmPassword(e.target.value)}
-            />
-            {confirmPasswordShown ? (
-              <>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setConfirmPasswordShown(false);
-                  }}
-                >
-                  <AiOutlineEyeInvisible className="w-6 h-6 text-gray-500" />
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setConfirmPasswordShown(true);
-                }}
-              >
-                <AiOutlineEye className="w-6 h-6 text-gray-500" />
-              </button>
-            )}
-          </div>
-          {errors?.confirmPassword && <span className="text-red-400 text-sm">{errors?.confirmPassword}</span>}
-        </label>
-        <div></div>
-        <div className="flex justify-end">
-        <button type="submit" className="text-white font-medium bg-red-700 rounded px-5 py-2"  disabled={loading}>
-            {loading ?<FaSpinner className="spin"/> : 'Update Password'}
-            </button>
+      {error && <span style={{ fontSize: 11, color: "#e74c3c" }}>{error}</span>}
+    </div>
+  );
+
+  return (
+    <div style={{ background: "#fff", border: "1px solid #dde3ea", borderRadius: 8, overflow: "hidden" }}>
+      <div style={{ padding: "8px 12px", borderBottom: "1px solid #f0f3f7", background: "#fafbfc", display: "flex", alignItems: "center", gap: 8 }}>
+        <FaLock style={{ color: "#e74c3c", fontSize: 13 }} />
+        <span style={{ fontSize: 12, fontWeight: 700, color: "#2c3e50", textTransform: "uppercase", letterSpacing: "0.05em" }}>Change Password</span>
+      </div>
+      <form onSubmit={handleSubmit} style={{ padding: "10px 10px 12px", display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+        <PwField label="Current Password"  value={oldPassword}      onChange={setOld} showKey="old"     error={errors.old} />
+        <PwField label="New Password"      value={password}         onChange={setNew} showKey="new"     error={errors.new} />
+        <PwField label="Confirm Password"  value={confirmPassword}  onChange={setCo}  showKey="confirm" error={errors.confirm} />
+        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 4 }}>
+          <button type="submit" disabled={loading} style={{
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "10px 24px", background: loading ? "#ccc" : "#e74c3c",
+            color: "#fff", border: "none", borderRadius: 6,
+            fontSize: 13, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer",
+          }}>
+            {loading && <FaSpinner />}
+            {loading ? "Updating..." : "Update Password"}
+          </button>
         </div>
       </form>
-     
     </div>
   );
 };
