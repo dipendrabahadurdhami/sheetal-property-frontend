@@ -141,8 +141,17 @@ const DemandAnalytics = ({ demands }) => {
     const locRaw = count(demands, "prefered_location");
     const locData = toChartData(locRaw, 8);
 
-    // Vehicles
-    const vehRaw = count(demands, "vehicles");
+    // Vehicles — parse JSON object and aggregate by type
+    const vehRaw = {};
+    demands.forEach(d => {
+      let v = d.vehicles;
+      if (typeof v === "string") { try { v = JSON.parse(v); } catch { v = {}; } }
+      if (v && typeof v === "object") {
+        Object.entries(v).forEach(([type, qty]) => {
+          if (qty > 0) vehRaw[type] = (vehRaw[type] || 0) + qty;
+        });
+      }
+    });
     const vehData = toChartData(vehRaw, 6);
 
     // Facilities — flatten array
@@ -183,7 +192,11 @@ const DemandAnalytics = ({ demands }) => {
     const total = demands.length;
     const withLocation = demands.filter(d => d.prefered_location).length;
     const withBudget   = demands.filter(d => d.maximum_budget).length;
-    const withVehicle  = demands.filter(d => d.vehicles).length;
+    const withVehicle  = demands.filter(d => {
+      let v = d.vehicles;
+      if (typeof v === "string") { try { v = JSON.parse(v); } catch { v = {}; } }
+      return v && typeof v === "object" && Object.values(v).some(qty => qty > 0);
+    }).length;
     const withFacility = demands.filter(d => d.facilities?.length > 0).length;
     const withDesc     = demands.filter(d => d.description).length;
     const radarData = [

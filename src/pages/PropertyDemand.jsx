@@ -24,7 +24,12 @@ const SEARCH_FIELDS = [
 const matchesTerm = (item, term) => {
   if (!term) return true;
   const t = term.toLowerCase();
-  return [item?.requirement, item?.prefered_location, item?.maximum_budget, item?.tenant_option, item?.vehicles]
+  let vehicles = item?.vehicles;
+  if (typeof vehicles === "string") { try { vehicles = JSON.parse(vehicles); } catch { vehicles = {}; } }
+  const vehicleStr = vehicles && typeof vehicles === "object"
+    ? Object.entries(vehicles).filter(([, q]) => q > 0).map(([k, q]) => `${k} ${q}`).join(" ")
+    : "";
+  return [item?.requirement, item?.prefered_location, item?.maximum_budget, item?.tenant_option, vehicleStr]
     .filter(Boolean).some(f => String(f).toLowerCase().includes(t));
 };
 

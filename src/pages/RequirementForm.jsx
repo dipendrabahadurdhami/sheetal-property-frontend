@@ -14,9 +14,17 @@ import {
   IoCheckmarkCircle, IoCloseOutline, IoLockClosedOutline,
   IoQrCodeOutline, IoAlertCircleOutline,
 } from "react-icons/io5";
-import { FaSpinner, FaUpload, FaTimes, FaLock, FaClock, FaCheckCircle } from "react-icons/fa";
+import { FaSpinner, FaUpload, FaTimes, FaLock, FaCheckCircle } from "react-icons/fa";
 
 const API_LINK = process.env.REACT_APP_API_LINK || "";
+
+const VEHICLE_TYPES = [
+  { key: "bike", label: "Bike" },
+  { key: "scooter", label: "Scooter" },
+  { key: "car", label: "Car" },
+  { key: "van", label: "Van" },
+  { key: "truck", label: "Truck" },
+];
 
 function isLoggedIn() {
   return !!localStorage.getItem("sheetal_token");
@@ -37,10 +45,9 @@ const initialValues = {
   name: "", email: "", permanent_address: "", temporary_address: "",
   contact_number: "", occupation: "", prefered_location: "",
   minimum_budget: "", maximum_budget: "", tenant_option: "",
-  requirements: "", vehicle: "", facilities: [], description: "",
+  requirements: "", vehicle: {}, facilities: [], description: "",
 };
 
-/* ── Field wrapper ── */
 const RF = ({ icon: Icon, label, required, error, touched, children }) => (
   <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
     <label style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".08em", color:"#7f8c8d" }}>
@@ -64,7 +71,6 @@ const RF = ({ icon: Icon, label, required, error, touched, children }) => (
   </div>
 );
 
-/* ── Section card ── */
 const SC = ({ title, required, step, children }) => (
   <div style={{ border:"1px solid #e4e4e0", borderRadius:4, overflow:"hidden", background:"#fff" }}>
     <div style={{ padding:"12px 18px", background:"#fafafa", borderBottom:"1px solid #e4e4e0", display:"flex", alignItems:"center", gap:10 }}>
@@ -84,41 +90,128 @@ const SC = ({ title, required, step, children }) => (
 const iS = { flex:1, padding:"10px 12px", fontSize:13, color:"#111", outline:"none", background:"transparent", border:"none" };
 const sS = { flex:1, padding:"10px 12px", fontSize:13, color:"#374151", outline:"none", background:"transparent", border:"none" };
 
-/* ── Payment Modal ── */
-const PaymentModal = ({ onClose, onSubmitted, feeSettings }) => {
-  const [refNumber, setRefNumber] = useState("");
-  const [proofFile, setProofFile] = useState(null);
-  const [step, setStep]           = useState(1);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState("");
+const VehicleCounter = ({ vehicles, onChange }) => {
+  const update = (key, delta) => {
+    const next = { ...vehicles, [key]: Math.max(0, (vehicles[key] || 0) + delta) };
+    if (next[key] === 0) delete next[key];
+    onChange(next);
+  };
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+      {VEHICLE_TYPES.map(({ key, label }) => (
+        <div key={key} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"6px 0" }}>
+          <span style={{ fontSize:12, fontWeight:600, color:"#374151" }}>{label}</span>
+          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+            <button type="button" onClick={() => update(key, -1)}
+              style={{ width:26, height:26, borderRadius:4, border:"1px solid #e4e4e0", background:"#fff", cursor:"pointer", fontSize:14, fontWeight:700, color:"#374151", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              −
+            </button>
+            <span style={{ width:24, textAlign:"center", fontSize:13, fontWeight:700, color:"#111" }}>{vehicles[key] || 0}</span>
+            <button type="button" onClick={() => update(key, 1)}
+              style={{ width:26, height:26, borderRadius:4, border:"1px solid #e4e4e0", background:"#fff", cursor:"pointer", fontSize:14, fontWeight:700, color:"#374151", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              +
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
-  const handleSubmit = async () => {
-    if (!refNumber.trim()) { setError("Please enter the payment reference number."); return; }
-    setLoading(true); setError("");
+/* ═══════════════════════════════════════════
+   PAYMENT POPUP
+   - Shows QR
+   - Collects proof
+   - Sends EVERYTHING in one POST /api/requirement-form
+═══════════════════════════════════════════ */
+const PaymentPopupModal = ({ payment, pendingValues, agentId, onClose, onUploaded }) => {
+  const [proofFile, setProofFile] = useState(null);
+  const [preview,   setPreview]   = useState(null);
+  const [refInput,  setRefInput]  = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [done,      setDone]      = useState(false);
+  const [error,     setError]     = useState("");
+
+  const onPick = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setProofFile(f);
+    setPreview(URL.createObjectURL(f));
+  };
+
+  const onSubmit = async () => {
+    if (!proofFile) { setError("Please attach a payment screenshot."); return; }
+    setUploading(true);
+    setError("");
     try {
-      const formData = new FormData();
-      formData.append("reference_number", refNumber.trim());
-      formData.append("requirement_form", "1");
-      if (proofFile) formData.append("payment_proof", proofFile);
-      await apiClient.post("contact-fee/submit-requirement", formData);
-      onSubmitted(refNumber.trim());
-      onClose();
+      const fd = new FormData();
+
+      // Append all form fields
+      Object.keys(pendingValues).forEach(key => {
+        if (key === 'facilities') {
+          pendingValues.facilities.forEach(f => fd.append('facilities[]', f));
+        } else if (key === 'vehicle') {
+          fd.append('vehicle', JSON.stringify(pendingValues.vehicle));
+        } else if (key === 'minimum_budget' || key === 'maximum_budget') {
+          if (pendingValues[key] !== "" && pendingValues[key] != null) {
+            fd.append(key, pendingValues[key]);
+          }
+        } else {
+          fd.append(key, pendingValues[key] ?? "");
+        }
+      });
+
+      if (agentId) fd.append("agent_id", agentId);
+
+      // Append proof + reference
+      fd.append("payment_proof", proofFile);
+      if (refInput) fd.append("payment_reference", refInput);
+
+      const res = await axios.post(
+        `${API_LINK}/requirement-form`,
+        fd,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("sheetal_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        setDone(true);
+        onUploaded && onUploaded(res.data?.data);
+      } else {
+        setError(res.data?.message || "Submission failed.");
+      }
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to submit payment.");
-    } finally { setLoading(false); }
+      if (e.response?.status === 422) {
+        const errs = e.response.data.errors || {};
+        const first = Object.values(errs)[0];
+        setError(Array.isArray(first) ? first[0] : first);
+      } else {
+        setError(e.response?.data?.message || "Submission failed.");
+      }
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
     <div style={{ position:"fixed", inset:0, zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", padding:16, background:"rgba(0,0,0,0.6)" }} onClick={onClose}>
-      <div style={{ background:"#fff", borderRadius:4, width:"100%", maxWidth:400, overflow:"hidden", boxShadow:"0 20px 60px rgba(0,0,0,0.3)" }} onClick={e=>e.stopPropagation()}>
+      <div style={{ background:"#fff", borderRadius:4, width:"100%", maxWidth:420, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 20px 60px rgba(0,0,0,0.3)" }} onClick={e=>e.stopPropagation()}>
 
         {/* Header */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px", borderBottom:"1px solid #e4e4e0", background:"#b91c1c" }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <FaLock style={{ color:"#fff", fontSize:14 }} />
             <div>
-              <p style={{ fontSize:13, fontWeight:800, color:"#fff", margin:0 }}>Unlock Requirement Form</p>
-              <p style={{ fontSize:11, color:"rgba(255,255,255,0.7)", margin:0 }}>Rs. {feeSettings?.fee_amount || 500} one-time fee</p>
+              <p style={{ fontSize:13, fontWeight:800, color:"#fff", margin:0 }}>
+                {done ? "Submitted ✓" : "Complete Payment"}
+              </p>
+              <p style={{ fontSize:11, color:"rgba(255,255,255,0.7)", margin:0 }}>
+                {done ? "Admin will verify within 24 hours" : `Rs. ${payment?.fee_amount || 500} one-time fee`}
+              </p>
             </div>
           </div>
           <button onClick={onClose} style={{ background:"rgba(255,255,255,0.2)", border:"none", width:28, height:28, borderRadius:4, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff" }}>
@@ -126,58 +219,80 @@ const PaymentModal = ({ onClose, onSubmitted, feeSettings }) => {
           </button>
         </div>
 
-        {step === 1 && (
+        {!done && (
           <div style={{ padding:20, display:"flex", flexDirection:"column", gap:14 }}>
-            <div style={{ background:"#fef2f2", border:"1px solid #fecaca", borderRadius:4, padding:16 }}>
-              <div style={{ fontWeight:800, color:"#b91c1c", fontSize:12, marginBottom:10, textTransform:"uppercase", letterSpacing:".06em" }}>💳 Payment Details</div>
+
+            {/* QR */}
+            {payment?.qr_code_url ? (
+              <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
+                <div style={{ padding:12, background:"#fff", border:"1px solid #e4e4e0", borderRadius:4 }}>
+                  <img
+                    src={payment.qr_code_url}
+                    alt="Payment QR"
+                    style={{ width:220, height:220, objectFit:"contain", display:"block" }}
+                    onError={e=>{ e.currentTarget.style.display="none"; }}
+                  />
+                </div>
+                <p style={{ fontSize:11, color:"#7f8c8d", margin:0, textAlign:"center" }}>
+                  Scan with eSewa / Khalti / your banking app
+                </p>
+              </div>
+            ) : (
+              <div style={{ border:"2px dashed #e4e4e0", borderRadius:4, padding:20, textAlign:"center" }}>
+                <IoQrCodeOutline style={{ fontSize:44, color:"#ddd", marginBottom:6 }} />
+                <div style={{ fontSize:12, color:"#9ca3af" }}>
+                  QR not uploaded yet.<br/>Use bank transfer details below.
+                </div>
+              </div>
+            )}
+
+            {/* Bank details */}
+            <div style={{ background:"#fef2f2", border:"1px solid #fecaca", borderRadius:4, padding:14 }}>
+              <div style={{ fontWeight:800, color:"#b91c1c", fontSize:11, marginBottom:8, textTransform:"uppercase", letterSpacing:".06em" }}>💳 Bank Details</div>
               {[
-                ["Bank", feeSettings?.bank_name || "Nabil Bank"],
-                ["Account", feeSettings?.account_number || "..."],
-                ["Name", feeSettings?.account_name || "Sheetal Property Nepal"],
-                ["Amount", `Rs. ${feeSettings?.fee_amount || 500}`],
+                ["Bank",    payment?.bank_name      || "—"],
+                ["Account", payment?.account_number || "—"],
+                ["Name",    payment?.account_name   || "—"],
+                ["Amount",  `Rs. ${payment?.fee_amount || 0}`],
               ].map(([k,v]) => (
-                <div key={k} style={{ display:"flex", gap:8, fontSize:13, color:"#374151", marginBottom:4 }}>
-                  <span style={{ fontWeight:700, minWidth:60, color:"#111" }}>{k}:</span>
-                  <span>{v}</span>
+                <div key={k} style={{ display:"flex", gap:8, fontSize:12, color:"#374151", marginBottom:4 }}>
+                  <span style={{ fontWeight:700, minWidth:60, color:"#111" }}>{k}</span>
+                  <span style={{ fontFamily: k==="Account" ? "monospace" : "inherit", wordBreak:"break-all" }}>{v}</span>
                 </div>
               ))}
             </div>
 
-            <div style={{ border:"2px dashed #e4e4e0", borderRadius:4, padding:20, textAlign:"center" }}>
-              <IoQrCodeOutline style={{ fontSize:44, color:"#ddd", marginBottom:6 }} />
-              <div style={{ fontSize:12, color:"#9ca3af" }}>Dynamic QR coming soon.<br/>Please use bank transfer above.</div>
-            </div>
-
-            {feeSettings?.payment_instructions && (
-              <p style={{ fontSize:12, color:"#7f8c8d", lineHeight:1.6, margin:0 }}>ℹ️ {feeSettings.payment_instructions}</p>
+            {payment?.instructions && (
+              <p style={{ fontSize:11, color:"#7f8c8d", lineHeight:1.6, margin:0 }}>ℹ️ {payment.instructions}</p>
             )}
 
-            <button onClick={()=>setStep(2)} style={{ width:"100%", padding:"12px 0", background:"#b91c1c", color:"#fff", border:"none", borderRadius:4, fontSize:13, fontWeight:700, cursor:"pointer" }}>
-              I've Paid — Submit Reference
-            </button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div style={{ padding:20, display:"flex", flexDirection:"column", gap:12 }}>
-            <button onClick={()=>setStep(1)} style={{ background:"none", border:"none", color:"#7f8c8d", fontSize:13, cursor:"pointer", padding:0, textAlign:"left" }}>← Back</button>
-
+            {/* Screenshot upload */}
             <div>
-              <label style={{ fontSize:10, fontWeight:700, color:"#7f8c8d", textTransform:"uppercase", letterSpacing:".08em", display:"block", marginBottom:6 }}>Payment Reference Number *</label>
-              <input type="text" placeholder="Enter bank transaction reference" value={refNumber}
-                onChange={e=>{ setRefNumber(e.target.value); setError(""); }}
-                autoFocus
-                style={{ width:"100%", border: error?"1px solid #b91c1c":"1px solid #e4e4e0", borderRadius:4, padding:"10px 12px", fontSize:13, outline:"none", fontFamily:"monospace", boxSizing:"border-box" }}
-              />
+              <label style={{ fontSize:10, fontWeight:700, color:"#7f8c8d", textTransform:"uppercase", letterSpacing:".08em", display:"block", marginBottom:6 }}>
+                Payment Screenshot *
+              </label>
+              <label style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 12px", border:"1px dashed #e4e4e0", borderRadius:4, cursor:"pointer", fontSize:12, color:"#7f8c8d" }}>
+                <FaUpload style={{ fontSize:11 }} />
+                {proofFile ? proofFile.name : "Click to upload screenshot"}
+                <input type="file" accept="image/*" style={{ display:"none" }} onChange={onPick} />
+              </label>
+              {preview && (
+                <img src={preview} alt="preview" style={{ marginTop:8, maxHeight:120, borderRadius:4, border:"1px solid #e4e4e0" }} />
+              )}
             </div>
 
+            {/* Reference */}
             <div>
-              <label style={{ fontSize:10, fontWeight:700, color:"#7f8c8d", textTransform:"uppercase", letterSpacing:".08em", display:"block", marginBottom:6 }}>Screenshot (optional)</label>
-              <label style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 12px", border:"1px dashed #e4e4e0", borderRadius:4, cursor:"pointer", fontSize:13, color:"#7f8c8d" }}>
-                <FaUpload style={{ fontSize:11 }} />
-                {proofFile ? proofFile.name : "Upload screenshot"}
-                <input type="file" accept="image/*" style={{ display:"none" }} onChange={e=>setProofFile(e.target.files[0])} />
+              <label style={{ fontSize:10, fontWeight:700, color:"#7f8c8d", textTransform:"uppercase", letterSpacing:".08em", display:"block", marginBottom:6 }}>
+                Transaction ID <span style={{ fontWeight:400, color:"#9ca3af" }}>(optional)</span>
               </label>
+              <input
+                type="text"
+                placeholder="e.g. TXN-1234567"
+                value={refInput}
+                onChange={e=>setRefInput(e.target.value)}
+                style={{ width:"100%", border:"1px solid #e4e4e0", borderRadius:4, padding:"10px 12px", fontSize:12, outline:"none", fontFamily:"monospace", boxSizing:"border-box" }}
+              />
             </div>
 
             {error && (
@@ -187,11 +302,41 @@ const PaymentModal = ({ onClose, onSubmitted, feeSettings }) => {
               </div>
             )}
 
-            <button onClick={handleSubmit} disabled={loading || !refNumber.trim()}
-              style={{ width:"100%", padding:"12px 0", background: loading||!refNumber.trim()?"#e5e7eb":"#b91c1c", color: loading||!refNumber.trim()?"#9ca3af":"#fff", border:"none", borderRadius:4, fontSize:13, fontWeight:700, cursor: loading||!refNumber.trim()?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:7 }}>
-              {loading ? <FaSpinner style={{ animation:"spin .6s linear infinite" }} /> : "Submit Payment"}
+            <button
+              onClick={onSubmit}
+              disabled={uploading || !proofFile}
+              style={{
+                width:"100%", padding:"12px 0",
+                background: uploading||!proofFile ? "#e5e7eb" : "#b91c1c",
+                color:      uploading||!proofFile ? "#9ca3af" : "#fff",
+                border:"none", borderRadius:4, fontSize:13, fontWeight:700,
+                cursor:     uploading||!proofFile ? "not-allowed" : "pointer",
+                display:"flex", alignItems:"center", justifyContent:"center", gap:7,
+              }}
+            >
+              {uploading
+                ? <><FaSpinner style={{ animation:"spin .6s linear infinite" }} /> Submitting…</>
+                : "Submit Requirement & Screenshot"}
             </button>
-            <p style={{ fontSize:11, color:"#9ca3af", textAlign:"center", margin:0 }}>Admin will verify within 24 hours</p>
+
+            <p style={{ fontSize:11, color:"#9ca3af", textAlign:"center", margin:0 }}>
+              Admin will verify and match you with agents within 24 hours.
+            </p>
+          </div>
+        )}
+
+        {done && (
+          <div style={{ padding:30, textAlign:"center", display:"flex", flexDirection:"column", alignItems:"center", gap:10 }}>
+            <div style={{ width:64, height:64, borderRadius:"50%", background:"#f0fdf4", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <FaCheckCircle style={{ fontSize:36, color:"#27ae60" }} />
+            </div>
+            <h4 style={{ fontSize:16, fontWeight:800, color:"#1e8449", margin:0 }}>Submitted!</h4>
+            <p style={{ fontSize:13, color:"#374151", margin:0, lineHeight:1.6 }}>
+              Our team will verify your payment and an agent will contact you within 24 hours.
+            </p>
+            <button onClick={onClose} style={{ marginTop:10, padding:"10px 24px", background:"#b91c1c", color:"#fff", border:"none", borderRadius:4, fontSize:13, fontWeight:700, cursor:"pointer" }}>
+              Done
+            </button>
           </div>
         )}
       </div>
@@ -206,14 +351,16 @@ const RequirementForm = () => {
   const loggedIn = isLoggedIn();
   const [searchParams] = useState(() => new URLSearchParams(window.location.search));
   const agentId = searchParams.get("agent_id") || null;
-  const [properties,       setProperties]       = useState(null);
-  const [submitting,       setSubmitting]        = useState(false);
-  const [showSuccess,      setShowSuccess]       = useState(false);
-  const [showPayment,      setShowPayment]       = useState(false);
-  const [showLoginModal,   setShowLoginModal]    = useState(false);
-  const [paymentSubmitted, setPaymentSubmitted]  = useState(false);
-  const [refNumber,        setRefNumber]         = useState("");
-  const [feeSettings,      setFeeSettings]       = useState(null);
+
+  const [properties,     setProperties]     = useState(null);
+  const [submitting,     setSubmitting]      = useState(false);
+  const [showSuccess,    setShowSuccess]     = useState(false);
+  const [showLoginModal, setShowLoginModal]  = useState(false);
+  const [feeSettings,    setFeeSettings]     = useState(null);
+  const [paymentPopup,   setPaymentPopup]    = useState(false);
+  const [pendingValues,  setPendingValues]   = useState(null);
+  const [pendingReset,   setPendingReset]    = useState(null);
+
   const submitLock   = useRef(false);
   const successTimer = useRef(null);
 
@@ -223,8 +370,7 @@ const RequirementForm = () => {
       .catch(() => {});
     apiClient.get("contact-fee/settings-public")
       .then(res => setFeeSettings(res.data))
-      .catch(() => setFeeSettings({ fee_amount: 500 }));
-    // Payment handled separately by admin
+      .catch(() => setFeeSettings({ fee_amount: 500, qr_code_url: null }));
     return () => { if (successTimer.current) clearTimeout(successTimer.current); };
   }, []);
 
@@ -234,52 +380,38 @@ const RequirementForm = () => {
     successTimer.current = setTimeout(() => setShowSuccess(false), 6000);
   };
 
-  const handlePaymentClick = () => {
-    if (!loggedIn) { setShowLoginModal(true); return; }
-    setShowPayment(true);
-  };
-
-  const handlePaymentSubmitted = (ref) => {
-    setPaymentSubmitted(true);
-    setRefNumber(ref);
-    toast.success("Payment submitted! Admin will verify within 24 hours.");
-  };
-
-  const validateData = async (values, { setSubmitting: setFormikSubmitting, resetForm }) => {
-    if (!loggedIn) { setShowLoginModal(true); setFormikSubmitting(false); return; }
-    // Payment verified by admin separately — form can be submitted freely
+  // Just validate + open popup — don't hit API yet
+  const validateData = (values, { setSubmitting: setFormikSubmitting, resetForm }) => {
+    if (!loggedIn) {
+      setShowLoginModal(true);
+      setFormikSubmitting(false);
+      return;
+    }
     if (submitLock.current) return;
     submitLock.current = true;
-    setSubmitting(true);
-    try {
-      const result = await axios.post(
-        `${API_LINK}/requirement-form`,
-        { ...values, payment_reference: refNumber, agent_id: agentId },
-        { headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("sheetal_token")}` } }
-      );
-      if (result?.data) {
-        resetForm({ values: initialValues });
-        setPaymentSubmitted(false);
-        setRefNumber("");
-        showSuccessMessage();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    } catch { toast.error("Something went wrong. Please try again."); }
-    finally { setSubmitting(false); setFormikSubmitting(false); submitLock.current = false; }
+
+    setPendingValues(values);
+    setPendingReset(() => resetForm);
+    setPaymentPopup(true);
+
+    submitLock.current = false;
+    setFormikSubmitting(false);
+  };
+
+  const handlePaymentUploaded = () => {
+    setPaymentPopup(false);
+    setPendingValues(null);
+    if (pendingReset) pendingReset({ values: initialValues });
+    showSuccessMessage();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <>
       <Helmet>
-        <title>Property Requirement Form Nepal — Tell Us What You Need | Sheetal Property Nepal</title>
-        <meta name="description" content="Submit your property requirement to Sheetal Property Nepal. Tell us what you're looking for — location, budget, type — and our agents will find the perfect property for you." />
-        <meta name="keywords" content="property requirement Nepal, find property Nepal, property search form Nepal, Sheetal Property requirement, buy property Nepal" />
+        <title>Property Requirement Form Nepal | Sheetal Property Nepal</title>
+        <meta name="description" content="Submit your property requirement to Sheetal Property Nepal." />
         <link rel="canonical" href="https://sheetalproperty.com/requirementform" />
-        <meta property="og:title" content="Property Requirement Form | Sheetal Property Nepal" />
-        <meta property="og:description" content="Tell us what property you're looking for and our agents will find the perfect match." />
-        <meta property="og:url" content="https://sheetalproperty.com/requirementform" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Sheetal Property Nepal" />
       </Helmet>
 
       <style>{`
@@ -292,12 +424,20 @@ const RequirementForm = () => {
         @media(max-width:640px) { .rf-grid-2 { grid-template-columns: 1fr !important; } .rf-grid-3 { grid-template-columns: 1fr !important; } }
       `}</style>
 
-      {showPayment && <PaymentModal onClose={()=>setShowPayment(false)} onSubmitted={handlePaymentSubmitted} feeSettings={feeSettings} />}
+      {paymentPopup && pendingValues && (
+        <PaymentPopupModal
+          payment={feeSettings}
+          pendingValues={pendingValues}
+          agentId={agentId}
+          onClose={() => setPaymentPopup(false)}
+          onUploaded={handlePaymentUploaded}
+        />
+      )}
+
       <LoginModel r={showLoginModal} setR={setShowLoginModal} />
 
       <div className="rf-root" style={{ background:"#f4f3f0", minHeight:"100vh", paddingTop:80 }}>
 
-        {/* ── Page Header ── */}
         <div style={{ background:"linear-gradient(135deg,#b91c1c,#7f1d1d)", padding:"40px 20px 32px" }}>
           <div style={{ maxWidth:720, margin:"0 auto", textAlign:"center" }}>
             <span style={{ display:"inline-block", background:"rgba(255,255,255,0.15)", color:"#fff", fontSize:9, fontWeight:800, letterSpacing:".12em", textTransform:"uppercase", padding:"3px 10px", borderRadius:4, marginBottom:12 }}>
@@ -309,9 +449,8 @@ const RequirementForm = () => {
             <p style={{ fontSize:13, color:"rgba(255,255,255,0.7)", margin:0, lineHeight:1.7, maxWidth:480, marginLeft:"auto", marginRight:"auto" }}>
               Fill in your details and our team will find the perfect property matching your needs and budget.
             </p>
-            {/* Steps */}
             <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:20, flexWrap:"wrap" }}>
-              {["Pay Fee", "Fill Form", "Agent Matches", "Move In"].map((s,i)=>(
+              {["Fill Form", "Pay Fee", "Agent Matches", "Move In"].map((s,i)=>(
                 <React.Fragment key={s}>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                     <div style={{ width:20, height:20, borderRadius:"50%", background:"rgba(255,255,255,0.2)", color:"#fff", fontSize:9, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center" }}>{i+1}</div>
@@ -324,10 +463,8 @@ const RequirementForm = () => {
           </div>
         </div>
 
-        {/* ── Form Body ── */}
         <div style={{ maxWidth:720, margin:"0 auto", padding:"24px 16px 60px" }}>
 
-          {/* Alerts */}
           {!loggedIn && (
             <div style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", marginBottom:16, background:"#fef3c7", border:"1px solid #fde68a", borderRadius:4 }}>
               <IoLockClosedOutline style={{ fontSize:16, color:"#b45309", flexShrink:0 }} />
@@ -341,23 +478,12 @@ const RequirementForm = () => {
             </div>
           )}
 
-          {loggedIn && !paymentSubmitted && (
+          {loggedIn && feeSettings?.is_active !== false && (
             <div style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", marginBottom:16, background:"#fef2f2", border:"1px solid #fecaca", borderRadius:4 }}>
               <FaLock style={{ fontSize:13, color:"#b91c1c", flexShrink:0 }} />
               <p style={{ fontSize:13, color:"#7f1d1d", margin:0 }}>
-                A fee of <strong>Rs. {feeSettings?.fee_amount || 500}</strong> is required.{" "}
-                <button type="button" onClick={()=>setShowPayment(true)} style={{ background:"none", border:"none", color:"#b91c1c", fontWeight:800, cursor:"pointer", textDecoration:"underline", padding:0, fontSize:13 }}>
-                  Pay now →
-                </button>
-              </p>
-            </div>
-          )}
-
-          {paymentSubmitted && (
-            <div style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", marginBottom:16, background:"#fef3c7", border:"1px solid #fde68a", borderRadius:4 }}>
-              <FaClock style={{ fontSize:13, color:"#d68910", flexShrink:0 }} />
-              <p style={{ fontSize:13, color:"#92400e", margin:0 }}>
-                Payment submitted! Ref: <strong style={{ fontFamily:"monospace" }}>{refNumber}</strong>. Admin will verify within 24 hours. You can still fill and submit the form now.
+                After submitting, a fee of <strong>Rs. {feeSettings?.fee_amount || 500}</strong> is required.
+                You'll see the QR / bank details in a popup.
               </p>
             </div>
           )}
@@ -379,7 +505,6 @@ const RequirementForm = () => {
             {({ values, handleSubmit, handleChange, isSubmitting, errors, touched }) => (
               <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:14 }}>
 
-                {/* Personal Info */}
                 <SC title="Personal Information" step="1">
                   <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
                     <RF icon={IoPersonOutline} label="Full Name" required error={errors.name} touched={touched.name}>
@@ -407,7 +532,6 @@ const RequirementForm = () => {
                   </div>
                 </SC>
 
-                {/* Property Preferences */}
                 <SC title="Property Preferences" step="2">
                   <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
                     <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
@@ -440,26 +564,18 @@ const RequirementForm = () => {
                       <RF icon={IoDocumentTextOutline} label="Requirements">
                         <Field as="select" name="requirements" onChange={handleChange} className="rf-select" style={sS}>
                           <option value="">Select</option>
-                          <option value="room">Room</option>
-                          <option value="flat">Flat</option>
-                          <option value="house">House</option>
-                          <option value="apartment">Apartment</option>
-                          <option value="land">Land</option>
+                          {properties?.property_types?.map((pt, i) => <option value={pt.name} key={i}>{pt.name}</option>)}
                         </Field>
                       </RF>
-                      <RF icon={IoCarOutline} label="Vehicle">
-                        <Field as="select" name="vehicle" onChange={handleChange} className="rf-select" style={sS}>
-                          <option value="">Select</option>
-                          <option value="two">Two Wheelers</option>
-                          <option value="three">Three Wheelers</option>
-                          <option value="four">Four Wheelers</option>
-                        </Field>
+                      <RF icon={IoCarOutline} label="Vehicle" error={errors.vehicle} touched={touched.vehicle}>
+                        <div style={{ padding:"10px 12px", flex:1 }}>
+                          <VehicleCounter vehicles={values.vehicle} onChange={(v) => handleChange({ target: { name: "vehicle", value: v } })} />
+                        </div>
                       </RF>
                     </div>
                   </div>
                 </SC>
 
-                {/* Facilities */}
                 <SC title="Required Facilities" step="3" required>
                   <div role="group" style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
                     {properties?.facilities?.map((facility, i) => (
@@ -482,52 +598,33 @@ const RequirementForm = () => {
                   )}
                 </SC>
 
-                {/* Description */}
                 <SC title="Additional Notes" step="4">
                   <textarea rows={4} name="description" value={values.description} onChange={handleChange}
                     className="rf-textarea"
-                    placeholder="Any additional requirements, preferences or notes for our agents…"
+                    placeholder="Any additional requirements or notes for our agents…"
                     style={{ width:"100%", fontSize:13, color:"#374151", background:"transparent", border:"none", resize:"none", fontFamily:"inherit", outline:"none", boxSizing:"border-box" }}
                   />
                 </SC>
 
-                {/* Submit */}
-                <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-                  <button type="button" onClick={handlePaymentClick}
-                    style={{
-                      display:"flex", alignItems:"center", gap:7,
-                      padding:"12px 20px", borderRadius:4, cursor:"pointer",
-                      fontSize:13, fontWeight:700, fontFamily:"inherit",
-                      background: paymentSubmitted ? "#f0fdf4" : "#b91c1c",
-                      color: paymentSubmitted ? "#27ae60" : "#fff",
-                      border: paymentSubmitted ? "1px solid #a9dfbf" : "none",
-                      flexShrink:0,
-                    }}>
-                    {paymentSubmitted
-                      ? <><FaClock style={{ fontSize:12 }} /> Payment Pending</>
-                      : <><FaLock style={{ fontSize:12 }} /> Pay Fee</>
-                    }
-                  </button>
-
-                  <button type="submit" disabled={isSubmitting || submitting}
-                    style={{
-                      flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                      padding:"12px 24px", border:"none", borderRadius:4,
-                      fontSize:13, fontWeight:700, fontFamily:"inherit",
-                      cursor: isSubmitting||submitting ? "not-allowed" : "pointer",
-                      background: isSubmitting||submitting ? "#e5e7eb" : "#b91c1c",
-                      color: isSubmitting||submitting ? "#9ca3af" : "#fff",
-                      minWidth:160,
-                    }}>
-                    {isSubmitting || submitting
-                      ? <><FaSpinner style={{ animation:"spin .6s linear infinite" }} /> Submitting…</>
-                      : <>{!loggedIn && <IoLockClosedOutline style={{ fontSize:13 }} />} Submit Requirement</>
-                    }
-                  </button>
-                </div>
+                <button type="submit" disabled={isSubmitting || submitting}
+                  style={{
+                    display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                    padding:"14px 24px", border:"none", borderRadius:4,
+                    fontSize:13, fontWeight:700, fontFamily:"inherit",
+                    cursor: isSubmitting||submitting ? "not-allowed" : "pointer",
+                    background: isSubmitting||submitting ? "#e5e7eb" : "#b91c1c",
+                    color: isSubmitting||submitting ? "#9ca3af" : "#fff",
+                  }}>
+                  {isSubmitting || submitting
+                    ? <><FaSpinner style={{ animation:"spin .6s linear infinite" }} /> Processing…</>
+                    : <>{!loggedIn && <IoLockClosedOutline style={{ fontSize:13 }} />} Next: Pay & Submit</>
+                  }
+                </button>
 
                 {loggedIn && (
-                  <p style={{ fontSize:11, color:"#9ca3af", textAlign:"center", margin:0 }}>Fill the form and submit. Pay the fee separately — our team will verify and connect you with an agent.</p>
+                  <p style={{ fontSize:11, color:"#9ca3af", textAlign:"center", margin:0 }}>
+                    You'll see the QR payment popup after clicking the button above.
+                  </p>
                 )}
 
               </form>

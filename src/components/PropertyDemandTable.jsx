@@ -37,6 +37,8 @@ const DemandCard = ({ d }) => {
   const budget = budgetRange(d.minimum_budget, d.maximum_budget);
   const facs = Array.isArray(d.facilities) ? d.facilities : [];
   const facNames = facs.map(f => f?.name || f).filter(Boolean);
+  const vehicles = typeof d.vehicles === "string" ? (() => { try { return JSON.parse(d.vehicles); } catch { return {}; } })() : (d.vehicles || {});
+  const vehicleEntries = Object.entries(vehicles).filter(([, v]) => v > 0);
 
   return (
     <div style={{
@@ -112,19 +114,19 @@ const DemandCard = ({ d }) => {
       </div>
 
       {/* Secondary info: vehicles + facilities */}
-      {(d.vehicles || facNames.length > 0) && (
+      {(vehicleEntries.length > 0 || facNames.length > 0) && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
-          {d.vehicles && (
-            <span style={{
+          {vehicleEntries.map(([type, qty]) => (
+            <span key={type} style={{
               display: "flex", alignItems: "center", gap: "4px",
               padding: "3px 8px", borderRadius: "3px",
               background: "#f8fafc", border: "1px solid #e2e8f0",
               fontSize: "11px", color: "#475569",
             }}>
               <IoCarOutline style={{ width: "11px", height: "11px" }} />
-              {d.vehicles}
+              {type}{qty > 1 ? ` ×${qty}` : ""}
             </span>
-          )}
+          ))}
           {facNames.slice(0, expanded ? facNames.length : 3).map((f, i) => (
             <span key={i} style={{
               padding: "3px 8px", borderRadius: "3px",
