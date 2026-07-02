@@ -10,7 +10,7 @@ import {
   IoLeafOutline, IoFlashOutline,
 } from "react-icons/io5";
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────......
 function fmtBudget(n) {
   if (!n) return "0";
   if (n >= 10000000) return (n / 10000000).toFixed(1).replace(/\.0$/, "") + " Cr";
