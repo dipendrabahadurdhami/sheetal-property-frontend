@@ -368,7 +368,7 @@ const RequirementForm = () => {
     axios.get(`${API_LINK}/property-attributes`)
       .then(res => { if (res.status === 200) setProperties(res.data.data); })
       .catch(() => {});
-    apiClient.get("contact-fee/settings-public")
+    apiClient.get("requirement-fee/settings-public")
       .then(res => setFeeSettings(res.data))
       .catch(() => setFeeSettings({ fee_amount: 500, qr_code_url: null }));
     return () => { if (successTimer.current) clearTimeout(successTimer.current); };
