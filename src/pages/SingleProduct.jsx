@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import { trackPageView } from "../utils/trackVisit";
 import UserHead from "../components/SingleProduct/UserHead";
+import AgentCard from "../components/SingleProduct/AgentCard";
 import Description from "../components/SingleProduct/Description";
 import ScheduleTour from "../components/scheduleTour/ScheduleTour";
 import ContactModel from "../components/SingleProduct/ContactModel";
+import AskAiModal from "../components/SingleProduct/AskAiModal";
 import ProductLocation from "../components/SingleProduct/ProductLocation";
 import {
   HeroSlideshow,
@@ -23,7 +26,7 @@ import { Helmet } from "react-helmet";
 import axios from "axios";
 import Loader from "../components/Loader";
 import headTag from "../headTag";
-import { FaMapMarkerAlt, FaPhoneAlt, FaBookmark, FaShareAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhoneAlt, FaBookmark, FaShareAlt, FaCommentDots } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 
 const NAV_H      = 65;
@@ -277,14 +280,16 @@ const GLOBAL_CSS = `
    TAB NAV
 ───────────────────────────────────────── */
 const TabNav = ({ activeTab, onTabClick }) => (
-  <div style={{
-    position: "sticky",
-    top: `${NAV_H + USERHEAD_H}px`,
-    zIndex: 90,
+  <div className="sp-tabnav-wrap" style={{
     background: "#fff",
     borderBottom: "1px solid #e6e6e6",
     boxShadow: "0 1px 5px rgba(0,0,0,0.04)",
   }}>
+    <style>{`
+      @media (min-width: 768px) {
+        .sp-tabnav-wrap { position: sticky; top: ${NAV_H + USERHEAD_H}px; z-index: 90; }
+      }
+    `}</style>
     <div
       className="sp-tabnav"
       style={{
@@ -349,6 +354,7 @@ const SideCard = ({ title, children }) => (
 ───────────────────────────────────────── */
 const SingleProduct = () => {
   const [open,        setOpen]        = useState(false);
+  const [askAiOpen,   setAskAiOpen]   = useState(false);
   const [activeTab,   setActiveTab]   = useState("sec-overview");
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(null);
@@ -404,6 +410,14 @@ useEffect(() => {
   useEffect(() => {
     name && headTag({ title: name, content: property_description });
   }, [name, property_description]);
+
+  // Re-track this visit once we know the property's real name, so the
+  // dashboard's "Top Properties Viewed" shows an actual title instead of
+  // the generic route-based "Untitled" (the initial page-load track fires
+  // before this data has arrived).
+  useEffect(() => {
+    if (name) trackPageView(window.location.pathname, name);
+  }, [name]);
 
   useEffect(() => {
     if (!Object.keys(property).length) return;
@@ -527,7 +541,7 @@ useEffect(() => {
               </div>
             )}
 
-            <UserHead setOpen={setOpen} property={property} />
+            <UserHead setOpen={setOpen} property={property} onAskAiClick={() => setAskAiOpen(true)} />
             <TabNav activeTab={activeTab} onTabClick={handleTabClick} />
 
             {/* Body */}
@@ -664,11 +678,17 @@ useEffect(() => {
                 {/* ═══ SIDEBAR ═══ */}
                 <div className="sp-sidebar">
 
+                  {/* Who posted this listing — pulled live from their own agent profile */}
+                  <AgentCard agent={property?.agent} />
+
                   {/* Desktop-only CTA row (hidden on mobile via CSS; mobile uses fixed bar) */}
-                  <div className="sp-sidebar-cta-row" style={{ display: "none", gap: "7px" }}>
+                  <div className="sp-sidebar-cta-row" style={{ gap: "7px" }}>
                     <button className="sp-cta" onClick={() => setOpen(true)}>
                       <FaPhoneAlt size={11} />
                       Contact Agent
+                    </button>
+                    <button className="sp-icon-btn" onClick={() => setAskAiOpen(true)} aria-label="Ask AI about this property">
+                      <FaCommentDots size={14} />
                     </button>
                     {[FaBookmark, FaShareAlt].map((Icon, i) => (
                       <button key={i} className="sp-icon-btn">
@@ -709,11 +729,7 @@ useEffect(() => {
                     <ScheduleTour property={property} sidebar />
                   </SideCard>
 
-                  {/* Verified badge */}
-                  <div className="sp-verified">
-                    <MdVerified size={15} style={{ color: "#10b981", flexShrink: 0 }} />
-                    Verified listing — confirmed by our team
-                  </div>
+                  
                 </div>
                 {/* ═══ END SIDEBAR ═══ */}
 
@@ -725,6 +741,9 @@ useEffect(() => {
               <button className="sp-cta" onClick={() => setOpen(true)}>
                 <FaPhoneAlt size={11} />
                 Contact Agent
+              </button>
+              <button className="sp-icon-btn" onClick={() => setAskAiOpen(true)} aria-label="Ask AI about this property">
+                <FaCommentDots size={14} />
               </button>
               <button className="sp-icon-btn">
                 <FaBookmark size={13} />
@@ -750,6 +769,7 @@ useEffect(() => {
             )}
 
             <ContactModel data={property} open={open} setOpen={setOpen} />
+            <AskAiModal currentProperty={property} open={askAiOpen} setOpen={setAskAiOpen} />
           </>
         )
       )}

@@ -5,6 +5,7 @@ import Footer from "./components/Common/Footer/Footer";
 import Header from "./components/Common/header/Header";
 import Home from "./pages/Home";
 import RequirementForm from "./pages/RequirementForm";
+import { trackPageView, startHeartbeat } from "./utils/trackVisit";
 import SingleProduct from "./pages/SingleProduct";
 import HomeLone from "./pages/HomeLone";
 import PayRentOnline from "./pages/PayRentOnline";
@@ -80,6 +81,23 @@ function ScrollToTop() {
   return null;
 }
 
+// ── Website traffic tracking: logs a visit per route change, plus a
+// recurring heartbeat so the admin dashboard's "active now" count works ──
+function TrafficTracker() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    trackPageView(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    const interval = startHeartbeat();
+    return () => clearInterval(interval);
+  }, []);
+
+  return null;
+}
+
 function App(props) {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -121,6 +139,7 @@ function App(props) {
   return (
     <div className="bg-gray-100">
       <ScrollToTop />   {/* ← only addition */}
+      <TrafficTracker />
       <Header />
       <div className="mx-auto w-full bg-white">
         <Routes>

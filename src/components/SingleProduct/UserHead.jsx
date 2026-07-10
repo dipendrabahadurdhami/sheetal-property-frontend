@@ -1,21 +1,15 @@
 import React from "react";
-import { BiUserCircle } from "react-icons/bi";
-import { FaPhone, FaEnvelope, FaTag } from "react-icons/fa";
+import { FaPhone, FaEnvelope, FaTag, FaCommentDots } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const FALLBACK_PHONE = "+9779801000434";
-
-const UserHead = ({ setOpen, property }) => {
+const UserHead = ({ setOpen, property, onAskAiClick }) => {
   const {
-    image_of_property_owner,
-    posted_by,
     posted_date,
     property_code,
     phone,
   } = property || {};
 
-  const contactPhone = phone || FALLBACK_PHONE;
   const user = useSelector((state) => state.user);
   const isLoggedIn = !!user?.data;
 
@@ -28,90 +22,121 @@ const UserHead = ({ setOpen, property }) => {
   };
 
   return (
-    <div style={{
-      background: "#fff",
-      borderBottom: "1px solid #e8e8e8",
-      position: "sticky",
-      top: "65px",
-      zIndex: 100,
-      boxShadow: "0 1px 0 #e8e8e8, 0 2px 8px rgba(0,0,0,0.04)",
-    }}>
-      <div className="container mx-auto" style={{
-        padding: "0 20px",
-        height: "50px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "16px",
-      }}>
-        {/* Left: Agent info */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-          <div style={{
-            width: "30px", height: "30px",
-            borderRadius: "50%",
-            overflow: "hidden",
-            border: "1.5px solid #e5e7eb",
-            flexShrink: 0,
-            background: "#f5f5f5",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            {image_of_property_owner ? (
-              <img src={image_of_property_owner} alt={posted_by}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <BiUserCircle style={{ fontSize: "17px", color: "#bbb" }} />
-            )}
-          </div>
-          <div style={{ minWidth: 0, lineHeight: 1.3 }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "5px", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "10px", color: "#9ca3af", letterSpacing: "0.07em", textTransform: "uppercase", fontWeight: "600" }}>
-                Listed by
-              </span>
-              <span
-              style={{ fontSize: "13px", fontWeight: "700", color: "#111", cursor: "pointer", textDecoration: "underline" }}
-              onClick={() => property?.user_id && window.location.assign(`/agent/${property.user_id}`)}
-            >
-              {posted_by || "Sheetal Real Estate"}
-            </span>
+    <div className="sp-userhead">
+      <style>{`
+        .sp-userhead {
+          background: #fff;
+          border-bottom: 1px solid #e8e8e8;
+          box-shadow: 0 1px 0 #e8e8e8, 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .sp-userhead-inner {
+          max-width: 1320px;
+          margin: 0 auto;
+          padding: 14px 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .sp-userhead-row1 {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+        }
+        .sp-userhead-actions {
+          display: flex;
+          align-items: stretch;
+          gap: 10px;
+        }
+        .sp-userhead-actions a,
+        .sp-userhead-actions button {
+          flex: 1;
+        }
+
+        @media (min-width: 768px) {
+          .sp-userhead {
+            position: sticky;
+            top: 65px;
+            z-index: 100;
+          }
+          .sp-userhead-inner {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 24px;
+            gap: 20px;
+          }
+          .sp-userhead-row1 { flex: 0 0 auto; }
+          .sp-userhead-actions { flex: 0 0 auto; }
+          .sp-userhead-actions a,
+          .sp-userhead-actions button { flex: 0 0 auto; }
+        }
+      `}</style>
+
+      <div className="sp-userhead-inner">
+
+        {/* Row 1: posted date + property code */}
+        <div className="sp-userhead-row1">
+          {posted_date && (
+            <div style={{ lineHeight: 1.3 }}>
+              <div style={{ fontSize: "10px", color: "#9ca3af", letterSpacing: "0.07em", textTransform: "uppercase", fontWeight: "600" }}>
+                Posted On
+              </div>
+              <span style={{ fontSize: "13px", fontWeight: "700", color: "#111" }}>{posted_date}</span>
             </div>
-            {posted_date && <span style={{ fontSize: "11px", color: "#b0b0b0" }}>{posted_date}</span>}
-          </div>
+          )}
+
           {property_code && (
-            <div className="hidden sm:flex" style={{
-              alignItems: "center", gap: "4px",
+            <div style={{
+              display: "flex", alignItems: "center", gap: "5px",
               background: "#f5f5f5", border: "1px solid #e5e7eb",
-              borderRadius: "4px", padding: "3px 9px",
-              fontSize: "10px", fontWeight: "700", color: "#888",
+              borderRadius: "6px", padding: "5px 11px",
+              fontSize: "11px", fontWeight: "700", color: "#888",
+              whiteSpace: "nowrap",
             }}>
-              <FaTag style={{ fontSize: "8px", color: "#e74c3c" }} />
+              <FaTag style={{ fontSize: "9px", color: "#e74c3c" }} />
               #{property_code}
             </div>
           )}
         </div>
 
-        {/* Right: CTAs */}
-        <div style={{ display: "flex", alignItems: "center", gap: "7px", flexShrink: 0 }}>
-          <a href={`tel:${contactPhone}`} className="hidden sm:flex" style={{
-            alignItems: "center", gap: "6px",
-            padding: "0 13px", height: "32px",
-            background: "#f5f5f5", border: "1px solid #e5e7eb",
-            borderRadius: "4px", fontSize: "12px", fontWeight: "600",
-            color: "#374151", textDecoration: "none", whiteSpace: "nowrap",
+        {/* Row 2: actions */}
+        <div className="sp-userhead-actions">
+          {phone && (
+            <a href={`tel:${phone}`} style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
+              padding: "0 18px", height: "40px",
+              background: "#f5f5f5", border: "1px solid #e5e7eb",
+              borderRadius: "6px", fontSize: "13px", fontWeight: "600",
+              color: "#374151", textDecoration: "none", whiteSpace: "nowrap",
+            }}>
+              <FaPhone style={{ fontSize: "11px", color: "#e74c3c" }} />
+              Call Agent
+            </a>
+          )}
+          <button onClick={onAskAiClick} style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
+            padding: "0 16px", height: "40px",
+            background: "#fff", color: "#374151", border: "1.5px solid #e74c3c",
+            borderRadius: "6px", fontSize: "13px", fontWeight: "700",
+            cursor: "pointer", whiteSpace: "nowrap",
           }}>
-            <FaPhone style={{ fontSize: "10px", color: "#e74c3c" }} />
-            Call Agent
-          </a>
+            <FaCommentDots style={{ fontSize: "12px", color: "#e74c3c" }} />
+            Ask AI
+          </button>
           <button onClick={handleContactClick} style={{
-            display: "flex", alignItems: "center", gap: "6px",
-            padding: "0 15px", height: "32px",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
+            padding: "0 18px", height: "40px",
             background: "#27ae60", color: "#fff", border: "none",
-            borderRadius: "4px", fontSize: "12px", fontWeight: "700",
-            cursor: "pointer", whiteSpace: "nowrap", justifyContent: "center",
+            borderRadius: "6px", fontSize: "13px", fontWeight: "700",
+            cursor: "pointer", whiteSpace: "nowrap",
           }}>
-            <FaEnvelope style={{ fontSize: "10px" }} />
+            <FaEnvelope style={{ fontSize: "11px" }} />
             Contact Owner
           </button>
         </div>
+
       </div>
     </div>
   );

@@ -15,21 +15,21 @@ const Tile = ({ icon, label, value }) => {
     <div style={{
       display: "flex", flexDirection: "column", alignItems: "center",
       justifyContent: "center", gap: "6px",
-      padding: "14px 10px",
+      padding: "14px 6px",
       border: "1px solid var(--border, #f3f4f6)",
       borderRadius: "10px",
       background: "var(--white, #fff)",
-      minWidth: "90px",
       textAlign: "center",
       transition: "border-color 0.15s",
     }}>
       <div style={{ color: "var(--r)", fontSize: "20px" }}>{icon}</div>
       <div style={{ fontSize: "14px", fontWeight: "700", color: "var(--d)" }}>{value}</div>
       <div style={{
-        fontSize: "10px",
+        fontSize: "9.5px",
         color: "var(--gray, #9ca3af)",
         textTransform: "uppercase",
-        letterSpacing: "0.06em",
+        letterSpacing: "0.04em",
+        lineHeight: 1.2,
       }}>
         {label}
       </div>
@@ -59,11 +59,26 @@ const TileGrid = ({ tiles }) => {
   const visible = tiles.filter(t => t.value && t.value !== "0" && t.value !== 0);
   if (!visible.length) return null;
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-      {visible.map((t, i) => (
-        <Tile key={i} icon={t.icon} label={t.label} value={t.value} />
-      ))}
-    </div>
+    <>
+      <style>{`
+        .sp-tile-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
+        }
+        @media (min-width: 480px) {
+          .sp-tile-grid { grid-template-columns: repeat(5, 1fr); }
+        }
+        @media (min-width: 768px) {
+          .sp-tile-grid { grid-template-columns: repeat(6, 1fr); }
+        }
+      `}</style>
+      <div className="sp-tile-grid">
+        {visible.map((t, i) => (
+          <Tile key={i} icon={t.icon} label={t.label} value={t.value} />
+        ))}
+      </div>
+    </>
   );
 };
 
