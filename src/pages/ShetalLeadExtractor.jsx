@@ -1,205 +1,62 @@
 import { useState, useRef } from "react";
 
-// ─── Local Extraction Engine (no API needed) ──────────────────────────────────
-
-function devanagariToArabic(str) {
-  return str.replace(/[०-९]/g, d => d.charCodeAt(0) - 2406);
-}
+// ─── Phone helper (just formatting, not detection — AI does the actual reading) ─
 
 function normalizePhone(raw) {
-  let s = devanagariToArabic(String(raw)).replace(/[\s\-().]/g, "");
+  if (!raw) return "";
+  let s = String(raw).replace(/[\s\-().]/g, "");
   if (s.startsWith("+977")) s = s.slice(4);
-  else if (s.startsWith("977") && s.length === 13) s = s.slice(3);
-  if (/^98\d{8}$/.test(s) || /^97\d{8}$/.test(s) || /^96\d{8}$/.test(s)) return s;
-  return null;
+  else if (s.startsWith("977") && s.length > 10) s = s.slice(3);
+  return s.replace(/\D/g, "");
 }
 
-function detectIntent(text) {
-  const t = text.toLowerCase();
-  if (/\b(kinnu|buy|purchase|kharida|खरिद|किन्नु|किन्न)\b/.test(t)) return "Buy";
-  if (/\b(bechnu|sell|sale|bech|बेच्नु|बेच्न|बेच)\b/.test(t)) return "Sell";
-  if (/\b(bhado|bhada|rent|lease|kiraya|भाडा|भाडामा|bhada)\b/.test(t)) return "Rent";
-  if (/\b(lagani|invest|लगानी)\b/.test(t)) return "Invest";
-  if (/\b(inquiry|sochpuch|सोधपुछ|जानकारी|info)\b/.test(t)) return "Inquiry";
-  return "Unknown";
-}
+// ─── AI Extraction Engine ───────────────────────────────────────────────────
+// This calls YOUR Laravel backend, which holds the NVIDIA API key server-side
+// and forwards the request to NVIDIA/DeepSeek. Nothing about the key is
+// exposed here — the browser only ever talks to your own domain.
 
-function detectPropertyType(text) {
-  const t = text.toLowerCase();
-  if (/\b(flat)\b/.test(t)) return "Flat";
-  if (/\b(apartment|app|apmnt)\b/.test(t)) return "Apartment";
-  if (/\b(jagga|jग्गा|जग्गा|land|plot|aana|ropani|bigha|dhur)\b/.test(t)) return "Land";
-  if (/\b(ghar|घर|house|home)\b/.test(t)) return "House";
-  if (/\b(office|commercial|shop|showroom)\b/.test(t)) return "Commercial";
-  if (/\b(building|hall)\b/.test(t)) return "Building";
-  return "";
-}
+// Uses the same env var your app already uses elsewhere (see your .env):
+//   REACT_APP_API_LINK=https://admin.sheetalproperty.com/api
+// Note: REACT_APP_API_LINK already includes "/api", so we only append
+// "/extract-leads" below — not "/api/extract-leads".
+const API_BASE = process.env.REACT_APP_API_LINK;
 
-function detectBudget(text) {
-  const t = devanagariToArabic(text);
-  let m;
-  if ((m = t.match(/(\d+(?:\.\d+)?)\s*(?:cr|crore|करोड)/i))) return m[1] + "Cr";
-  if ((m = t.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lac|l\b|लाख)/i))) return m[1] + "L";
-  if ((m = t.match(/(\d+)\s*k\s*\/?\s*month/i))) return m[1] + "k/month";
-  if ((m = t.match(/(\d+)\s*k\b/i))) return m[1] + "k";
-  if ((m = t.match(/(\d+)\s*sqft/i))) return m[1] + "sqft";
-  if ((m = t.match(/rs\.?\s*(\d[\d,]+)/i))) return "Rs " + m[1].replace(/,/g, "");
-  return "";
-}
-
-function detectLocation(text) {
-  const locations = [
-    "Kathmandu","Lalitpur","Bhaktapur","Pokhara","Chitwan","Butwal","Biratnagar","Birgunj",
-    "Dharan","Hetauda","Itahari","Nepalgunj","Dhangadhi","Janakpur","Bharatpur",
-    "Mandikatar","Putalisadak","Ringroad","Ring Road","Dhapakhel","Koteshwor","Koteshwore",
-    "Thamel","Lazimpat","Baluwatar","Baneshwor","Chabahil","Gongabu","Kalanki","Kirtipur",
-    "Thankot","Godawari","Imadol","Jhamsikhel","Kupondol","Lagankhel","Maitighar",
-    "Naxal","Newroad","New Road","Patan","Pulchowk","Ratnapark","Sanepa","Satdobato",
-    "Sundhara","Teku","Thapathali","Boudha","Swayambhu","Gwarko","Harisiddhi",
-    "Lubhu","Suryabinayak","Sallaghari","Sipadol","Lokanthali","Jadibuti","Thimi",
-    "Bhaisepati","Tikathali","Khumaltar","Ekantakuna","Balkumari","Nakhipot",
-    "Minbhawan","Battisputali","Bishalnagar","Budhanilkantha","Gokarneshwor",
-    "Jorpati","Kapan","Maharajgunj","Mahankal","Narayanthan","Panipokhari",
-    "Samakhusi","Shantinagar","Sinamangal","Sorhakhutte","Tokha","Uttar Dhoka",
-    "Chandragiri","Dakshinkali","Nagarjun","Tarakeshwor","Kageshwori",
-    "Dhumbarahi","Gaushala","Dillibazar","Shankar Dev","Tripureshwor",
-    "Kalimati","Sitapaila","Swoyambhu","Machhapokhari","Balaju","Budha Nilkantha",
-  ];
-  for (const loc of locations) {
-    if (new RegExp("\\b" + loc + "\\b", "i").test(text)) return loc;
+async function aiExtract(rawText) {
+  if (!API_BASE) {
+    throw new Error("REACT_APP_API_LINK is not set — check your .env file and restart the dev server.");
   }
-  return "";
+  const response = await fetch(`${API_BASE}/extract-leads`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({ text: rawText }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.error || `Backend error ${response.status}`);
+  }
+  const data = await response.json();
+  return Array.isArray(data.leads) ? data.leads : [];
 }
 
-function detectLanguage(text) {
-  const hasDevanagari = /[\u0900-\u097F]/.test(text);
-  const hasRomanNepali = /\b(ghar|bhado|kinnu|bechnu|jagga|aana|ropani|bhada|lagani|kotha|tala)\b/i.test(text);
-  const hasEnglish = /\b(buy|sell|rent|house|flat|land|plot|inquiry|budget)\b/i.test(text);
-  if (hasDevanagari && (hasEnglish || hasRomanNepali)) return "Mixed";
-  if (hasDevanagari) return "Nepali";
-  if (hasRomanNepali && hasEnglish) return "Mixed";
-  if (hasRomanNepali) return "Roman Nepali";
-  return "English";
-}
-
-// Words that look capitalized but are NOT names
-const NON_NAME_WORDS = new Set([
-  "Kathmandu","Lalitpur","Bhaktapur","Pokhara","Chitwan","Butwal","Biratnagar","Birgunj",
-  "Dharan","Hetauda","Itahari","Nepalgunj","Dhangadhi","Janakpur","Bharatpur",
-  "Mandikatar","Putalisadak","Ringroad","Dhapakhel","Koteshwor","Koteshwore",
-  "Thamel","Lazimpat","Baluwatar","Baneshwor","Chabahil","Gongabu","Kalanki","Kirtipur",
-  "Thankot","Godawari","Imadol","Jhamsikhel","Kupondol","Lagankhel","Maitighar",
-  "Naxal","Patan","Pulchowk","Sanepa","Satdobato","Sundhara","Teku","Thapathali",
-  "Boudha","Swayambhu","Gwarko","Harisiddhi","Lubhu","Suryabinayak","Sallaghari",
-  "Sipadol","Lokanthali","Jadibuti","Thimi","Bhaisepati","Tikathali","Khumaltar",
-  "Ekantakuna","Balkumari","Nakhipot","Minbhawan","Battisputali","Bishalnagar",
-  "Budhanilkantha","Gokarneshwor","Jorpati","Kapan","Maharajgunj","Mahankal",
-  "Narayanthan","Panipokhari","Samakhusi","Shantinagar","Sinamangal","Sorhakhutte",
-  "Tokha","Chandragiri","Dakshinkali","Nagarjun","Tarakeshwor","Kageshwori",
-  "Dhumbarahi","Gaushala","Dillibazar","Tripureshwor","Kalimati","Sitapaila",
-  "Balaju","Ganeshthan","Kakani","Baneshowr","Kamalpokhari","Kamal","Montessori",
-  // Property / keyword words
-  "Flat","House","Land","Plot","Apartment","Building","Hall","Office","Commercial",
-  "Inquiry","Buy","Sell","Rent","Invest","Unknown","Missed","Call","Calls",
-  "Ghar","Bhado","Kinnu","Bechnu","Jagga","Aana","Ropani","Owner","Client",
-  "Urgent","Budget","Needed","Anywhere","Ground","Floor","Cafe","Hostel",
-  "Mixed","Roman","Nepali","English","Road","Ring","New","Area","Near","Side",
-]);
-
-function extractName(text) {
-  // Strip phone numbers, Devanagari, numbers, separators
-  let clean = text
-    .replace(/\+?977[\s-]?\d{10}/g, " ")
-    .replace(/\b9[678]\d{8}\b/g, " ")
-    .replace(/[\u0900-\u097F]+/g, " ")
-    .replace(/\d+(?:\.\d+)?(?:cr|crore|lakh|lac|sqft|k|l)\b/gi, " ")
-    .replace(/\d+/g, " ")
-    .replace(/[|,\-+_\/\\]/g, " ")
-    .replace(/\b(flat|house|ghar|land|plot|apartment|inquiry|buy|sell|rent|bhado|kinnu|bechnu|jagga|aana|ropani|owner|client|missed|call|calls|urgent|sqft|crore|lakh|cr|budget|needed|anywhere|building|hall|request|duplex|bhk|bedroom|room|floor|ground|area|near|side|road|ringroad|ring)\b/gi, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  // Try to find 2-word Proper Name (First Last) — both capitalized, neither a known place/keyword
-  const twoWord = clean.match(/\b([A-Z][a-zA-Z]{1,})\s+([A-Z][a-zA-Z]{1,})\b/g);
-  if (twoWord) {
-    for (const candidate of twoWord) {
-      const parts = candidate.trim().split(/\s+/);
-      if (parts.every(p => !NON_NAME_WORDS.has(p) && p.length > 1)) {
-        return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
-      }
-    }
-  }
-
-  // Single capitalized word that is not a known place/keyword
-  const words = clean.match(/\b[A-Z][a-zA-Z]{2,}\b/g) || [];
-  for (const w of words) {
-    if (!NON_NAME_WORDS.has(w)) return w;
-  }
-
-  // ALL CAPS (e.g. KHADKA) not in non-name list
-  const caps = clean.match(/\b[A-Z]{3,}\b/g) || [];
-  for (const w of caps) {
-    const titled = w.charAt(0) + w.slice(1).toLowerCase();
-    if (!NON_NAME_WORDS.has(titled) && !NON_NAME_WORDS.has(w)) {
-      return titled;
-    }
-  }
-
-  return "Unknown";
-}
-
-function localExtract(rawText) {
-  const lines = rawText.split(/\n/).map(l => l.trim()).filter(Boolean);
-  const leads = [];
-  let isMissedCallSection = false;
-  let idCounter = 1;
-
-  for (const line of lines) {
-    // Detect missed call section header
-    if (/missed\s*calls?/i.test(line) && !(/\d{9,}/.test(line))) {
-      isMissedCallSection = true;
-      continue;
-    }
-    // Reset missed call section if line looks like normal lead
-    if (isMissedCallSection && /[a-zA-Z\u0900-\u097F]{4,}/.test(line) && !/^\+?977/.test(line.trim())) {
-      isMissedCallSection = false;
-    }
-
-    const normalized = devanagariToArabic(line);
-    // Find all phone numbers in the line
-    const phoneMatches = [...normalized.matchAll(/(?:\+?977[\s-]?)?(?:98|97|96)\d{8}/g)];
-
-    if (phoneMatches.length === 0) continue;
-
-    for (const pm of phoneMatches) {
-      const phone = normalizePhone(pm[0]);
-      if (!phone) continue;
-
-      const isMissed = isMissedCallSection || /missed/i.test(line);
-      const intent = isMissed ? "Unknown" : detectIntent(line);
-      const property_type = detectPropertyType(line);
-      const budget = detectBudget(line);
-      const location = detectLocation(line);
-      const detected_language = detectLanguage(line);
-      const name = isMissed ? "Unknown" : extractName(line);
-      const confidence = [phone, name !== "Unknown", location, budget].filter(Boolean).length - 1 || 1;
-
-      leads.push({
-        id: idCounter++,
-        name,
-        phone,
-        location,
-        budget,
-        intent,
-        property_type,
-        notes: isMissed ? "Missed call" : "",
-        confidence: Math.min(3, Math.max(1, confidence)),
-        source_hint: isMissed ? "missed call" : detected_language === "Nepali" ? "Nepali text" : detected_language === "Roman Nepali" ? "Roman Nepali" : "inquiry note",
-        detected_language,
-      });
-    }
-  }
-  return leads;
+function mapAiLead(l, idx) {
+  const phone = normalizePhone(l.phone);
+  const name = l.name && String(l.name).trim() ? String(l.name).trim() : "Unknown";
+  const intent = ["Buy", "Sell", "Rent", "Invest", "Inquiry", "Unknown"].includes(l.intent) ? l.intent : "Unknown";
+  const filledCount = [phone, name !== "Unknown", l.location, l.budget].filter(Boolean).length;
+  return {
+    id: `AI${Date.now()}_${idx}`,
+    name,
+    phone,
+    location: l.location || "",
+    budget: l.budget || "",
+    intent,
+    property_type: l.property_type || "",
+    notes: l.notes || "",
+    confidence: Math.min(3, Math.max(1, filledCount - 1 || 1)),
+    source_hint: "AI extracted",
+    detected_language: l.detected_language || "English",
+  };
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -267,22 +124,79 @@ export default function ShetalLeadExtractor() {
   const [filterType, setFilterType] = useState("");
   const [copyStatus, setCopyStatus] = useState({});
   const [dragOver, setDragOver] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [progress, setProgress] = useState({ current: 0, total: 0, isImport: false });
   const fileInputRef = useRef();
 
   const sw = (panel) => setActivePanel(panel);
 
-  const runExtraction = (text, isImport = false) => {
+  const runExtraction = async (text, isImport = false) => {
     const setStatus = isImport ? setImportStatus : setExtractStatus;
-    try {
-      const newLeads = localExtract(text);
-      if (!newLeads.length) { setStatus({ msg: "No phone numbers found.", type: "err" }); return; }
-      setLeads(prev => [...prev, ...newLeads]);
-      if (!isImport) setPreviewLeads(newLeads);
-      setStatus({ msg: `✓ Extracted ${newLeads.length} lead${newLeads.length !== 1 ? "s" : ""}`, type: "ok" });
-      if (!isImport) setRawInput(""); else setImportText("");
-    } catch (e) {
-      setStatus({ msg: "Error: " + e.message, type: "err" });
+
+    // Split into non-empty lines. Each line is sent to the AI separately —
+    // this keeps each request small and fast (avoids long-generation
+    // timeouts on big pastes) and lets results appear one by one instead of
+    // making the user wait for the whole batch to finish.
+    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+    if (!lines.length) {
+      setStatus({ msg: "Nothing to extract.", type: "err" });
+      return;
     }
+
+    setAiBusy(true);
+    setProgress({ current: 0, total: lines.length, isImport });
+    if (!isImport) setPreviewLeads([]);
+    let successCount = 0;
+    let failCount = 0;
+
+    const CONCURRENCY = 4; // process this many lines at once
+    let completedCount = 0;
+
+    const processLine = async (i) => {
+      try {
+        const rawLeads = await aiExtract(lines[i]);
+        if (rawLeads.length) {
+          const mapped = rawLeads.map((l, idx) => mapAiLead(l, `${i}_${idx}`));
+          setLeads(prev => [...prev, ...mapped]);
+          if (!isImport) setPreviewLeads(prev => [...(prev || []), ...mapped]);
+          successCount += mapped.length;
+        }
+      } catch (e) {
+        failCount++;
+        // Keep going on a per-line failure — one bad/slow line shouldn't
+        // stop the rest of the batch from extracting.
+      } finally {
+        completedCount++;
+        setProgress({ current: completedCount, total: lines.length, isImport });
+        setStatus({ msg: `🤖 Extracting… ${completedCount} of ${lines.length} lines done`, type: "" });
+      }
+    };
+
+    // Simple worker-pool: CONCURRENCY workers each pull the next unprocessed
+    // line until none remain. Keeps requests running in parallel instead of
+    // strictly one-at-a-time, cutting total wait time roughly by CONCURRENCY.
+    let nextIndex = 0;
+    const worker = async () => {
+      while (nextIndex < lines.length) {
+        const i = nextIndex++;
+        await processLine(i);
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCY, lines.length) }, worker));
+
+    setAiBusy(false);
+    setProgress({ current: 0, total: 0, isImport: false });
+
+    if (successCount === 0) {
+      setStatus({ msg: failCount ? `AI error on all ${failCount} line(s). Please try again.` : "AI found no leads in that text.", type: "err" });
+      return;
+    }
+
+    const summary = failCount
+      ? `✓ Extracted ${successCount} lead${successCount !== 1 ? "s" : ""} (${failCount} line${failCount !== 1 ? "s" : ""} failed — try re-pasting those separately)`
+      : `✓ Extracted ${successCount} lead${successCount !== 1 ? "s" : ""}`;
+    setStatus({ msg: summary, type: "ok" });
+    if (!isImport) setRawInput(""); else setImportText("");
   };
 
   const extractLeads = () => {
@@ -390,6 +304,13 @@ export default function ShetalLeadExtractor() {
     exportCard: { background: "#fff", border: "1px solid rgba(0,0,0,0.09)", borderRadius: 6, padding: 16 },
     locCard: { background: "#fff", border: "1px solid rgba(0,0,0,0.09)", borderRadius: 4, padding: "13px 15px", cursor: "pointer", transition: "border-color 0.1s" },
     phoneBox: { fontFamily: "'Courier New',monospace", fontSize: 12, background: "#f8f8f7", border: "1px solid rgba(0,0,0,0.09)", borderRadius: 4, padding: "9px 11px", maxHeight: 120, overflowY: "auto", color: "#666", lineHeight: 1.9, whiteSpace: "pre" },
+    progressWrap: { marginTop: 11 },
+    progressTrack: { height: 5, background: "rgba(192,57,43,0.1)", borderRadius: 999, overflow: "hidden" },
+    progressFill: (pct) => ({ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg, #c0392b, #e0685a)", borderRadius: 999, transition: "width 0.35s ease" }),
+    progressLabel: { fontSize: 11, color: "#a32d2d", fontWeight: 600, marginTop: 5, display: "flex", alignItems: "center", gap: 6 },
+    dot: (delay) => ({ width: 4, height: 4, borderRadius: "50%", background: "#c0392b", display: "inline-block", animation: `pulseDot 1.1s ${delay}s infinite ease-in-out` }),
+    skeletonRow: { display: "flex", gap: 8, padding: "8px 11px", alignItems: "center", animation: "fadeIn 0.25s ease" },
+    skeletonBlock: (w) => ({ height: 10, width: w, borderRadius: 3, background: "linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.3s infinite linear" }),
   };
 
   return (
@@ -418,29 +339,38 @@ export default function ShetalLeadExtractor() {
           {activePanel==="extract" && (
             <div>
               <div style={S.pageHd}>Extract Leads</div>
-              <div style={S.pageSub}>Paste raw lead data — Nepali, English, Roman Nepali, or mixed. Extracts instantly, no API needed.</div>
+              <div style={S.pageSub}>Paste raw lead data — Nepali, English, Roman Nepali, or mixed. An AI model reads and structures it.</div>
               <div style={S.card}>
                 <div style={S.cardTitle}>📋 Raw Lead Data</div>
                 <textarea style={S.textarea} rows={11} value={rawInput} onChange={e => setRawInput(e.target.value)}
                   placeholder={`Paste anything — Nepali, English, Roman Nepali, or mixed:\n\nBegam KHADKA +977 9849297074 Mandikatar flat owner\nRam ko ghar kinnu cha 9841234567 Koteshwor\nSita didi 9803456789 Patan ma flat bhado khojdai\nMissed calls\n+977 9808949791\n+977 9851277969`} />
-                <div style={S.note}>⚡ Works offline — no API key needed · Handles: +977 prefix · Devanagari digits · Roman Nepali (ghar, bhado, kinnu, bechnu, jagga, aana, ropani) · missed call lists · 100+ Nepal locations</div>
+                <div style={S.note}>🤖 Parsed by AI via your Laravel API at {API_BASE}/extract-leads — reads names, phones, locations, budgets, intent, and language directly, no keyword list required.</div>
                 <div style={{ display:"flex", gap:8, marginTop:11, alignItems:"center", flexWrap:"wrap" }}>
-                  <button style={S.btn("primary")} onClick={extractLeads}>✨ Extract Leads</button>
+                  <button style={{...S.btn("primary"), opacity: aiBusy ? 0.6 : 1}} disabled={aiBusy} onClick={extractLeads}>{aiBusy ? "🤖 Extracting…" : "✨ Extract Leads"}</button>
                   <button style={S.btn()} onClick={() => setRawInput(SAMPLE)}>Load sample</button>
                   <button style={S.btn("danger")} onClick={() => { if (!leads.length || window.confirm(`Delete all ${leads.length} leads?`)) { setLeads([]); setPreviewLeads(null); setExtractStatus({msg:"",type:""}); } }}>🗑 Clear all</button>
-                  <span style={S.status(extractStatus.type)}>{extractStatus.msg}</span>
+                  {!aiBusy && <span style={S.status(extractStatus.type)}>{extractStatus.msg}</span>}
                 </div>
+                {aiBusy && !progress.isImport && progress.total > 0 && (
+                  <div style={S.progressWrap}>
+                    <div style={S.progressTrack}><div style={S.progressFill(Math.round((progress.current / progress.total) * 100))} /></div>
+                    <div style={S.progressLabel}>
+                      <span style={S.dot(0)} /><span style={S.dot(0.15)} /><span style={S.dot(0.3)} />
+                      {progress.current} of {progress.total} lines done…
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {previewLeads && previewLeads.length > 0 && (
+              {((aiBusy && !progress.isImport) || (previewLeads && previewLeads.length > 0)) && (
                 <div style={S.card}>
-                  <div style={S.cardTitle}>✅ Extraction Preview — {previewLeads.length} leads added</div>
+                  <div style={S.cardTitle}>{(aiBusy && !progress.isImport) ? "🤖 Extracting…" : "✅ Extraction Preview"} — {(previewLeads || []).length} lead{(previewLeads || []).length !== 1 ? "s" : ""} added</div>
                   <div style={S.tblWrap}>
                     <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, minWidth:700 }}>
                       <thead><tr>{["Name","Phone","Location","Budget","Intent","Type","Conf.","Lang","Notes"].map(h => <th key={h} style={S.th}>{h}</th>)}</tr></thead>
                       <tbody>
-                        {previewLeads.map(l => (
-                          <tr key={l.id}>
+                        {(previewLeads || []).map(l => (
+                          <tr key={l.id} className="leadRow">
                             <td style={S.td}><strong>{esc(l.name)}</strong>{l.name==="Unknown" && <span style={{background:"#f1efe8",color:"#5f5e5a",fontSize:9,fontWeight:600,padding:"1px 4px",borderRadius:2,marginLeft:3}}>?</span>}</td>
                             <td style={{...S.td,fontFamily:"monospace",fontSize:11}}>{esc(l.phone)||"—"}</td>
                             <td style={S.td}>{esc(l.location)||"—"}</td>
@@ -452,10 +382,24 @@ export default function ShetalLeadExtractor() {
                             <td style={{...S.td,fontSize:11,color:"#777",maxWidth:130,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{esc(l.notes)}</td>
                           </tr>
                         ))}
+                        {(aiBusy && !progress.isImport) && (
+                          <tr>
+                            <td colSpan={9} style={{ padding: 0 }}>
+                              <div style={S.skeletonRow}>
+                                <div style={S.skeletonBlock("70px")} />
+                                <div style={S.skeletonBlock("90px")} />
+                                <div style={S.skeletonBlock("60px")} />
+                                <div style={S.skeletonBlock("50px")} />
+                                <div style={S.skeletonBlock("40px")} />
+                                <div style={S.skeletonBlock("55px")} />
+                              </div>
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
-                  <div style={{marginTop:10}}><button style={S.btn("primary")} onClick={() => sw("contacts")}>View All Contacts →</button></div>
+                  {!(aiBusy && !progress.isImport) && <div style={{marginTop:10}}><button style={S.btn("primary")} onClick={() => sw("contacts")}>View All Contacts →</button></div>}
                 </div>
               )}
             </div>
@@ -483,9 +427,18 @@ export default function ShetalLeadExtractor() {
                 <textarea style={S.textarea} rows={7} value={importText} onChange={e => setImportText(e.target.value)}
                   placeholder={"Paste CSV, TSV, or any raw text with phone numbers…\n\nName,Phone,Location\nRam Bahadur,9841234567,Kathmandu\n,9851112233,Lalitpur"} />
                 <div style={{display:"flex",gap:8,marginTop:11,alignItems:"center"}}>
-                  <button style={S.btn("primary")} onClick={importData}>📂 Import & Extract</button>
-                  <span style={S.status(importStatus.type)}>{importStatus.msg}</span>
+                  <button style={{...S.btn("primary"), opacity: aiBusy ? 0.6 : 1}} disabled={aiBusy} onClick={importData}>{aiBusy ? "🤖 Extracting…" : "📂 Import & Extract"}</button>
+                  {!aiBusy && <span style={S.status(importStatus.type)}>{importStatus.msg}</span>}
                 </div>
+                {aiBusy && progress.isImport && progress.total > 0 && (
+                  <div style={S.progressWrap}>
+                    <div style={S.progressTrack}><div style={S.progressFill(Math.round((progress.current / progress.total) * 100))} /></div>
+                    <div style={S.progressLabel}>
+                      <span style={S.dot(0)} /><span style={S.dot(0.15)} /><span style={S.dot(0.3)} />
+                      {progress.current} of {progress.total} lines done…
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -619,7 +572,14 @@ export default function ShetalLeadExtractor() {
 
         </div>
       </div>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}} *{box-sizing:border-box}`}</style>
+      <style>{`
+        @keyframes spin{to{transform:rotate(360deg)}}
+        *{box-sizing:border-box}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        @keyframes pulseDot{0%,80%,100%{opacity:0.25;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+        .leadRow{animation:fadeIn 0.3s ease}
+      `}</style>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { trackPageViewWithEntity } from '../utils/trackVisit';
 import { fetchBlogBySlug, clearSingle } from '../features/slices/blog';
 import BlogSidebar from '../components/blog/BlogSidebar';
 import CommentSection from '../components/blog/CommentSection';
@@ -90,6 +91,10 @@ const BlogSingle = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
   const { single: blog, loading } = useSelector((s) => s.blog);
+
+  useEffect(() => {
+    if (blog?.id) trackPageViewWithEntity(window.location.pathname, blog.id, blog.title);
+  }, [blog?.id, blog?.title]);
   const [stickyShare, setStickyShare] = useState(false);
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 

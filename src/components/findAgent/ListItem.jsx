@@ -36,7 +36,7 @@ const AgentListItem = ({ data }) => {
         display:"flex", alignItems:"stretch", gap:0,
         background:"#fff", borderRadius:16,
         border:`1px solid ${is_premium ? tierConfig.border : "#e5e7eb"}`,
-        boxShadow: is_premium ? `0 4px 20px ${tierConfig.glow}` : "0 1px 4px rgba(0,0,0,0.04)",
+        boxShadow: is_premium ? `0 4px 20px ${tierConfig.glow}` : "0 1px 4px rgba(0,0,0,0.05)",
         overflow:"hidden", transition:"transform .18s, box-shadow .18s",
         marginBottom:0,
       }}

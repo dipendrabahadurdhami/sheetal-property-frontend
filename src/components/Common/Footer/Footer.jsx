@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaPhone, FaChevronDown } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
 import { BsFacebook, BsInstagram, BsTwitter } from "react-icons/bs";
@@ -47,6 +47,13 @@ const FtLinks = ({ links }) => (
 /* ── Main Footer ── */
 const Footer = () => {
   const year = new Date().getFullYear();
+  const location = useLocation();
+
+  // Agent-branded requirement form (opened via QR/link with ?agent_id=)
+  // is a bare, standalone page — no site footer.
+  const params = new URLSearchParams(location.search);
+  const isAgentBareForm = location.pathname.toLowerCase() === "/requirementform" && params.has("agent_id");
+  if (isAgentBareForm) return null;
 
   const propertyLinks = [
     { label: "Property in Nepal",     href: "/productSearch?district=kathmandu,lalitpur,bhaktapur" },
