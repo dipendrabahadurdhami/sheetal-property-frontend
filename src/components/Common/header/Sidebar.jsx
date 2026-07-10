@@ -719,7 +719,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     setSidebarOpen(false);
                     if (!user.data) { setAuthModal(true); return; }
                     const isAgent = !!(user.data?.is_agent || user.data?.subscription_tier?.startsWith("Agent"));
-                    if (isAgent) { window.open("https://admin.sheetalproperty.com", "_blank"); return; }
+                    if (isAgent) {
+                      if (user.data?.subscription_tier === "Agent: Bronze") {
+                        navigate("/my-profile?section=my-plan");
+                      } else {
+                        window.open("https://admin.sheetalproperty.com", "_blank");
+                      }
+                      return;
+                    }
                     navigate("/my-profile?section=my-plan");
                   }}
                   style={{
