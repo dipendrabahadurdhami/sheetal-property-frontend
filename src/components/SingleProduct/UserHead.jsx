@@ -32,10 +32,10 @@ const UserHead = ({ setOpen, property, onAskAiClick }) => {
         .sp-userhead-inner {
           max-width: 1320px;
           margin: 0 auto;
-          padding: 14px 16px;
+          padding: 12px 14px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 10px;
         }
         .sp-userhead-row1 {
           display: flex;
@@ -44,14 +44,49 @@ const UserHead = ({ setOpen, property, onAskAiClick }) => {
           gap: 10px;
         }
         .sp-userhead-actions {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+        }
+
+        /* Shared button look */
+        .sp-btn {
           display: flex;
-          align-items: stretch;
-          gap: 10px;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          height: 40px;
+          border-radius: 6px;
+          font-weight: 700;
+          white-space: nowrap;
+          overflow: hidden;
+          text-decoration: none;
+          cursor: pointer;
+          font-size: 12px;
+          padding: 0 6px;
         }
-        .sp-userhead-actions a,
-        .sp-userhead-actions button {
-          flex: 1;
+        .sp-btn-icon { font-size: 11px; flex-shrink: 0; }
+
+        /* Call Agent hidden on mobile, shown from desktop breakpoint */
+        .sp-btn-call { display: none; }
+
+        .sp-btn-call {
+          background: #f5f5f5;
+          border: 1px solid #e5e7eb;
+          color: #374151;
         }
+        .sp-btn-ask {
+          background: #fff;
+          border: 1.5px solid #e74c3c;
+          color: #374151;
+        }
+        .sp-btn-contact {
+          background: #27ae60;
+          border: none;
+          color: #fff;
+        }
+
+        /* Full labels used everywhere now that mobile only shows 2 buttons */
 
         @media (min-width: 768px) {
           .sp-userhead {
@@ -68,9 +103,19 @@ const UserHead = ({ setOpen, property, onAskAiClick }) => {
             gap: 20px;
           }
           .sp-userhead-row1 { flex: 0 0 auto; }
-          .sp-userhead-actions { flex: 0 0 auto; }
-          .sp-userhead-actions a,
-          .sp-userhead-actions button { flex: 0 0 auto; }
+          .sp-userhead-actions {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            flex: 0 0 auto;
+          }
+          .sp-btn-call { display: flex; }
+          .sp-btn {
+            flex: 0 0 auto;
+            font-size: 13px;
+            padding: 0 18px;
+          }
+          .sp-btn-ask { padding: 0 16px; }
         }
       `}</style>
 
@@ -104,36 +149,18 @@ const UserHead = ({ setOpen, property, onAskAiClick }) => {
         {/* Row 2: actions */}
         <div className="sp-userhead-actions">
           {phone && (
-            <a href={`tel:${phone}`} style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
-              padding: "0 18px", height: "40px",
-              background: "#f5f5f5", border: "1px solid #e5e7eb",
-              borderRadius: "6px", fontSize: "13px", fontWeight: "600",
-              color: "#374151", textDecoration: "none", whiteSpace: "nowrap",
-            }}>
-              <FaPhone style={{ fontSize: "11px", color: "#e74c3c" }} />
-              Call Agent
+            <a href={`tel:${phone}`} className="sp-btn sp-btn-call">
+              <FaPhone className="sp-btn-icon" style={{ color: "#e74c3c" }} />
+              <span>Call Agent</span>
             </a>
           )}
-          <button onClick={onAskAiClick} style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
-            padding: "0 16px", height: "40px",
-            background: "#fff", color: "#374151", border: "1.5px solid #e74c3c",
-            borderRadius: "6px", fontSize: "13px", fontWeight: "700",
-            cursor: "pointer", whiteSpace: "nowrap",
-          }}>
-            <FaCommentDots style={{ fontSize: "12px", color: "#e74c3c" }} />
-            Ask AI
+          <button onClick={onAskAiClick} className="sp-btn sp-btn-ask">
+            <FaCommentDots className="sp-btn-icon" style={{ color: "#e74c3c" }} />
+            <span>Ask AI</span>
           </button>
-          <button onClick={handleContactClick} style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
-            padding: "0 18px", height: "40px",
-            background: "#27ae60", color: "#fff", border: "none",
-            borderRadius: "6px", fontSize: "13px", fontWeight: "700",
-            cursor: "pointer", whiteSpace: "nowrap",
-          }}>
-            <FaEnvelope style={{ fontSize: "11px" }} />
-            Contact Owner
+          <button onClick={handleContactClick} className="sp-btn sp-btn-contact">
+            <FaEnvelope className="sp-btn-icon" />
+            <span>Contact Owner</span>
           </button>
         </div>
 
