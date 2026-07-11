@@ -40,14 +40,28 @@ const PropertyDemand = () => {
   const [search,       setSearch]       = useState("");
   const [focused,      setFocused]      = useState(false);
   const [tab,          setTab]          = useState("listings"); // listings | analytics
+  const [matches,      setMatches]      = useState({});
 
   const displayDemand = async () => {
     setLoading(true);
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_LINK}/property-demand-list`);
-      if (res.status === 200) { setDemand(res.data.data); setFilteredList(res.data.data); }
+      if (res.status === 200) {
+        const demands = res.data.data;
+        setDemand(demands);
+        setFilteredList(demands);
+        if (demands?.length) fetchMatches(demands);
+      }
     } catch (err) { console.error("Failed to fetch demands", err); }
     finally { setLoading(false); }
+  };
+
+  const fetchMatches = async (demands) => {
+    try {
+      const ids = demands.map(d => d.id).join(",");
+      const res = await axios.get(`${process.env.REACT_APP_API_LINK}/demand-matches-by-requirements?requirement_form_ids=${ids}`);
+      if (res.status === 200 && res.data?.data) setMatches(res.data.data);
+    } catch { /* silently fail — claims just won't show */ }
   };
 
   useEffect(() => {
@@ -219,7 +233,7 @@ const PropertyDemand = () => {
               </div>
             )}
 
-            {!loading && hasResults && <PropertyDemandTable demands={filteredList} />}
+            {!loading && hasResults && <PropertyDemandTable demands={filteredList} matches={matches} />}
           </>
         )}
       </div>

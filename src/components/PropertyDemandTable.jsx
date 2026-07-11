@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   IoLocationOutline, IoCashOutline, IoCarOutline,
-  IoHomeOutline, IoChevronDownOutline, IoChevronUpOutline,
-  IoPeopleOutline, IoCloseOutline,
+  IoHomeOutline, IoCloseOutline, IoPeopleOutline,
 } from "react-icons/io5";
+import fallBackSrc from "../assets/images/noUser.png";
 import apiClient from "../utils/apiClient";
 
 const PAGE_SIZE = 12;
@@ -43,6 +43,10 @@ const PropertySelectorModal = ({ isOpen, onClose, demandId, onMatchComplete }) =
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
 
+  const hasProperties = properties.length > 0;
+  const modalTitle = hasProperties ? "Select Your Property" : "Claim This Demand";
+  const buttonText = selectedProperty ? "Submit Match" : "Claim Demand";
+
   useEffect(() => {
     if (!isOpen) return;
     setSelectedProperty(null);
@@ -56,12 +60,11 @@ const PropertySelectorModal = ({ isOpen, onClose, demandId, onMatchComplete }) =
   }, [isOpen]);
 
   const handleSubmit = async () => {
-    if (!selectedProperty) return;
     setSubmitting(true);
     try {
       const res = await apiClient.post("demand-match", {
         requirement_form_id: demandId,
-        property_id: selectedProperty,
+        property_id: selectedProperty || null,
         message: message || undefined,
       });
       if (res.data?.status === 200) {
@@ -91,7 +94,7 @@ const PropertySelectorModal = ({ isOpen, onClose, demandId, onMatchComplete }) =
           <Transition.Child as={Fragment} enter="ease-out duration-200" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="ease-in duration-150" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
             <Dialog.Panel style={{ background: "#fff", borderRadius: "8px", padding: "24px", width: "100%", maxWidth: "480px", maxHeight: "80vh", overflow: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <Dialog.Title style={{ fontSize: "16px", fontWeight: 800, color: "#111827", margin: 0 }}>Select Your Property</Dialog.Title>
+                <Dialog.Title style={{ fontSize: "16px", fontWeight: 800, color: "#111827", margin: 0 }}>{modalTitle}</Dialog.Title>
                 <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: "4px" }}>
                   <IoCloseOutline style={{ width: "20px", height: "20px" }} />
                 </button>
@@ -99,10 +102,45 @@ const PropertySelectorModal = ({ isOpen, onClose, demandId, onMatchComplete }) =
 
               {loading && <p style={{ fontSize: "13px", color: "#6b7280", textAlign: "center", padding: "24px 0" }}>Loading your properties...</p>}
 
-              {!loading && properties.length === 0 && (
-                <div style={{ textAlign: "center", padding: "24px 0" }}>
-                  <p style={{ fontSize: "13px", color: "#6b7280", margin: "0 0 12px" }}>You don't have any properties yet.</p>
-                  <p style={{ fontSize: "12px", color: "#9ca3af", margin: 0 }}>Post a property first to match with demands.</p>
+              {!loading && !hasProperties && (
+                <div>
+                  <p style={{ fontSize: "13px", color: "#6b7280", margin: "0 0 16px" }}>No properties? You can still claim this demand.</p>
+
+                  <div style={{ marginBottom: "16px" }}>
+                    <label style={{ fontSize: "12px", fontWeight: 600, color: "#374151", display: "block", marginBottom: "6px" }}>Message (optional)</label>
+                    <textarea
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
+                      placeholder="Add a note for the demand poster..."
+                      rows={3}
+                      maxLength={500}
+                      style={{ width: "100%", padding: "10px", border: "1px solid #e5e7eb", borderRadius: "6px", fontSize: "13px", resize: "vertical", outline: "none", boxSizing: "border-box" }}
+                    />
+                  </div>
+
+                  {result && (
+                    <div style={{
+                      padding: "10px 14px", borderRadius: "6px", marginBottom: "16px", fontSize: "13px", fontWeight: 600,
+                      background: result.type === "success" ? "#f0fdf4" : "#fef2f2",
+                      color: result.type === "success" ? "#15803d" : "#dc2626",
+                      border: `1px solid ${result.type === "success" ? "#bbf7d0" : "#fecaca"}`,
+                    }}>
+                      {result.text}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    style={{
+                      width: "100%", padding: "11px 18px", border: "none", borderRadius: "6px",
+                      fontSize: "14px", fontWeight: 700, cursor: submitting ? "not-allowed" : "pointer",
+                      background: submitting ? "#d1d5db" : "#107c10",
+                      color: "#fff", transition: "background 0.15s",
+                    }}
+                  >
+                    {submitting ? "Submitting..." : buttonText}
+                  </button>
                 </div>
               )}
 
@@ -170,15 +208,15 @@ const PropertySelectorModal = ({ isOpen, onClose, demandId, onMatchComplete }) =
 
                   <button
                     onClick={handleSubmit}
-                    disabled={!selectedProperty || submitting}
+                    disabled={submitting}
                     style={{
                       width: "100%", padding: "11px 18px", border: "none", borderRadius: "6px",
-                      fontSize: "14px", fontWeight: 700, cursor: !selectedProperty || submitting ? "not-allowed" : "pointer",
-                      background: !selectedProperty || submitting ? "#d1d5db" : "#107c10",
+                      fontSize: "14px", fontWeight: 700, cursor: submitting ? "not-allowed" : "pointer",
+                      background: submitting ? "#d1d5db" : "#107c10",
                       color: "#fff", transition: "background 0.15s",
                     }}
                   >
-                    {submitting ? "Submitting..." : "Submit Match"}
+                    {submitting ? "Submitting..." : buttonText}
                   </button>
                 </>
               )}
@@ -190,11 +228,122 @@ const PropertySelectorModal = ({ isOpen, onClose, demandId, onMatchComplete }) =
   );
 };
 
+// ── Agent claims: compact avatar row ─────────────────────────────────────────
+const AgentClaimAvatars = ({ claims, onExpand }) => {
+  if (!claims || claims.length === 0) return null;
+  const shown = claims.slice(0, 5);
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "2px" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {shown.map((c, i) => {
+          const u = c.user || c.agent || {};
+          const photo = u.photo || u.image || null;
+          const name = [u.first_name, u.last_name].filter(Boolean).join(" ") || u.user_name || "Agent";
+          return (
+            <div key={i} style={{
+              width: "28px", height: "28px", borderRadius: "50%",
+              border: "2px solid #fff", marginLeft: i > 0 ? "-6px" : 0,
+              overflow: "hidden", background: "#e5e7eb", flexShrink: 0, position: "relative", zIndex: shown.length - i,
+            }} title={name}>
+              <img src={photo || fallBackSrc} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
+          );
+        })}
+      </div>
+      <span style={{ fontSize: "11px", color: "#107c10", fontWeight: 700 }}>
+        {claims.length} {claims.length === 1 ? "agent" : "agents"} claimed
+      </span>
+      <button onClick={onExpand} style={{
+        background: "none", border: "none", cursor: "pointer",
+        fontSize: "11px", fontWeight: 700, color: "var(--r)", padding: 0,
+      }}>See More</button>
+    </div>
+  );
+};
+
+// ── Agent claims: expanded section ───────────────────────────────────────────
+const DemandClaimsSection = ({ claims, onClose }) => {
+  const navigate = useNavigate();
+  if (!claims || claims.length === 0) return null;
+
+  return (
+    <div style={{
+      background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: "6px",
+      padding: "12px 14px", marginTop: "4px",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+        <span style={{ fontSize: "12px", fontWeight: 800, color: "#111827" }}>
+          {claims.length} {claims.length === 1 ? "Agent" : "Agents"} Claimed
+        </span>
+        <button onClick={onClose} style={{
+          background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: "2px",
+          fontSize: "11px", fontWeight: 700,
+        }}>✕ Close</button>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        {claims.map((c, i) => {
+          const u = c.user || c.agent || {};
+          const photo = u.photo || u.image || null;
+          const name = [u.first_name, u.last_name].filter(Boolean).join(" ") || u.user_name || "Agent";
+          const tier = u.tier || "";
+          const listings = u.property_count ?? u.listings_count ?? null;
+          const rating = u.avg_rating ?? u.rating ?? null;
+          return (
+            <div
+              key={i}
+              onClick={() => navigate(`/agent/${u.id}`)}
+              style={{
+                display: "flex", alignItems: "center", gap: "10px",
+                padding: "10px 12px", background: "#fff", border: "1px solid #e5e7eb",
+                borderRadius: "6px", cursor: "pointer", transition: "border-color 0.15s",
+              }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "var(--r)"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "#e5e7eb"}
+            >
+              <div style={{
+                width: "36px", height: "36px", borderRadius: "50%",
+                overflow: "hidden", background: "#e5e7eb", flexShrink: 0,
+              }}>
+                <img src={photo || fallBackSrc} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "13px", fontWeight: 700, color: "#111827" }}>{name}</span>
+                  {tier && (
+                    <span style={{
+                      fontSize: "9px", fontWeight: 700, padding: "1px 6px", borderRadius: "3px",
+                      background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0",
+                      textTransform: "uppercase", letterSpacing: "0.05em",
+                    }}>{tier}</span>
+                  )}
+                  {listings !== null && (
+                    <span style={{ fontSize: "10px", color: "#6b7280" }}>{listings} listings</span>
+                  )}
+                  {rating !== null && rating > 0 && (
+                    <span style={{ fontSize: "10px", color: "#e02424", fontWeight: 700 }}>★ {rating}</span>
+                  )}
+                </div>
+                {c.message && (
+                  <p style={{
+                    fontSize: "11px", color: "#6b7280", margin: "3px 0 0", fontStyle: "italic",
+                    display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+                  }}>"{c.message}"</p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 // ── Single demand card ────────────────────────────────────────────────────────
-const DemandCard = ({ d }) => {
-  const [expanded, setExpanded] = useState(false);
+const DemandCard = React.memo(({ d, claims }) => {
   const [showSelector, setShowSelector] = useState(false);
   const [matchStatus, setMatchStatus] = useState(null); // null | "loading" | "matched"
+  const [showClaims, setShowClaims] = useState(false);
   const pc = purposeColor(d.tenant_option);
   const budget = budgetRange(d.minimum_budget, d.maximum_budget);
   const facs = Array.isArray(d.facilities) ? d.facilities : [];
@@ -222,39 +371,31 @@ const DemandCard = ({ d }) => {
       background: "#fff",
       border: "1px solid #eaecef",
       borderRadius: "6px",
-      padding: "18px 20px",
+      padding: "16px 20px",
       display: "flex",
       flexDirection: "column",
-      gap: "12px",
-      transition: "box-shadow 0.18s, border-color 0.18s, transform 0.18s",
+      gap: "10px",
+      transition: "box-shadow 0.18s, border-color 0.18s",
       cursor: "default",
     }}
     onMouseEnter={e => {
-      e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.08)";
-      e.currentTarget.style.borderColor = "rgba(224,36,36,0.25)";
-      e.currentTarget.style.transform = "translateY(-2px)";
+      e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.06)";
+      e.currentTarget.style.borderColor = "rgba(224,36,36,0.2)";
     }}
     onMouseLeave={e => {
       e.currentTarget.style.boxShadow = "none";
       e.currentTarget.style.borderColor = "#eaecef";
-      e.currentTarget.style.transform = "translateY(0)";
     }}
     >
-      {/* Top row: type badge + purpose */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-        {d.requirement ? (
-          <span style={{
-            fontSize: "11px", fontWeight: 800,
-            textTransform: "uppercase", letterSpacing: "0.08em",
-            color: "var(--r)",
-          }}>
-            {d.requirement}
-          </span>
-        ) : <span />}
+      {/* Top row: requirement + budget + location */}
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px 16px" }}>
+        <span style={{ fontSize: "13px", fontWeight: 800, color: "var(--r)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          {d.requirement || "Requirement"}
+        </span>
         {pc && d.tenant_option && (
           <span style={{
             fontSize: "10px", fontWeight: 700,
-            padding: "3px 8px", borderRadius: "3px",
+            padding: "2px 7px", borderRadius: "3px",
             background: pc.bg, color: pc.color,
             border: `1px solid ${pc.border}`,
             textTransform: "uppercase", letterSpacing: "0.06em",
@@ -262,41 +403,43 @@ const DemandCard = ({ d }) => {
             {d.tenant_option}
           </span>
         )}
-      </div>
-
-      {/* Divider */}
-      <div style={{ height: "1px", background: "#f1f3f5" }} />
-
-      {/* Meta pills row */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-        {d.prefered_location && (
-          <span style={{
-            display: "flex", alignItems: "center", gap: "5px",
-            fontSize: "12px", color: "#374151", fontWeight: 500,
-          }}>
-            <IoLocationOutline style={{ width: "13px", height: "13px", color: "#9ca3af", flexShrink: 0 }} />
-            {d.prefered_location}
-          </span>
-        )}
         {budget && (
-          <span style={{
-            display: "flex", alignItems: "center", gap: "5px",
-            fontSize: "12px", color: "#15803d", fontWeight: 700,
-            marginLeft: d.prefered_location ? "auto" : 0,
-          }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "#15803d", fontWeight: 700 }}>
             <IoCashOutline style={{ width: "13px", height: "13px", color: "#86efac", flexShrink: 0 }} />
             {budget}
           </span>
         )}
+        {d.prefered_location && (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#6b7280", marginLeft: "auto" }}>
+            <IoLocationOutline style={{ width: "13px", height: "13px", color: "#9ca3af", flexShrink: 0 }} />
+            {d.prefered_location}
+          </span>
+        )}
       </div>
 
-      {/* Secondary info: vehicles + facilities */}
+      {/* Facilities + Vehicles */}
       {(vehicleEntries.length > 0 || facNames.length > 0) && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center", fontSize: "12px", color: "#6b7280" }}>
+          {facNames.length > 0 && (
+            <span style={{ fontWeight: 600, color: "#374151" }}>Facilities:</span>
+          )}
+          {facNames.map((f, i) => (
+            <span key={i} style={{
+              padding: "2px 8px", borderRadius: "3px",
+              background: "#f8fafc", border: "1px solid #e2e8f0",
+              fontSize: "11px", color: "#475569",
+            }}>{f}</span>
+          ))}
+          {vehicleEntries.length > 0 && (
+            <>
+              {facNames.length > 0 && <span style={{ width: "1px", height: "14px", background: "#e5e7eb", margin: "0 2px" }} />}
+              <span style={{ fontWeight: 600, color: "#374151" }}>Vehicles:</span>
+            </>
+          )}
           {vehicleEntries.map(([type, qty]) => (
             <span key={type} style={{
-              display: "flex", alignItems: "center", gap: "4px",
-              padding: "3px 8px", borderRadius: "3px",
+              display: "inline-flex", alignItems: "center", gap: "3px",
+              padding: "2px 8px", borderRadius: "3px",
               background: "#f8fafc", border: "1px solid #e2e8f0",
               fontSize: "11px", color: "#475569",
             }}>
@@ -304,39 +447,6 @@ const DemandCard = ({ d }) => {
               {type}{qty > 1 ? ` ×${qty}` : ""}
             </span>
           ))}
-          {facNames.slice(0, expanded ? facNames.length : 3).map((f, i) => (
-            <span key={i} style={{
-              padding: "3px 8px", borderRadius: "3px",
-              background: "#f8fafc", border: "1px solid #e2e8f0",
-              fontSize: "11px", color: "#475569",
-            }}>{f}</span>
-          ))}
-          {!expanded && facNames.length > 3 && (
-            <button
-              onClick={() => setExpanded(true)}
-              style={{
-                background: "none", border: "none", cursor: "pointer",
-                fontSize: "11px", fontWeight: 700, color: "var(--r)",
-                padding: "3px 0", display: "flex", alignItems: "center", gap: "3px",
-              }}
-            >
-              <IoChevronDownOutline style={{ width: "11px", height: "11px" }} />
-              +{facNames.length - 3}
-            </button>
-          )}
-          {expanded && facNames.length > 3 && (
-            <button
-              onClick={() => setExpanded(false)}
-              style={{
-                background: "none", border: "none", cursor: "pointer",
-                fontSize: "11px", fontWeight: 700, color: "var(--r)",
-                padding: "3px 0", display: "flex", alignItems: "center", gap: "3px",
-              }}
-            >
-              <IoChevronUpOutline style={{ width: "11px", height: "11px" }} />
-              Less
-            </button>
-          )}
         </div>
       )}
 
@@ -346,7 +456,7 @@ const DemandCard = ({ d }) => {
           fontSize: "12px", color: "#6b7280", lineHeight: 1.6,
           margin: 0,
           display: "-webkit-box",
-          WebkitLineClamp: 2,
+          WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
         }}>
@@ -354,8 +464,22 @@ const DemandCard = ({ d }) => {
         </p>
       )}
 
-      {/* "I Have" button row */}
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
+      {/* Agent claims — compact avatars or expanded section */}
+      {!showClaims && claims?.length > 0 && (
+        <AgentClaimAvatars claims={claims} onExpand={() => setShowClaims(true)} />
+      )}
+      {showClaims && (
+        <DemandClaimsSection claims={claims} onClose={() => setShowClaims(false)} />
+      )}
+
+      {/* Bottom row: date + I Have */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "2px" }}>
+        {d.created_at && (
+          <span style={{ fontSize: "11px", color: "#9ca3af" }}>
+            Posted {d.created_at}
+          </span>
+        )}
+        {!d.created_at && <span />}
         {matchStatus === "matched" ? (
           <span style={{
             display: "inline-flex", alignItems: "center", gap: "5px",
@@ -393,10 +517,10 @@ const DemandCard = ({ d }) => {
       />
     </div>
   );
-};
+});
 
 // ── Main table / grid component ───────────────────────────────────────────────
-const PropertyDemandTable = ({ demands }) => {
+const PropertyDemandTable = ({ demands, matches }) => {
   const [page, setPage] = useState(1);
 
   if (!demands || demands.length === 0) return null;
@@ -424,14 +548,14 @@ const PropertyDemandTable = ({ demands }) => {
 
   return (
     <div>
-      {/* Grid */}
+      {/* List */}
       <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-        gap: "14px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
         marginBottom: "28px",
       }}>
-        {paginated.map((d, i) => <DemandCard key={i} d={d} />)}
+        {paginated.map((d, i) => <DemandCard key={i} d={d} claims={matches?.[d.id]} />)}
       </div>
 
       {/* Pagination */}
