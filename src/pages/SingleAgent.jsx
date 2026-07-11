@@ -71,8 +71,7 @@ const AgentReviews = ({ agentId }) => {
   const [ratingErr, setRatingErr] = useState(false);
   const [avgRating, setAvgRating] = useState(0);
 
-  useEffect(() => { agentId && fetchR(); }, [agentId]);
-
+  useEffect(() => { agentId && fetchR(); }, [agentId]);e
   const fetchR = async () => {
     setLoading(true);
     try {
