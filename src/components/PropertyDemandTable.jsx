@@ -11,7 +11,7 @@ import apiClient from "../utils/apiClient";
 
 const PAGE_SIZE = 12;
 
-// ── Budget: 5000000 → Rs. 50 Lakh, 15000000 → Rs. 1.5 Cr ───────────────────
+// ── Budget: 5000000 → Rs. 50 Lakh, 15000000 → Rs. 1.5 Cr ──────────────────
 function fmt(val) {
   const n = parseInt(String(val || "").replace(/,/g, ""), 10);
   if (!n || isNaN(n)) return null;
