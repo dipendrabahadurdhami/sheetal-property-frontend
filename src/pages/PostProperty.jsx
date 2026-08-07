@@ -8,12 +8,6 @@ const PostProperty = () => {
     <div className="p-5 lg:p-10 py-10">
       <div className="grid ap-5">
       <SEO
-        title="Post Property for Free in Nepal - List Your House, Land or Flat"
-        description="List your property for free on Sheetal Property Nepal. Reach verified buyers, tenants and investors from Nepal, India and Dubai looking for property in Nepal."
-        keywords="post property Nepal, list property for sale Nepal, free property listing Nepal, sell house Nepal, list land for sale Nepal"
-        path="/post-property"
-      />
-      <SEO
         title="Post Property for Sale or Rent in Nepal - Free Listing"
         description="List your property for sale or rent in Nepal for free. Reach thousands of buyers and tenants, including NRN and overseas investors from India and Dubai, on Sheetal Property Nepal."
         keywords="post property Nepal, list property for sale Nepal, sell property Nepal free, rent out property Nepal, property listing Nepal"
