@@ -12,6 +12,7 @@ import Loader from "../components/Loader";
 import PropertyDemandTable from "../components/PropertyDemandTable";
 import DemandAnalytics from "../components/DemandAnalytics";
 import headTag from "../headTag";
+import SEO from "../components/SEO/SEO";
 
 const SEARCH_FIELDS = [
   { icon: IoDocumentTextOutline, label: "Requirement" },
@@ -79,6 +80,12 @@ const PropertyDemand = () => {
 
   return (
     <div style={{ paddingTop: "64px" }}>
+      <SEO
+        title="Property Demand in Nepal - Post What You're Looking For"
+        description="Post your property requirement in Nepal and get matched with sellers and agents. See current buyer demand trends across Nepal's real estate market."
+        keywords="property demand Nepal, property requirement Nepal, buyer demand Nepal real estate, find property Nepal, property matching Nepal"
+        path="/property-demand"
+      />
 
       {/* ── Hero ── */}
       <div style={{ background: "linear-gradient(135deg, var(--d) 0%, #1e293b 100%)", position: "relative", overflow: "hidden" }}>

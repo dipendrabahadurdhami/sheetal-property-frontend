@@ -4,6 +4,7 @@ import ContactOwner from "../components/filterDetails/ContactOwner";
 import { product } from "../components/Object/product";
 import ScheduleTour from "../components/scheduleTour/ScheduleTour";
 import Description from "../components/SingleProduct/Description";
+import SEO from "../components/SEO/SEO";
 
 const InvestDetails = () => {
   return (
@@ -11,6 +12,12 @@ const InvestDetails = () => {
       <div className="p-5 lg:p-10 text-2xl font-bold">
         4 BHK House, Golfutar, KTM
       </div>
+      <SEO
+        title="4 BHK House for Sale in Golfutar, Kathmandu - Investment Details"
+        description="View full investment details for this 4 BHK house in Golfutar, Kathmandu — pricing, features and location for Nepal, India and Dubai-based investors."
+        keywords="4 BHK house Golfutar, property Golfutar Kathmandu, house for sale Kathmandu, Nepal property investment"
+        path="/investDetail"
+      />
 
       <div className="p-5 lg:px-10 lg:pb-10 rounded-xl overflow-hidden">
         <div className="rounded-b px-3 py-0.5 font-semibold absolute top-0 bg-red-700 text-sm text-white uppercase">

@@ -1,9 +1,15 @@
 import React from 'react';
+import SEO from "../components/SEO/SEO";
 
 const TermsAndConditions = () => {
   return (
     <div className="min-h-screen bg-[#FCFCFC] font-sans antialiased text-slate-900">
       <div className="h-1 bg-[#b91c1c] w-full"></div>
+      <SEO
+        title="Terms and Conditions - Sheetal Property Nepal"
+        description="Read the terms and conditions for using Sheetal Property Nepal, Nepal's trusted real estate platform for buying, selling and renting property."
+        path="/terms-and-conditions"
+      />
 
       <div className="max-w-[1536px] mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">

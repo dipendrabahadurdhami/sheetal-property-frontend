@@ -1,9 +1,16 @@
 import React from "react";
 import FearuredCard from "../components/card/FearuredCard";
+import SEO from "../components/SEO/SEO";
 
 const InvestmentAllProduct = () => {
   return (
     <div className="px-5 md:px-10 lg:px-2 xl:p-10">
+      <SEO
+        title="Properties in Budhanilkantha View Tower - Nepal Investment"
+        description="Explore available units in Budhanilkantha View Tower, Kathmandu — a premium investment opportunity for local and overseas buyers from India and Dubai."
+        keywords="Budhanilkantha View Tower, Kathmandu apartment investment, Nepal real estate investment, property investment Kathmandu"
+        path="/investment/viewallproduct"
+      />
       <h1 className="text-center text-2xl font-medium py-10">
         Properties in Budhanilkantha View Tower
       </h1>

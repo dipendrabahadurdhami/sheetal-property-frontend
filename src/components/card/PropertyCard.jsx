@@ -68,8 +68,8 @@ const SOCIALS = [
 ];
 
 /* ─── ShareMenu ─── */
-const ShareMenu = ({ propertyId, onClose }) => {
-  const url = `${window.location.origin}/property/${propertyId}`;
+const ShareMenu = ({ propertyId, propertySlug, onClose }) => {
+  const url = `${window.location.origin}/property/${propertySlug || propertyId}`;
   const ref = useRef(null);
 
   useEffect(() => {
@@ -182,7 +182,7 @@ const PropertyCard = ({ property }) => {
   const price = fmtPrice(property?.total_price || property?.price);
   const sold  = isSoldProp(property);
   const title = getTitle(property);
-  const go    = () => navigate(`/property/${property.id}`);
+  const go    = () => navigate(`/property/${property.url || property.id}`);
 
   return (
     <article className="pc-card" onClick={go}>
@@ -241,7 +241,7 @@ const PropertyCard = ({ property }) => {
           </button>
           {shareOpen && (
             <div className="pc-share-anchor">
-              <ShareMenu propertyId={property.id} onClose={() => setShareOpen(false)} />
+              <ShareMenu propertyId={property.id} propertySlug={property.url} onClose={() => setShareOpen(false)} />
             </div>
           )}
         </div>

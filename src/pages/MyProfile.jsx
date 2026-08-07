@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { removeUserInfo } from "../features/slices/userInformation";
 import { removeAllFavorites } from "../features/slices/favourites";
 import DashBoard from "../components/MyProfile/DashBoard";
+import SEO from "../components/SEO/SEO";
 import SocialMedia from "../components/MyProfile/Form/SocialMedia";
 import MyProperties from "../components/MyProfile/MyProperties";
 import MyPlan from "../components/MyProfile/MyPlan";
@@ -76,6 +77,7 @@ const MyProfile = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f5f6f8", fontFamily: "'Outfit', sans-serif" }}>
+      <SEO title="My Profile" description="Manage your Sheetal Property Nepal account." path="/my-profile" noindex />
       <style>{`
         .mp-layout {
           max-width: 1160px;

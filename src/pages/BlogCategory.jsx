@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import BlogCard from '../components/blog/BlogCard';
 import BlogSidebar from '../components/blog/BlogSidebar';
 import blogApi from '../utils/blogApi';
+import SEO from '../components/SEO/SEO';
 import '../index.css';
 
 /* ─── Skeleton ── */
@@ -92,8 +93,15 @@ const BlogCategory = () => {
     }).finally(() => setLoading(false));
   }, [slug, page]);
 
+  const displayCategory = categoryName || slug.replace(/-/g, ' ');
   return (
     <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 16px 80px' }}>
+      <SEO
+        title={`${displayCategory} - Nepal Real Estate Blog`}
+        description={`Read the latest articles on ${displayCategory} from Sheetal Property Nepal — market trends, guides and investment tips for Nepal real estate.`}
+        keywords={`${displayCategory}, Nepal real estate blog, property news Nepal, ${displayCategory} Nepal`}
+        path={`/blog/category/${slug}`}
+      />
       <style>{`
         @media(min-width: 768px) {
           .bc-page-pad { padding: 48px 24px 80px !important; }

@@ -1,9 +1,15 @@
 import React from 'react';
+import SEO from "../components/SEO/SEO";
 
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-[#FCFCFC] font-sans antialiased text-slate-900">
       <div className="h-1 bg-[#b91c1c] w-full"></div>
+      <SEO
+        title="Privacy Policy - Sheetal Property Nepal"
+        description="Read the privacy policy for Sheetal Property Nepal explaining how we collect, use and protect your data."
+        path="/privacy-policy"
+      />
 
       <div className="max-w-[1536px] mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">

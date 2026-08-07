@@ -76,7 +76,7 @@ const MyProperties = () => {
               <PropertyCard property={p} />
               {/* Action bar below each card */}
               <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", padding: "6px 0 2px" }}>
-                <button onClick={() => navigate(`/property/${p.id}`)}
+                <button onClick={() => navigate(`/property/${p.url || p.id}`)}
                   style={{ padding: "5px 14px", background: "#f3f4f6", border: "0.5px solid #E9EAEC", borderRadius: 5, fontSize: 11, fontWeight: 600, cursor: "pointer", color: "#374151" }}>
                   View
                 </button>

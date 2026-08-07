@@ -4,6 +4,7 @@
 
 import { useState, useMemo } from "react";
 import ToolLayout from "../components/Common/Tools/ToolLayout";
+import SEO from "../components/SEO/SEO";
 
 const NRB_BANKS = [
   { name: "Nepal Rastra Bank Base Rate", rate: 9.5 },
@@ -79,6 +80,12 @@ export default function EmiCalculatorPage() {
       icon="🏦"
       badge="Home Loan Tool"
     >
+      <SEO
+        title="Home Loan EMI Calculator Nepal 2026"
+        description="Free Nepal home loan EMI calculator with full amortization schedule. Compare NRB, Nabil, Himalayan Bank rates and estimate your monthly EMI before you buy property in Nepal."
+        keywords="EMI calculator Nepal, home loan EMI Nepal, Nepal bank loan calculator, mortgage calculator Nepal, housing loan Nepal, NRB interest rate calculator"
+        path="/tools/emi-calculator"
+      />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }} className="emi-grid">
 
         {/* ── INPUTS ── */}

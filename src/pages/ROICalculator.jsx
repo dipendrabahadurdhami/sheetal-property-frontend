@@ -4,6 +4,7 @@
 
 import { useState, useMemo } from "react";
 import ToolLayout from "../components/Common/Tools/ToolLayout";
+import SEO from "../components/SEO/SEO";
 
 const ZONES = [
   { label: "Kathmandu Core (Naxal, Lazimpat, Baluwatar)", appreciation: 10 },
@@ -141,6 +142,12 @@ export default function ROICalculator() {
       icon="📈"
       badge="Investment Tool"
     >
+      <SEO
+        title="Real Estate ROI Calculator Nepal - Investment Return Estimator"
+        description="Calculate your property investment ROI in Nepal — appreciation, rental yield, loan cost and taxes included. Built for Nepal real estate investors, NRNs and overseas buyers from India and Dubai."
+        keywords="ROI calculator Nepal, real estate investment return Nepal, property investment calculator, rental yield Nepal, Nepal real estate ROI, NRN property investment"
+        path="/tools/roi-calculator"
+      />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }} className="roi-grid">
 
         {/* ── LEFT: INPUTS ── */}

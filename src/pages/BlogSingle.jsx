@@ -6,6 +6,7 @@ import { fetchBlogBySlug, clearSingle } from '../features/slices/blog';
 import BlogSidebar from '../components/blog/BlogSidebar';
 import CommentSection from '../components/blog/CommentSection';
 import RelatedProperties from '../components/blog/RelatedProperties';
+import SEO, { SITE } from '../components/SEO/SEO';
 import '../index.css';
 
 const thumb = (path) =>
@@ -112,7 +113,44 @@ const BlogSingle = () => {
 
   const imgSrc = thumb(blog?.thumbnail);
 
+  const plainExcerpt = blog?.content
+    ? String(blog.content).replace(/<[^>]*>/g, '').trim().slice(0, 160)
+    : 'Read the latest Nepal real estate news, market trends and investment guidance from Sheetal Property Nepal.';
+
+  const blogJsonLd = blog?.id
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: blog.title,
+        description: plainExcerpt,
+        image: imgSrc ? [imgSrc] : undefined,
+        datePublished: blog.published_at,
+        dateModified: blog.updated_at || blog.published_at,
+        author: blog.author
+          ? { '@type': 'Person', name: `${blog.author.first_name || ''} ${blog.author.last_name || ''}`.trim() }
+          : { '@type': 'Organization', name: 'Sheetal Property Nepal' },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Sheetal Property Nepal',
+          logo: { '@type': 'ImageObject', url: `${SITE}/shetallogo.png` },
+        },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE}/blog/${slug}` },
+      }
+    : null;
+
   return (
+    <>
+      {!loading && blog?.id && (
+        <SEO
+          title={blog.title}
+          description={plainExcerpt}
+          keywords={`${blog.title}, ${blog.category?.name || ''}, ${(blog.tags || []).map(t => t.name || t).join(', ')}, Nepal real estate blog, property news Nepal`}
+          path={`/blog/${slug}`}
+          image={imgSrc || undefined}
+          type="article"
+          jsonLd={blogJsonLd}
+        />
+      )}
     <>
       <style>{`
         .bs-page {
@@ -422,6 +460,7 @@ const BlogSingle = () => {
           <ShareBtn platform="copy"     icon="🔗" label="Copy link"         url={currentUrl} title={blog.title} />
         </div>
       )}
+    </>
     </>
   );
 };

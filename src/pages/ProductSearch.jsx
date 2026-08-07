@@ -111,8 +111,8 @@ const SOCIALS = [
   { key: "copy", label: "Copy Link", dot: "#6b7280" },
 ];
 
-const ShareMenu = ({ propertyId, onClose }) => {
-  const url = `${window.location.origin}/property/${propertyId}`;
+const ShareMenu = ({ propertyId, propertySlug, onClose }) => {
+  const url = `${window.location.origin}/property/${propertySlug || propertyId}`;
   const ref = useRef(null);
 
   useEffect(() => {
@@ -194,7 +194,7 @@ const GridCard = ({ property }) => {
   const price = fmtPrice(property?.total_price);
   const sold = isSoldProp(property);
   const title = getTitle(property);
-  const go = () => navigate(`/property/${property.id}`);
+  const go = () => navigate(`/property/${property.url || property.id}`);
 
   return (
     <article className="ps-card gc" onClick={go}>
@@ -252,7 +252,7 @@ const GridCard = ({ property }) => {
           </button>
           {shareOpen && (
             <div className="share-anchor">
-              <ShareMenu propertyId={property.id} onClose={() => setShareOpen(false)} />
+              <ShareMenu propertyId={property.id} propertySlug={property.url} onClose={() => setShareOpen(false)} />
             </div>
           )}
         </div>
@@ -271,7 +271,7 @@ const ListCard = ({ property }) => {
   const price = fmtPrice(property?.total_price);
   const sold = isSoldProp(property);
   const title = getTitle(property);
-  const go = () => navigate(`/property/${property.id}`);
+  const go = () => navigate(`/property/${property.url || property.id}`);
 
   const details = [
     { label: "Category", value: property?.property_category },
@@ -353,7 +353,7 @@ const ListCard = ({ property }) => {
             </button>
             {shareOpen && (
               <div className="share-anchor">
-                <ShareMenu propertyId={property.id} onClose={() => setShareOpen(false)} />
+                <ShareMenu propertyId={property.id} propertySlug={property.url} onClose={() => setShareOpen(false)} />
               </div>
             )}
           </div>

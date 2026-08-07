@@ -4,6 +4,7 @@
 
 import { useState, useMemo } from "react";
 import ToolLayout from "../components/Common/Tools/ToolLayout";
+import SEO from "../components/SEO/SEO";
 
 const MUNICIPALITIES = [
   { label: "Kathmandu Metropolitan City",    houseTaxRate: 0.008, category: "Metro" },
@@ -130,6 +131,12 @@ export default function PropertyTaxEstimator() {
       icon="🧾"
       badge="Tax Tool"
     >
+      <SEO
+        title="Nepal Property Tax Calculator - House Tax, Capital Gains, Registration Fee"
+        description="Estimate house tax, rental income tax, capital gains tax and registration fees for property in Nepal, based on IRD Nepal and local municipality rates."
+        keywords="property tax Nepal, house tax calculator Nepal, capital gains tax Nepal property, registration fee Nepal, IRD Nepal property tax, municipality house tax"
+        path="/tools/property-tax"
+      />
       {/* Tab switch */}
       <div style={{ display: "flex", gap: "0", marginBottom: "24px", border: "1px solid rgba(17,24,39,0.1)" }}>
         {[

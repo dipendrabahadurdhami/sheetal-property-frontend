@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import ToolLayout from "../components/Common/Tools/ToolLayout";
+import SEO from "../components/SEO/SEO";
 
 const ZONES = [
   {
@@ -109,6 +110,12 @@ export default function LandPriceEstimator() {
       icon="🗺️"
       badge="Valuation Tool"
     >
+      <SEO
+        title="Land Price Estimator Nepal - Check Land Value by Location"
+        description="Estimate land prices in Kathmandu, Pokhara and across Nepal by location and land type. Free land valuation tool based on current market benchmarks for Nepal real estate investors."
+        keywords="land price Nepal, land value Kathmandu, land price estimator, Ropani price Nepal, Aana rate Kathmandu, Nepal land valuation, plot price Nepal"
+        path="/tools/land-estimator"
+      />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }} className="land-grid">
 
         {/* ── INPUTS ── */}

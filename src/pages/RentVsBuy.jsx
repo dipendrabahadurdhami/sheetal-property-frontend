@@ -4,6 +4,7 @@
 
 import { useState, useMemo } from "react";
 import ToolLayout from "../components/Common/Tools/ToolLayout";
+import SEO from "../components/SEO/SEO";
 
 function fmt(n) { return Math.round(Math.abs(n)).toLocaleString("en-NP"); }
 function pct(n) { return Number(n).toFixed(1); }
@@ -115,6 +116,12 @@ export default function RentVsBuy() {
       icon="⚖️"
       badge="Decision Tool"
     >
+      <SEO
+        title="Rent vs Buy Calculator Nepal - Which Costs Less?"
+        description="Compare the real cost of renting vs buying property in Nepal over time, including loan interest, appreciation and opportunity cost. Make a data-backed decision before you buy or rent in Kathmandu."
+        keywords="rent vs buy Nepal, should I rent or buy Kathmandu, rent vs buy calculator, Nepal property decision tool, buying vs renting Nepal"
+        path="/tools/rent-vs-buy"
+      />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }} className="rvb-grid">
 
         {/* ── INPUTS ── */}

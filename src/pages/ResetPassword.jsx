@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { FaLock, FaSpinner } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
+import SEO from "../components/SEO/SEO";
 
 const resetPasswordSchema = Yup.object().shape({
   password: Yup.string().required("This field is required"),
@@ -69,6 +70,7 @@ const ResetPassword = (props) => {
     <div className="max-w-[1440px] mx-auto">
       <div className="max-w-[560px] px-5 lg:px-10 py-4 md:py-8 lg:py-10 space-y-4">
         <div className="text-lg lg:text-xl font-medium">Reset Password</div>
+        <SEO title="Reset Password" description="Reset your Sheetal Property Nepal account password." path="/reset-password" noindex />
         <form onSubmit={formik.handleSubmit} className="text-sm space-y-4">
           <div className="space-y-2">
             <div>New Password:</div>

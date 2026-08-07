@@ -1,7 +1,7 @@
 import React from "react";
 import { FaPhone } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
-import { BsFacebook, BsInstagram, BsTwitter } from "react-icons/bs";
+import { BsFacebook, BsInstagram, BsTwitter, BsWhatsapp } from "react-icons/bs";
 
 const Contact = () => {
   return (
@@ -9,13 +9,28 @@ const Contact = () => {
       <h2 className="font-bold text-lg md:text-base">Contact US</h2>
       
       <div className="space-y-4">
-        {/* Phone */}
+       {/* WhatsApp */}
         <div className="flex items-center gap-4">
           <div className="">
-             <FaPhone className="w-4 h-4 rotate-90 text-white" />
+            <BsWhatsapp className="w-4 h-4 text-white" />
           </div>
-          <a href="tel:9801000434" className="hover:text-red-500 transition-colors">
+          <a
+            href="https://wa.me/9779801000434"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-red-500 transition-colors"
+          >
             +977 9801000434
+          </a>
+        </div>
+
+        {/* Call */}
+        <div className="flex items-center gap-4">
+          <div className="">
+            <FaPhone className="w-4 h-4 rotate-90 text-white" />
+          </div>
+          <a href="tel:9705250833" className="hover:text-red-500 transition-colors">
+            +977 9705250833
           </a>
         </div>
 

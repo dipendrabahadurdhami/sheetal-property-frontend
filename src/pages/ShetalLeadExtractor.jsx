@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import SEO from "../components/SEO/SEO";
 
 // ─── Phone helper (just formatting, not detection — AI does the actual reading) ─
 
@@ -315,6 +316,7 @@ export default function ShetalLeadExtractor() {
 
   return (
     <div style={S.app}>
+      <SEO title="Lead Extractor" description="Internal admin tool." path="/ShetalLeadExtractor" noindex />
       <div style={S.main}>
         {/* SIDEBAR */}
         <div style={S.sidebar}>

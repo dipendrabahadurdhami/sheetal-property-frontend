@@ -166,7 +166,7 @@ const PropertyCard = ({ data, action }) => {
         )}
         <div className="flex justify-end gap-2">
           <Link
-            to={`/property/${data?.id}`}
+            to={`/property/${data?.url || data?.id}`}
             className="text-white px-3 py-2 rounded bg-red-700"
           >
             View Property

@@ -115,7 +115,7 @@ const FavoritePropertyCard = ({ data }) => {
         )}
         <div className="flex justify-end">
           <Link
-            to={`/property/${data?.property_id}`}
+            to={`/property/${data?.property_url || data?.property_id}`}
             className="text-white px-3 py-2 rounded bg-red-700"
           >
             View Property

@@ -1,3 +1,14 @@
-# https://www.robotstxt.org/robotstxt.html
+# Sheetal Property Nepal — robots.txt
+
 User-agent: *
-Disallow:
+Allow: /
+
+# Private / auth-only areas — no SEO value, keep crawl budget on public pages
+Disallow: /my-profile
+Disallow: /my-profile/messages
+Disallow: /verify-email
+Disallow: /reset-password
+Disallow: /ShetalLeadExtractor
+Disallow: /test
+
+Sitemap: https://sheetalproperty.com/sitemap.xml

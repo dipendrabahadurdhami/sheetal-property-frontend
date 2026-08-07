@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import ToolLayout from "../components/Common/Tools/ToolLayout";
+import SEO from "../components/SEO/SEO";
 
 // ── Conversion factors (all relative to sq meters) ──
 const UNITS = [
@@ -60,6 +61,12 @@ export default function UnitConverter() {
       icon="📐"
       badge="Property Tool"
     >
+      <SEO
+        title="Nepal Land Unit Converter - Ropani, Aana, Bigha, Kattha to Sq Ft/Meter"
+        description="Free instant converter between Nepal land units — Ropani, Aana, Paisa, Daam, Bigha, Kattha, Dhur — and square feet, square meters and other metric/imperial units."
+        keywords="Ropani to square feet, Aana converter, Bigha to Kattha, Nepal land unit converter, Ropani Aana Paisa Daam, land measurement Nepal"
+        path="/tools/unit-converter"
+      />
       {/* ── CONVERTER CARD ── */}
       <div
         style={{

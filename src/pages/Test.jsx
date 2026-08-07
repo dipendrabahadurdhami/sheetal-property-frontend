@@ -1,4 +1,5 @@
 import * as React from "react";
+import SEO from "../components/SEO/SEO";
 
 const CoworkerList = (props) => {
   const [workerStatus, setWorkerStatus] = React.useState([]);
@@ -17,6 +18,7 @@ const CoworkerList = (props) => {
   return (
     <>
       {token}
+      <SEO title="Test" description="Internal test page." path="/test" noindex />
       <table>
         <thead>
           <tr>

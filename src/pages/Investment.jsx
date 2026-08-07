@@ -18,6 +18,7 @@ import {
   IoStatsChartOutline,
   IoShieldCheckmarkOutline,
 } from "react-icons/io5";
+import SEO from "../components/SEO/SEO";
 import BlogStrip from "../components/SingleProduct/BlogStrip";
 import HomeSearch from "../components/Common/SearchBox/HomeSearch";
 import PropertyCard, { PropertyCardStyles, PropertyGrid, PropertyCardSkeleton } from "../components/card/PropertyCard";
@@ -167,6 +168,12 @@ const Investment = () => {
 
   return (
     <>
+      <SEO
+        title="Nepal Real Estate Investment - Property Investment Opportunities"
+        description="Discover verified real estate investment opportunities in Nepal. Sheetal Property connects investors from Nepal, India and Dubai/UAE with high-growth property projects."
+        keywords="Nepal real estate investment, invest in Nepal property, NRN investment Nepal, Nepal property for Dubai investors, Nepal property for Indian investors, FDI Nepal real estate"
+        path="/investment"
+      />
       <PropertyCardStyles />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');

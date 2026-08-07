@@ -1,60 +1,66 @@
 import "./App.css";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ReactGA from "react-ga";
+import { Suspense, lazy } from "react";
+import GlobalSEO from "./components/SEO/GlobalSEO";
+import PageLoader from "./components/SEO/PageLoader";
 import Footer from "./components/Common/Footer/Footer";
 import Header from "./components/Common/header/Header";
-import Home from "./pages/Home";
-import RequirementForm from "./pages/RequirementForm";
 import { trackPageView, startHeartbeat } from "./utils/trackVisit";
-import SingleProduct from "./pages/SingleProduct";
-import HomeLone from "./pages/HomeLone";
-import PayRentOnline from "./pages/PayRentOnline";
-import LegalHelp from "./pages/LegalHelp";
-import RateAndTrends from "./pages/RateAndTrends";
-import PropertyManagement from "./pages/PropertyManagement";
-import Investment from "./pages/Investment";
-import InvestmentExplore from "./pages/InvestmentExplore";
-import InvestmentAllProduct from "./pages/InvestmentAllProduct";
-import Project from "./pages/Project";
-import About from "./pages/About";
-import Rent from "./pages/Rent";
-import Sale from "./pages/Sale";
-import ShetalLeadExtractor from "./pages/ShetalLeadExtractor";
-import MyProfile from "./pages/MyProfile";
-import VerifyEmail from "./pages/VerifyEmail";
-import PostProperty from "./pages/PostProperty";
-import PropertyDemand from "./pages/PropertyDemand";
-import FindAgent from "./pages/FindAgent";
-import PrivacyPolicy from "./pages/privacy-policy";
-import TermsAndConditions from "./pages/TermsAndConditions";
-import ProductSearch from "./pages/ProductSearch";
-import SingleAgent from "./pages/SingleAgent";
-import InvestDetails from "./pages/InvestDetails";
-import Message from "./pages/Message";
-import HomeLoneOnline from "./pages/HomeLoneOnline";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInformation } from "./features/slices/userInformation";
 import Protected from "./routes/protectedRoute";
-import Blog from './pages/Blog';
-import BlogSingle from './pages/BlogSingle';
-import BlogCategory from './pages/BlogCategory';
-import UnitConverter        from "./pages/UnitConverter";
-import Services from "./pages/Services";
-import EmiCalculatorPage    from "./pages/EmiCalculatorPage";
-import ROICalculator        from "./pages/ROICalculator";
-import LandPriceEstimator   from "./pages/LandPriceEstimator";
-import PropertyTaxEstimator from "./pages/PropertyTaxEstimator";
-import RentVsBuy            from "./pages/RentVsBuy";
 import {
   fetchFavoritesList,
   removeAllFavorites,
 } from "./features/slices/favourites";
-import Test from "./pages/Test";
-import ResetPassword from "./pages/ResetPassword";
-import AllProperties from "./pages/AllProperties";
 import axios from "axios";
+
+
+// --- Lazy-loaded route pages (code splitting for SEO/perf) ---
+const Home = lazy(() => import("./pages/Home"));
+const RequirementForm = lazy(() => import("./pages/RequirementForm"));
+const SingleProduct = lazy(() => import("./pages/SingleProduct"));
+const HomeLone = lazy(() => import("./pages/HomeLone"));
+const PayRentOnline = lazy(() => import("./pages/PayRentOnline"));
+const LegalHelp = lazy(() => import("./pages/LegalHelp"));
+const RateAndTrends = lazy(() => import("./pages/RateAndTrends"));
+const PropertyManagement = lazy(() => import("./pages/PropertyManagement"));
+const Investment = lazy(() => import("./pages/Investment"));
+const InvestmentExplore = lazy(() => import("./pages/InvestmentExplore"));
+const InvestmentAllProduct = lazy(() => import("./pages/InvestmentAllProduct"));
+const Project = lazy(() => import("./pages/Project"));
+const About = lazy(() => import("./pages/About"));
+const Rent = lazy(() => import("./pages/Rent"));
+const Sale = lazy(() => import("./pages/Sale"));
+const ShetalLeadExtractor = lazy(() => import("./pages/ShetalLeadExtractor"));
+const MyProfile = lazy(() => import("./pages/MyProfile"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
+const PostProperty = lazy(() => import("./pages/PostProperty"));
+const PropertyDemand = lazy(() => import("./pages/PropertyDemand"));
+const FindAgent = lazy(() => import("./pages/FindAgent"));
+const PrivacyPolicy = lazy(() => import("./pages/privacy-policy"));
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
+const ProductSearch = lazy(() => import("./pages/ProductSearch"));
+const SingleAgent = lazy(() => import("./pages/SingleAgent"));
+const InvestDetails = lazy(() => import("./pages/InvestDetails"));
+const Message = lazy(() => import("./pages/Message"));
+const HomeLoneOnline = lazy(() => import("./pages/HomeLoneOnline"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogSingle = lazy(() => import("./pages/BlogSingle"));
+const BlogCategory = lazy(() => import("./pages/BlogCategory"));
+const UnitConverter = lazy(() => import("./pages/UnitConverter"));
+const Services = lazy(() => import("./pages/Services"));
+const EmiCalculatorPage = lazy(() => import("./pages/EmiCalculatorPage"));
+const ROICalculator = lazy(() => import("./pages/ROICalculator"));
+const LandPriceEstimator = lazy(() => import("./pages/LandPriceEstimator"));
+const PropertyTaxEstimator = lazy(() => import("./pages/PropertyTaxEstimator"));
+const RentVsBuy = lazy(() => import("./pages/RentVsBuy"));
+const Test = lazy(() => import("./pages/Test"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const AllProperties = lazy(() => import("./pages/AllProperties"));
 
 // --- GLOBAL AXIOS CONFIG ---
 axios.defaults.baseURL = process.env.REACT_APP_API_LINK;
@@ -139,9 +145,11 @@ function App(props) {
   return (
     <div className="bg-gray-100">
       <ScrollToTop />   {/* ← only addition */}
+      <GlobalSEO />
       <TrafficTracker />
       <Header />
       <div className="mx-auto w-full bg-white">
+        <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/requirementForm" element={<RequirementForm />} />
@@ -209,6 +217,7 @@ function App(props) {
             }
           />
         </Routes>
+        </Suspense>
       </div>
       <Footer />
       <ToastContainer

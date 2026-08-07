@@ -3,11 +3,18 @@ import { FaSearch } from "react-icons/fa";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { rateAndTrand } from "../components/Object/rateAndTrand";
 import SingleRate from "../components/RateAndTrends/SingleRate";
+import SEO from "../components/SEO/SEO";
 
 const RateAndTrends = () => {
   return (
     <div className="p-5 lg:p-10">
       <div className="text-center py-10 text-2xl">Rate And Trends</div>
+      <SEO
+        title="Nepal Real Estate Rates & Trends - City & Locality Price Data"
+        description="Explore current property rate trends by city and locality across Nepal. Track price movement for Kathmandu, Pokhara and other key real estate markets."
+        keywords="Nepal property rates, real estate trends Nepal, Kathmandu property price trend, Nepal land rate, property price by locality"
+        path="/rateandtrend"
+      />
       <div className="flex justify-center w-full">
         <div className="flex justify-center w-full sm:w-3/4 lg:w-1/2 border border-gray-300 rounded overflow-hidden">
           <input

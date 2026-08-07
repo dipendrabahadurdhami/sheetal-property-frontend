@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import { removeFavoriteList, setFavoritesList } from "../../features/slices/favourites";
 import apiClient from "../../utils/apiClient";
 
-/* ── PRICE FORMAT: Nepali comma grouping, English digits (15,00,000) ── */
 const formatNepaliPrice = (amount) => {
   if (!amount) return null;
   const num = Number(amount);
@@ -33,7 +32,6 @@ const styles = `
     --r28: rgba(185,28,28,0.28);
   }
 
-  /* ── CARD SHELL ── */
   .fc-card {
     position: relative;
     height: 357px;
@@ -51,7 +49,6 @@ const styles = `
     box-shadow: 0 16px 48px rgba(0,0,0,0.32), 0 2px 8px rgba(224,36,36,0.12);
   }
 
-  /* ── IMAGE STACK ── */
   .fc-img-wrap {
     position: absolute;
     inset: 0;
@@ -81,8 +78,17 @@ const styles = `
     will-change: transform;
     display: block;
   }
+  .fc-img-fallback {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #111;
+    display: block;
+    padding: 24%;
+    box-sizing: border-box;
+    opacity: 0.5;
+  }
 
-  /* ── SCRIM ── */
   .fc-scrim {
     position: absolute;
     inset: 0;
@@ -95,7 +101,6 @@ const styles = `
     );
   }
 
-  /* ── PROGRESS BARS ── */
   .fc-progress-bars {
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -124,7 +129,6 @@ const styles = `
     to   { transform: scaleX(1); transform-origin: left; }
   }
 
-  /* ── TOP BADGES ── */
   .fc-top-badges {
     position: absolute;
     top: 25px;
@@ -163,7 +167,6 @@ const styles = `
     gap: 3px;
   }
 
-  /* ── HEART ── */
   .fc-heart {
     position: absolute;
     top: 16px;
@@ -186,7 +189,6 @@ const styles = `
   .fc-heart:hover { background: rgba(255,255,255,0.28); transform: scale(1.12); }
   .fc-heart:active { transform: scale(0.94); }
 
-  /* ── GLASS PANEL ── */
   .fc-panel {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -194,7 +196,6 @@ const styles = `
     padding: 16px 16px 18px;
   }
 
-  /* ── PRICE ── */
   .fc-price-row {
     display: flex;
     align-items: flex-end;
@@ -227,7 +228,6 @@ const styles = `
     margin-bottom: 8px;
   }
 
-  /* ── STATUS CHIPS ── */
   .fc-chip {
     font-size: 9px;
     font-weight: 600;
@@ -244,7 +244,6 @@ const styles = `
   .chip-featured { background: rgba(65,36,2,0.65);   color: #fac775; border: 0.5px solid rgba(250,199,117,0.25); }
   .chip-hot      { background: rgba(80,19,19,0.65);  color: #f09595; border: 0.5px solid rgba(240,149,149,0.25); }
 
-  /* ── TITLE ── */
   .fc-title {
     font-family: 'Inter', sans-serif;
     font-size: 16px;
@@ -258,7 +257,6 @@ const styles = `
     text-shadow: 0 1px 6px rgba(0,0,0,0.5);
   }
 
-  /* ── LOCATION ── */
   .fc-location {
     display: flex;
     align-items: center;
@@ -271,7 +269,6 @@ const styles = `
   }
   .fc-pin { color: var(--r); font-size: 10px; flex-shrink: 0; }
 
-  /* ── DATE ── */
   .fc-date {
     display: flex;
     align-items: center;
@@ -283,14 +280,13 @@ const styles = `
   }
   .fc-cal { color: rgba(255,255,255,0.28); font-size: 10px; flex-shrink: 0; }
 
-  /* ── SKELETON ── */
   .fc-skeleton {
     position: relative;
     height: 357px;
     width: 100%;
     border-radius: 6px;
     overflow: hidden;
-    background: #1a1a1a;
+    background: #f2f2f2;
     font-family: 'Inter', sans-serif;
     box-shadow: 0 2px 24px rgba(0,0,0,0.18);
   }
@@ -299,9 +295,9 @@ const styles = `
     inset: 0;
     background: linear-gradient(
       110deg,
-      #1e1e1e 25%,
-      #2a2a2a 50%,
-      #1e1e1e 75%
+      #eeeeee 25%,
+      #f8f8f8 50%,
+      #eeeeee 75%
     );
     background-size: 200% 100%;
     animation: skeletonShimmer 1.6s ease-in-out infinite;
@@ -309,6 +305,30 @@ const styles = `
   @keyframes skeletonShimmer {
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+  }
+  .fc-skeleton-logo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .fc-skeleton-logo-plate {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fc-skeleton-logo img {
+    width: 62%;
+    height: 62%;
+    object-fit: contain;
+    opacity: 0.95;
+    image-rendering: -webkit-optimize-contrast;
   }
   .fc-skeleton-panel {
     position: absolute;
@@ -318,13 +338,16 @@ const styles = `
     flex-direction: column;
     gap: 8px;
     background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    z-index: 3;
   }
   .fc-skeleton-bar {
     border-radius: 4px;
-    background: rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.08);
+  }
+  .fc-skeleton-panel .fc-skeleton-bar {
+    background: rgba(255,255,255,0.15);
   }
 
-  /* ════════════ MOBILE ════════════ */
   @media (max-width: 767px) {
     .fc-card {
       height: 220px;
@@ -355,26 +378,26 @@ const styles = `
       );
     }
     .fc-skeleton { height: 178px; border-radius: 4px; }
+    .fc-skeleton-logo-plate { width: 60px; height: 60px; }
   }
 `;
 
-/* ══════════════════════════════════════════
-   SKELETON COMPONENT
-   ══════════════════════════════════════════ */
 const FeaturedCardSkeleton = () => (
   <>
     <style>{styles}</style>
     <div className="h-full p-2">
       <div className="fc-skeleton">
         <div className="fc-skeleton-shimmer" />
-        {/* top-left badge placeholders */}
+        <div className="fc-skeleton-logo">
+          <div className="fc-skeleton-logo-plate">
+            <img src="/shetallogo.png" alt="Loading" />
+          </div>
+        </div>
         <div style={{ position: "absolute", top: 25, left: 13, display: "flex", flexDirection: "column", gap: 5, zIndex: 10 }}>
           <div className="fc-skeleton-bar" style={{ width: 60, height: 18 }} />
           <div className="fc-skeleton-bar" style={{ width: 48, height: 16 }} />
         </div>
-        {/* top-right heart placeholder */}
         <div className="fc-skeleton-bar" style={{ position: "absolute", top: 16, right: 13, width: 34, height: 34, borderRadius: "50%", zIndex: 10 }} />
-        {/* bottom panel placeholders */}
         <div className="fc-skeleton-panel">
           <div className="fc-skeleton-bar" style={{ width: "55%", height: 26 }} />
           <div className="fc-skeleton-bar" style={{ width: "100%", height: 1 }} />
@@ -387,9 +410,6 @@ const FeaturedCardSkeleton = () => (
   </>
 );
 
-/* ══════════════════════════════════════════
-   MAIN COMPONENT
-   ══════════════════════════════════════════ */
 const FeaturedCard = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -397,7 +417,7 @@ const FeaturedCard = ({ product }) => {
   const [favorite,   setFavorite]   = useState(false);
   const [imgIdx,     setImgIdx]     = useState(0);
   const [isHovered,  setIsHovered]  = useState(false);
-  const [imgLoaded,  setImgLoaded]  = useState(false); // ← skeleton control
+  const [imgLoaded,  setImgLoaded]  = useState(false);
 
   const favorites = useSelector((state) => state.favorites.data);
   const user      = useSelector((state) => state.user);
@@ -417,7 +437,6 @@ const FeaturedCard = ({ product }) => {
     return [product.feature_image, ...gallery].filter(Boolean);
   }, [product]);
 
-  /* Slideshow — only while hovered */
   useEffect(() => {
     let timer = null;
     if (isHovered && allImages.length > 1) {
@@ -486,18 +505,16 @@ const FeaturedCard = ({ product }) => {
 
   const formattedPrice = formatNepaliPrice(product?.total_price);
 
-  // ── Show skeleton until feature image loads ────────────────────────────
   if (!imgLoaded) {
     return (
       <>
         <FeaturedCardSkeleton />
-        {/* Hidden img to detect load — renders skeleton until ready */}
         <img
           src={product?.feature_image}
           alt=""
           style={{ display: "none" }}
           onLoad={() => setImgLoaded(true)}
-          onError={() => setImgLoaded(true)} // don't hang forever on broken img
+          onError={() => setImgLoaded(true)}
         />
       </>
     );
@@ -511,10 +528,9 @@ const FeaturedCard = ({ product }) => {
         <div
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={() => navigate(`/property/${product.id}`)}
+          onClick={() => navigate(`/property/${product.url || product.id}`)}
           className="fc-card"
         >
-          {/* IMAGE STACK */}
           <div className="fc-img-wrap">
             {allImages.length > 0 ? (
               allImages.map((src, i) => (
@@ -525,17 +541,22 @@ const FeaturedCard = ({ product }) => {
                     className="fc-img"
                     loading="lazy"
                     decoding="async"
-                    onError={(e) => { e.target.style.display = "none"; }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/shetallogo.png";
+                      e.target.className = "fc-img-fallback";
+                    }}
                   />
                 </div>
               ))
             ) : (
-              <div className="fc-slide active" style={{ background: "#1a1a1a" }} />
+              <div className="fc-slide active">
+                <img src="/shetallogo.png" alt="property" className="fc-img-fallback" />
+              </div>
             )}
             <div className="fc-scrim" />
           </div>
 
-          {/* PROGRESS BARS */}
           {allImages.length > 1 && (
             <div className="fc-progress-bars">
               {allImages.map((_, i) => (
@@ -544,7 +565,6 @@ const FeaturedCard = ({ product }) => {
             </div>
           )}
 
-          {/* TOP BADGES */}
           <div className="fc-top-badges">
             <div className={`fc-badge fc-badge-purpose${isRent ? " rent" : ""}`}>
               {purposeLabel}
@@ -555,7 +575,6 @@ const FeaturedCard = ({ product }) => {
             </div>
           </div>
 
-          {/* HEART */}
           <div className="fc-heart" onClick={(e) => onFavoriteClick(e, product.id)}>
             {favorite
               ? <AiFillHeart    style={{ color: "var(--r)", width: 14, height: 14 }} />
@@ -563,7 +582,6 @@ const FeaturedCard = ({ product }) => {
             }
           </div>
 
-          {/* GLASS PANEL */}
           <div className="fc-panel">
             <div className="fc-price-row">
               <div className="fc-price">
@@ -602,4 +620,4 @@ const FeaturedCard = ({ product }) => {
   );
 };
 
-export default FeaturedCard;
+export default FeaturedCard;   

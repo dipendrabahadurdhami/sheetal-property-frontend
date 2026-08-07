@@ -111,7 +111,7 @@ const RelatedProperties = ({ properties }) => {
           {properties.map(prop => {
             const imgSrc = !imgErrors[prop.id] ? resolveImg(prop.thumbnail || prop.image || prop.photo) : null;
             return (
-              <Link key={prop.id} to={`/property/${prop.id}`} className="rp-card">
+              <Link key={prop.id} to={`/property/${prop.url || prop.id}`} className="rp-card">
                 <div className="rp-img-wrap">
                   {imgSrc ? (
                     <img

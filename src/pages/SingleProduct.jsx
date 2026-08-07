@@ -391,7 +391,11 @@ useEffect(() => {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_LINK}/property-detail/${id}`, {
+        const isNumericId = /^\d+$/.test(id);
+        const endpoint = isNumericId
+          ? `${process.env.REACT_APP_API_LINK}/property-detail/${id}`
+          : `${process.env.REACT_APP_API_LINK}/property-by-slug/${id}`;
+        const res = await axios.get(endpoint, {
           signal: controller.signal,
         });
         if (res.status === 200) setProperty(res.data.data);
@@ -498,11 +502,11 @@ useEffect(() => {
               <title>{property?.name || property?.title || "Property"} {property?.property_location ? `in ${property.property_location}` : ""} | Sheetal Property Nepal</title>
               <meta name="description" content={property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 160) : `${property?.name || "Property"} ${property?.property_location ? `in ${property.property_location}` : ""} — Find verified properties on Sheetal Property Nepal.`} />
               <meta name="keywords" content={`${property?.name || ""}, ${property?.property_location || ""}, ${property?.district || ""}, ${property?.property_type || ""}, property Nepal, real estate Nepal, Sheetal Property`} />
-              <link rel="canonical" href={`https://sheetalproperty.com/property/${id}`} />
+              <link rel="canonical" href={`https://sheetalproperty.com/property/${property?.url || id}`} />
               <meta property="og:title" content={`${property?.name || "Property"} | Sheetal Property Nepal`} />
               <meta property="og:description" content={property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 200) : `View this property on Sheetal Property Nepal`} />
               <meta property="og:image" content={property?.feature_image || "https://sheetalproperty.com/shetallogo.png"} />
-              <meta property="og:url" content={`https://sheetalproperty.com/property/${id}`} />
+              <meta property="og:url" content={`https://sheetalproperty.com/property/${property?.url || id}`} />
               <meta property="og:type" content="article" />
               <meta property="og:site_name" content="Sheetal Property Nepal" />
               <meta name="twitter:card" content="summary_large_image" />
@@ -514,7 +518,7 @@ useEffect(() => {
                 "@type": "RealEstateListing",
                 "name": property?.name || "Property",
                 "description": property?.property_description ? String(property.property_description).replace(/<[^>]*>/g, "").slice(0, 300) : "",
-                "url": `https://sheetalproperty.com/property/${id}`,
+                "url": `https://sheetalproperty.com/property/${property?.url || id}`,
                 "image": property?.feature_image || "",
                 "address": {
                   "@type": "PostalAddress",

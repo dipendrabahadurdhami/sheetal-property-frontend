@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaPhone, FaChevronDown } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
-import { BsFacebook, BsInstagram, BsTwitter } from "react-icons/bs";
+import { BsFacebook, BsInstagram, BsTwitter, BsWhatsapp } from "react-icons/bs";
 import "./Footer.css";
 
 /* ── Accordion section (collapses on mobile, always open on desktop) ── */
@@ -86,12 +86,20 @@ const Footer = () => {
         {/* ── Brand + Contact block ── */}
         <div className="ft-brand">
           <img src="/shetallogo.png" alt="Shetal Real Estate" className="ft-logo" />
-          
 
           <div className="ft-contact">
-            <a href="tel:9801000434" className="ft-contact__item">
-              <span className="ft-contact__icon"><FaPhone /></span>
+            <a
+              href="https://wa.me/9779801000434"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ft-contact__item"
+            >
+              <span className="ft-contact__icon"><BsWhatsapp /></span>
               +977 9801000434
+            </a>
+            <a href="tel:9705250833" className="ft-contact__item">
+              <span className="ft-contact__icon"><FaPhone /></span>
+              +977 9705250833
             </a>
             <a href="mailto:shetalrealestate@gmail.com" className="ft-contact__item">
               <span className="ft-contact__icon"><HiMail /></span>
@@ -100,36 +108,35 @@ const Footer = () => {
           </div>
 
           <div className="ft-social">
-            {[
-              { Icon: BsFacebook,  url: process.env.REACT_APP_FACEBOOK_URL },
-              { Icon: BsTwitter,   url: process.env.REACT_APP_TWITTER_URL },
-              { Icon: BsInstagram, url: process.env.REACT_APP_INSTAGRAM_URL },
-            ].map(({ Icon, url }, i) => (
-              <a key={i} href={url} target="_blank" rel="noreferrer" className="ft-social__btn">
-                <Icon />
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* Divider between brand and links (mobile only) */}
-        <div className="ft-divider-mob" />
-
-        {/* ── Link columns ── */}
-        <div className="ft-cols">
-          <FooterSection title="Find Property">
-            <FtLinks links={propertyLinks} />
-          </FooterSection>
-          <FooterSection title="Quick Links">
-            <FtLinks links={quickLinks} />
-          </FooterSection>
-          <FooterSection title="Our Services">
-            <FtLinks links={serviceLinks} />
-          </FooterSection>
+          {[
+            { Icon: BsFacebook, url: process.env.REACT_APP_FACEBOOK_URL },
+            { Icon: BsTwitter, url: process.env.REACT_APP_TWITTER_URL },
+            { Icon: BsInstagram, url: process.env.REACT_APP_INSTAGRAM_URL },
+          ].map(({ Icon, url }, i) => (
+            <a key={i} href={url} target="_blank" rel="noreferrer" className="ft-social__btn">
+              <Icon />
+            </a>
+          ))}
         </div>
       </div>
 
-      <div className="ft-divider" />
+      {/* Divider between brand and links (mobile only) */}
+      <div className="ft-divider-mob" />
+
+      {/* ── Link columns ── */}
+      <div className="ft-cols">
+        <FooterSection title="Find Property">
+          <FtLinks links={propertyLinks} />
+        </FooterSection>
+        <FooterSection title="Quick Links">
+          <FtLinks links={quickLinks} />
+        </FooterSection>
+        <FooterSection title="Our Services">
+          <FtLinks links={serviceLinks} />
+        </FooterSection>
+      </div>
+    </div>
+    <div className="ft-divider" />
 
       {/* ── Lower bar ── */}
       <div className="ft-lower">

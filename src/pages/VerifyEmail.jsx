@@ -6,6 +6,7 @@ import { setLogin } from '../features/slices/auth';
 import { fetchUserInformation } from '../features/slices/userInformation';
 import { toast } from 'react-toastify';
 import { FaSpinner } from 'react-icons/fa';
+import SEO from "../components/SEO/SEO";
 
 const VerifyEmail = () => {
     const location = useLocation();
@@ -50,6 +51,7 @@ const VerifyEmail = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
             <FaSpinner className="animate-spin text-red-700 text-5xl mb-4" />
+            <SEO title="Verify Email" description="Verifying your Sheetal Property Nepal account." path="/verify-email" noindex />
             <h2 className="text-xl font-bold uppercase">Verifying your account...</h2>
             <p className="text-gray-500">Please wait a moment.</p>
         </div>

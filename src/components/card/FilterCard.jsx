@@ -93,7 +93,7 @@ const FilterCard = ({ property }) => {
             src={property?.feature_image}
             alt="unsplash"
             className="w-full bg-center h-full bg-cover"
-            onClick={() => navigate("/property/" + property.id)}
+            onClick={() => navigate("/property/" + (property.url || property.id))}
           />
         </div>
         <div className="rounded-md overflow-hidden sm:col-span-2 lg:col-span-3">
@@ -102,7 +102,7 @@ const FilterCard = ({ property }) => {
               <div>
                 <h1
                   className="font-bold text-gray-600 text-xl"
-                  onClick={() => navigate("/property/" + property.id)}
+                  onClick={() => navigate("/property/" + (property.url || property.id))}
                 >
                   {property?.title || property?.name}
                 </h1>
@@ -154,7 +154,7 @@ const FilterCard = ({ property }) => {
             <div className="flex  justify-end">
               <button
                 className="bg-red-700 rounded text-white font-medium px-5 py-2 w-full sm:w-auto"
-                onClick={() => navigate("/property/" + property.id)}
+                onClick={() => navigate("/property/" + (property.url || property.id))}
               >
                 Details
               </button>

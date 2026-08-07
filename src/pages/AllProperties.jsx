@@ -6,6 +6,7 @@ import ReactPaginate from "react-paginate";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import headTag from "../headTag";
 import axios from "axios";
+import SEO from "../components/SEO/SEO";
 
 const AllProperties = () => {
   const [params, setParams] = useSearchParams(window.location.search);
@@ -90,6 +91,12 @@ const AllProperties = () => {
 
   return (
     <div className="p-5 lg:p-10 space-y-10">
+      <SEO
+        title={`${title || "All Properties"} in Nepal - Buy, Sell & Rent`}
+        description="Browse verified properties for sale and rent across Nepal — houses, land, apartments and commercial spaces. Trusted by buyers and investors from Nepal, India and Dubai."
+        keywords="properties in Nepal, houses for sale Nepal, land for sale Nepal, apartments for rent Nepal, property Kathmandu, real estate Nepal"
+        path="/properties"
+      />
       <div className="container mx-auto">
         <h1 className="text-2xl font-bold mb-6">{title}</h1>
 
