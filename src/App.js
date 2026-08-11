@@ -43,6 +43,7 @@ const PropertyDemand = lazy(() => import("./pages/PropertyDemand"));
 const FindAgent = lazy(() => import("./pages/FindAgent"));
 const PrivacyPolicy = lazy(() => import("./pages/privacy-policy"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
+const DataDeletion = lazy(() => import("./pages/DataDeletion"));
 const ProductSearch = lazy(() => import("./pages/ProductSearch"));
 const SingleAgent = lazy(() => import("./pages/SingleAgent"));
 const InvestDetails = lazy(() => import("./pages/InvestDetails"));
@@ -156,6 +157,7 @@ function App(props) {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/data-deletion" element={<DataDeletion />} />
           <Route path="/property/:id" element={<SingleProduct />} />
           <Route path="/homeLone" element={<HomeLone />} />
           <Route path="/About" element={<About />} />

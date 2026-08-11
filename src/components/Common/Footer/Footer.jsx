@@ -68,6 +68,7 @@ const Footer = () => {
     { label: "Property Demands",     to: "/propertyDemand" },
     { label: "Privacy Policy",       to: "/privacy-policy" },
     { label: "Terms and Conditions", to: "/terms-and-conditions" },
+    { label: "Data Deletion",        to: "/data-deletion" },
   ];
   const serviceLinks = [
     { label: "Sale Properties",      to: "/sale" },
