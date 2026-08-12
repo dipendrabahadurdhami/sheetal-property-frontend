@@ -1245,7 +1245,7 @@ export default function About() {
                   </h3>
                   {[
                     { icon: I.map, text: "Kathmandu, Nepal" },
-                    { icon: I.phone, text: "+977 9801000434 / 9801000435" },
+                    { icon: I.phone, text: "+977 9801000434 / 9705250833" },
                     { icon: I.mail, text: "shetalrealestate@gmail.com" },
                   ].map((item, idx) => (
                     <div key={idx} style={{ display: "flex", gap: 10, marginBottom: 12, alignItems: "flex-start" }}>

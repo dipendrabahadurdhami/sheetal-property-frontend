@@ -83,7 +83,7 @@ export default function RentVsBuy() {
     const diff = totalRentScenario - netBuyingCost;
     const buyWins = diff > 0;
 
-    // Break-even year (simplified: when equity + appreciation > rent paid)
+    // Break-even year (simplified: when equity + appreciation > >rent paid)
     let breakEvenYear = null;
     let rentSoFar = 0;
     let currentRentBE = rent * 12;

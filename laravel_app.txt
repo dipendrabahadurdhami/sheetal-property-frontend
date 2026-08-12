@@ -14,5 +14,5 @@ Folder PATH listing
 Volume serial number is 60E0-98EF
 C:\USERS\USER\DESKTOP\SF\SHEETALPROPERTY\DATABASE
 Invalid path - \USERS\USER\DESKTOP\SF\SHEETALPROPERTY\DATABASE
-No subfolders exist 
+No subfolders exis
 

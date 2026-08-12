@@ -6,6 +6,7 @@ import GlobalSEO from "./components/SEO/GlobalSEO";
 import PageLoader from "./components/SEO/PageLoader";
 import Footer from "./components/Common/Footer/Footer";
 import Header from "./components/Common/header/Header";
+import WhatsAppButton from "./components/Common/WhatsAppButton";
 import { trackPageView, startHeartbeat } from "./utils/trackVisit";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
@@ -222,6 +223,7 @@ function App(props) {
         </Suspense>
       </div>
       <Footer />
+      <WhatsAppButton />
       <ToastContainer
         position="top-right"
         autoClose={5000}
