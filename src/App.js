@@ -114,7 +114,7 @@ function App(props) {
   const location = useLocation();
 
   // Pages that render their own full-bleed layout and should not get the
-  // global site Header / Footer / WhatsApp button.
+  // global site Header / Footer / WhatsApp button. ok o
   const NO_CHROME_ROUTES = ["/galery"];
   const hideChrome = NO_CHROME_ROUTES.includes(location.pathname);
 
