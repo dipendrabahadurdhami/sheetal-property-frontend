@@ -2,7 +2,7 @@ import React from "react";
 
 // Change this if the WhatsApp number ever changes.
 // Country code included, no +, no spaces (WhatsApp API format).
-const WHATSAPP_NUMBER = "919705250833"; // 91 = India country code + 9705250833
+const WHATSAPP_NUMBER = "9779705250833"; // 
 const DEFAULT_MESSAGE = "Hi, I have an enquiry.";
 
 const WhatsAppButton = () => {

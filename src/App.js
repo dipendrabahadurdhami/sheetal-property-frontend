@@ -63,6 +63,7 @@ const RentVsBuy = lazy(() => import("./pages/RentVsBuy"));
 const Test = lazy(() => import("./pages/Test"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const AllProperties = lazy(() => import("./pages/AllProperties"));
+const Gallery = lazy(() => import("./pages/Gallery"));
 
 // --- GLOBAL AXIOS CONFIG ---
 axios.defaults.baseURL = process.env.REACT_APP_API_LINK;
@@ -112,6 +113,11 @@ function App(props) {
   const token = localStorage.getItem("sheetal_token");
   const location = useLocation();
 
+  // Pages that render their own full-bleed layout and should not get the
+  // global site Header / Footer / WhatsApp button.
+  const NO_CHROME_ROUTES = ["/galery"];
+  const hideChrome = NO_CHROME_ROUTES.includes(location.pathname);
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -149,8 +155,8 @@ function App(props) {
       <ScrollToTop />   {/* ← only addition */}
       <GlobalSEO />
       <TrafficTracker />
-      <Header />
-      <div className="mx-auto w-full bg-white">
+      {!hideChrome && <Header />}
+      <div className={hideChrome ? "" : "mx-auto w-full bg-white"}>
         <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -174,6 +180,7 @@ function App(props) {
             element={<ResetPassword {...props} />}
           />
           <Route path="/properties" element={<AllProperties />} />
+          <Route path="/galery" element={<Gallery />} />
           <Route path="/propertyDemand" element={<PropertyDemand />} />
           <Route path="/property-demand" element={<PropertyDemand />} />
           <Route path="/agents" element={<FindAgent />} />
@@ -222,8 +229,8 @@ function App(props) {
         </Routes>
         </Suspense>
       </div>
-      <Footer />
-      <WhatsAppButton />
+      {!hideChrome && <Footer />}
+      {!hideChrome && <WhatsAppButton />}
       <ToastContainer
         position="top-right"
         autoClose={5000}
