@@ -50,9 +50,31 @@ const STATIC_ROUTES = [
   ["/privacy-policy", "0.2", "yearly"],
 ];
 
-async function safeFetchJson(url) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function safeFetchJson(url, retriesLeft = 4) {
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: {
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0 (compatible; SheetalSitemapBot/1.0; +https://sheetalproperty.com)",
+      },
+    });
+
+    if (res.status === 429) {
+      if (retriesLeft <= 0) {
+        console.warn(`  ! ${url} -> HTTP 429, out of retries, skipping`);
+        return null;
+      }
+      const retryAfterHeader = res.headers.get("retry-after");
+      const waitMs = retryAfterHeader ? Number(retryAfterHeader) * 1000 : 3000;
+      console.warn(`  ! ${url} -> HTTP 429, waiting ${waitMs}ms then retrying (${retriesLeft} left)`);
+      await sleep(waitMs);
+      return safeFetchJson(url, retriesLeft - 1);
+    }
+
     if (!res.ok) {
       console.warn(`  ! ${url} -> HTTP ${res.status}, skipping`);
       return null;
@@ -62,6 +84,66 @@ async function safeFetchJson(url) {
     console.warn(`  ! Could not reach ${url} (${err.message}), skipping`);
     return null;
   }
+}
+
+// Some endpoints cap per_page (they returned far fewer than requested).
+// This loops page-by-page until the API stops returning new items, instead
+// of trusting per_page=5000 to come back in one shot.
+async function fetchAllPages(baseUrl, paramName = "per_page") {
+  const all = [];
+  const seenIds = new Set();
+  let page = 1;
+  let consecutiveNoNewItems = 0;
+  const MAX_PAGES = 500; // safety cap
+  while (page <= MAX_PAGES) {
+    if (page > 1) await sleep(250); // stay under the API's rate limit
+    const sep = baseUrl.includes("?") ? "&" : "?";
+    const url = `${baseUrl}${sep}page=${page}&${paramName}=100`;
+    const json = await safeFetchJson(url);
+    if (!json) break;
+
+    if (page === 1) {
+      const metaPreview = json?.data?.meta || json?.meta || {
+        current_page: json?.data?.current_page,
+        last_page: json?.data?.last_page,
+        total: json?.data?.total,
+      };
+      console.log(`    [page 1 meta for ${baseUrl}]`, JSON.stringify(metaPreview));
+    }
+
+    const list = json?.data?.data || json?.data || [];
+    if (!Array.isArray(list) || list.length === 0) break;
+
+    // Track whether this page actually contained anything new — if the
+    // API ignores the page param and keeps returning the same items,
+    // this stops us looping forever instead of assuming a short page
+    // means "last page" (some APIs cap page size regardless of what
+    // we ask for, so a short page does NOT necessarily mean it's last).
+    let newCount = 0;
+    for (const item of list) {
+      const key = item?.id ?? JSON.stringify(item);
+      if (!seenIds.has(key)) {
+        seenIds.add(key);
+        all.push(item);
+        newCount++;
+      }
+    }
+    if (newCount === 0) {
+      consecutiveNoNewItems++;
+      if (consecutiveNoNewItems >= 2) break; // API is repeating itself, stop
+    } else {
+      consecutiveNoNewItems = 0;
+    }
+
+    // Stop once we've reached the API's own reported last page, if it tells us.
+    const meta = json?.data?.meta || json?.data || json?.meta || {};
+    const currentPage = meta.current_page ?? page;
+    const lastPage = meta.last_page;
+    if (lastPage && currentPage >= lastPage) break;
+
+    page++;
+  }
+  return all;
 }
 
 function urlEntry(loc, priority, changefreq) {
@@ -78,21 +160,30 @@ async function main() {
     );
   } else {
     // ---- Properties ----
-    // Adjust the endpoint/response shape below to match your actual API.
+    // No single /properties endpoint on this API — listings are split by
+    // purpose across /sale, /rent, /invest (same as RelatedProperties.jsx).
+    // Each endpoint is paginated and caps per_page below what we ask for,
+    // so we loop through every page instead of assuming one request gets
+    // everything.
     console.log("Fetching properties...");
-    const properties = await safeFetchJson(`${API_BASE}/properties?per_page=5000`);
-    const propertyList = properties?.data?.data || properties?.data || [];
-    for (const prop of propertyList) {
-      if (prop?.id) {
-        entries.push(urlEntry(`${SITE}/property/${prop.id}`, "0.8", "weekly"));
+    const seenPropertyIds = new Set();
+    let propertyCount = 0;
+    for (const endpoint of ["/sale", "/rent", "/invest"]) {
+      const propertyList = await fetchAllPages(`${API_BASE}${endpoint}`);
+      for (const prop of propertyList) {
+        if (prop?.id && !seenPropertyIds.has(prop.id)) {
+          seenPropertyIds.add(prop.id);
+          entries.push(urlEntry(`${SITE}/property/${prop.url || prop.id}`, "0.8", "weekly"));
+          propertyCount++;
+        }
       }
+      console.log(`  -> ${endpoint}: ${propertyList.length} fetched (running total ${propertyCount} unique)`);
     }
-    console.log(`  -> ${propertyList.length} properties added`);
+    console.log(`  -> ${propertyCount} properties added total`);
 
     // ---- Blog posts ----
     console.log("Fetching blog posts...");
-    const blogs = await safeFetchJson(`${API_BASE}/blogs?per_page=5000`);
-    const blogList = blogs?.data?.data || blogs?.data || [];
+    const blogList = await fetchAllPages(`${API_BASE}/blog`);
     for (const post of blogList) {
       if (post?.slug) {
         entries.push(urlEntry(`${SITE}/blog/${post.slug}`, "0.7", "monthly"));
@@ -102,7 +193,7 @@ async function main() {
 
     // ---- Blog categories ----
     console.log("Fetching blog categories...");
-    const categories = await safeFetchJson(`${API_BASE}/blog-categories`);
+    const categories = await safeFetchJson(`${API_BASE}/blog/categories`);
     const categoryList = categories?.data?.data || categories?.data || [];
     for (const cat of categoryList) {
       if (cat?.slug) {
