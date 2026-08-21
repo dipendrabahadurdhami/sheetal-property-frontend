@@ -10,6 +10,7 @@ Disallow: /verify-email
 Disallow: /reset-password
 Disallow: /ShetalLeadExtractor
 Disallow: /test
+Disallow: /test
 
 # Tool pages (EMI/ROI/property-tax/etc.) are linked with a pre-fill query
 # string from every property page (e.g. ?value=23000, ?amount=15000000).
