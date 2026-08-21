@@ -287,7 +287,7 @@ const MainHome = () => {
       >
         <div className="absolute inset-0 overflow-hidden bg-[#000d20]">
           <img
-            src="/mt.jpg" alt=""
+            src="/mt.webp" alt=""
             style={{
               position: "absolute", top: 0, left: 0, width: "100%", minWidth: "100%",
               height: "100%", objectFit: "cover", display: "block", zIndex: 5,
