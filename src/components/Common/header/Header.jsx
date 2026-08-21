@@ -467,7 +467,7 @@ const Header = () => {
 
   // Agent-branded requirement form (opened via QR/link with ?agent_id=)
   // is a bare, standalone page — no site header.
-  const isAgentBareForm = location.pathname.toLowerCase() === "/requirementForm?agent_id=1" && searchParams.has("agent_id");
+  const isAgentBareForm = location.pathname.toLowerCase() === "/requirementform" && searchParams.has("agent_id");
   if (isAgentBareForm) return null;
 
   return (

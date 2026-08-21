@@ -632,7 +632,7 @@ const SingleAgent = () => {
             <div style={{ fontSize: 14, color: "#6b7280", marginBottom: 24, lineHeight: 1.65 }}>
               Tell {name} exactly what property you're looking for
             </div>
-            <Link to={`/requirementForm?agent_id=1?agent_id=${data.id}`} className="btn-p">
+            <Link to={`/requirementForm?agent_id=${data.id}`} className="btn-p">
               Go to Requirement Form →
             </Link>
           </div>

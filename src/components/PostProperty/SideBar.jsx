@@ -36,7 +36,7 @@ const SideBar = () => {
         >
           Post Property
         </a>
-        <a href="requirementForm" className="px-5 py-3 hover:bg-gray-200">
+        <a href="/requirementForm?agent_id=1" className="px-5 py-3 hover:bg-gray-200">
           Requirement Form
         </a>
       </div>
