@@ -93,6 +93,8 @@ const FilterCard = ({ property }) => {
             src={property?.feature_image}
             alt="unsplash"
             className="w-full bg-center h-full bg-cover"
+            loading="lazy"
+            decoding="async"
             onClick={() => navigate("/property/" + (property.url || property.id))}
           />
         </div>

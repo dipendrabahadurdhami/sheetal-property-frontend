@@ -199,7 +199,7 @@ const GridCard = ({ property }) => {
   return (
     <article className="ps-card gc" onClick={go}>
       <div className="gc-img-wrap">
-        <img src={image} alt="" onError={() => setImgErr(true)} className="gc-img" />
+        <img src={image} alt="" onError={() => setImgErr(true)} className="gc-img" loading="lazy" decoding="async" />
         {sold && <SoldOverlay />}
         <div className="gc-img-top">
           <span className="purpose-tag" style={{ color: ps.color, background: ps.bg }}>
@@ -288,7 +288,7 @@ const ListCard = ({ property }) => {
   return (
     <article className="ps-card lc" onClick={go}>
       <div className="lc-img-wrap">
-        <img src={image} alt="" onError={() => setImgErr(true)} className="lc-img" />
+        <img src={image} alt="" onError={() => setImgErr(true)} className="lc-img" loading="lazy" decoding="async" />
         {sold && <SoldOverlay />}
         <span className="purpose-tag lc-purpose" style={{ color: ps.color, background: ps.bg }}>
           {property?.purpose || "Sale"}

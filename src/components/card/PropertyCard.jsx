@@ -188,7 +188,7 @@ const PropertyCard = ({ property }) => {
     <article className="pc-card" onClick={go}>
       {/* image */}
       <div className="pc-img-wrap">
-        <img src={image} alt="" onError={() => setImgErr(true)} className="pc-img" />
+        <img src={image} alt="" onError={() => setImgErr(true)} className="pc-img" loading="lazy" decoding="async" />
         {sold && <SoldOverlay />}
         <div className="pc-img-top">
           <span className="pc-tag" style={{ color: ps.color, background: ps.bg }}>

@@ -61,6 +61,8 @@ const FavoritePropertyCard = ({ data }) => {
           alt={data?.name || "Property"}
           className="w-full h-full sm:col-span-2 object-cover"
           style={{ minHeight: "150px" }}
+          loading="lazy"
+          decoding="async"
         />
       ) : (
         <div
