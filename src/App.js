@@ -22,7 +22,7 @@ import axios from "axios";
 
 // --- Lazy-loaded route pages (code splitting for SEO/perf) ---
 const Home = lazy(() => import("./pages/Home"));
-const RequirementForm = lazy(() => import("./pages/RequirementForm"));
+const RequirementForm = lazy(() => import("./pages/requirementForm?agent_id=1"));
 const SingleProduct = lazy(() => import("./pages/SingleProduct"));
 const HomeLone = lazy(() => import("./pages/HomeLone"));
 const PayRentOnline = lazy(() => import("./pages/PayRentOnline"));
@@ -160,7 +160,7 @@ function App(props) {
         <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/requirementForm" element={<RequirementForm />} />
+          <Route path="/requirementForm?agent_id=1" element={<RequirementForm />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />

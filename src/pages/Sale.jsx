@@ -546,7 +546,7 @@ const Sale = () => {
                 { label: "New Projects",       icon: <IoHammerOutline size={13} />,       path: "/new-projects" },
                 { label: "Commercial",         icon: <IoBusinessOutline size={13} />,     path: "/commercial" },
                 { label: "Find an Agent",      icon: <IoPersonOutline size={13} />,       path: "/agents" },
-                { label: "Submit Requirement", icon: <IoDocumentTextOutline size={13} />, path: "/requirementForm" },
+                { label: "Submit Requirement", icon: <IoDocumentTextOutline size={13} />, path: "/requirementForm?agent_id=1" },
               ].map(({ label, icon, path }) => (
                 <button key={label} onClick={() => navigate(path)} style={{ background: "#F7F8FA", border: "1px solid #E4E6EA", borderRadius: 6, padding: "12px 12px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontFamily: "'Outfit', sans-serif", fontSize: 11.5, fontWeight: 600, color: "#374151", transition: "all 0.15s", textAlign: "left", WebkitTapHighlightColor: "rgba(224,36,36,0.08)", minHeight: 44 }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = "#E02424"; e.currentTarget.style.color = "#E02424"; e.currentTarget.style.background = "#FEF2F2"; }}
@@ -592,7 +592,7 @@ const Sale = () => {
                 </p>
               </div>
               <div className="sale-cta-btns">
-                <button onClick={() => navigate("/requirementForm")} style={{ background: "#E02424", color: "#fff", border: "none", padding: "12px 22px", fontSize: 11.5, fontWeight: 700, borderRadius: 4, cursor: "pointer", letterSpacing: "0.06em", textTransform: "uppercase", fontFamily: "'Outfit', sans-serif", transition: "background 0.15s", display: "flex", alignItems: "center", gap: 7 }}
+                <button onClick={() => navigate("/requirementForm?agent_id=1")} style={{ background: "#E02424", color: "#fff", border: "none", padding: "12px 22px", fontSize: 11.5, fontWeight: 700, borderRadius: 4, cursor: "pointer", letterSpacing: "0.06em", textTransform: "uppercase", fontFamily: "'Outfit', sans-serif", transition: "background 0.15s", display: "flex", alignItems: "center", gap: 7 }}
                   onMouseEnter={e => e.currentTarget.style.background = "#C01A1A"}
                   onMouseLeave={e => e.currentTarget.style.background = "#E02424"}
                 >

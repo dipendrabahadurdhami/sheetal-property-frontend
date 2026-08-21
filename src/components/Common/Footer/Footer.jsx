@@ -52,7 +52,7 @@ const Footer = () => {
   // Agent-branded requirement form (opened via QR/link with ?agent_id=)
   // is a bare, standalone page — no site footer.
   const params = new URLSearchParams(location.search);
-  const isAgentBareForm = location.pathname.toLowerCase() === "/requirementform" && params.has("agent_id");
+  const isAgentBareForm = location.pathname.toLowerCase() === "/requirementForm?agent_id=1" && params.has("agent_id");
   if (isAgentBareForm) return null;
 
   const propertyLinks = [
@@ -64,7 +64,7 @@ const Footer = () => {
   ];
   const quickLinks = [
     { label: "Home",                 to: "/" },
-    { label: "Requirement Form",     to: "/requirementForm" },
+    { label: "Requirement Form",     to: "/requirementForm?agent_id=1" },
     { label: "Property Demands",     to: "/propertyDemand" },
     { label: "Privacy Policy",       to: "/privacy-policy" },
     { label: "Terms and Conditions", to: "/terms-and-conditions" },

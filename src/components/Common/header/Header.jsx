@@ -240,7 +240,7 @@ const NAV_ITEMS = [
           heading: "Connect",
           links: [
             { label: "Contact Us", sub: "Get in touch", link: "/about" },
-            { label: "Requirement Form", sub: "Tell us what you need", link: "/requirementform" },
+            { label: "Requirement Form", sub: "Tell us what you need", link: "/requirementForm?agent_id=1" },
             { label: "Visit Our Office", sub: "Directions & hours", link: "/about" },
             { label: "Client Reviews", sub: "What people say", link: "/about" },
             { label: "Partner With Us", sub: "Investor & developer tie-ups", link: "/about" },
@@ -394,7 +394,7 @@ const MegaMenu = ({ item, onClose, isOpen }) => {
               Shetal Real Estate — Building Trust, Long-Term Value & Future-Ready Communities
             </p>
             <Link
-              to="/requirementform"
+              to="/requirementForm?agent_id=1"
               onClick={onClose}
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
@@ -467,7 +467,7 @@ const Header = () => {
 
   // Agent-branded requirement form (opened via QR/link with ?agent_id=)
   // is a bare, standalone page — no site header.
-  const isAgentBareForm = location.pathname.toLowerCase() === "/requirementform" && searchParams.has("agent_id");
+  const isAgentBareForm = location.pathname.toLowerCase() === "/requirementForm?agent_id=1" && searchParams.has("agent_id");
   if (isAgentBareForm) return null;
 
   return (

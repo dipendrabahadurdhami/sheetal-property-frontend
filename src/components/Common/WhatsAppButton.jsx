@@ -2,8 +2,8 @@ import React from "react";
 
 // Change this if the WhatsApp number ever changes.
 // Country code included, no +, no spaces (WhatsApp API format).
-const WHATSAPP_NUMBER = "9779705250833"; // 
-const DEFAULT_MESSAGE = "Hi, I have an enquiry.";
+const WHATSAPP_NUMBER = "9779801136817"; // 
+const DEFAULT_MESSAGE = "Hi, I have an enquiry, i rich out from the website.";
 
 const WhatsAppButton = () => {
   const link = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(

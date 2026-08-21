@@ -472,7 +472,7 @@ const RequirementForm = () => {
       <Helmet>
         <title>Property Requirement Form Nepal | Sheetal Property Nepal</title>
         <meta name="description" content="Submit your property requirement to Sheetal Property Nepal." />
-        <link rel="canonical" href="https://sheetalproperty.com/requirementform" />
+        <link rel="canonical" href="https://sheetalproperty.com/requirementForm?agent_id=1" />
       </Helmet>
 
       <style>{`

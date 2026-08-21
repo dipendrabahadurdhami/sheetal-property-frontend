@@ -36,7 +36,7 @@ export const navigation = [
     subTitle: [],
   },
   {
-    link: "/requirementForm",
+    link: "/requirementForm?agent_id=1",
     title: "Requirement form",
     subTitle: [],
   },

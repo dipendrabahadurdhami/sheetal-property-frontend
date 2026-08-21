@@ -85,7 +85,7 @@ const SERVICES = [
     title: "Property Valuation",
     desc: "Fair, data-backed market valuations for residential, commercial, and land properties — so you price with confidence.",
     cta: "Request a Valuation",
-    link: "/requirementForm",
+    link: "/requirementForm?agent_id=1",
   },
   {
     icon: I.shieldCheck,
@@ -106,7 +106,7 @@ const SERVICES = [
     title: "Interior Design",
     desc: "End-to-end interior design for new and existing properties — from concept to finished space.",
     cta: "Get in Touch",
-    link: "/requirementForm",
+    link: "/requirementForm?agent_id=1",
   },
   {
     icon: I.shield,
@@ -127,7 +127,7 @@ const SERVICES = [
     title: "NRN / Foreign Buyers",
     desc: "Clear guidance on regulations, documentation, and the buying process for Nepali citizens abroad and foreign investors.",
     cta: "Get in Touch",
-    link: "/requirementForm",
+    link: "/requirementForm?agent_id=1",
   },
 ];
 
@@ -279,7 +279,7 @@ export default function Services() {
                 marginBottom: mob ? 20 : 24,
                 ...fade(hero, 0.30),
               }}>
-                <Link to="/requirementForm" className="btn-p">Submit a Requirement</Link>
+                <Link to="/requirementForm?agent_id=1" className="btn-p">Submit a Requirement</Link>
                 <a href="tel:+9779801000434" className="btn-g">+977 9801000434</a>
               </div>
               <div style={{
@@ -408,7 +408,7 @@ export default function Services() {
           </SR>
           <SR delay={0.1}>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <Link to="/requirementForm" className="btn-p">Submit a Requirement</Link>
+              <Link to="/requirementForm?agent_id=1" className="btn-p">Submit a Requirement</Link>
               <a href="tel:+9779801000434" className="btn-g" style={{ color: "#fff", borderColor: "rgba(255,255,255,0.25)" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                   <Ic d={I.phone} s={12} stroke="#fff" /> +977 9801000434

@@ -265,7 +265,7 @@ export default function PropertyManagement() {
                 marginBottom: mob ? 20 : 24,
                 ...fade(hero, 0.30),
               }}>
-                <Link to="/requirementForm" className="btn-p">Request a Free Assessment</Link>
+                <Link to="/requirementForm?agent_id=1" className="btn-p">Request a Free Assessment</Link>
                 <a href="tel:+9779801000434" className="btn-g">+977 9801000434</a>
               </div>
               <div style={{
@@ -528,7 +528,7 @@ export default function PropertyManagement() {
           </SR>
           <SR delay={0.1}>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <Link to="/requirementForm" className="btn-p">Request a Free Assessment</Link>
+              <Link to="/requirementForm?agent_id=1" className="btn-p">Request a Free Assessment</Link>
               <a href="tel:+9779801000434" className="btn-g" style={{ color: "#fff", borderColor: "rgba(255,255,255,0.25)" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                   <Ic d={I.phone} s={12} stroke="#fff" /> +977 9801000434

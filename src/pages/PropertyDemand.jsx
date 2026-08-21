@@ -110,7 +110,7 @@ const PropertyDemand = () => {
             <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "22px 26px", minWidth: "240px", backdropFilter: "blur(8px)" }}>
               <p style={{ fontSize: "10px", fontWeight: 700, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.15em", margin: "0 0 6px" }}>Have a property?</p>
               <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: "0 0 16px" }}>Post your requirement so agents can reach you directly.</p>
-              <Link to="/requirementform" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--r)", color: "#fff", textDecoration: "none", borderRadius: "4px", fontSize: "13px", fontWeight: 700, padding: "11px 18px", transition: "background 0.15s" }}
+              <Link to="/requirementForm?agent_id=1" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "var(--r)", color: "#fff", textDecoration: "none", borderRadius: "4px", fontSize: "13px", fontWeight: 700, padding: "11px 18px", transition: "background 0.15s" }}
                 onMouseEnter={e => e.currentTarget.style.background = "var(--rd)"}
                 onMouseLeave={e => e.currentTarget.style.background = "var(--r)"}
               >
@@ -221,7 +221,7 @@ const PropertyDemand = () => {
                 <p style={{ fontSize: "12px", color: "#6b7280", margin: 0 }}>
                   {search ? <><span style={{ fontWeight: 700, color: "var(--d)" }}>{filteredList?.length}</span> results for "<span style={{ color: "var(--r)", fontWeight: 700 }}>{search}</span>"</> : <><span style={{ fontWeight: 700, color: "var(--d)" }}>{filteredList?.length}</span> active demands</>}
                 </p>
-                <Link to="/requirementform" style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "12px", fontWeight: 700, color: "var(--r)", textDecoration: "none" }}>
+                <Link to="/requirementForm?agent_id=1" style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "12px", fontWeight: 700, color: "var(--r)", textDecoration: "none" }}>
                   <IoAddCircleOutline style={{ width: "13px", height: "13px" }} />
                   Post your requirement
                   <IoArrowForwardOutline style={{ width: "11px", height: "11px" }} />
