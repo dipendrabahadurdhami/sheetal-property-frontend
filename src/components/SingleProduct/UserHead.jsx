@@ -1,7 +1,5 @@
 import React from "react";
 import { FaPhone, FaEnvelope, FaTag, FaCommentDots } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 
 const UserHead = ({ setOpen, property, onAskAiClick }) => {
   const {
@@ -10,14 +8,7 @@ const UserHead = ({ setOpen, property, onAskAiClick }) => {
     phone,
   } = property || {};
 
-  const user = useSelector((state) => state.user);
-  const isLoggedIn = !!user?.data;
-
   const handleContactClick = () => {
-    if (!isLoggedIn) {
-      toast.error("Please login to contact the owner.");
-      return;
-    }
     setOpen(true);
   };
 
