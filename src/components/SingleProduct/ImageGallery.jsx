@@ -3,7 +3,7 @@ import { BsGrid3X3 } from "react-icons/bs";
 import { FaChevronLeft, FaChevronRight, FaTimes } from "react-icons/fa";
 import { MdPlayArrow, MdPause, MdClose } from "react-icons/md";
 
-/* ── Shared styles ── */
+/* ── Shared styles ── sds*/
 const topBtn = {
   display: "flex", alignItems: "center",
   background: "rgba(0,0,0,0.48)", backdropFilter: "blur(8px)",
