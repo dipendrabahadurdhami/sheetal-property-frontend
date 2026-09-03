@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import apiClient from "../../utils/apiClient";
 import {
   FaSpinner, FaCalendarAlt, FaClock,
-  FaUser, FaPhone, FaEnvelope, FaLock,
+  FaUser, FaPhone, FaEnvelope,
 } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const initialFormData = { date: "", time: "", name: "", phone: "", email: "", note: "" };
@@ -37,9 +36,6 @@ const iStyle = (hasIcon = true, error = false) => ({
 });
 
 const ScheduleTour = ({ property, sidebar = false }) => {
-  const user = useSelector((state) => state.user);
-  const isLoggedIn = !!user?.data;
-
   const [form, setForm]     = useState(initialFormData);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -63,7 +59,6 @@ const ScheduleTour = ({ property, sidebar = false }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isLoggedIn) { toast.error("Please login first."); return; }
     const errs = validate();
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
@@ -104,12 +99,6 @@ const ScheduleTour = ({ property, sidebar = false }) => {
         </div>
 
         <div style={{ padding: sidebar ? "16px" : "20px 24px 24px" }}>
-          {!isLoggedIn && (
-            <div style={{ background: "#fef9e7", border: "1px solid #f39c12", borderRadius: 8, padding: "10px 12px", marginBottom: 12, fontSize: 12, color: "#d68910", fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
-              <FaLock style={{ fontSize: 10 }} /> Login required to schedule a tour
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <Field icon={<FaCalendarAlt />} label="Date" error={errors.date}>
