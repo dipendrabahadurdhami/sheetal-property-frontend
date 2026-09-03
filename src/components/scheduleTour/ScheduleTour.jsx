@@ -66,7 +66,7 @@ const ScheduleTour = ({ property, sidebar = false }) => {
       const res = await apiClient.post("/schedule-tour", {
         date: form.date, time: form.time,
         name: form.name, email: form.email,
-        phone: form.phone, note_description: form.note,
+        phone: form.phone, message_description: form.note,
         property_id: propertyId,
       });
       if (res.status === 200) {
