@@ -4,7 +4,8 @@ import UserHead from "../components/SingleProduct/UserHead";
 import AgentCard from "../components/SingleProduct/AgentCard";
 import Description from "../components/SingleProduct/Description";
 import ScheduleTour from "../components/scheduleTour/ScheduleTour";
-import ContactModel from "../components/SingleProduct/ContactModel";
+import ContactOwnerModel from "../components/SingleProduct/ContactOwnerModel";
+import ContactAgentModel from "../components/SingleProduct/ContactAgentModel";
 import AskAiModal from "../components/SingleProduct/AskAiModal";
 import ProductLocation from "../components/SingleProduct/ProductLocation";
 import {
@@ -354,6 +355,7 @@ const SideCard = ({ title, children }) => (
 ───────────────────────────────────────── */
 const SingleProduct = () => {
   const [open,        setOpen]        = useState(false);
+  const [agentModalOpen, setAgentModalOpen] = useState(false);
   const [askAiOpen,   setAskAiOpen]   = useState(false);
   const [activeTab,   setActiveTab]   = useState("sec-overview");
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -687,7 +689,7 @@ useEffect(() => {
 
                   {/* Desktop-only CTA row (hidden on mobile via CSS; mobile uses fixed bar) */}
                   <div className="sp-sidebar-cta-row" style={{ gap: "7px" }}>
-                    <button className="sp-cta" onClick={() => setOpen(true)}>
+                    <button className="sp-cta" onClick={() => setAgentModalOpen(true)}>
                       <FaPhoneAlt size={11} />
                       Contact Agent
                     </button>
@@ -742,7 +744,7 @@ useEffect(() => {
 
             {/* ── Mobile fixed CTA bar (hidden on tablet+) ── */}
             <div className="sp-mobile-cta-bar">
-              <button className="sp-cta" onClick={() => setOpen(true)}>
+              <button className="sp-cta" onClick={() => setAgentModalOpen(true)}>
                 <FaPhoneAlt size={11} />
                 Contact Agent
               </button>
@@ -772,7 +774,8 @@ useEffect(() => {
               />
             )}
 
-            <ContactModel data={property} open={open} setOpen={setOpen} />
+            <ContactOwnerModel data={property} open={open} setOpen={setOpen} />
+            <ContactAgentModel data={property} open={agentModalOpen} setOpen={setAgentModalOpen} />
             <AskAiModal currentProperty={property} open={askAiOpen} setOpen={setAskAiOpen} />
           </>
         )

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { HiLocationMarker } from "react-icons/hi";
 import { AiFillCheckCircle } from "react-icons/ai";
 import { product } from "../Object/product";
-import ContactModel from "../SingleProduct/ContactModel";
+import ContactOwnerModel from "../SingleProduct/ContactOwnerModel";
 
 const Details = () => {
   const [open, setOpen] = useState(false);
@@ -34,7 +34,7 @@ const Details = () => {
           </button>
         </div>
       </div>
-      <ContactModel open={open} setOpen={setOpen} />
+      <ContactOwnerModel open={open} setOpen={setOpen} />
     </>
   );
 };

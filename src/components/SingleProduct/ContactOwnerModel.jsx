@@ -5,7 +5,7 @@ import { FaSpinner, FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const ContactModel = ({ data, open, setOpen }) => {
+const ContactOwnerModel = ({ data, open, setOpen }) => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -178,4 +178,4 @@ const ContactModel = ({ data, open, setOpen }) => {
   );
 };
 
-export default ContactModel;
+export default ContactOwnerModel;
