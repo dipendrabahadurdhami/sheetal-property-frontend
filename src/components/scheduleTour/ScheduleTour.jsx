@@ -54,13 +54,8 @@ const ScheduleTour = ({ property, sidebar = false }) => {
     if (!form.date)  e.date  = "Required";
     if (!form.time)  e.time  = "Required";
     if (!form.name)  e.name  = "Enter your name";
-    // Phone and email are both optional now — but we still need one way to
-    // reach you to confirm the tour, so at least one must be filled in.
+    if (!form.phone) e.phone = "Enter phone";
     if (form.email && !emailRe.test(form.email)) e.email = "Invalid email";
-    if (!form.phone && !form.email) {
-      e.phone = "Provide phone or email";
-      e.email = e.email || "Provide phone or email";
-    }
     if (!form.note)  e.note  = "Enter a note";
     setErrors(e);
     return e;
@@ -134,7 +129,7 @@ const ScheduleTour = ({ property, sidebar = false }) => {
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <Field icon={<FaPhone />} error={errors.phone}>
-                <input type="text" name="phone" placeholder="Phone (optional)" value={form.phone} onChange={onChange}
+                <input type="text" name="phone" placeholder="Phone" value={form.phone} onChange={onChange}
                   style={iStyle(true, !!errors.phone)} onFocus={focusStyle} onBlur={(e) => blurStyle(e, "phone")} />
               </Field>
               <Field icon={<FaEnvelope />} error={errors.email}>
@@ -143,7 +138,7 @@ const ScheduleTour = ({ property, sidebar = false }) => {
               </Field>
             </div>
             <div style={{ fontSize: "10px", color: "#9ca3af", marginTop: "-6px" }}>
-              Please provide at least a phone number or an email so we can confirm your tour.
+              Phone number is required so we can confirm your tour.
             </div>
 
             <ReasonMultiSelect

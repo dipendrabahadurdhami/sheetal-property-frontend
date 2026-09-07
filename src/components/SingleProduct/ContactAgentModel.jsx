@@ -2,16 +2,25 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { FaSpinner, FaUserCircle } from "react-icons/fa";
+import { IoPersonOutline, IoMailOutline, IoCallOutline, IoChatbubbleOutline, IoTimeOutline } from "react-icons/io5";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ReasonMultiSelect from "../Common/ReasonMultiSelect";
 import { PREFERRED_CONTACT_TIME_OPTIONS } from "../../utils/contactReasons";
 
 /*
-  Contact AGENT modal — separate from ContactModel.jsx (Contact OWNER).
+  Contact AGENT modal — separate from ContactOwnerModel.jsx (Contact OWNER).
   Posts to /api/contact-agent with the listing's actual agent id, so
   submissions land in the admin "Contact Agent" tab, not "Contact Owner".
 */
+const inputWrap =
+  "flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100 transition-all";
+const iconBox =
+  "w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50 border-r border-gray-200";
+const fieldInput =
+  "flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent placeholder-gray-300";
+const fieldLabel = "block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5";
+
 const ContactAgentModel = ({ data, open, setOpen }) => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -26,17 +35,14 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
   });
 
   const agentId = data?.agent?.id;
+  const agentName = data?.agent?.first_name
+    ? `${data.agent.first_name} ${data.agent.last_name || ""}`
+    : (data?.agent?.user_name || "Agent");
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
     if (!agentId) {
       toast.error("This listing has no agent to contact.");
-      return;
-    }
-    // Phone and email are both optional, but the agent needs some way to
-    // reach the client back, so at least one is required.
-    if (!form.phone && !form.email) {
-      toast.error("Please provide a phone number or an email.");
       return;
     }
     setLoading(true);
@@ -106,82 +112,107 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block align-bottom bg-white rounded-lg pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
-              <div className="hidden sm:block absolute top-0 right-0 mr-3 mt-4">
+            <div className="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+              {/* Header */}
+              <div className="px-5 py-4 bg-red-50 border-b border-red-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FaUserCircle className="text-gray-400 w-9 h-9 flex-shrink-0" />
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-red-400 mb-0.5">
+                      Contact Agent
+                    </p>
+                    <h2 className="text-sm font-bold text-gray-900">{agentName}</h2>
+                    {data?.name && (
+                      <p className="text-xs text-gray-500">Regarding: {data.name}</p>
+                    )}
+                  </div>
+                </div>
                 <button
                   type="button"
-                  className="text-white hover:text-red-500 focus:outline-none"
+                  className="text-gray-400 hover:text-red-500 focus:outline-none flex-shrink-0"
                   onClick={() => setOpen(false)}
                 >
                   <span className="sr-only">Close</span>
-                  <XIcon className="h-8 w-8" aria-hidden="true" />
+                  <XIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>
 
-              {/* Header */}
-              <div className="bg-gray-300 flex space-x-3 items-center p-3 w-full">
-                <FaUserCircle className="text-gray-700 w-10 h-10" />
-                <div className="flex flex-col">
-                  <div>{data?.agent?.first_name ? `${data.agent.first_name} ${data.agent.last_name || ""}` : (data?.agent?.user_name || "Agent")}</div>
-                  <div className="text-sm">
-                    Regarding: <strong>{data?.name}</strong>
-                  </div>
-                </div>
-              </div>
-
               {/* Form */}
-              <div className="p-5">
-                <form className="space-y-5" onSubmit={onFormSubmit}>
-                  <input
-                    type="text"
-                    className="border-b w-full p-2 text-xl"
-                    placeholder="Name"
-                    name="name"
-                    value={form.name}
-                    required
-                    onChange={(e) =>
-                      setForm({ ...form, [e.target.name]: e.target.value })
-                    }
-                  />
-                  <input
-                    type="email"
-                    className="border-b w-full p-2 text-xl"
-                    placeholder="Email (optional)"
-                    name="email"
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm({ ...form, [e.target.name]: e.target.value })
-                    }
-                  />
-                  <div className="flex space-x-5">
-                    <select className="border-b p-2">
-                      <option>Npl +977</option>
-                    </select>
-                    <input
-                      type="text"
-                      className="border-b w-full p-2 text-xl"
-                      placeholder="Mobile number (optional)"
-                      name="phone"
-                      value={form.phone}
-                      onChange={(e) =>
-                        setForm({ ...form, [e.target.name]: e.target.value })
-                      }
-                    />
+              <div className="px-5 py-5 bg-white max-h-[75vh] overflow-y-auto">
+                <form className="space-y-4" onSubmit={onFormSubmit}>
+                  <div>
+                    <label className={fieldLabel}>
+                      Full Name<span className="text-red-500 ml-0.5">*</span>
+                    </label>
+                    <div className={inputWrap}>
+                      <span className={iconBox}>
+                        <IoPersonOutline className="w-4 h-4 text-gray-400" />
+                      </span>
+                      <input
+                        type="text"
+                        name="name"
+                        value={form.name}
+                        placeholder="Your full name"
+                        required
+                        onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+                        className={fieldInput}
+                      />
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-400 -mt-3">
-                    Please provide at least an email or a mobile number.
-                  </p>
-                  <textarea
-                    className="border-b w-full p-2 text-base resize-none"
-                    placeholder="Your message to the agent"
-                    name="message"
-                    rows={3}
-                    value={form.message}
-                    required
-                    onChange={(e) =>
-                      setForm({ ...form, [e.target.name]: e.target.value })
-                    }
-                  />
+
+                  <div>
+                    <label className={fieldLabel}>
+                      Phone Number<span className="text-red-500 ml-0.5">*</span>
+                    </label>
+                    <div className={inputWrap}>
+                      <span className={`${iconBox} text-xs font-semibold text-gray-500`}>+977</span>
+                      <IoCallOutline className="w-4 h-4 text-gray-400 ml-3" />
+                      <input
+                        type="text"
+                        name="phone"
+                        value={form.phone}
+                        placeholder="Your mobile number"
+                        required
+                        onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+                        className={fieldInput}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={fieldLabel}>Email Address</label>
+                    <div className={inputWrap}>
+                      <span className={iconBox}>
+                        <IoMailOutline className="w-4 h-4 text-gray-400" />
+                      </span>
+                      <input
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        placeholder="your@email.com (optional)"
+                        onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+                        className={fieldInput}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={fieldLabel}>Message</label>
+                    <div className="flex border border-gray-200 rounded-xl overflow-hidden focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100 transition-all">
+                      <span className="w-10 flex items-start justify-center flex-shrink-0 pt-2.5 bg-gray-50 border-r border-gray-200">
+                        <IoChatbubbleOutline className="w-4 h-4 text-gray-400" />
+                      </span>
+                      <textarea
+                        name="message"
+                        value={form.message}
+                        placeholder="Your message to the agent"
+                        rows={3}
+                        required
+                        onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+                        className="flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent placeholder-gray-300 resize-none"
+                      />
+                    </div>
+                  </div>
 
                   <ReasonMultiSelect
                     compact
@@ -193,45 +224,51 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
                   />
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
-                      Preferred Contact Time
-                    </label>
-                    <select
-                      className="border-b w-full p-2 text-base"
-                      value={form.preferredContactTime}
-                      onChange={(e) =>
-                        setForm({ ...form, preferredContactTime: e.target.value })
-                      }
-                    >
-                      <option value="">No preference</option>
-                      {PREFERRED_CONTACT_TIME_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="flex space-x-4 items-center">
-                    <input
-                      type="checkbox"
-                      className="w-5 h-5"
-                      checked={form.terms}
-                      onChange={() =>
-                        setForm({ ...form, terms: !form.terms })
-                      }
-                    />
-                    <div>
-                      <div>I wish to be contacted by this agent.</div>
-                      <div>I agree Sheetal Property Terms and Policy.</div>
+                    <label className={fieldLabel}>Preferred Contact Time</label>
+                    <div className={inputWrap}>
+                      <span className={iconBox}>
+                        <IoTimeOutline className="w-4 h-4 text-gray-400" />
+                      </span>
+                      <select
+                        value={form.preferredContactTime}
+                        onChange={(e) => setForm({ ...form, preferredContactTime: e.target.value })}
+                        className={`${fieldInput} appearance-none`}
+                      >
+                        <option value="">No preference</option>
+                        {PREFERRED_CONTACT_TIME_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
+
+                  <div className="flex items-start gap-3 pt-1">
+                    <input
+                      type="checkbox"
+                      id="contactAgentTerms"
+                      checked={form.terms}
+                      onChange={() => setForm({ ...form, terms: !form.terms })}
+                      className="w-4 h-4 mt-0.5 accent-red-700 flex-shrink-0 cursor-pointer"
+                    />
+                    <label htmlFor="contactAgentTerms" className="text-xs text-gray-500 leading-relaxed cursor-pointer">
+                      I wish to be contacted by this agent, and I agree to the{" "}
+                      <span className="text-red-600 font-semibold">Terms and Policy</span>.
+                    </label>
+                  </div>
+
                   <button
                     type="submit"
                     disabled={!form.terms || loading}
-                    className={`w-full bg-red-700 py-2 text-lg font-bold text-white flex items-center justify-center rounded-lg ${
-                      !form.terms || loading ? "opacity-50" : ""
-                    }`}
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-red-700 hover:bg-red-800 active:scale-[0.98] text-white text-sm font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? <FaSpinner className="animate-spin" /> : "Contact Agent"}
+                    {loading ? (
+                      <>
+                        <FaSpinner className="animate-spin w-4 h-4" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Contact Agent"
+                    )}
                   </button>
                 </form>
               </div>

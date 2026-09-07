@@ -27,12 +27,6 @@ const ContactForm = ({ data }) => {
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
-    // Phone and email are both optional, but the agent needs some way to
-    // reach the client back, so at least one is required.
-    if (!form.phone && !form.email) {
-      toast.error("Please provide a phone number or an email.");
-      return;
-    }
     setLoading(true);
     const message = "Phone Number:" + form.phone + " Message:" + form.message;
     try {
@@ -91,8 +85,8 @@ const ContactForm = ({ data }) => {
       label: "Phone Number",
       name: "phone",
       type: "number",
-      placeholder: "Your phone number (optional)",
-      required: false,
+      placeholder: "Your phone number",
+      required: true,
     },
   ];
 
@@ -139,10 +133,6 @@ const ContactForm = ({ data }) => {
               </div>
             );
           })}
-
-          <p className="text-[11px] text-gray-400 -mt-2">
-            Please provide at least an email or a phone number.
-          </p>
 
           {/* Reason for contact */}
           <ReasonMultiSelect
