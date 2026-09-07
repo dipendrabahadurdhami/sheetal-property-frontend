@@ -196,6 +196,94 @@ const VehicleCounter = ({ vehicles, onChange }) => {
   );
 };
 
+const FacilityPicker = ({ facilities, selected, onChange }) => {
+  const [pending, setPending] = useState("");
+  const available = facilities.filter((f) => !selected.includes(f.name));
+
+  const addFacility = () => {
+    if (!pending) return;
+    onChange([...selected, pending]);
+    setPending("");
+  };
+
+  const remove = (name) => {
+    onChange(selected.filter((f) => f !== name));
+  };
+
+  const btnBase = {
+    border: "none", borderRadius: 4, height: 36, fontSize: 12, fontWeight: 700,
+    display: "inline-flex", alignItems: "center", gap: 6, padding: "0 16px",
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <select
+          value={pending}
+          onChange={(e) => setPending(e.target.value)}
+          disabled={facilities.length === 0}
+          style={{
+            flex: "1 1 160px", maxWidth: 240, padding: "8px 10px", fontSize: 13,
+            color: "#374151", border: "1px solid #e4e4e0", borderRadius: 4, background: "#fff",
+          }}
+        >
+          <option value="">Select a facility...</option>
+          {available.map((f, i) => (
+            <option key={i} value={f.name}>{f.name}</option>
+          ))}
+        </select>
+        <button
+          type="button"
+          onClick={addFacility}
+          disabled={!pending}
+          style={{
+            ...btnBase,
+            background: pending ? "#e53935" : "#e5e7eb",
+            color: pending ? "#fff" : "#9ca3af",
+            cursor: pending ? "pointer" : "not-allowed",
+          }}
+        >
+          + Add
+        </button>
+      </div>
+
+      {facilities.length === 0 ? (
+        <p style={{ fontSize: 12, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>
+          No facilities configured yet.
+        </p>
+      ) : selected.length === 0 ? (
+        <p style={{ fontSize: 12, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>
+          No facilities selected — pick one above and click "Add".
+        </p>
+      ) : (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {selected.map((name) => (
+            <div key={name} style={{
+              display: "flex", alignItems: "center", gap: 8,
+              border: "1px solid #fecaca", borderRadius: 20,
+              padding: "6px 6px 6px 12px", background: "#fef2f2", color: "#e53935",
+            }}>
+              <span style={{ fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{name}</span>
+              <button
+                type="button"
+                onClick={() => remove(name)}
+                title="Remove"
+                style={{
+                  width: 18, height: 18, borderRadius: "50%", border: "none", background: "transparent",
+                  color: "#e53935", cursor: "pointer", fontSize: 12, display: "flex",
+                  alignItems: "center", justifyContent: "center",
+                }}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 /* ═══════════════════════════════════════════
    PAYMENT POPUP
    - Shows QR
@@ -835,45 +923,43 @@ const RequirementForm = () => {
                         </RF>
                       </div>
 
-                      {isFieldOn('vehicle') && (
-                      <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-                        <label style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".08em", color:"#7f8c8d" }}>
-                          Vehicle
-                        </label>
-                        <div style={{ border:"1px solid #e4e4e0", borderRadius:4, background:"#fff", padding:"10px 12px" }}>
-                          <VehicleCounter vehicles={values.vehicle} onChange={(v) => handleChange({ target: { name: "vehicle", value: v } })} />
+                      {(isFieldOn('vehicle') || isFieldOn('facilities')) && (
+                      <div className="rf-grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                        {isFieldOn('vehicle') && (
+                        <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                          <label style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".08em", color:"#7f8c8d" }}>
+                            Vehicle
+                          </label>
+                          <div style={{ border:"1px solid #e4e4e0", borderRadius:4, background:"#fff", padding:"10px 12px" }}>
+                            <VehicleCounter vehicles={values.vehicle} onChange={(v) => handleChange({ target: { name: "vehicle", value: v } })} />
+                          </div>
                         </div>
+                        )}
+
+                        {isFieldOn('facilities') && (
+                        <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                          <label style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".08em", color:"#7f8c8d" }}>
+                            Facilities{!agentId && <span style={{ color:"var(--rf-accent, #b91c1c)", marginLeft:2 }}>*</span>}
+                          </label>
+                          <div style={{ border:"1px solid #e4e4e0", borderRadius:4, background:"#fff", padding:"10px 12px" }}>
+                            <FacilityPicker
+                              facilities={properties?.facilities || []}
+                              selected={values.facilities}
+                              onChange={(v) => handleChange({ target: { name: "facilities", value: v } })}
+                            />
+                          </div>
+                          {errors.facilities && touched.facilities && (
+                            <p style={{ fontSize:11, color:"var(--rf-accent, #b91c1c)", fontWeight:600, margin:0 }}>{errors.facilities}</p>
+                          )}
+                        </div>
+                        )}
                       </div>
                       )}
                     </div>
                   </SC>
 
-                  {isFieldOn('facilities') && (
-                  <SC title="Required Facilities" step="3" required={!agentId}>
-                    <div role="group" style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-                      {properties?.facilities?.map((facility, i) => (
-                        <label key={i} style={{
-                          display:"flex", alignItems:"center", gap:7,
-                          padding:"7px 12px", borderRadius:4, cursor:"pointer",
-                          border: values.facilities.includes(facility.name) ? `1px solid ${themeColor}` : "1px solid #e4e4e0",
-                          background: values.facilities.includes(facility.name) ? "#fef2f2" : "#fff",
-                          fontSize:12, fontWeight:600,
-                          color: values.facilities.includes(facility.name) ? themeColor : "#374151",
-                          transition:"all .15s",
-                        }}>
-                          <Field type="checkbox" name="facilities" value={facility.name} className="rf-check" style={{ accentColor:themeColor, width:13, height:13 }} />
-                          {facility.name}
-                        </label>
-                      ))}
-                    </div>
-                    {errors.facilities && touched.facilities && (
-                      <p style={{ fontSize:11, color:themeColor, fontWeight:600, margin:"8px 0 0" }}>{errors.facilities}</p>
-                    )}
-                  </SC>
-                  )}
-
                   {isFieldOn('description') && (
-                  <SC title="Additional Notes" step="4">
+                  <SC title="Additional Notes" step="3">
                     <textarea rows={4} name="description" value={values.description} onChange={handleChange}
                       className="rf-textarea"
                       placeholder="Any additional requirements or notes for our agents…"
