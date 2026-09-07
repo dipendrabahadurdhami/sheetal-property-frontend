@@ -28,7 +28,8 @@ const ContactForm = ({ data }) => {
   const onFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const message = "Phone Number:" + form.phone + " Message:" + form.message;
+    const fullPhone = form.phone ? "+977" + form.phone : "";
+    const message = "Phone Number:" + fullPhone + " Message:" + form.message;
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_LINK}/contact-agent`,
@@ -36,7 +37,7 @@ const ContactForm = ({ data }) => {
           agent_id:      id,
           name:          form.name,
           email:         form.email,
-          phone:         form.phone,
+          phone:         fullPhone,
           contact_form:  message,
           terms_agrement: form.terms ? "yes" : "no",
           reasons: form.reasons,
@@ -110,6 +111,7 @@ const ContactForm = ({ data }) => {
           {/* Text inputs */}
           {fields.map(function(field){
             var Icon = field.icon;
+            var isPhone = field.name === "phone";
             return (
               <div key={field.name}>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
@@ -117,17 +119,23 @@ const ContactForm = ({ data }) => {
                   {field.required && <span className="text-red-500 ml-0.5">*</span>}
                 </label>
                 <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100 transition-all">
-                  <span className="w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50 border-r border-gray-200">
-                    <Icon className="w-4 h-4 text-gray-400" />
-                  </span>
+                  {isPhone ? (
+                    <span className="pl-3 pr-2 flex items-center gap-1.5 flex-shrink-0 self-stretch bg-gray-50 text-sm font-semibold text-gray-600">
+                      <span aria-hidden="true">🇳🇵</span> +977
+                    </span>
+                  ) : (
+                    <span className="w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50">
+                      <Icon className="w-4 h-4 text-gray-400" />
+                    </span>
+                  )}
                   <input
                     type={field.type}
                     name={field.name}
                     value={form[field.name]}
-                    placeholder={field.placeholder}
+                    placeholder={isPhone ? "98XXXXXXXX" : field.placeholder}
                     required={field.required}
                     onChange={onInputChange}
-                    className="flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent placeholder-gray-300"
+                    className="flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent placeholder-gray-400"
                   />
                 </div>
               </div>
@@ -150,7 +158,7 @@ const ContactForm = ({ data }) => {
               Preferred Contact Time
             </label>
             <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100 transition-all">
-              <span className="w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50 border-r border-gray-200">
+              <span className="w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50">
                 <IoTimeOutline className="w-4 h-4 text-gray-400" />
               </span>
               <select
@@ -172,7 +180,7 @@ const ContactForm = ({ data }) => {
               Message
             </label>
             <div className="flex border border-gray-200 rounded-xl overflow-hidden focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100 transition-all">
-              <span className="w-10 flex items-start justify-center flex-shrink-0 pt-2.5 bg-gray-50 border-r border-gray-200">
+              <span className="w-10 flex items-start justify-center flex-shrink-0 pt-2.5 bg-gray-50">
                 <IoChatbubbleOutline className="w-4 h-4 text-gray-400" />
               </span>
               <textarea
@@ -180,7 +188,7 @@ const ContactForm = ({ data }) => {
                 value={form.message}
                 onChange={onInputChange}
                 placeholder="Write your message here..."
-                className="flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent placeholder-gray-300 resize-none"
+                className="flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent placeholder-gray-400 resize-none"
                 rows={4}
               />
             </div>
