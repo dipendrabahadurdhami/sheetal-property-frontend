@@ -6,8 +6,13 @@ import {
 } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import ReasonMultiSelect from "../Common/ReasonMultiSelect";
+import { PREFERRED_CONTACT_TIME_OPTIONS } from "../../utils/contactReasons";
 
-const initialFormData = { date: "", time: "", name: "", phone: "", email: "", note: "" };
+const initialFormData = {
+  date: "", time: "", name: "", phone: "", email: "", note: "",
+  reasons: [], reasonOther: "", preferredContactTime: "",
+};
 
 const Field = ({ icon, label, error, children }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
@@ -49,9 +54,13 @@ const ScheduleTour = ({ property, sidebar = false }) => {
     if (!form.date)  e.date  = "Required";
     if (!form.time)  e.time  = "Required";
     if (!form.name)  e.name  = "Enter your name";
-    if (!form.phone) e.phone = "Enter phone";
-    if (!form.email)             e.email = "Enter email";
-    else if (!emailRe.test(form.email)) e.email = "Invalid email";
+    // Phone and email are both optional now — but we still need one way to
+    // reach you to confirm the tour, so at least one must be filled in.
+    if (form.email && !emailRe.test(form.email)) e.email = "Invalid email";
+    if (!form.phone && !form.email) {
+      e.phone = "Provide phone or email";
+      e.email = e.email || "Provide phone or email";
+    }
     if (!form.note)  e.note  = "Enter a note";
     setErrors(e);
     return e;
@@ -68,6 +77,9 @@ const ScheduleTour = ({ property, sidebar = false }) => {
         name: form.name, email: form.email,
         phone: form.phone, message_description: form.note,
         property_id: propertyId,
+        reasons: form.reasons,
+        reason_other: form.reasonOther,
+        preferred_contact_time: form.preferredContactTime,
       });
       if (res.status === 200) {
         toast.success("Tour scheduled successfully!");
@@ -122,14 +134,36 @@ const ScheduleTour = ({ property, sidebar = false }) => {
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <Field icon={<FaPhone />} error={errors.phone}>
-                <input type="text" name="phone" placeholder="Phone" value={form.phone} onChange={onChange}
+                <input type="text" name="phone" placeholder="Phone (optional)" value={form.phone} onChange={onChange}
                   style={iStyle(true, !!errors.phone)} onFocus={focusStyle} onBlur={(e) => blurStyle(e, "phone")} />
               </Field>
               <Field icon={<FaEnvelope />} error={errors.email}>
-                <input type="email" name="email" placeholder="Email" value={form.email} onChange={onChange}
+                <input type="email" name="email" placeholder="Email (optional)" value={form.email} onChange={onChange}
                   style={iStyle(true, !!errors.email)} onFocus={focusStyle} onBlur={(e) => blurStyle(e, "email")} />
               </Field>
             </div>
+            <div style={{ fontSize: "10px", color: "#9ca3af", marginTop: "-6px" }}>
+              Please provide at least a phone number or an email so we can confirm your tour.
+            </div>
+
+            <ReasonMultiSelect
+              compact
+              label="Reason for Visit"
+              value={form.reasons}
+              onChange={(reasons) => setForm({ ...form, reasons })}
+              otherValue={form.reasonOther}
+              onOtherChange={(reasonOther) => setForm({ ...form, reasonOther })}
+            />
+
+            <Field label="Preferred Contact Time">
+              <select name="preferredContactTime" value={form.preferredContactTime} onChange={onChange}
+                style={iStyle(false, false)}>
+                <option value="">No preference</option>
+                {PREFERRED_CONTACT_TIME_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </Field>
 
             <Field label="Note" error={errors.note}>
               <textarea name="note" rows={sidebar ? 3 : 4} placeholder="Anything you'd like us to know..."

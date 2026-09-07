@@ -41,7 +41,7 @@ const buildRequirementSchema = (fieldsConfig) => {
 
   return Yup.object().shape({
     name:              Yup.string().min(3).required("Name is required"),
-    email:             Yup.string().email("Invalid email").required("Email is required"),
+    email:             Yup.string().email("Invalid email").notRequired(),
     contact_number:    Yup.string().matches(/^[0-9]{10}$/, "Must be 10 digits").required("Required"),
     permanent_address: Yup.string().min(3).required("Permanent address required"),
     temporary_address: Yup.string().min(3).required("Temporary address required"),
@@ -714,8 +714,8 @@ const RequirementForm = () => {
                         <Field type="text" name="name" value={values.name} onChange={handleChange} placeholder="Enter your full name" style={iS} />
                       </RF>
                       <div className="rf-grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                        <RF icon={IoMailOutline} label="Email Address" required error={errors.email} touched={touched.email}>
-                          <Field type="email" name="email" value={values.email} onChange={handleChange} placeholder="your@email.com" style={iS} />
+                        <RF icon={IoMailOutline} label="Email Address" error={errors.email} touched={touched.email}>
+                          <Field type="email" name="email" value={values.email} onChange={handleChange} placeholder="your@email.com (optional)" style={iS} />
                         </RF>
                         <RF icon={IoCallOutline} label="Contact Number" required error={errors.contact_number} touched={touched.contact_number}>
                           <Field type="number" name="contact_number" value={values.contact_number} onChange={handleChange} placeholder="10-digit number" style={iS} />

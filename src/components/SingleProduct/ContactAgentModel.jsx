@@ -4,6 +4,8 @@ import { XIcon } from "@heroicons/react/outline";
 import { FaSpinner, FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReasonMultiSelect from "../Common/ReasonMultiSelect";
+import { PREFERRED_CONTACT_TIME_OPTIONS } from "../../utils/contactReasons";
 
 /*
   Contact AGENT modal — separate from ContactModel.jsx (Contact OWNER).
@@ -18,6 +20,9 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
     phone: "",
     message: "",
     terms: false,
+    reasons: [],
+    reasonOther: "",
+    preferredContactTime: "",
   });
 
   const agentId = data?.agent?.id;
@@ -28,20 +33,30 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
       toast.error("This listing has no agent to contact.");
       return;
     }
+    // Phone and email are both optional, but the agent needs some way to
+    // reach the client back, so at least one is required.
+    if (!form.phone && !form.email) {
+      toast.error("Please provide a phone number or an email.");
+      return;
+    }
     setLoading(true);
     await axios
       .post(`${process.env.REACT_APP_API_LINK}/contact-agent`, {
         agent_id: agentId,
         name: form.name,
         email: form.email,
+        phone: form.phone,
         contact_form: `Phone: ${form.phone} | Property: ${data?.name || ""} | Message: ${form.message}`,
         terms_agrement: form.terms ? "yes" : "no",
+        reasons: form.reasons,
+        reason_other: form.reasonOther,
+        preferred_contact_time: form.preferredContactTime,
       })
       .then((res) => {
         if (res.status === 200) {
           setLoading(false);
           toast.success("Your message has been sent to the agent.");
-          setForm({ name: "", email: "", phone: "", message: "", terms: false });
+          setForm({ name: "", email: "", phone: "", message: "", terms: false, reasons: [], reasonOther: "", preferredContactTime: "" });
           setOpen(false);
         } else {
           setLoading(false);
@@ -131,10 +146,9 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
                   <input
                     type="email"
                     className="border-b w-full p-2 text-xl"
-                    placeholder="Email"
+                    placeholder="Email (optional)"
                     name="email"
                     value={form.email}
-                    required
                     onChange={(e) =>
                       setForm({ ...form, [e.target.name]: e.target.value })
                     }
@@ -146,15 +160,17 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
                     <input
                       type="text"
                       className="border-b w-full p-2 text-xl"
-                      placeholder="Mobile number"
+                      placeholder="Mobile number (optional)"
                       name="phone"
                       value={form.phone}
-                      required
                       onChange={(e) =>
                         setForm({ ...form, [e.target.name]: e.target.value })
                       }
                     />
                   </div>
+                  <p className="text-xs text-gray-400 -mt-3">
+                    Please provide at least an email or a mobile number.
+                  </p>
                   <textarea
                     className="border-b w-full p-2 text-base resize-none"
                     placeholder="Your message to the agent"
@@ -166,6 +182,34 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
                       setForm({ ...form, [e.target.name]: e.target.value })
                     }
                   />
+
+                  <ReasonMultiSelect
+                    compact
+                    label="Reason for Contact"
+                    value={form.reasons}
+                    onChange={(reasons) => setForm({ ...form, reasons })}
+                    otherValue={form.reasonOther}
+                    onOtherChange={(reasonOther) => setForm({ ...form, reasonOther })}
+                  />
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
+                      Preferred Contact Time
+                    </label>
+                    <select
+                      className="border-b w-full p-2 text-base"
+                      value={form.preferredContactTime}
+                      onChange={(e) =>
+                        setForm({ ...form, preferredContactTime: e.target.value })
+                      }
+                    >
+                      <option value="">No preference</option>
+                      {PREFERRED_CONTACT_TIME_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div className="flex space-x-4 items-center">
                     <input
                       type="checkbox"

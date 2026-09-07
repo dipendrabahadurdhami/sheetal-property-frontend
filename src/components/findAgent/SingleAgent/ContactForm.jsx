@@ -6,15 +6,19 @@ import {
   IoMailOutline,
   IoCallOutline,
   IoChatbubbleOutline,
+  IoTimeOutline,
 } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import ReasonMultiSelect from "../../Common/ReasonMultiSelect";
+import { PREFERRED_CONTACT_TIME_OPTIONS } from "../../../utils/contactReasons";
 
 const ContactForm = ({ data }) => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "", email: "", phone: "", message: "", terms: false,
+    reasons: [], reasonOther: "", preferredContactTime: "",
   });
 
   const onInputChange = (e) => {
@@ -23,6 +27,12 @@ const ContactForm = ({ data }) => {
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
+    // Phone and email are both optional, but the agent needs some way to
+    // reach the client back, so at least one is required.
+    if (!form.phone && !form.email) {
+      toast.error("Please provide a phone number or an email.");
+      return;
+    }
     setLoading(true);
     const message = "Phone Number:" + form.phone + " Message:" + form.message;
     try {
@@ -32,13 +42,17 @@ const ContactForm = ({ data }) => {
           agent_id:      id,
           name:          form.name,
           email:         form.email,
+          phone:         form.phone,
           contact_form:  message,
           terms_agrement: form.terms ? "yes" : "no",
+          reasons: form.reasons,
+          reason_other: form.reasonOther,
+          preferred_contact_time: form.preferredContactTime,
         }
       );
       if (res.status === 200) {
         toast.success("Your details has been sent to the agent.");
-        setForm({ name: "", email: "", phone: "", message: "", terms: false });
+        setForm({ name: "", email: "", phone: "", message: "", terms: false, reasons: [], reasonOther: "", preferredContactTime: "" });
       } else {
         toast.error("Something went wrong. Please try again later.");
       }
@@ -69,15 +83,15 @@ const ContactForm = ({ data }) => {
       label: "Email Address",
       name: "email",
       type: "email",
-      placeholder: "your@email.com",
-      required: true,
+      placeholder: "your@email.com (optional)",
+      required: false,
     },
     {
       icon: IoCallOutline,
       label: "Phone Number",
       name: "phone",
       type: "number",
-      placeholder: "Your phone number",
+      placeholder: "Your phone number (optional)",
       required: false,
     },
   ];
@@ -125,6 +139,42 @@ const ContactForm = ({ data }) => {
               </div>
             );
           })}
+
+          <p className="text-[11px] text-gray-400 -mt-2">
+            Please provide at least an email or a phone number.
+          </p>
+
+          {/* Reason for contact */}
+          <ReasonMultiSelect
+            compact
+            label="Reason for Contact"
+            value={form.reasons}
+            onChange={(reasons) => setForm({ ...form, reasons })}
+            otherValue={form.reasonOther}
+            onOtherChange={(reasonOther) => setForm({ ...form, reasonOther })}
+          />
+
+          {/* Preferred contact time */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
+              Preferred Contact Time
+            </label>
+            <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100 transition-all">
+              <span className="w-10 flex items-center justify-center flex-shrink-0 self-stretch bg-gray-50 border-r border-gray-200">
+                <IoTimeOutline className="w-4 h-4 text-gray-400" />
+              </span>
+              <select
+                value={form.preferredContactTime}
+                onChange={(e) => setForm({ ...form, preferredContactTime: e.target.value })}
+                className="flex-1 px-3 py-2.5 text-sm text-gray-800 outline-none bg-transparent"
+              >
+                <option value="">No preference</option>
+                {PREFERRED_CONTACT_TIME_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
           {/* Message */}
           <div>
