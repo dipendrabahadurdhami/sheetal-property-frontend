@@ -9,17 +9,36 @@ import { IoCheckmarkOutline } from "react-icons/io5";
  * Props:
  *  - steps:       string[]  short label per step (e.g. ["Your Details", "Preferences", "Review"])
  *  - currentStep: number    0-indexed active step
+ *
+ * Layout note: each step's label used to sit in a 0-width flex column
+ * centered on the circle. For the first step that meant roughly half the
+ * label text rendered to the LEFT of the modal's own padding and got
+ * clipped by the modal's overflow-hidden edge (e.g. "Your Details" showing
+ * up as "ur Details"). Labels near either end now anchor toward the
+ * middle instead of centering on a point, so nothing can overflow past
+ * the container.
  */
 const StepProgress = ({ steps, currentStep }) => (
-  <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 4 }}>
+  <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 4, width: "100%" }}>
     {steps.map((label, i) => {
       const isDone = i < currentStep;
       const isActive = i === currentStep;
+      const isFirst = i === 0;
+      const isLast = i === steps.length - 1;
       const circleColor = isDone || isActive ? "#e53935" : "#e5e7eb";
       const textColor = isDone || isActive ? "#e53935" : "#9ca3af";
+
       return (
         <React.Fragment key={label}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 0, flex: "0 0 auto" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: isFirst ? "flex-start" : isLast ? "flex-end" : "center",
+              flexShrink: 0,
+              minWidth: 0,
+            }}
+          >
             <div
               style={{
                 width: 26, height: 26, borderRadius: "50%",
@@ -36,7 +55,8 @@ const StepProgress = ({ steps, currentStep }) => (
             <span
               style={{
                 fontSize: 10, fontWeight: 700, color: textColor, marginTop: 5,
-                textAlign: "center", whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.03em",
+                textAlign: isFirst ? "left" : isLast ? "right" : "center",
+                whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.03em",
               }}
             >
               {label}
@@ -48,6 +68,7 @@ const StepProgress = ({ steps, currentStep }) => (
                 flex: 1, height: 2, marginTop: 12, marginLeft: 4, marginRight: 4,
                 background: i < currentStep ? "#e53935" : "#e5e7eb",
                 transition: "background 0.2s",
+                minWidth: 12,
               }}
             />
           )}

@@ -161,9 +161,9 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+            <div className="relative inline-flex flex-col w-full max-w-md mx-auto align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-h-[92vh]">
               {/* Header */}
-              <div className="px-5 py-4 bg-red-50 border-b border-red-100 flex items-center justify-between">
+              <div className="px-5 py-4 bg-red-50 border-b border-red-100 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <FaUserCircle className="text-gray-400 w-9 h-9 flex-shrink-0" />
                   <div className="text-left">
@@ -187,12 +187,12 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
               </div>
 
               {/* Step progress */}
-              <div className="px-5 pt-4 pb-1 bg-white">
+              <div className="px-5 pt-4 pb-1 bg-white flex-shrink-0">
                 <StepProgress steps={STEPS} currentStep={step} />
               </div>
 
               {/* Form */}
-              <div className="px-5 py-5 bg-white max-h-[65vh] overflow-y-auto">
+              <div className="px-5 py-5 bg-white flex-1 overflow-y-auto">
                 <form onSubmit={handleFormSubmit}>
                   {step === 0 && (
                     <div className="space-y-4">
@@ -355,7 +355,7 @@ const ContactAgentModel = ({ data, open, setOpen }) => {
               </div>
 
               {/* Footer navigation */}
-              <div className="px-5 py-4 border-t border-gray-100 bg-white flex items-center gap-3">
+              <div className="px-5 py-4 border-t border-gray-100 bg-white flex items-center gap-3 flex-shrink-0">
                 {step > 0 && (
                   <button
                     type="button"
