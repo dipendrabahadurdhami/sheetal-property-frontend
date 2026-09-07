@@ -101,33 +101,97 @@ const iS = { flex:1, padding:"10px 12px", fontSize:13, color:"#111", outline:"no
 const sS = { flex:1, padding:"10px 12px", fontSize:13, color:"#374151", outline:"none", background:"transparent", border:"none" };
 
 const VehicleCounter = ({ vehicles, onChange }) => {
+  const addedKeys = Object.keys(vehicles).filter((k) => vehicles[k] > 0);
+  const availableTypes = VEHICLE_TYPES.filter(({ key }) => !addedKeys.includes(key));
+  const [pendingKey, setPendingKey] = useState("");
+
   const update = (key, delta) => {
-    const next = { ...vehicles, [key]: Math.max(0, (vehicles[key] || 0) + delta) };
-    if (next[key] === 0) delete next[key];
+    const next = { ...vehicles, [key]: Math.max(1, (vehicles[key] || 1) + delta) };
     onChange(next);
   };
+
+  const remove = (key) => {
+    const next = { ...vehicles };
+    delete next[key];
+    onChange(next);
+  };
+
+  const addVehicle = () => {
+    if (!pendingKey) return;
+    onChange({ ...vehicles, [pendingKey]: 1 });
+    setPendingKey("");
+  };
+
+  const btnStyle = {
+    width: 22, height: 22, borderRadius: 4, border: "1px solid #e4e4e0",
+    background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700,
+    color: "#374151", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+  };
+
   return (
-    <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-      {VEHICLE_TYPES.map(({ key, label }) => (
-        <div key={key} style={{
-          display:"flex", alignItems:"center", gap:8,
-          border:"1px solid #e4e4e0", borderRadius:4,
-          padding:"6px 8px 6px 12px",
-          background: vehicles[key] > 0 ? "#fef2f2" : "#fafafa",
-          borderColor: vehicles[key] > 0 ? "#fecaca" : "#e4e4e0",
-        }}>
-          <span style={{ fontSize:12, fontWeight:600, color:"#374151", whiteSpace:"nowrap" }}>{label}</span>
-          <button type="button" onClick={() => update(key, -1)}
-            style={{ width:22, height:22, borderRadius:4, border:"1px solid #e4e4e0", background:"#fff", cursor:"pointer", fontSize:13, fontWeight:700, color:"#374151", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-            −
-          </button>
-          <span style={{ width:16, textAlign:"center", fontSize:12, fontWeight:700, color:"#111" }}>{vehicles[key] || 0}</span>
-          <button type="button" onClick={() => update(key, 1)}
-            style={{ width:22, height:22, borderRadius:4, border:"1px solid #e4e4e0", background:"#fff", cursor:"pointer", fontSize:13, fontWeight:700, color:"#374151", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-            +
-          </button>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <select
+          value={pendingKey}
+          onChange={(e) => setPendingKey(e.target.value)}
+          style={{
+            flex: "1 1 160px", maxWidth: 240, padding: "8px 10px", fontSize: 13,
+            color: "#374151", border: "1px solid #e4e4e0", borderRadius: 4, background: "#fff",
+          }}
+        >
+          <option value="">Select a vehicle type...</option>
+          {availableTypes.map(({ key, label }) => (
+            <option key={key} value={key}>{label}</option>
+          ))}
+        </select>
+        <button
+          type="button"
+          onClick={addVehicle}
+          disabled={!pendingKey}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            background: pendingKey ? "#e53935" : "#e5e7eb",
+            color: pendingKey ? "#fff" : "#9ca3af",
+            border: "none", borderRadius: 4, padding: "0 16px", height: 36,
+            fontSize: 12, fontWeight: 700, cursor: pendingKey ? "pointer" : "not-allowed",
+          }}
+        >
+          + Add Vehicle
+        </button>
+      </div>
+
+      {addedKeys.length === 0 ? (
+        <p style={{ fontSize: 12, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>
+          No vehicles added yet — pick a type above and click "Add Vehicle".
+        </p>
+      ) : (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {VEHICLE_TYPES.filter(({ key }) => addedKeys.includes(key)).map(({ key, label }) => (
+            <div key={key} style={{
+              display: "flex", alignItems: "center", gap: 8,
+              border: "1px solid #fecaca", borderRadius: 4,
+              padding: "6px 6px 6px 12px", background: "#fef2f2",
+            }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#374151", whiteSpace: "nowrap" }}>{label}</span>
+              <button type="button" onClick={() => update(key, -1)} style={btnStyle}>−</button>
+              <span style={{ width: 16, textAlign: "center", fontSize: 12, fontWeight: 700, color: "#111" }}>{vehicles[key]}</span>
+              <button type="button" onClick={() => update(key, 1)} style={btnStyle}>+</button>
+              <button
+                type="button"
+                onClick={() => remove(key)}
+                title="Remove"
+                style={{
+                  width: 20, height: 20, borderRadius: "50%", border: "none", background: "transparent",
+                  color: "#9ca3af", cursor: "pointer", fontSize: 13, display: "flex",
+                  alignItems: "center", justifyContent: "center", marginLeft: 2,
+                }}
+              >
+                ×
+              </button>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 };
