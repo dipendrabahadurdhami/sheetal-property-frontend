@@ -617,6 +617,13 @@ const RequirementForm = () => {
     if (pendingReset) pendingReset({ values: initialValues });
     showSuccessMessage();
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Tell Google Ads a conversion happened (form submitted successfully)
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "conversion", {
+        send_to: "AW-XXXXXXXXX/YYYYYYYYYYYY", // replace with your actual conversion label from Google Ads
+      });
+    }
   };
 
   return (

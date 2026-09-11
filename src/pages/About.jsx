@@ -174,7 +174,6 @@ const TEAM = [
   { name: "Dipendra Dhami", role: "Technical  Expert", ini: "DD", photo: "/member/dipendra.png" },
   { name: "Sunil Raj Karki", role: "Operations Manager", ini: "SRK", photo: "/member/sunil.jpeg" },
   { name: "Prakriti Gautam", role: "CSR", ini: "PG", photo: "/member/prakriti.jpeg" },
-  { name: "Suraj Kumar Sardar", role: "Video Editor", ini: "SKS", photo: "/member/suraj.jpeg" },
   { name: "Aditya Rai", role: "Digital Marketing Executive", ini: "ARS", photo: "/member/aditya.jpeg" },
   { name: "Parkash Karki", role: "Accountant", ini: "PK", photo: "/member/parkash.jpeg" },
   
