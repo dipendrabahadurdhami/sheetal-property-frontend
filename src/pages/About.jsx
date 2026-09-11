@@ -167,10 +167,14 @@ const VALUES = [
    "Team Member" as a placeholder until you confirm the exact title. */
 const TEAM = [
   { name: "Govinda Shrestha", role: "CEO", ini: "GS", photo: "/member/gobind.jpeg" },
-  { name: "Abhiram Karna", role: "Sales Executive", ini: "AK", photo: "/member/abhiram.jpeg" },
-  { name: "Manil Krishna Vaidhya", role: "Team Member", ini: "MV", photo: "/member/manil.jpeg" },
+  { name: "Nikesh Kumar Ojha", role: "Sales Executive", ini: "NKO", photo: "/member/nikesh.jpeg" },
+  { name: "Manil Krishna Vaidhya", role: "Sales Executive", ini: "MKV", photo: "/member/manil.jpeg" },
   { name: "Astha Karki", role: "CSR", ini: "AK", photo: "/member/astha.jpeg" },
   { name: "Deepmala Gupta", role: "CSR", ini: "DG", photo: "/member/deepmala.jpeg" },
+  { name: "Dipendra Dhami", role: "Technical  Expert", ini: "DD", photo: "/member/dipendra.jpeg" },
+  { name: "Sunil Raj Karki", role: "Operations Manager", ini: "SRK", photo: "/member/sunil.jpeg" },
+  { name: "Prakriti Gautam", role: "CSR", ini: "PG", photo: "/member/prakriti.jpeg" },
+  
 ];
 
 const CITIES = [
