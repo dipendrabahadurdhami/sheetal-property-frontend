@@ -135,7 +135,7 @@ const Gallery = () => {
   const tilt = useRef({ x: 0, y: 0 });
   const tiltTarget = useRef({ x: 0, y: 0 });
 
-  /* ── fetch property types + a live sample/count per category ────────── */
+  /* ── fetch property types + a live sample/count per category fjnjgnr────────── */
   useEffect(() => {
     let cancelled = false;
     (async () => {
