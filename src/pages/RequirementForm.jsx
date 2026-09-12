@@ -29,6 +29,65 @@ const VEHICLE_TYPES = [
   { key: "truck", label: "Truck" },
 ];
 
+// Clients type budgets a dozen different ways — "40000", "50,00,000",
+// "1 crore", "50 lakh", "1.5 Cr", "50L", "1 crore 50 lakh" — so this turns
+// any of those into a plain number instead of forcing digits-only input.
+// Order matters: longer/more specific unit words must come before their
+// shorter prefixes ("crores" before "crore" before "cr") so the regex
+// doesn't stop on a partial match.
+const BUDGET_UNITS_IN_MATCH_ORDER = [
+  "crores", "crore", "cr",
+  "lakhs", "lakh", "lacs", "lac", "l",
+  "millions", "million", "mn", "m",
+  "thousands", "thousand", "k",
+];
+const BUDGET_UNIT_MULTIPLIERS = {
+  crores: 1e7, crore: 1e7, cr: 1e7,
+  lakhs: 1e5, lakh: 1e5, lacs: 1e5, lac: 1e5, l: 1e5,
+  millions: 1e6, million: 1e6, mn: 1e6, m: 1e6,
+  thousands: 1e3, thousand: 1e3, k: 1e3,
+};
+const BUDGET_UNIT_REGEX = new RegExp(
+  `(\\d+(?:\\.\\d+)?)\\s*(${BUDGET_UNITS_IN_MATCH_ORDER.join("|")})?\\b`,
+  "gi"
+);
+
+// Returns a plain number, or null if nothing usable was found (empty
+// input, or pure gibberish).
+function parseBudgetAmount(raw) {
+  if (raw === null || raw === undefined) return null;
+  let str = String(raw).trim().toLowerCase();
+  if (!str) return null;
+
+  str = str.replace(/rs\.?|npr|nrs|₹|rupees?/gi, " ");
+  str = str.replace(/,/g, "").replace(/\/-/g, "");
+
+  BUDGET_UNIT_REGEX.lastIndex = 0;
+  let match;
+  let total = 0;
+  let found = false;
+  while ((match = BUDGET_UNIT_REGEX.exec(str)) !== null) {
+    if (!match[1]) continue;
+    const num = parseFloat(match[1]);
+    if (Number.isNaN(num)) continue;
+    found = true;
+    const unit = (match[2] || "").toLowerCase();
+    const multiplier = BUDGET_UNIT_MULTIPLIERS[unit] || 1;
+    total += num * multiplier;
+  }
+  return found ? Math.round(total) : null;
+}
+
+// Nepali-style digit grouping (1,00,000) for the "you typed" preview.
+function formatIndianCurrency(n) {
+  if (n === null || n === undefined) return "";
+  const s = String(Math.round(n));
+  const last3 = s.slice(-3);
+  const rest = s.slice(0, -3);
+  const grouped = rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + last3 : last3;
+  return `Rs. ${grouped}`;
+}
+
 function isLoggedIn() {
   return !!localStorage.getItem("sheetal_token");
 }
@@ -58,7 +117,7 @@ const initialValues = {
   requirements: "", vehicle: {}, facilities: [], description: "",
 };
 
-const RF = ({ icon: Icon, label, required, error, touched, children }) => (
+const RF = ({ icon: Icon, label, required, error, touched, hint, children }) => (
   <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
     <label style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".08em", color:"#7f8c8d" }}>
       {label}{required && <span style={{ color:"var(--rf-accent, #b91c1c)", marginLeft:2 }}>*</span>}
@@ -78,6 +137,7 @@ const RF = ({ icon: Icon, label, required, error, touched, children }) => (
       {children}
     </div>
     {error && touched && <p style={{ fontSize:11, color:"var(--rf-accent, #b91c1c)", fontWeight:600, margin:0 }}>{error}</p>}
+    {!(error && touched) && hint && <p style={{ fontSize:11, color:"#6b7280", margin:0 }}>{hint}</p>}
   </div>
 );
 
@@ -103,7 +163,6 @@ const sS = { flex:1, padding:"10px 12px", fontSize:13, color:"#374151", outline:
 const VehicleCounter = ({ vehicles, onChange }) => {
   const addedKeys = Object.keys(vehicles).filter((k) => vehicles[k] > 0);
   const availableTypes = VEHICLE_TYPES.filter(({ key }) => !addedKeys.includes(key));
-  const [pendingKey, setPendingKey] = useState("");
 
   const update = (key, delta) => {
     const next = { ...vehicles, [key]: Math.max(1, (vehicles[key] || 1) + delta) };
@@ -116,10 +175,14 @@ const VehicleCounter = ({ vehicles, onChange }) => {
     onChange(next);
   };
 
-  const addVehicle = () => {
-    if (!pendingKey) return;
-    onChange({ ...vehicles, [pendingKey]: 1 });
-    setPendingKey("");
+  // Adds the vehicle the moment it's picked from the dropdown — no
+  // separate "Add" click to forget. The <select> resets itself back to
+  // the placeholder afterwards since the chosen option disappears from
+  // the list (it's now in availableTypes no longer).
+  const onSelectVehicle = (e) => {
+    const key = e.target.value;
+    if (!key) return;
+    onChange({ ...vehicles, [key]: 1 });
   };
 
   const btnStyle = {
@@ -132,37 +195,26 @@ const VehicleCounter = ({ vehicles, onChange }) => {
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <select
-          value={pendingKey}
-          onChange={(e) => setPendingKey(e.target.value)}
+          value=""
+          onChange={onSelectVehicle}
+          disabled={availableTypes.length === 0}
           style={{
-            flex: "1 1 160px", maxWidth: 240, padding: "8px 10px", fontSize: 13,
+            flex: "1 1 160px", maxWidth: 320, padding: "8px 10px", fontSize: 13,
             color: "#374151", border: "1px solid #e4e4e0", borderRadius: 4, background: "#fff",
           }}
         >
-          <option value="">Select a vehicle type...</option>
+          <option value="">
+            {availableTypes.length === 0 ? "All vehicle types added" : "Select a vehicle type to add it..."}
+          </option>
           {availableTypes.map(({ key, label }) => (
             <option key={key} value={key}>{label}</option>
           ))}
         </select>
-        <button
-          type="button"
-          onClick={addVehicle}
-          disabled={!pendingKey}
-          style={{
-            display: "inline-flex", alignItems: "center", gap: 6,
-            background: pendingKey ? "#e53935" : "#e5e7eb",
-            color: pendingKey ? "#fff" : "#9ca3af",
-            border: "none", borderRadius: 4, padding: "0 16px", height: 36,
-            fontSize: 12, fontWeight: 700, cursor: pendingKey ? "pointer" : "not-allowed",
-          }}
-        >
-          + Add Vehicle
-        </button>
       </div>
 
       {addedKeys.length === 0 ? (
         <p style={{ fontSize: 12, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>
-          No vehicles added yet — pick a type above and click "Add Vehicle".
+          No vehicles added yet — pick a type above to add it.
         </p>
       ) : (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -197,54 +249,43 @@ const VehicleCounter = ({ vehicles, onChange }) => {
 };
 
 const FacilityPicker = ({ facilities, selected, onChange }) => {
-  const [pending, setPending] = useState("");
   const available = facilities.filter((f) => !selected.includes(f.name));
 
-  const addFacility = () => {
-    if (!pending) return;
-    onChange([...selected, pending]);
-    setPending("");
+  // Adds the facility the moment it's picked from the dropdown — no
+  // separate "Add" click to forget.
+  const onSelectFacility = (e) => {
+    const name = e.target.value;
+    if (!name) return;
+    onChange([...selected, name]);
   };
 
   const remove = (name) => {
     onChange(selected.filter((f) => f !== name));
   };
 
-  const btnBase = {
-    border: "none", borderRadius: 4, height: 36, fontSize: 12, fontWeight: 700,
-    display: "inline-flex", alignItems: "center", gap: 6, padding: "0 16px",
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <select
-          value={pending}
-          onChange={(e) => setPending(e.target.value)}
-          disabled={facilities.length === 0}
+          value=""
+          onChange={onSelectFacility}
+          disabled={available.length === 0}
           style={{
-            flex: "1 1 160px", maxWidth: 240, padding: "8px 10px", fontSize: 13,
+            flex: "1 1 160px", maxWidth: 320, padding: "8px 10px", fontSize: 13,
             color: "#374151", border: "1px solid #e4e4e0", borderRadius: 4, background: "#fff",
           }}
         >
-          <option value="">Select a facility...</option>
+          <option value="">
+            {facilities.length === 0
+              ? "No facilities configured yet"
+              : available.length === 0
+                ? "All facilities added"
+                : "Select a facility to add it..."}
+          </option>
           {available.map((f, i) => (
             <option key={i} value={f.name}>{f.name}</option>
           ))}
         </select>
-        <button
-          type="button"
-          onClick={addFacility}
-          disabled={!pending}
-          style={{
-            ...btnBase,
-            background: pending ? "#e53935" : "#e5e7eb",
-            color: pending ? "#fff" : "#9ca3af",
-            cursor: pending ? "pointer" : "not-allowed",
-          }}
-        >
-          + Add
-        </button>
       </div>
 
       {facilities.length === 0 ? (
@@ -253,7 +294,7 @@ const FacilityPicker = ({ facilities, selected, onChange }) => {
         </p>
       ) : selected.length === 0 ? (
         <p style={{ fontSize: 12, color: "#9ca3af", margin: 0, fontStyle: "italic" }}>
-          No facilities selected — pick one above and click "Add".
+          No facilities selected — pick one above to add it.
         </p>
       ) : (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -320,8 +361,13 @@ const PaymentPopupModal = ({ payment, pendingValues, agentId, themeColor, onClos
         } else if (key === 'vehicle') {
           fd.append('vehicle', JSON.stringify(pendingValues.vehicle));
         } else if (key === 'minimum_budget' || key === 'maximum_budget') {
-          if (pendingValues[key] !== "" && pendingValues[key] != null) {
-            fd.append(key, pendingValues[key]);
+          // Convert whatever the client typed ("1 crore", "50 lakh",
+          // "40000", etc.) into a plain number before sending it —
+          // the backend also normalizes this as a safety net, but doing
+          // it here keeps the payload consistent with what's shown.
+          const parsed = parseBudgetAmount(pendingValues[key]);
+          if (parsed !== null) {
+            fd.append(key, parsed);
           }
         } else {
           fd.append(key, pendingValues[key] ?? "");
@@ -905,11 +951,31 @@ const RequirementForm = () => {
                       )}
                       {isFieldOn('budget_range') && (
                       <div className="rf-grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                        <RF icon={IoCashOutline} label="Minimum Budget">
-                          <Field type="text" name="minimum_budget" value={values.minimum_budget} onChange={handleChange} placeholder="Min amount (Rs.)" style={iS} />
+                        <RF
+                          icon={IoCashOutline}
+                          label="Minimum Budget"
+                          hint={
+                            values.minimum_budget
+                              ? (parseBudgetAmount(values.minimum_budget) != null
+                                  ? `= ${formatIndianCurrency(parseBudgetAmount(values.minimum_budget))}`
+                                  : "Try e.g. 40000, 50 lakh, or 1 crore")
+                              : "e.g. 40000, 50 lakh, or 1 crore"
+                          }
+                        >
+                          <Field type="text" name="minimum_budget" value={values.minimum_budget} onChange={handleChange} placeholder="e.g. 40000, 50 lakh, 1 crore" style={iS} />
                         </RF>
-                        <RF icon={IoCashOutline} label="Maximum Budget">
-                          <Field type="text" name="maximum_budget" value={values.maximum_budget} onChange={handleChange} placeholder="Max amount (Rs.)" style={iS} />
+                        <RF
+                          icon={IoCashOutline}
+                          label="Maximum Budget"
+                          hint={
+                            values.maximum_budget
+                              ? (parseBudgetAmount(values.maximum_budget) != null
+                                  ? `= ${formatIndianCurrency(parseBudgetAmount(values.maximum_budget))}`
+                                  : "Try e.g. 40000, 50 lakh, or 1 crore")
+                              : "e.g. 40000, 50 lakh, or 1 crore"
+                          }
+                        >
+                          <Field type="text" name="maximum_budget" value={values.maximum_budget} onChange={handleChange} placeholder="e.g. 40000, 50 lakh, 1 crore" style={iS} />
                         </RF>
                       </div>
                       )}
