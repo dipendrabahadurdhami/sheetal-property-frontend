@@ -1,6 +1,6 @@
 // src/pages/EmiCalculatorPage.jsx
 // FULLY STATIC — pure math, no API needed
-// Nepal home loan EMI with amortization schedule
+// Nepal home loan EMI with amortization schedul
 
 import { useState, useMemo } from "react";
 import ToolLayout from "../components/Common/Tools/ToolLayout";
