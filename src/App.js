@@ -52,6 +52,8 @@ const Message = lazy(() => import("./pages/Message"));
 const HomeLoneOnline = lazy(() => import("./pages/HomeLoneOnline"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogSingle = lazy(() => import("./pages/BlogSingle"));
+const Careers = lazy(() => import("./pages/Careers"));
+const JobDetails = lazy(() => import("./pages/JobDetails"));
 const BlogCategory = lazy(() => import("./pages/BlogCategory"));
 const UnitConverter = lazy(() => import("./pages/UnitConverter"));
 const Services = lazy(() => import("./pages/Services"));
@@ -200,6 +202,8 @@ function App(props) {
           />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogSingle />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/careers/:slug" element={<JobDetails />} />
           <Route path="/blog/category/:slug" element={<BlogCategory />} />
          
 

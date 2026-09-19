@@ -146,8 +146,19 @@ async function fetchAllPages(baseUrl, paramName = "per_page") {
   return all;
 }
 
-function urlEntry(loc, priority, changefreq) {
-  return `  <url>\n    <loc>${loc}</loc>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+// lastmod is omitted when we don't have a real date for something (e.g.
+// static routes) — an inaccurate lastmod is worse than none, since Google
+// may start distrusting the whole file's lastmod values if they look fake.
+function toLastmod(dateLike) {
+  if (!dateLike) return null;
+  const d = new Date(dateLike);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toISOString().slice(0, 10); // YYYY-MM-DD, per sitemap protocol
+}
+
+function urlEntry(loc, priority, changefreq, lastmod = null) {
+  const lastmodLine = lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "";
+  return `  <url>\n    <loc>${loc}</loc>${lastmodLine}\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
 }
 
 async function main() {
@@ -173,7 +184,9 @@ async function main() {
       for (const prop of propertyList) {
         if (prop?.id && !seenPropertyIds.has(prop.id)) {
           seenPropertyIds.add(prop.id);
-          entries.push(urlEntry(`${SITE}/property/${prop.url || prop.id}`, "0.8", "weekly"));
+          entries.push(
+            urlEntry(`${SITE}/property/${prop.url || prop.id}`, "0.8", "weekly", toLastmod(prop.updated_at))
+          );
           propertyCount++;
         }
       }
@@ -186,7 +199,9 @@ async function main() {
     const blogList = await fetchAllPages(`${API_BASE}/blog`);
     for (const post of blogList) {
       if (post?.slug) {
-        entries.push(urlEntry(`${SITE}/blog/${post.slug}`, "0.7", "monthly"));
+        entries.push(
+          urlEntry(`${SITE}/blog/${post.slug}`, "0.7", "monthly", toLastmod(post.updated_at))
+        );
       }
     }
     console.log(`  -> ${blogList.length} blog posts added`);

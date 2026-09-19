@@ -1,0 +1,331 @@
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import {
+  FaExclamationCircle, FaUpload, FaSpinner, FaBriefcase, FaArrowLeft,
+  FaBuilding, FaMapMarkerAlt, FaRegUser, FaUsers, FaRegCalendarAlt,
+  FaInfoCircle, FaCheckCircle,
+} from "react-icons/fa";
+import jobApi from "../utils/jobApi";
+import "../index.css";
+
+const fmtDate = (d) =>
+  d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
+
+const salaryLabel = (job) => {
+  if (!job.show_salary || (!job.min_salary && !job.max_salary)) return null;
+  const cur = job.salary_currency || "NPR";
+  if (job.min_salary && job.max_salary) return `${cur} ${Number(job.min_salary).toLocaleString()} - ${Number(job.max_salary).toLocaleString()}`;
+  if (job.min_salary) return `${cur} ${Number(job.min_salary).toLocaleString()}+`;
+  return `Up to ${cur} ${Number(job.max_salary).toLocaleString()}`;
+};
+
+const asParagraphs = (text) =>
+  (text || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+const ApplyForm = ({ job, onSuccess }) => {
+  const [form, setForm] = useState({
+    name: "", email: "", phone: "", cover_letter: "",
+    portfolio_url: "", linkedin_url: "", expected_salary: "", experience_years: "",
+  });
+  const [resume, setResume] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const onFile = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.size > 5 * 1024 * 1024) {
+      setError("Resume must be under 5MB.");
+      return;
+    }
+    setError("");
+    setResume(f);
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!resume) { setError("Please attach your resume (PDF or Word doc)."); return; }
+    setSubmitting(true);
+    setError("");
+    setFieldErrors({});
+
+    try {
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => { if (v) fd.append(k, v); });
+      fd.append("resume", resume);
+
+      const res = await jobApi.apply(job.slug, fd);
+      if (res.data?.status === 200) {
+        onSuccess();
+      } else {
+        setError(res.data?.message || "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      if (err.response?.status === 422) {
+        setFieldErrors(err.response.data.errors || {});
+        setError("Please check the highlighted fields.");
+      } else {
+        setError(err.response?.data?.message || "Something went wrong submitting your application. Please try again.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form className="af-form" onSubmit={onSubmit}>
+      {error && <div className="af-error"><FaExclamationCircle  /> {error}</div>}
+
+      <div className="af-row">
+        <div className="af-field">
+          <label>Full Name *</label>
+          <input required value={form.name} onChange={update("name")} placeholder="Your full name" />
+          {fieldErrors.name && <span className="af-field-err">{fieldErrors.name[0]}</span>}
+        </div>
+        <div className="af-field">
+          <label>Email *</label>
+          <input required type="email" value={form.email} onChange={update("email")} placeholder="you@example.com" />
+          {fieldErrors.email && <span className="af-field-err">{fieldErrors.email[0]}</span>}
+        </div>
+      </div>
+
+      <div className="af-row">
+        <div className="af-field">
+          <label>Phone *</label>
+          <input required value={form.phone} onChange={update("phone")} placeholder="98XXXXXXXX" />
+          {fieldErrors.phone && <span className="af-field-err">{fieldErrors.phone[0]}</span>}
+        </div>
+        <div className="af-field">
+          <label>Years of Experience</label>
+          <input type="number" min="0" value={form.experience_years} onChange={update("experience_years")} placeholder="e.g. 3" />
+        </div>
+      </div>
+
+      <div className="af-row">
+        <div className="af-field">
+          <label>Expected Salary</label>
+          <input type="number" min="0" value={form.expected_salary} onChange={update("expected_salary")} placeholder="Optional" />
+        </div>
+        <div className="af-field">
+          <label>LinkedIn Profile</label>
+          <input value={form.linkedin_url} onChange={update("linkedin_url")} placeholder="https://linkedin.com/in/..." />
+        </div>
+      </div>
+
+      <div className="af-field">
+        <label>Portfolio / Website</label>
+        <input value={form.portfolio_url} onChange={update("portfolio_url")} placeholder="Optional" />
+      </div>
+
+      <div className="af-field">
+        <label>Cover Letter</label>
+        <textarea rows="4" value={form.cover_letter} onChange={update("cover_letter")} placeholder="Tell us why you're a great fit (optional)" />
+      </div>
+
+      <div className="af-field">
+        <label>Resume / CV * <small>PDF or Word, max 5MB</small></label>
+        <div className="af-file-wrap">
+          <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" onChange={onFile} required />
+          <label htmlFor="resumeInput" className="af-file-btn">
+            <FaUpload  /> {resume ? resume.name : "Choose file"}
+          </label>
+        </div>
+        {fieldErrors.resume && <span className="af-field-err">{fieldErrors.resume[0]}</span>}
+      </div>
+
+      <button type="submit" className="af-submit" disabled={submitting}>
+        {submitting ? <><FaSpinner className="icon-spin"  /> Submitting...</> : "Submit Application"}
+      </button>
+      <p className="af-note">No account needed — we'll reach out by email or phone.</p>
+    </form>
+  );
+};
+
+const JobDetails = () => {
+  const { slug } = useParams();
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [showApply, setShowApply] = useState(false);
+  const [applied, setApplied] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    setNotFound(false);
+    setShowApply(false);
+    setApplied(false);
+    jobApi.getBySlug(slug)
+      .then((res) => setJob(res.data?.data))
+      .catch(() => setNotFound(true))
+      .finally(() => setLoading(false));
+    window.scrollTo(0, 0);
+  }, [slug]);
+
+  if (loading) {
+    return <div className="jd-loading"><FaSpinner className="icon-spin"  /> Loading job details...</div>;
+  }
+
+  if (notFound || !job) {
+    return (
+      <div className="jd-notfound">
+        <FaBriefcase style={{ fontSize: 30, display: "block", marginBottom: 12 }}  />
+        <h2>Job posting not found</h2>
+        <p>It may have been closed or removed.</p>
+        <Link to="/careers" className="jd-back-link">&larr; Back to all openings</Link>
+      </div>
+    );
+  }
+
+  const isOpen = job.status === "published" &&
+    (!job.application_deadline || new Date(job.application_deadline) >= new Date(new Date().toDateString()));
+
+  return (
+    <div className="jd-page">
+      <Helmet>
+        <title>{job.title} | Careers</title>
+        <meta name="description" content={(job.description || "").slice(0, 155)} />
+      </Helmet>
+
+      <style>{`
+        .jd-loading, .jd-notfound { text-align: center; padding: 100px 20px; color: #888; }
+        .jd-back-link { color: #E8272A; font-weight: 600; text-decoration: none; }
+        .jd-page { max-width: 900px; margin: 0 auto; padding: 30px 16px 90px; }
+        .jd-back { color: #999; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+        .jd-back:hover { color: #333; }
+        .jd-head { border-bottom: 1px solid #eee; padding-bottom: 22px; margin-bottom: 26px; }
+        .jd-type { display: inline-block; font-size: 11px; font-weight: 700; text-transform: capitalize; padding: 4px 10px; border-radius: 20px; background: #fdeceb; color: #E8272A; margin-bottom: 12px; }
+        .jd-title { font-size: 26px; font-weight: 800; margin: 0 0 14px; color: #1a1a1a; }
+        @media(min-width: 640px) { .jd-title { font-size: 32px; } }
+        .jd-meta-row { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13.5px; color: #666; margin-bottom: 16px; }
+        .jd-meta-row span { display: flex; align-items: center; gap: 6px; }
+        .jd-meta-row i { color: #E8272A; }
+        .jd-closed-banner { background: #fdeceb; color: #b91c1c; padding: 12px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-bottom: 16px; }
+        .jd-apply-btn { background: #E8272A; color: #fff; border: none; border-radius: 8px; padding: 13px 30px; font-weight: 700; font-size: 14.5px; cursor: pointer; }
+        .jd-apply-btn:hover { background: #c0392b; }
+        .jd-apply-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .jd-section { margin-bottom: 26px; }
+        .jd-section h3 { font-size: 16px; font-weight: 700; margin: 0 0 12px; color: #1a1a1a; }
+        .jd-section p, .jd-section li { font-size: 14px; line-height: 1.75; color: #444; }
+        .jd-section ul { padding-left: 20px; margin: 0; }
+        .jd-skills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .jd-skill-pill { background: #f4f4f4; color: #555; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px; }
+
+        .af-wrap { background: #fafafa; border: 1px solid #eee; border-radius: 14px; padding: 24px; margin-top: 10px; }
+        .af-wrap h3 { font-size: 17px; font-weight: 800; margin: 0 0 18px; }
+        .af-form { display: flex; flex-direction: column; gap: 16px; }
+        .af-row { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media(min-width: 560px) { .af-row { grid-template-columns: 1fr 1fr; } }
+        .af-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #333; }
+        .af-field label small { font-weight: 400; color: #999; }
+        .af-field input, .af-field textarea { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 10px 12px; font-size: 13.5px; outline: none; background: #fff; }
+        .af-field input:focus, .af-field textarea:focus { border-color: #E8272A; }
+        .af-field-err { color: #c0392b; font-size: 11.5px; margin-top: 4px; display: block; }
+        .af-file-wrap input[type=file] { display: none; }
+        .af-file-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px dashed #ccc; border-radius: 8px; padding: 12px 16px; font-size: 13.5px; color: #555; cursor: pointer; width: 100%; box-sizing: border-box; }
+        .af-file-btn:hover { border-color: #E8272A; color: #E8272A; }
+        .af-error { background: #fdeceb; color: #b91c1c; padding: 10px 14px; border-radius: 8px; font-size: 13px; }
+        .af-submit { background: #E8272A; color: #fff; border: none; border-radius: 8px; padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; }
+        .af-submit:hover { background: #c0392b; }
+        .af-submit:disabled { background: #ccc; cursor: not-allowed; }
+        .af-note { text-align: center; font-size: 12px; color: #999; margin: 0; }
+
+        .af-success { text-align: center; padding: 30px 10px; }
+        .af-success i { font-size: 40px; color: #27ae60; display: block; margin-bottom: 14px; }
+        .af-success h3 { font-size: 18px; margin: 0 0 8px; }
+        .af-success p { font-size: 13.5px; color: #777; }
+        .icon-spin { animation: jd-spin 0.8s linear infinite; }
+        @keyframes jd-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      `}</style>
+
+      <Link to="/careers" className="jd-back"><FaArrowLeft  /> Back to all openings</Link>
+
+      <div className="jd-head">
+        <span className="jd-type">{job.job_type?.replace("-", " ")}</span>
+        <h1 className="jd-title">{job.title}</h1>
+        <div className="jd-meta-row">
+          {job.department && <span><FaBuilding  /> {job.department}</span>}
+          <span><FaMapMarkerAlt  /> {job.is_remote ? "Remote" : (job.location || "Not specified")}</span>
+          {job.experience_level && <span><FaRegUser  /> {job.experience_level} level</span>}
+          <span><FaUsers  /> {job.vacancies} opening{job.vacancies > 1 ? "s" : ""}</span>
+          {job.application_deadline && <span><FaRegCalendarAlt  /> Apply by {fmtDate(job.application_deadline)}</span>}
+        </div>
+        {salaryLabel(job) && <div className="jd-meta-row" style={{ marginBottom: 0 }}><strong>{salaryLabel(job)}</strong></div>}
+
+        {!isOpen && (
+          <div className="jd-closed-banner">
+            <FaInfoCircle  /> This position is no longer accepting applications.
+          </div>
+        )}
+
+        {isOpen && !showApply && (
+          <button className="jd-apply-btn" onClick={() => setShowApply(true)} style={{ marginTop: 16 }}>
+            Apply Now
+          </button>
+        )}
+      </div>
+
+      {job.description && (
+        <div className="jd-section">
+          <h3>About the Role</h3>
+          <p style={{ whiteSpace: "pre-line" }}>{job.description}</p>
+        </div>
+      )}
+
+      {job.responsibilities && (
+        <div className="jd-section">
+          <h3>Responsibilities</h3>
+          <ul>{asParagraphs(job.responsibilities).map((l, i) => <li key={i}>{l.replace(/^[-*•]\s*/, "")}</li>)}</ul>
+        </div>
+      )}
+
+      {job.requirements && (
+        <div className="jd-section">
+          <h3>Requirements</h3>
+          <ul>{asParagraphs(job.requirements).map((l, i) => <li key={i}>{l.replace(/^[-*•]\s*/, "")}</li>)}</ul>
+        </div>
+      )}
+
+      {job.benefits && (
+        <div className="jd-section">
+          <h3>Benefits</h3>
+          <ul>{asParagraphs(job.benefits).map((l, i) => <li key={i}>{l.replace(/^[-*•]\s*/, "")}</li>)}</ul>
+        </div>
+      )}
+
+      {job.skills_array?.length > 0 && (
+        <div className="jd-section">
+          <h3>Skills</h3>
+          <div className="jd-skills">{job.skills_array.map((s) => <span key={s} className="jd-skill-pill">{s}</span>)}</div>
+        </div>
+      )}
+
+      {isOpen && showApply && (
+        <div className="af-wrap" id="apply-section">
+          {applied ? (
+            <div className="af-success">
+              <FaCheckCircle  />
+              <h3>Application Submitted!</h3>
+              <p>Thanks for applying to <strong>{job.title}</strong>. We'll be in touch if you're a good fit.</p>
+              <Link to="/careers" className="jd-back-link">Browse more openings &rarr;</Link>
+            </div>
+          ) : (
+            <>
+              <h3>Apply for this role</h3>
+              <ApplyForm job={job} onSuccess={() => setApplied(true)} />
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default JobDetails;
