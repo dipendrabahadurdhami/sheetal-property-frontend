@@ -1,0 +1,14 @@
+// .c-checkbox{
+//     input{
+//         &:checked{
+//             + span{
+//                 @apply relative block;
+//                 &::after{
+//                     content:"";
+//                     @apply block;
+//                     background:url('../')
+//                 }
+//             }
+//         }
+//     }
+// }
