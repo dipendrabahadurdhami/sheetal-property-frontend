@@ -293,31 +293,45 @@ const JobDetails = () => {
               )}
 
               {isOpen && !showApply && (
-                <button className="jd-apply-btn" onClick={() => setShowApply(true)}>
+                <button
+                  className="jd-apply-btn"
+                  onClick={() => {
+                    setShowApply(true);
+                    setTimeout(() => {
+                      document.getElementById("apply-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }, 60);
+                  }}
+                >
                   Apply Now
                 </button>
               )}
 
-              {isOpen && showApply && (
-                <div className="af-wrap" id="apply-section">
-                  {applied ? (
-                    <div className="af-success">
-                      <FaCheckCircle />
-                      <h3>Application Submitted!</h3>
-                      <p>Thanks for applying to <strong>{job.title}</strong>. We'll be in touch if you're a good fit.</p>
-                      <Link to="/careers" className="jd-back-link">Browse more openings &rarr;</Link>
-                    </div>
-                  ) : (
-                    <>
-                      <h3>Apply for this role</h3>
-                      <ApplyForm job={job} onSuccess={() => setApplied(true)} />
-                    </>
-                  )}
-                </div>
+              {isOpen && showApply && !applied && (
+                <div className="jd-applying-note"><FaArrowLeft style={{ transform: "rotate(-90deg)" }} /> Scroll down to complete your application</div>
               )}
             </div>
           </div>
         </div>
+
+        {isOpen && showApply && (
+          <div className="jd-apply-section" id="apply-section">
+            <div className="jd-apply-card">
+              {applied ? (
+                <div className="af-success">
+                  <FaCheckCircle />
+                  <h3>Application Submitted!</h3>
+                  <p>Thanks for applying to <strong>{job.title}</strong>. We'll be in touch if you're a good fit.</p>
+                  <Link to="/careers" className="jd-back-link">Browse more openings &rarr;</Link>
+                </div>
+              ) : (
+                <>
+                  <h3>Apply for this role</h3>
+                  <ApplyForm job={job} onSuccess={() => setApplied(true)} />
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -353,6 +367,7 @@ const JD_CSS = `
   .jd-apply-btn { width: 100%; background: var(--r); color: #fff; border: none; border-radius: 4px; padding: 13px 30px; font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 16px; transition: background .2s; font-family: 'Outfit', sans-serif; }
   .jd-apply-btn:hover { background: var(--rd); }
   .jd-apply-btn:disabled { background: #d1d5db; cursor: not-allowed; }
+  .jd-applying-note { display: flex; align-items: center; gap: 7px; justify-content: center; font-size: 12px; color: #6b7280; margin-top: 14px; }
 
   .jd-section { margin-bottom: 28px; }
   .jd-section h3 { font-size: 15px; font-weight: 800; margin: 0 0 12px; color: #0F172A; letter-spacing: -0.2px; }
@@ -361,11 +376,18 @@ const JD_CSS = `
   .jd-skills { display: flex; flex-wrap: wrap; gap: 8px; }
   .jd-skill-pill { background: #F5F6F8; border: 0.5px solid #E9EAEC; color: #4b5563; font-size: 11.5px; font-weight: 600; padding: 5px 12px; border-radius: 4px; }
 
-  .af-wrap { margin-top: 18px; padding-top: 18px; border-top: 0.5px solid #E9EAEC; }
-  .af-wrap h3 { font-size: 15px; font-weight: 800; margin: 0 0 16px; color: #0F172A; }
+  .jd-apply-section { max-width: 1240px; margin: 36px auto 0; padding: 0 16px; scroll-margin-top: 20px; }
+  @media(min-width: 640px) { .jd-apply-section { padding: 0 24px; margin-top: 44px; } }
+  .jd-apply-card {
+    max-width: 720px; margin: 0 auto; background: #fff; border: 0.5px solid #E9EAEC;
+    border-radius: 4px; padding: 24px 18px;
+  }
+  @media(min-width: 640px) { .jd-apply-card { padding: 36px 44px; } }
+  .jd-apply-card h3 { font-size: 15px; font-weight: 800; margin: 0 0 20px; color: #0F172A; }
+
   .af-form { display: flex; flex-direction: column; gap: 16px; }
   .af-row { display: grid; grid-template-columns: 1fr; gap: 16px; }
-  @media(min-width: 560px) { .af-row { grid-template-columns: 1fr 1fr; } }
+  @media(min-width: 480px) { .af-row { grid-template-columns: 1fr 1fr; } }
   .af-field label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 6px; color: #0F172A; }
   .af-field label small { font-weight: 400; color: #9ca3af; }
   .af-field input, .af-field textarea { width: 100%; border: 1px solid #E9EAEC; border-radius: 4px; padding: 10px 12px; font-size: 13px; outline: none; background: #F5F6F8; font-family: 'Outfit', sans-serif; transition: border-color .2s, background .2s; }

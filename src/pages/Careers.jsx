@@ -34,7 +34,11 @@ const Lbl = ({ text }) => (
 
 const JobCard = ({ job }) => (
   <Link to={`/careers/${job.slug}`} className="jc-card">
-    {isNew(job.created_at) && <span className="jc-new-badge">New</span>}
+    {isNew(job.created_at) ? (
+      <span className="jc-new-badge">New</span>
+    ) : (
+      <img src="/shetallogo.png" alt="" className="jc-logo-mark" />
+    )}
     <div className="jc-top">
       <div className="jc-icon"><FaBriefcase /></div>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -120,12 +124,13 @@ const Careers = () => {
         .cp-body { max-width: 1240px; margin: 0 auto; padding: 32px 16px 90px; }
         @media (min-width: 640px) { .cp-body { padding: 40px 24px 100px; } }
 
-        /* ── Filters ── */
+        /* ── Filters (mobile-first: stacked, full-width; inline from tablet up) ── */
         .cp-filters {
-          display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px;
+          display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;
           background: #fff; border: 0.5px solid #E9EAEC; border-radius: 4px; padding: 14px;
         }
-        .cp-search { flex: 1 1 260px; position: relative; }
+        .cp-search { flex: 1 1 100%; position: relative; }
+        @media (min-width: 640px) { .cp-search { flex: 1 1 220px; } }
         .cp-search input {
           width: 100%; height: 44px; border-radius: 4px; border: 1px solid #E9EAEC;
           padding: 0 16px 0 40px; font-size: 13.5px; outline: none; font-family: 'Outfit', sans-serif;
@@ -135,16 +140,19 @@ const Careers = () => {
         .cp-search svg { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 13px; }
         .cp-select {
           height: 44px; border-radius: 4px; border: 1px solid #E9EAEC; padding: 0 12px;
-          font-size: 13.5px; background: #F5F6F8; min-width: 160px; font-family: 'Outfit', sans-serif;
+          font-size: 13.5px; background: #F5F6F8; font-family: 'Outfit', sans-serif;
           color: #0F172A; transition: border-color .2s, background .2s;
+          flex: 1 1 calc(50% - 5px); min-width: 0;
         }
+        @media (min-width: 640px) { .cp-select { flex: 0 1 160px; } }
         .cp-select:focus { border-color: var(--r); background: #fff; outline: none; }
         .cp-search-btn {
           height: 44px; padding: 0 26px; background: var(--r); color: #fff; border: none;
           border-radius: 4px; font-weight: 700; font-size: 12px; letter-spacing: 0.06em;
           text-transform: uppercase; cursor: pointer; transition: background .2s;
-          font-family: 'Outfit', sans-serif;
+          font-family: 'Outfit', sans-serif; flex: 1 1 100%;
         }
+        @media (min-width: 640px) { .cp-search-btn { flex: 0 0 auto; } }
         .cp-search-btn:hover { background: var(--rd); }
 
         /* ── Grid ── */
@@ -165,6 +173,10 @@ const Careers = () => {
           position: absolute; top: 16px; right: 16px; background: #0F172A; color: #fff;
           font-size: 9px; font-weight: 800; padding: 4px 9px; border-radius: 4px;
           letter-spacing: 0.1em; text-transform: uppercase;
+        }
+        .jc-logo-mark {
+          position: absolute; top: 16px; right: 16px; width: 26px; height: auto;
+          opacity: 0.5; object-fit: contain;
         }
         .jc-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
         .jc-icon {

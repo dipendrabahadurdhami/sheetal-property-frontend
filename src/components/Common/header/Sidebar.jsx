@@ -191,7 +191,7 @@ const SIDEBAR_NAV = [
           { label: "About Shetal", sub: "Our mission & story", link: "/About" },
           { label: "Our Team", sub: "Meet the experts", link: "/about" },
           { label: "Find an Agent", sub: "Local specialists", link: "/agents" },
-          { label: "Careers", sub: "Join our team", link: "/about" },
+          { label: "Careers", sub: "Join our team", link: "/careers" },
           { label: "Blogs & Articles", sub: "Insights & research", link: "/blog" },
         ],
       },
