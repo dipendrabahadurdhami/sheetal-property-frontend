@@ -19,11 +19,21 @@ const salaryLabel = (job) => {
   return `Up to ${cur} ${Number(job.max_salary).toLocaleString()}`;
 };
 
+const isNew = (createdAt) => {
+  if (!createdAt) return false;
+  const days = (Date.now() - new Date(createdAt).getTime()) / 86400000;
+  return days <= 7;
+};
+
 const JobCard = ({ job }) => (
   <Link to={`/careers/${job.slug}`} className="jc-card">
+    {isNew(job.created_at) && <span className="jc-new-badge">New</span>}
     <div className="jc-top">
-      <h3 className="jc-title">{job.title}</h3>
-      <span className={`jc-type jc-type-${job.job_type}`}>{job.job_type.replace("-", " ")}</span>
+      <div className="jc-icon"><FaBriefcase /></div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <h3 className="jc-title">{job.title}</h3>
+        <span className={`jc-type jc-type-${job.job_type}`}>{job.job_type.replace("-", " ")}</span>
+      </div>
     </div>
     <div className="jc-meta">
       {job.department && <span><FaBuilding  /> {job.department}</span>}
@@ -91,10 +101,24 @@ const Careers = () => {
 
       <style>{`
         .careers-page { max-width: 1100px; margin: 0 auto; padding: 40px 16px 80px; }
-        .cp-hero { text-align: center; padding: 30px 0 40px; }
-        .cp-hero h1 { font-size: 30px; font-weight: 800; margin: 0 0 10px; color: #1a1a1a; }
-        .cp-hero p { font-size: 15px; color: #666; max-width: 520px; margin: 0 auto; }
-        @media(min-width: 640px) { .cp-hero h1 { font-size: 38px; } }
+        .cp-hero {
+          text-align: center; padding: 52px 24px; margin: 0 0 32px; border-radius: 18px;
+          background: linear-gradient(135deg, #1a1a1a 0%, #3a1315 55%, #E8272A 130%);
+          color: #fff; position: relative; overflow: hidden;
+        }
+        .cp-hero::before {
+          content: ""; position: absolute; inset: 0;
+          background: radial-gradient(circle at 85% 20%, rgba(255,255,255,0.10), transparent 45%);
+        }
+        .cp-hero-inner { position: relative; z-index: 1; }
+        .cp-hero-badge {
+          display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.12);
+          border: 1px solid rgba(255,255,255,0.22); color: #fff; font-size: 12px; font-weight: 600;
+          padding: 5px 14px; border-radius: 20px; margin-bottom: 16px;
+        }
+        .cp-hero h1 { font-size: 28px; font-weight: 800; margin: 0 0 12px; color: #fff; }
+        .cp-hero p { font-size: 15px; color: rgba(255,255,255,0.85); max-width: 520px; margin: 0 auto; }
+        @media(min-width: 640px) { .cp-hero h1 { font-size: 40px; } .cp-hero { padding: 68px 24px; } }
 
         .cp-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
         .cp-search { flex: 1 1 260px; position: relative; }
@@ -110,10 +134,12 @@ const Careers = () => {
         @media(min-width: 680px) { .cp-grid { grid-template-columns: 1fr 1fr; } }
         @media(min-width: 992px) { .cp-grid { grid-template-columns: 1fr 1fr 1fr; } }
 
-        .jc-card { display: block; background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 20px; text-decoration: none; color: inherit; transition: box-shadow .2s, transform .2s; }
-        .jc-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); text-decoration: none; color: inherit; }
-        .jc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-        .jc-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin: 0; line-height: 1.3; }
+        .jc-card { display: block; position: relative; background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 20px; text-decoration: none; color: inherit; transition: box-shadow .2s, transform .2s, border-color .2s; }
+        .jc-card:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.09); transform: translateY(-3px); border-color: #f3d3d3; text-decoration: none; color: inherit; }
+        .jc-new-badge { position: absolute; top: 14px; right: 14px; background: #27ae60; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.3px; }
+        .jc-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .jc-icon { flex-shrink: 0; width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #fdeceb, #fbd8d6); color: #E8272A; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+        .jc-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; line-height: 1.3; }
         .jc-type { flex-shrink: 0; font-size: 10.5px; font-weight: 700; text-transform: capitalize; padding: 4px 9px; border-radius: 20px; background: #fdeceb; color: #E8272A; white-space: nowrap; }
         .jc-meta { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; color: #777; margin-bottom: 14px; }
         .jc-meta i { width: 14px; color: #aaa; }
@@ -132,8 +158,11 @@ const Careers = () => {
       `}</style>
 
       <div className="cp-hero">
-        <h1>Join Our Team</h1>
-        <p>We're always looking for talented people. Browse open roles below — you can apply directly, no account needed.</p>
+        <div className="cp-hero-inner">
+          <span className="cp-hero-badge"><FaBriefcase /> We're hiring</span>
+          <h1>Join Our Team</h1>
+          <p>We're always looking for talented people. Browse open roles below — you can apply directly, no account needed.</p>
+        </div>
       </div>
 
       <form className="cp-filters" onSubmit={onSearchSubmit}>
