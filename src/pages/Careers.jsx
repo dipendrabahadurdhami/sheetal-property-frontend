@@ -37,7 +37,12 @@ const JobCard = ({ job }) => (
     {isNew(job.created_at) ? (
       <span className="jc-new-badge">New</span>
     ) : (
-      <img src="/shetallogo.png" alt="" className="jc-logo-mark" />
+      <img
+        src={job.agency_logo || "/shetallogo.png"}
+        alt=""
+        className="jc-logo-mark"
+        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/shetallogo.png"; }}
+      />
     )}
     <div className="jc-top">
       <div className="jc-icon"><FaBriefcase /></div>
@@ -175,8 +180,9 @@ const Careers = () => {
           letter-spacing: 0.1em; text-transform: uppercase;
         }
         .jc-logo-mark {
-          position: absolute; top: 16px; right: 16px; width: 26px; height: auto;
-          opacity: 0.5; object-fit: contain;
+          position: absolute; top: 14px; right: 14px; width: 32px; height: 32px;
+          border-radius: 4px; object-fit: contain; background: #fff;
+          border: 0.5px solid #E9EAEC; padding: 3px;
         }
         .jc-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
         .jc-icon {
