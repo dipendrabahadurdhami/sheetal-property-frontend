@@ -224,7 +224,7 @@ const JobDetails = () => {
       <div className="jd-page">
         <Link to="/careers" className="jd-back"><FaArrowLeft /> Back to all openings</Link>
 
-        <div className={`jd-layout ${showApply ? "jd-layout--applying" : ""}`}>
+        <div className="jd-layout">
           <div className="jd-main">
             <div className="jd-head">
               <span className="jd-type">{job.job_type?.replace("-", " ")}</span>
@@ -276,6 +276,16 @@ const JobDetails = () => {
 
           <div className="jd-side">
             <div className="jd-side-card">
+              {job.agency_logo && (
+                <div className="jd-side-agency">
+                  <img
+                    src={job.agency_logo}
+                    alt={job.agency_name || "Agency logo"}
+                    onError={(e) => { e.currentTarget.closest(".jd-side-agency").style.display = "none"; }}
+                  />
+                  {job.agency_name && <span>{job.agency_name}</span>}
+                </div>
+              )}
               {salaryLabel(job) && (
                 <div className="jd-side-salary">{salaryLabel(job)}</div>
               )}
@@ -336,9 +346,7 @@ const JD_CSS = `
   .jd-back:hover { color: var(--r); }
 
   .jd-layout { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: start; }
-  @media(min-width: 920px) { .jd-layout { grid-template-columns: minmax(0, 1fr) 320px; } }
-  @media(min-width: 920px) { .jd-layout.jd-layout--applying { grid-template-columns: minmax(0, 1fr) 520px; } }
-  @media(min-width: 1180px) { .jd-layout.jd-layout--applying { grid-template-columns: minmax(0, 1fr) 600px; } }
+  @media(min-width: 920px) { .jd-layout { grid-template-columns: minmax(0, 1fr) 420px; } }
 
   .jd-head { border-bottom: 0.5px solid #E9EAEC; padding-bottom: 24px; margin-bottom: 26px; }
   .jd-type { display: inline-block; font-size: 10px; font-weight: 700; text-transform: capitalize; letter-spacing: 0.06em; padding: 4px 11px; border-radius: 4px; background: var(--r06); color: var(--r); margin-bottom: 14px; }
@@ -351,6 +359,9 @@ const JD_CSS = `
   .jd-side { position: relative; }
   @media(min-width: 920px) { .jd-side-card { position: sticky; top: 24px; } }
   .jd-side-card { background: #fff; border: 0.5px solid #E9EAEC; border-radius: 4px; padding: 24px; }
+  .jd-side-agency { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 0.5px solid #E9EAEC; }
+  .jd-side-agency img { width: 36px; height: 36px; border-radius: 4px; object-fit: contain; background: #fff; border: 0.5px solid #E9EAEC; padding: 3px; flex-shrink: 0; }
+  .jd-side-agency span { font-size: 12.5px; font-weight: 700; color: #0F172A; }
   .jd-side-salary { font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 0.5px solid #E9EAEC; }
   .jd-side-row { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: #4b5563; margin-bottom: 11px; }
   .jd-side-row svg { color: var(--r); flex-shrink: 0; }

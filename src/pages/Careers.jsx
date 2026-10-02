@@ -34,18 +34,19 @@ const Lbl = ({ text }) => (
 
 const JobCard = ({ job }) => (
   <Link to={`/careers/${job.slug}`} className="jc-card">
-    {isNew(job.created_at) ? (
-      <span className="jc-new-badge">New</span>
-    ) : (
-      <img
-        src={job.agency_logo || "/shetallogo.png"}
-        alt=""
-        className="jc-logo-mark"
-        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/shetallogo.png"; }}
-      />
-    )}
+    {isNew(job.created_at) && <span className="jc-new-badge">New</span>}
     <div className="jc-top">
-      <div className="jc-icon"><FaBriefcase /></div>
+      <div className="jc-icon">
+        {job.agency_logo ? (
+          <img
+            src={job.agency_logo}
+            alt=""
+            className="jc-icon-logo"
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = ""; }}
+          />
+        ) : null}
+        <FaBriefcase style={job.agency_logo ? { display: "none" } : undefined} />
+      </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <h3 className="jc-title">{job.title}</h3>
         <span className={`jc-type jc-type-${job.job_type}`}>{job.job_type.replace("-", " ")}</span>
@@ -179,16 +180,13 @@ const Careers = () => {
           font-size: 9px; font-weight: 800; padding: 4px 9px; border-radius: 4px;
           letter-spacing: 0.1em; text-transform: uppercase;
         }
-        .jc-logo-mark {
-          position: absolute; top: 14px; right: 14px; width: 32px; height: 32px;
-          border-radius: 4px; object-fit: contain; background: #fff;
-          border: 0.5px solid #E9EAEC; padding: 3px;
-        }
         .jc-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
         .jc-icon {
           flex-shrink: 0; width: 38px; height: 38px; border-radius: 4px; background: var(--r06);
           color: var(--r); display: flex; align-items: center; justify-content: center; font-size: 15px;
+          overflow: hidden;
         }
+        .jc-icon-logo { width: 100%; height: 100%; object-fit: contain; background: #fff; }
         .jc-title { font-size: 16px; font-weight: 800; color: #0F172A; margin: 0 0 6px; line-height: 1.3; letter-spacing: -0.2px; }
         .jc-type {
           flex-shrink: 0; font-size: 10px; font-weight: 700; text-transform: capitalize;
