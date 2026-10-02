@@ -360,7 +360,7 @@ const JD_CSS = `
   @media(min-width: 920px) { .jd-side-card { position: sticky; top: 24px; } }
   .jd-side-card { background: #fff; border: 0.5px solid #E9EAEC; border-radius: 4px; padding: 24px; }
   .jd-side-agency { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 0.5px solid #E9EAEC; }
-  .jd-side-agency img { width: 36px; height: 36px; border-radius: 4px; object-fit: contain; background: #fff; border: 0.5px solid #E9EAEC; padding: 3px; flex-shrink: 0; }
+  .jd-side-agency img { width: 36px; height: 36px; border-radius: 4px; object-fit: contain; background: var(--r06); padding: 5px; box-sizing: border-box; flex-shrink: 0; }
   .jd-side-agency span { font-size: 12.5px; font-weight: 700; color: #0F172A; }
   .jd-side-salary { font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 0.5px solid #E9EAEC; }
   .jd-side-row { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: #4b5563; margin-bottom: 11px; }

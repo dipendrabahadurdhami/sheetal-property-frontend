@@ -186,7 +186,7 @@ const Careers = () => {
           color: var(--r); display: flex; align-items: center; justify-content: center; font-size: 15px;
           overflow: hidden;
         }
-        .jc-icon-logo { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+        .jc-icon-logo { width: 100%; height: 100%; object-fit: contain; padding: 6px; box-sizing: border-box; }
         .jc-title { font-size: 16px; font-weight: 800; color: #0F172A; margin: 0 0 6px; line-height: 1.3; letter-spacing: -0.2px; }
         .jc-type {
           flex-shrink: 0; font-size: 10px; font-weight: 700; text-transform: capitalize;
