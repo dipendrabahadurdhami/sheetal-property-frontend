@@ -383,7 +383,7 @@ const JD_CSS = `
   .af-form { display: flex; flex-direction: column; gap: 16px; }
   .af-row { display: grid; grid-template-columns: 1fr; gap: 16px; }
   @media(min-width: 380px) { .af-row { grid-template-columns: 1fr 1fr; } }
-  .af-field label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 6px; color: #0F172A; }
+  .af-field label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 6px; color: #0F172A; min-height: 32px; line-height: 1.4; }
   .af-field label small { font-weight: 400; color: #9ca3af; }
   .af-field input, .af-field textarea { width: 100%; border: 1px solid #E9EAEC; border-radius: 4px; padding: 10px 12px; font-size: 13px; outline: none; background: #F5F6F8; font-family: 'Outfit', sans-serif; transition: border-color .2s, background .2s; }
   .af-field input:focus, .af-field textarea:focus { border-color: var(--r); background: #fff; }
